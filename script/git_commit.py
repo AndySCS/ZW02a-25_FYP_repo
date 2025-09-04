@@ -7,7 +7,7 @@ commit_type = inquirer.list_input("commit_type",choices=["verification", "design
 update_module = ""
 
 if commit_type == "design":
-    update_module = inquirer.list_input("update_module",choices=["lib", "axi","mxu","ram","others"])
+    update_module = inquirer.list_input("update_module",choices=["lib", "axi","mxu","ram","top","others"])
 elif commit_type == "verification":
     update_module = inquirer.list_input("update_module",choices=["checker","sequence","driver","intf","tc","env","cov","others"])
 elif commit_type == "script":
