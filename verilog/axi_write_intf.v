@@ -37,8 +37,8 @@ module AXI_WRITE_INFT(
     //parameter
     parameter AWID_WIDTH = 8;
     parameter AWARRD_WIDTH = 11;
-    parameter WDATA_WIDTH = 32;
-    parameter WSTRB_WIDTH = 4; // should be WDATA_WIDTH/4
+    parameter WDATA_WIDTH = 64;
+    parameter WSTRB_WIDTH = WDATA_WIDTH/8; // should be WDATA_WIDTH/8
     //inout bus
     input clk;
     input rst_n;
