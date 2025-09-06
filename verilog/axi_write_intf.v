@@ -32,25 +32,7 @@ module AXI_WRITE_INFT(
     fifo_wr_done,
     fifo_err,
     iram_wr_done,
-    wram_wr_done,
-    
-    //debug
-    awready_nxt,
-    axi_wr_done,
-    axi_wr_begin,
-    bvld_nxt,
-    axi_wr_finish_status,
-    axi_transfer_done,
-    axi_wr_finish_status_nxt,
-    axi_wr_doing,
-    axi_wr_received,
-    wready_nxt,
-    axi_wr_finish,
-    axi_wr_doing_nxt,
-    axi_wr_doing_en
-    
-    
-    
+    wram_wr_done
 );
     //parameter
     parameter AWID_WIDTH = 8;
@@ -92,22 +74,6 @@ module AXI_WRITE_INFT(
     input fifo_err;
     input iram_wr_done;
     input wram_wr_done;
-    
-    //debug
-    output awready_nxt;
-    output axi_wr_done;
-    output axi_wr_begin;
-    output axi_wr_finish;
-    output bvld_nxt;
-    output axi_wr_finish_status;
-    output axi_transfer_done;
-    output axi_wr_finish_status_nxt;
-    output axi_wr_received;
-    output axi_wr_doing;
-    output wready_nxt;
-    output axi_wr_doing_nxt;
-    output axi_wr_doing_en;
-    
 
     //address write related
     wire awready_nxt;
