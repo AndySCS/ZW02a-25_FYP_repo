@@ -6,14 +6,13 @@ module pe (
     in1_vld,
     in1_data,
     pe_en,
-    load_vld,
-    load_data,
     out0_vld,
     out0_data,
     out1_vld,
     out1_data,
     pe_doing,
-    pe_data
+    c1_vld,
+    c1_data
 );
 
     input clk;
@@ -35,23 +34,15 @@ module pe (
     output [7:0] out1_data;
     //pe result
     output pe_doing;
-    output [15:0] pe_data;
+    output c1_vld;
+    output [15:0] c1_data;
 
     //pipeline signal
     wire c0_vld;
     wire [15:0] c0_data;
 
-    wire c1_vld;
-    wire [15:0] c1_data;
-    
-    //register signal
-    wire [15:0] buf_data;
-    wire [15:0] buf_data_nxt;
-    wire [15:0] acc_data;
-    wire buf_data_en
-
     assign c0_vld = in0_vld & in1_vld & pe_en;
-    assign c0_data = {8'b0, in0_data} * {8'b0, in1_data};
+    assign c0_data = {8{in0_data[7]}, in0_data} * {8{in1_data[7]}, in1_data};
 
     DFFR #(.WIDTH(1)) 
     ff_c1_vld(
@@ -69,21 +60,7 @@ module pe (
         .d(c0_data),
         .q(c1_data)
     );
-
-    assign acc_data = buf_data + c1_data;
-    assign buf_data_nxt = load_vld ? load_data :
-                          c1_vld ? acc_data;
-    assign buf_data_en = load_vld & pe_en | c1_vld;
-    
-    DFFE #(.WIDTH(15)) 
-    ff_buf_data(
-        .clk(clk),
-        .rst_n(rst_n),
-        .en(buf_data_en)
-        .d(buf_data_nxt),
-        .q(buf_data)
-    );
-    
+ 
     DFFR #(.WIDTH(1)) 
     ff_out0_vld(
         .clk(clk),
@@ -119,6 +96,5 @@ module pe (
     );
 
     assign pe_data = buf_data;
-    assign pe_doing = c0_vld | load_vld & pe_en | c1_vld;
 
 endmodule
