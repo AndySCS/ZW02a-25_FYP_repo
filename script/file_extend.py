@@ -9,35 +9,66 @@ args = parser.parse_args()
 
 dir = args.dir
 
-def extend_file(file):
+def check_is_for_loop(read_content, line_num):
     in_for_loop = False
+    start_idx = 0
+    end_idx = 0
+    loop_var = 0
+    read_idx = line_num
+    line = read_content[read_idx]
+    check_line = line.replace(' ','')
+    for_loop_content_tmp = []
+    for_loop_content = []
+    
+    if re.match("//:for\(\$\w*=\d*;\$\w*\<\d*;\$\w*\+\+\){", check_line):
+        line_seg = re.split('(\(|;|\))',check_line)
+        in_for_loop = True
+        start_idx = line_seg[2].split('=')[1]
+        end_idx = line_seg[4].split('<')[1]
+        loop_var = line_seg[2].split('=')[0]
+        read_idx += 1
+    else:
+        return False, False
+    
+    while in_for_loop:
+        nest_loop_content, nest_read_idx = check_is_for_loop(read_content, read_idx)
+        line = read_content[read_idx]
+        check_line = line.replace(' ','')
+        if nest_loop_content:
+            for_loop_content_tmp = for_loop_content_tmp + nest_loop_content
+            read_idx = nest_read_idx
+        elif re.match("//:}", check_line):
+            read_idx += 1
+            in_for_loop = False
+            for i in range (int(start_idx), int(end_idx)):
+                for content in for_loop_content_tmp:
+                    for_loop_content.append(content.replace(loop_var,str(i)))
+            return for_loop_content, read_idx
+        else:
+            for_loop_content_tmp.append(line)
+            read_idx += 1
+
+
+def extend_file(file):
+
     generate_file_dir = file[:-1]
     write_content = []
     for_loop_content = []
-    start_idx = 0
-    end_idx = 1
-    loop_var = ''
+    read_content = []
+
     with open(file, "r") as rd_file:
         for line in rd_file:
-            check_line = line.replace(' ','')
-            if re.match("//:for\(\$\w*=\d*;\$\w*\<\d*;\$\w*\+\+\){", check_line):
-                for_loop_content = []
-                line_seg = re.split('(\(|;|\))',check_line)
-                in_for_loop = True
-                start_idx = line_seg[2].split('=')[1]
-                end_idx = line_seg[4].split('<')[1]
-                loop_var = line_seg[2].split('=')[0]
-                continue
-            if in_for_loop:
-                if re.match("//:}", check_line):
-                    in_for_loop = False
-                    for i in range (int(start_idx), int(end_idx)):
-                        for content in for_loop_content:
-                            write_content.append(content.replace(loop_var,str(i)))
-                    continue
-                for_loop_content.append(line)
-            else:
-                write_content.append(line)
+            read_content.append(line)
+    
+    line_num = 0
+    while line_num < len(read_content):
+        for_loop_content, read_idx = check_is_for_loop(read_content, line_num)
+        if for_loop_content:
+            write_content += for_loop_content
+            line_num = read_idx
+        else:
+            write_content.append(read_content[line_num])
+        line_num += 1
 
     with open(generate_file_dir, 'w') as wr_file:
         for content in write_content:
