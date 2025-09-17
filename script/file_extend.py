@@ -72,7 +72,7 @@ def extend_file(file):
             line_num = read_idx
         else:
             write_content.append(read_content[line_num])
-        line_num += 1
+            line_num += 1
 
     with open(generate_file_dir, 'w') as wr_file:
         for content in write_content:
