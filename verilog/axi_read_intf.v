@@ -57,7 +57,7 @@ module moduleName (
     input RREADY,
 
     // internal interfaces
-    input axi_rd_last,
+    input oram_read_done,
     //the read data that from ram
     input axi_rd_ram_data;
 
@@ -92,16 +92,11 @@ module moduleName (
     //read doing define
     assign axi_rd_doing_nxt = axi_rd_begin | ~axi_rd_finish;
     assign axi_rd_doing_en = axi_rd_begin | axi_rd_finish; // only change the rd_doing when read begin/ read finish
-    assign axi_rd_finish = (~(|axi_rd_cnt) | WLAST) & axi_wr_doing & axi_wr_received; //received last transaction
+    assign axi_rd_finish = (~(|axi_rd_cnt) | RLAST) & axi_wr_doing & axi_rd_received; //received last transaction
     assign axi_rd_finish_status_nxt = axi_wr_finish | axi_wr_finish_status & ~axi_transfer_done;
     assign axi_rd_finish_status_en = axi_wr_doing_en | axi_transfer_done;
     DFFE ff_rd_doing (.clk(clk), .en(axi_rd_doing_en), .d(axi_rd_doing_nxt), .q(axi_rd_doing));
 
-    
-
-    //A3.2.2
-    //final read burst                                                          
-    assign axi_rd_finish = RLAST;
 
     //A3.4.1
     //adress channel element assignment
@@ -129,7 +124,7 @@ module moduleName (
 
     //read channel 
     assign axi_rd_transfer_done = oram_rd_done;
-    assign axi_rd_recived = (RREADY & RVLIAD & axi_rd_doing); //only receive read data when received valid address read
+    assign axi_rd_received = (RREADY & RVLIAD & axi_rd_doing); //only receive read data when received valid address read
     assign rvld_nxt = ~axi_rd_recived | axi_rd_transfer_done; 
     DFFE #(.WIDTH(1)) ff_rvld  (.clk(clk), .en(rst_n), .d(rvld_nxt), .q(RVALID)); //after reset rvld must be low  :A3.1.2
     
@@ -137,9 +132,17 @@ module moduleName (
     assign RID = axi_rd_ac_id;
     //rdata get from read data from the dout of the ram
     assign RDATA = axi_rd_ram_data; 
-    //TODO count back the the rd_data with burst and len
-    //TODO how to define ram last
-    assign RLAST = axi_rd_ram_last; 
+
+    //how to define read last
+    //Rules to count rlast
+    //R1: if first init RREADY & RVALID => init the burst count == axi_rd_len+1
+    //R2: every cycle burst count -1 
+    //R3: if the burst count == 1 => last burst => RLAST
+    //R4: RLAST/burst_count always => 0 after RLAST 
+    assign axi_rd_burst_count_nxt = axi_rd_received ? axi_rd_len+1 
+                                                    : (axi_rd_burst_count == 0) ? 1'b0 :axi_rd_burst_count-1;  
+    assign RLAST = (axi_rd_burst_count == 1) ? 1'b1 : 1'b0; 
+    DFF ff_burst_count (.clk(clk), .d(axi_rd_burst_count_nxt), .q(axi_rd_burst_count));
 
     //read response
     assign slverr_allowed = ~RRESP[1];
