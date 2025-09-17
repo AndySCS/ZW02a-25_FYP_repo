@@ -20,8 +20,8 @@ def check_is_for_loop(read_content, line_num):
     for_loop_content_tmp = []
     for_loop_content = []
     
-    if re.match("//:for\(\$\w*=\d*;\$\w*\<\d*;\$\w*\+\+\){", check_line):
-        line_seg = re.split('(\(|;|\))',check_line)
+    if re.match(r"//:for\(\$\w*=\d*;\$\w*\<\d*;\$\w*\+\+\){", check_line):
+        line_seg = re.split(r'(\(|;|\))',check_line)
         in_for_loop = True
         start_idx = line_seg[2].split('=')[1]
         end_idx = line_seg[4].split('<')[1]
@@ -64,7 +64,11 @@ def extend_file(file):
     while line_num < len(read_content):
         for_loop_content, read_idx = check_is_for_loop(read_content, line_num)
         if for_loop_content:
-            write_content += for_loop_content
+            for_loop_content_append = []
+            for content in for_loop_content:
+                formated_line =  eval(f'f"{content}"'.replace('\n',''))
+                for_loop_content_append.append(f'{formated_line}\n')
+            write_content += for_loop_content_append
             line_num = read_idx
         else:
             write_content.append(read_content[line_num])
