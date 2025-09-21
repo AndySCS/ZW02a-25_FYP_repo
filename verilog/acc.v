@@ -7,7 +7,7 @@ module acc(
     load_vld,
     load_data;
     out_data_int16,
-    out_data_int8,
+    out_data_int8
 );
 
     input clk;
