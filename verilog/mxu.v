@@ -102,16 +102,11 @@ module mxu (
     wire mxu_done;
 
     wire acc_clr;
-    wire acc_already_clr;
-    wire acc_already_clr_nxt;
-    wire acc_clr_qual;
 
     wire [15:0] c1_vld [15:0];
     wire [127:0] c1_data [15:0];
 
     wire mxu_act_vld;
-    wire mxu_act_vld_nxt;
-    wire [1:0] mxu_act_type;
     wire [15:0] act_vld [15:0];
     wire [255:0] act_data [15:0];
     wire act_busy;
@@ -243,42 +238,8 @@ module mxu (
         .q(mxu_vld)
     );
 
-    assign acc_already_clr_nxt = acc_clr & ~lsu_mxu_vld_qual;
-
-    DFFRE #(.WIDTH(1))
-    ff_acc_clr(
-        .clk(clk),
-        .rst_n(rst_n),
-        .en(lsu_mxu_vld_qual),
-        .d(lsu_mxu_clr),
-        .q(acc_clr)
-    );
-
-    DFFR #(.WIDTH(1))
-    ff_acc_already_clr(
-        .clk(clk),
-        .rst_n(rst_n),
-        .d(acc_already_clr_nxt),
-        .q(acc_already_clr)
-    );
-
-    assign mxu_act_vld_nxt = lsu_mxu_act_vld & lsu_mxu_vld_qual;
-
-    DFFR #(.WIDTH(1))
-    ff_act_vld(
-        .clk(clk),
-        .rst_n(rst_n),
-        .d(mxu_act_vld_nxt),
-        .q(mxu_act_vld)
-    );
-
-    DFFE #(.WIDTH(2))
-    ff_act_data(
-        .clk(clk),
-        .en(lsu_mxu_vld_qual),
-        .d(lsu_mxu_act_type),
-        .q(mxu_act_type)
-    );
+    assign acc_clr = acc_clr & lsu_mxu_vld_qual;
+    assign mxu_act_vld = lsu_mxu_act_vld & lsu_mxu_vld_qual;
 
     assign mxu_conv_awake_cnt_en = (|mxu_conv_awake_cnt) | lsu_mxu_vld_qual;
     assign mxu_conv_awake_cnt_minus = mxu_conv_awake_cnt - 3'b1;
@@ -7801,7 +7762,7 @@ module mxu (
     act_mod u_act_mod(
         .clk(clk),
         .rst_n(rst_n),
-        .act_type(mxu_act_type),
+        .act_type(lsu_mxu_act_type),
         .act_vld(mxu_act_vld),
         .row0_data(mxu_lsu_int16_row0_data),
         .act_row0_vld(act_vld[0]),
