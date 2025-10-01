@@ -24,9 +24,6 @@ module pe (
     input [7:0] in1_data;
     //pe en signal
     input pe_en;
-    //load data
-    input load_vld;
-    input [7:0] load_data;
     //pipe output
     output out0_vld;
     output [7:0] out0_data;
@@ -37,12 +34,25 @@ module pe (
     output c1_vld;
     output [15:0] c1_data;
 
+    wire multi_vld;
+    wire multi_busy;
+
     //pipeline signal
     wire c0_vld;
     wire [15:0] c0_data;
 
-    assign c0_vld = in0_vld & in1_vld & pe_en;
-    assign c0_data = {8{in0_data[7]}, in0_data} * {8{in1_data[7]}, in1_data};
+    assign multi_vld = in0_vld & in1_vld & pe_en;
+
+    multi u_multi(
+        .clk(clk),
+        .rst_n(rst_n),
+        .multi_vld(mutlti_vld),
+        .in0_data(in0_data),
+        .in1_data(in1_data),
+        .multi_busy(multi_busy),
+        .out_vld(c0_vld),
+        .out_data(c0_data)
+    )
 
     DFFR #(.WIDTH(1)) 
     ff_c1_vld(
@@ -95,6 +105,6 @@ module pe (
         .q(out1_data)
     );
 
-    assign pe_data = buf_data;
+    assign pe_doing = multi_busy;
 
 endmodule
