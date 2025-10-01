@@ -71,7 +71,7 @@ module mxu (
     //:for($row=0;$row<17;$row++){
     assign sys_arr_row{$row}_load_vld = act_vld[{$row}];
     assign sys_arr_row{$row}_load_data = act_data[{$row}];
-    assign sys_arr_row_data_rdy[{$row}] = ~(|c1_vld[{$row}]) & ~(|sys_arr_row{$row}_load_vld);
+    assign sys_arr_row_data_rdy[{$row}] = ~(|c1_vld[{$row}]) & ~(|sys_arr_row{$row}_load_vld) & ~(|pe_doing[{$row}]);
     //:}
 
     assign lsu_mxu_vld_qual = lsu_mxu_vld & mxu_lsu_rdy;
