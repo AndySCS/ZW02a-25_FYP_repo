@@ -150,11 +150,11 @@ module multi(
                               : src1_buff_data[2] ? 8'b1111_1011
                               : src1_buff_data[1] ? 8'b1111_1101
                               : src1_buff_data[0] ? 8'b1111_1110
-                              : 8'hff;
+                              : 8'h0;
 
     assign src1_buff_data_drop = src1_buff_data & src1_buff_data;
     
-    assign multi_done = ~(|out_data) | ~src1_buff_data_msk[0];
+    assign multi_done = ~(|out_data) | ~(|src1_buff_data_drop);
 
     assign out_vld = src_buff_vld & (|out_data);
 
