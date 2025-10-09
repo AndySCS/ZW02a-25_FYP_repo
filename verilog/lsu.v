@@ -174,7 +174,7 @@ module lsu(
     //set the start_byte and end byte for the iram
     assign lsu_iram_start_byte = idu_lsu_conv && idu_lsu_iram_start_addr[3:0];
     assign lsu_iram_end_byte = idu_lsu_iram_col_dir?idu_lsu_iram_start_addr[3:0]+idu_lsu_iram_col_len:idu_lsu_iram_start_addr[3:0]-idu_lsu_iram_col_len;
-    assign lsu_iram_ent_num  = idu_lsu_iram_col_len + idu_lsu_iram_row_len - 1;
+    assign lsu_iram_ent_num  = idu_lsu_iram_row_len;
     assign lsu_iram_ent_rng  = {idu_lsu_iram_row_dir,idu_lsu_iram_row_len};
     matrix_iram_load_buffer ram_buffer(
         .clk(clk),
@@ -235,7 +235,7 @@ module lsu(
     //set the start_byte and end byte for the wram
     assign lsu_wram_start_byte = idu_lsu_conv && idu_lsu_wram_start_addr[3:0];
     assign lsu_wram_end_byte = idu_lsu_wram_col_dir?idu_lsu_wram_start_addr[3:0]+idu_lsu_wram_col_len:idu_lsu_wram_start_addr[3:0]-idu_lsu_wram_col_len;
-    assign lsu_wram_ent_num  = idu_lsu_wram_col_len + idu_lsu_wram_row_len - 1;
+    assign lsu_wram_ent_num  = idu_lsu_wram_row_len;
     assign lsu_iram_ent_rng  = {idu_lsu_iram_row_dir,idu_lsu_iram_row_len};
     matrix_wram_load_buffer ram_buffer(
         .clk(clk),
