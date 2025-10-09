@@ -199,15 +199,19 @@ module ram_buffer(
     assign ram_read_vld = ~ram_buff_stat_fsm[1] & ram_buff_stat_fsm[0] //2'b01
                         & ~all_ent_has_fetched;
     assign ram_read_addr = ctrl_ram_buff_start_addr_ff + {{3{ram_buff_read_addr_offset[4]}}, ram_buff_read_addr_offset};
+    //TODO what if the start_addr is row1 and it laod with backward dir?
     //
 
+    //ram buff ent cnt
+    assign ram_buff_ent_cnt_en = ctrl_ram_buff_vld | ram_buff_alloc_vld;
+    assign ram_buff_ent_cnt_nxt = ctrl_ram_buff_vld ? 1'b0 : ram_buff_ent_cnt + 1;
     //ram buff fsm
     assign ram_buff_done_recv = (ram_buff_ent_cnt == ctrl_ram_buff_ent_num_ff) & ram_buff_alloc_vld;
     assign ram_buff_done_send = (ram_buff_stat_fsm == `RAM_BUFF_FSM_SND) & ~(|ent_vld);
     assign ram_buff_stat_fsm_en = ctrl_ram_buff_vld | ram_buff_alloc_vld | (ram_buff_stat_fsm == `RAM_BUFF_FSM_SND);
     assign ram_buff_stat_fsm_nxt = ctrl_ram_buff_vld ? `RAM_BUFF_FSM_RECV
                                  : ram_buff_done_recv ? `RAM_BUFF_FSM_SND
-                                 : ram_buff_done_send ? `RAM_BUFF_FSM_IDLE : `RAM_BUFF_FSM_REV;
+                                 : ram_buff_done_send ? `RAM_BUFF_FSM_IDLE : `RAM_BUFF_FSM_REV; 
 
     DFFRE #(.WIDTH(2))
     ff_ram_buff_stat_fsm(
@@ -216,6 +220,14 @@ module ram_buffer(
         .en(ram_buff_stat_fsm_en),
         .d(ram_buff_stat_fsm_nxt),
         .q(ram_buff_stat_fsm)
+    );
+    DFFRE #(.WIDTH(3))
+    ff_ram_buff_ent_cnt(
+        .clk(clk),
+        .rst_n(rst_n),
+        .en(ram_buff_ent_cnt_en),
+        .d(ram_buff_ent_cnt_nxt),
+        .q(ram_buff_ent_cnt)
     );
     //done ram buff fsm
 
