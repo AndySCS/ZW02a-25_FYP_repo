@@ -238,7 +238,7 @@ module mxu (
         .q(mxu_vld)
     );
 
-    assign acc_clr = acc_clr & lsu_mxu_vld_qual;
+    assign acc_clr_qual = lsu_mxu_clr & lsu_mxu_vld_qual;
     assign mxu_act_vld = lsu_mxu_act_vld & lsu_mxu_vld_qual;
 
     assign mxu_conv_awake_cnt_en = (|mxu_conv_awake_cnt) | lsu_mxu_vld_qual;
@@ -254,7 +254,7 @@ module mxu (
         .q(mxu_conv_awake_cnt)
     );
 
-    assign acc_clr_qual = acc_clr & ~acc_already_clr;
+
 
     wire [15:0] sys_arr_row0_vld;
     wire [127:0] sys_arr_row0_data;
