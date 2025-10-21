@@ -2,13 +2,64 @@ module tpu(
     clk,
     rst_n,
     start_vld,
-    start_addr
+    start_addr,
+    // waddr interface
+    AWID,
+    AWADDR,
+    AWLEN,
+    AWSIZE,
+    AWBURST,
+    AWREGION,
+    AWVALID,
+    AWREADY,
+    // wdata interface
+    WDATA,
+    WSTRB,
+    WLAST,
+    WVALID,
+    WREADY,
+    // wresp interface
+    BID,
+    BRESP,
+    BVALID,
+    BREADY,
 );
+
+    parameter AWID_WIDTH = 4;
+    parameter AWADDR_WIDTH = 10;
+    parameter WDATA_WIDTH = 64;
+    parameter WSTRB_WIDTH = WDATA_WIDTH/8; // should be WDATA_WIDTH/8
 
     input clk;
     input rst_n;
     input start_vld;
     input [11:0] start_addr;
+    //parameter
+
+    //inout bus
+    input clk;
+    input rst_n;
+    //address write channel 
+    output [AWID_WIDTH-1:0] AWID;
+    output [AWADDR_WIDTH-1:0] AWADDR;
+    output [7:0] AWLEN;
+    output [2:0] AWSIZE;
+    output [1:0] AWBURST;
+    output [3:0] AWREGION;
+    output  AWVALID;
+    input AWREADY;
+    //write data channel
+    output [WDATA_WIDTH-1:0] WDATA;
+    output [WSTRB_WIDTH-1:0] WSTRB;
+    output WLAST;
+    output WVALID;
+    input WREADY;
+    //write response channel
+    input [AWID_WIDTH-1:0] BID;
+    input [1:0] BRESP;
+    input BVALID;
+    output BREADY;
+
     //ifu<->idu
     wire idu_ifu_rdy;
     wire idu_ifu_wfi;
@@ -67,6 +118,27 @@ module tpu(
     //:}
     wire mxu_lsu_data_rdy;
     wire mxu_lsu_rdy;
+    //axi <-> lsu
+    wire [7:0] lsu_axi_awid;
+    wire [9:0] lsu_axi_awaddr;
+    wire [7:0] lsu_axi_awlen;
+    wire [2:0] lsu_axi_awsize;
+    wire [1:0] lsu_axi_awburst;
+    wire [2:0] lsu_axi_awstr;
+    wire [3:0] lsu_axi_awnum;
+    wire lsu_axi_awvld;
+    wire [11:0] lsu_axi_oram_addr;
+    wire [63:0] lsu_axi_wdata;
+    wire [7:0] lsu_axi_wstrb;
+    wire lsu_axi_wlast;
+    wire lsu_axi_wvld;
+    wire lsu_axi_brdy;
+    //axi->lsu interface
+    wire axi_lsu_awrdy;
+    wire axi_lsu_wrdy;
+    wire [1:0] axi_lsu_bresp;
+    wire axi_lsu_bvld;
+    wire [11:0] axi_lsu_resp_oram_addr;
 
     ifu u_ifu(
         .clk(clk),
@@ -141,4 +213,47 @@ module tpu(
         .mxu_lsu_data_rdy(mxu_lsu_data_rdy),
         .mxu_lsu_rdy(mxu_lsu_rdy)
     );
+
+    AXI_WRITE_INFT u_AXI_WRITE_INFT(
+        .clk(clk),
+        .rst_n(rst_n),
+        .AWID(AWID),
+        .AWADDR(AWADDR),
+        .AWLEN(AWLEN),
+        .AWSIZE(AWSIZE),
+        .AWBURST(AWBURST),
+        .AWREGION(AWREGION),
+        .AWVALID(AWVALID),
+        .AWREADY(AWREADY),
+        .WDATA(WDATA),
+        .WSTRB(WSTRB),
+        .WLAST(WLAST),
+        .WVALID(WVALID),
+        .WREADY(WREADY),
+        .BID(BID),
+        .BRESP(BRESP),
+        .BVALID(BVALID),
+        .BREADY(BREADY),
+        .lsu_axi_awid(lsu_axi_awid),
+        .lsu_axi_awaddr(lsu_axi_awaddr),
+        .lsu_axi_awlen(lsu_axi_awlen),
+        .lsu_axi_awsize(lsu_axi_awsize),
+        .lsu_axi_awburst(lsu_axi_awburst),
+        .lsu_axi_awstr(lsu_axi_awstr),
+        .lsu_axi_awnum(lsu_axi_awnum),
+        .lsu_axi_awvld(lsu_axi_awvld),
+        .lsu_axi_oram_addr(lsu_axi_oram_addr),
+        .lsu_axi_wdata(lsu_axi_wdata),
+        .lsu_axi_wstrb(lsu_axi_wstrb),
+        .lsu_axi_wlast(lsu_axi_wlast),
+        .lsu_axi_wvld(lsu_axi_wvld),
+        .lsu_axi_brdy(lsu_axi_brdy),
+        .axi_lsu_awrdy(axi_lsu_awrdy),
+        .axi_lsu_wrdy(axi_lsu_wrdy),
+        .axi_lsu_bid(axi_lsu_bid),
+        .axi_lsu_bresp(axi_lsu_bresp),
+        .axi_lsu_bvld(axi_lsu_bvld),
+        .axi_lsu_resp_oram_addr(axi_lsu_resp_oram_addr)
+);
+
 endmodule
