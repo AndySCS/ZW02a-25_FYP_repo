@@ -216,6 +216,74 @@ module lsu(
     
     assign lsu_iram_ld_vld = idu_lsu_ld_iram & idu_lsu_vld;
 
+    ////////////////////////////////////////////////////////////
+    //For store instruction
+
+    //store awvld ctl awpayload send action
+    //1/ start of each instruction
+    //2/ response erorr need resend 
+    //FIXME not yet finish 2/
+    assign lsu_awvld =  (idu_lsu_vld & idu_lsu_st_dram);
+
+    store_buffer oram_dram_store_buffer(
+        .clk(clk),
+        .rst_n(rst_n),
+
+        //from lsu input
+        //axi address related
+        .ctrl_store_awvld(lsu_awvld),
+        .ctrl_store_awid(lsu_ldst_id),
+        .ctrl_store_awaddr(idu_lsu_dram_addr),
+        .ctrl_store_awlen(idu_lsu_len),
+        .ctrl_store_awsize(idu_lsu_size),
+        .ctrl_store_awburst(idu_lsu_burst),
+        .ctrl_store_awstr(idu_lsu_str),
+        .ctrl_store_awnum(idu_lsu_num),
+        .ctrl_st_sram_start_addr(idu_lsu_ld_st_addr),
+
+        //to ram wrapper
+        //(read the sram data out)
+        .ctrl_sram_vld(lsu_st_buff_oram_cen),
+        .ctrl_sram_addr(lsu_st_buff_oram_addr),
+
+        //from ram input
+        .ctrl_sram_input_vld(lsu_oram_cen_ff),
+        .ctrl_sram_input_addr(lsu_oram_addr_ff), 
+        .ctrl_sram_input_data(lsu_oram_dout),
+
+        //from axi bres
+        .ctrl_store_wrdy(axi_lsu_wrdy),
+        .ctrl_store_awrdy(axi_lsu_awrdy),
+
+        //axi response related
+        .ctrl_store_bresp(axi_lsu_bresp),
+        .ctrl_store_bvld(axi_lsu_bvld),
+        .ctrl_store_resp_oram_addr(axi_lsu_resp_oram_addr),
+
+        //output
+        //address related
+        .lsu_axi_awvld(lsu_axi_awvld),
+        .lsu_axi_awid(lsu_axi_awid),
+        .lsu_axi_awaddr(lsu_axi_awaddr),
+        .lsu_axi_awlen(lsu_axi_awlen),
+        .lsu_axi_awsize(lsu_axi_awsize),
+        .lsu_axi_awburst(lsu_axi_awburst),
+        .lsu_axi_awstr(lsu_axi_awstr),
+        .lsu_axi_awnum(lsu_axi_awnum),
+
+        //write related
+        .lsu_axi_wvld(lsu_axi_wvld),
+        .lsu_axi_wdata(lsu_axi_wdata),
+        .lsu_axi_wstrb(lsu_axi_wstrb),
+        .lsu_axi_wlast(lsu_axi_wlast),
+        .lsu_axi_oram_addr(lsu_axi_oram_addr),
+
+        //response related
+        .lsu_axi_brdy(lsu_axi_brdy)
+    );
+
+    ////////////////////////////////////////////////////////////
+    //For load instruction
     load_buffer dram_iram_load_buffer(
         .clk(clk),
         .rst_n(rst_n),
@@ -364,7 +432,7 @@ module lsu(
     assign lsu_wram_cen = lsu_wram_wrapper_vld;
     assign lsu_wram_addr = lsu_wram_wrapper_addr;
     
-    mem_wrapper iram(
+    mem_wrapper wram(
         .clk (clk),
         .wen (), 
         .cen (lsu_wram_cen),
@@ -383,6 +451,7 @@ module lsu(
 
     DFFR #(.WIDTH(8))
     ff_lsu_wram_addr(
+        .clk(clk),
         .rst_n(rst_n),
         .d(lsu_wram_addr),
         .q(lsu_wram_addr_ff)
@@ -391,7 +460,36 @@ module lsu(
     assign lsu_mxu_wram_vld = lsu_wram_load_vld;
     assign lsu_mxu_wram_pld = lsu_wram_load_data;
 
+    //FOR oram 
+    assign lsu_oram_wen = 'b0; //FIXME
+    assign lsu_oram_cen = lsu_st_buff_oram_cen;
+    assign lsu_oram_addr = lsu_st_buff_oram_addr;
+    assign lsu_oram_din = 'b0;
 
+    mem_wrapper oram(
+        .clk (clk),
+        .wen (lsu_oram_wen), 
+        .cen (lsu_oram_cen),
+        .addr(lsu_oram_addr),
+        .din (lsu_oram_din),
+        .dout(lsu_oram_dout)
+    );
+
+    DFFR #(.WIDTH(1))
+    ff_lsu_oram_cen(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(lsu_oram_cen),
+        .q(lsu_oram_cen_ff)
+    );
+
+    DFFR #(.WIDTH(8))
+    ff_lsu_oram_addr(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(lsu_oram_addr),
+        .q(lsu_oram_addr_ff)
+    );
 
 
 
