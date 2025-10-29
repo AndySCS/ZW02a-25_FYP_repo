@@ -59,6 +59,7 @@ module store_buffer(
     parameter AWADDR_WIDTH = 10;
     parameter WDATA_WIDTH = 64;
     parameter WSTRB_WIDTH = WDATA_WIDTH/8; // should be WDATA_WIDTH/8
+    parameter RRESP_ERROR_BANK_NUM = 32;
 
     input clk;
     input rst_n;
@@ -118,7 +119,7 @@ module store_buffer(
     output lsu_axi_brdy;
 
     wire lsu_awvld;;
-    wire lsu_axi_can_send;
+    wire st_buff_is_send;
     wire ctrl_store_wvld_en;
     wire lsu_awvld_ff;
     wire[7:0] ctrl_store_awid_ff;
@@ -149,21 +150,24 @@ module store_buffer(
     wire st_bresp_resend_end;
     wire[7:0] st_bresp_resend_sram_addr;
 
+
     //if ctrl_store_awvld => update the address payload 
     
     //dircet pass the ctrl_store siganl to axi
     assign lsu_awvld = ctrl_store_awvld | lsu_awvld_ff;
-    assign lsu_axi_can_send = lsu_awvld & ctrl_store_awrdy;
-    assign ctrl_store_awvld_en = ctrl_store_awvld ^ lsu_axi_can_send;
+    assign st_buff_is_send = lsu_awvld & ctrl_store_awrdy;
+    assign ctrl_store_awvld_en = ctrl_store_awvld ^ st_buff_is_send;
 
-    assign lsu_axi_awvld   = lsu_axi_can_send ? lsu_awvld : 'b0;
-    assign lsu_axi_awid    = lsu_axi_can_send ? (ctrl_store_awvld ? lsu_axi_awid : lsu_axi_awid_ff) : 'b0; 
-    assign lsu_axi_awaddr  = lsu_axi_can_send ? (ctrl_store_awvld ? lsu_axi_awaddr : lsu_axi_awaddr_ff) : 'b0;
-    assign lsu_axi_awlen   = lsu_axi_can_send ? (ctrl_store_awvld ? lsu_axi_awlen : lsu_axi_awlen_ff) : 'b0;
-    assign lsu_axi_awsize  = lsu_axi_can_send ? (ctrl_store_awvld ? lsu_axi_awsize : lsu_axi_awsize_ff) : 'b0;
-    assign lsu_axi_awburst = lsu_axi_can_send ? (ctrl_store_awvld ? lsu_axi_awburst : lsu_axi_awburst_ff) : 'b0;
-    assign lsu_axi_awstr   = lsu_axi_can_send ? (ctrl_store_awvld ? lsu_axi_awstr : lsu_axi_awstr_ff) : 'b0;
-    assign lsu_axi_awnum   = lsu_axi_can_send ? (ctrl_store_awvld ? lsu_axi_awnum : lsu_axi_awnum_ff) : 'b0;
+    //handshake 
+    //=> only need to care if lsu_axi_vld => then send variables 
+    assign lsu_axi_awvld   = lsu_awvld;
+    assign lsu_axi_awid    = (ctrl_store_awvld ? lsu_axi_awid : lsu_axi_awid_ff); 
+    assign lsu_axi_awaddr  = (ctrl_store_awvld ? lsu_axi_awaddr : lsu_axi_awaddr_ff);
+    assign lsu_axi_awlen   = (ctrl_store_awvld ? lsu_axi_awlen : lsu_axi_awlen_ff);
+    assign lsu_axi_awsize  = (ctrl_store_awvld ? lsu_axi_awsize : lsu_axi_awsize_ff);
+    assign lsu_axi_awburst = (ctrl_store_awvld ? lsu_axi_awburst : lsu_axi_awburst_ff);
+    assign lsu_axi_awstr   = (ctrl_store_awvld ? lsu_axi_awstr : lsu_axi_awstr_ff);
+    assign lsu_axi_awnum   = (ctrl_store_awvld ? lsu_axi_awnum : lsu_axi_awnum_ff);
 
     DFFER ff_awvld #(.WIDTH(1))(
         .clk(clk),
@@ -267,18 +271,18 @@ module store_buffer(
 
 
     //count the chunk element
-    assign st_buff_chunk_element_nxt = (lsu_axi_can_send|st_buff_chunk_element_end) ? 'b0 : st_buff_chunk_element + 1;
-    assign st_buff_chunk_element_en = lsu_axi_can_send | (|st_buff_sram_fsm);
+    assign st_buff_chunk_element_nxt = (st_buff_is_send|st_buff_chunk_element_end) ? 'b0 : st_buff_chunk_element + 1;
+    assign st_buff_chunk_element_en = st_buff_is_send | (|st_buff_sram_fsm);
 
     //count the chunk num
-    assign st_buff_chunk_num_count_nxt = lsu_axi_can_send ? 'b1 : st_buff_chunk_num_count + 1;
-    assign st_buff_chunk_num_count_en = lsu_axi_can_send | st_buff_sram_fsm[0];
+    assign st_buff_chunk_num_count_nxt = st_buff_is_send ? 'b1 : st_buff_chunk_num_count + 1;
+    assign st_buff_chunk_num_count_en = st_buff_is_send | st_buff_sram_fsm[0];
 
                                 
 
     //cen depend on whether teh fsm point to read new sram
     assign ctrl_sram_vld = st_buff_sram_fsm[0];
-    assign ctrl_sram_addr = lsu_axi_can_send ? (ctrl_st_sram_start_addr_ff | ctrl_st_sram_start_addr) : 
+    assign ctrl_sram_addr = st_buff_is_send ? (ctrl_st_sram_start_addr_ff | ctrl_st_sram_start_addr) : 
                                 st_buff_resend_start ? st_buff_resend_addr : 
                                     st_buff_sram_fsm[0] ? ctrl_sram_addr + 1 : ctrl_sram_addr;
                                 
@@ -320,10 +324,45 @@ module store_buffer(
     );
 
     assign st_bresp_resend[ctrl_store_resp_oram_addr[7:0]] = (ctrl_store_bvld & lsu_axi_brdy) ? (|ctrl_store_bresp) : st_bresp_resend[ctrl_store_resp_oram_addr[7:0]];
-    assign st_bresp_resend_start = (|st_bresp_resend) & st_buff_axi_write_fsm[1];
+    assign st_bresp_resend_have error = (|st_bresp_resend) & st_buff_axi_write_fsm[1];
     assign st_bresp_resend_end = !(|st_bresp_resend);
     
+    //break into 8 bank 
+    //each bank 31 bit => total 256
+    reg[31:0] st_buff_bank0;
+    reg[31:0] st_buff_bank1;
+    reg[31:0] st_buff_bank2;
+    reg[31:0] st_buff_bank3;
+    reg[31:0] st_buff_bank4;
+    reg[31:0] st_buff_bank5;
+    reg[31:0] st_buff_bank6;
+    reg[31:0] st_buff_bank7;
+
+
+    assign st_buff_bank0 = st_bresp_resend[31:0];
+    assign st_buff_bank1 = st_bresp_resend[63:32];
+    assign st_buff_bank2 = st_bresp_resend[95:64];
+    assign st_buff_bank3 = st_bresp_resend[127:96];
+    assign st_buff_bank4 = st_bresp_resend[159:128];
+    assign st_buff_bank5 = st_bresp_resend[191:160];
+    assign st_buff_bank6 = st_bresp_resend[223:192];
+    assign st_buff_bank7 = st_bresp_resend[255:224];
+
+    //find out which bank have error
+    assign st_buff_bank_error = {(|st_buff_bank0), (|st_buff_bank1), (|st_buff_bank2), (|st_buff_bank3), (|st_buff_bank4), (|st_buff_bank5), (|st_buff_bank6), (|st_buff_bank7)}
+    
+    //8 bit 
+    // the upper 8 bit matter for the bank_hi
+    dec8to4 dec_bank_hi(.dec_in(st_buff_bank_error), .dec_out(st_buff_error_addr_hi));
+
+    //mxu select
+    mxu8 mux(.mxu_bank_in0(st_buff_bank0), .mxu_bank_in1(st_buff_bank1), .mxu_bank_in2(st_buff_bank2), .mxu_bank_in3(st_buff_bank3), .mxu_bank_in4(st_buff_bank4), .mxu_bank_in5(st_buff_bank5), .mxu_bank_in6(st_buff_bank6), .mxu_bank_in7(st_buff_bank7), .sel(st_buff_error_addr_hi), .mxu_out(st_buff_error_bank_addr_lo));
+
+    //
+    dec32to5 dec_bank_lo(.dec_in(st_buff_error_bank_addr_lo), .dec_out(st_buff_error_addr_lo));
+
     // this place a bit confuse
-    assign st_bresp_resend_sram_addr = 
+    assign st_bresp_resend_sram_addr = {st_buff_error_bank_addr_hi,st_buff_error_bank_addr_lo};
+    
 
 endmodule
