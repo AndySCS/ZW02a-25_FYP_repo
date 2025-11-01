@@ -34,7 +34,7 @@ VCS = vcs -sverilog 	 		          \
           -debug_region=cell+lib          \
           -debug_all                      \
           -full64                         \
-          -f ../cfg/sim_filelist.f        \
+          -f ../cfg/file_list.f        \
           -top harness 		              \
           -Mdir=$(csrc_folder_name)       \
           -l $(mode)/log/uvm_compile.log  \
