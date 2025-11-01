@@ -100,7 +100,7 @@ module mxu (
     DFFRE #(.WIDTH(3))
     ff_mxu_conv_awake_cnt(
         .clk(clk),
-        .rst_n(rst_n)
+        .rst_n(rst_n),
         .en(mxu_conv_awake_cnt_en),
         .d(mxu_conv_awake_cnt_nxt),
         .q(mxu_conv_awake_cnt)
