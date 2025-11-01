@@ -60,19 +60,19 @@ module AXI_READ_INFT(
     input RVALID;
     output RREADY; 
     //lsu->axi intf
-    input lsu_axi_arid;
-    input lsu_axi_araddr;
-    input lsu_axi_arlen;
-    input lsu_axi_arsize;
-    input lsu_axi_arburst;
-    input lsu_axi_arstr;
-    input lsu_axi_arnum;
+    input [7:0] lsu_axi_arid;
+    input [9:0] lsu_axi_araddr;
+    input [7:0] lsu_axi_arlen;
+    input [2:0] lsu_axi_arsize;
+    input [1:0] lsu_axi_arburst;
+    input [2:0] lsu_axi_arstr;
+    input [7:0] lsu_axi_arnum;
     input lsu_axi_arvld;
     input lsu_axi_rrdy;
     //axi_lsu intf
-    output axi_lsu_rid;
-    output axi_lsu_rdata;
-    output axi_lsu_rresp;
+    output [7:0] axi_lsu_rid;
+    output [63:0] axi_lsu_rdata;
+    output [1:0] axi_lsu_rresp;
     output axi_lsu_rlast;
     output axi_lsu_rvld;
     output axi_lsu_arrdy;
