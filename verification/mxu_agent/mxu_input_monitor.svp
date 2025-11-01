@@ -1,0 +1,70 @@
+class mxu_input_monitor extends uvm_input_monitor;
+
+    virtual mxu_intf mxu_if;
+    uvm_analysis_port #(mxu_tr) ap;
+
+    `uvm_component_utils(mxu_input_monitor)
+    function new(string name = "mxu_input_monitor", uvm_component parent = null);
+       super.new(name, parent);
+    endfunction //new()
+    
+    extern virtual task build_phase(uvm_phase phase);
+    extern virtual task main_phase(uvm_phase phase);
+    
+    extern virtual task collect_matrix_in(mxu_tr tr);
+
+endclass //mxu_input_monitor extends superClass
+
+task mxu_input_monitor::build_phase(uvm_phase phase);
+    super.build_phase(phase);
+    if(!uvm_config_db#(virtual mxu_intf)::get(this, "", "mxu_if", mxu_if))begin
+        `uvm_fatal("mxu_input_monitor", "mxu input_monitor fail to get mxu if")
+    end
+    ap = new("ap", this);
+endtask
+
+task mxu_input_monitor::main_phase(uvm_phase phase);
+    mxu_tr tr;
+
+    tr = new("tr");
+
+    while (1) begin 
+        this.collect_matrix(tr);
+        ap.write(tr);
+    end
+
+endtask
+
+task mxu_input_monitor::collect_matrix_in(mxu_tr tr);
+
+    /*
+    collect data input from lsu to mxu and store in tr
+    */
+
+    bit collect_begin;
+
+    while(1)begin
+        @(posedge mxu_if.clk);
+        if(mxu_if.lsu_mxu_vld) break;
+    end
+
+    while(1)begin
+        @(posedge mxu_if.clk);
+        if((|mxu_if.lsu_mxu_iram_vld) | (mxu_if.lsu_mxu_wram_vld))begin
+            collect_begin = 1;
+        end
+        else if(collect_begin)begin
+            break;
+        end
+        else begin
+            continue;
+        end
+        //:for($row=0;$row<16;$row++){
+        if(mxu_if.lsu_mxu_iram_vld[{$row}]) tr.matrix_L[{$row}].pushback(mxu_if.lsu_mxu_iram_pld[{$row*8+7}:{$row*8}]);
+        //:}
+        //:for($col=0;$col<16;$col++){
+        if(mxu_if.lsu_mxu_wram_vld[{$col}]) tr.matrix_R[{$col}].pushback(mxu_if.lsu_mxu_wram_pld[{$col*8+7}:{$col*8}]);
+        //:}
+    end         
+
+endtask     
