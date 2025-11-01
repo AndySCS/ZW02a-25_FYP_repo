@@ -60,7 +60,7 @@ module acc(
     assign int8_cast_pos_max = ~out_data_int16[15] & (|out_data_int16[15:7]);
     assign int8_cast_neg_min = out_data_int16[15] & ~(&out_data_int16[15:7]);
     assign out_data_int8 = {8{int8_direct_use_allow}} & out_data_int16[7:0]
-                         | {8{int8_cast_pos_max}} & 8'h7f;
+                         | {8{int8_cast_pos_max}} & 8'h7f
                          | {8{int8_cast_neg_min}} & 8'h80;
 
 endmodule
