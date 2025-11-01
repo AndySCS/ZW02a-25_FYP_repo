@@ -1,0 +1,36 @@
+module act_mod(
+    clk,
+    rst_n,
+    act_type,
+    act_vld,
+    //:for($row=0;$row<16;$row++){
+    row{$row}_data,
+    act_row{$row}_vld,
+    act_row{$row}_data,
+    //:}
+    act_busy
+);
+     
+    input clk;
+    input rst_n;
+    input [1:0] act_type;
+    input act_vld;
+    //:for($row=0;$row<16;$row++){
+    input [255:0] row{$row}_data;
+    output [15:0] act_row{$row}_vld;
+    output [255:0] act_row{$row}_data;
+    //:}
+    output act_busy;
+
+    assign act_busy = act_vld;
+
+    //:for($row=0;$row<16;$row++){
+    assign act_row{$row}_vld = {{16{{act_vld}}}};
+
+    //:for($col=0;$col<16;$col++){
+    assign act_row{$row}_data[{$col*16+15}:{$col*16+0}] = row{$row}_data[{$col*16+15}] ? 16'b0 : row{$row}_data[{$col*16+15}:{$col*16+0}];
+    //:}
+
+    //:}
+
+endmodule 

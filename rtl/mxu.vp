@@ -1,0 +1,181 @@
+module mxu (
+    clk,
+    rst_n,
+    lsu_mxu_vld,
+    lsu_mxu_clr,
+    lsu_mxu_iram_vld,
+    lsu_mxu_iram_pld,
+    lsu_mxu_wram_vld,
+    lsu_mxu_wram_pld,
+    lsu_mxu_pool_vld,
+    lsu_mxu_pool_size,
+    lsu_mxu_act_vld,
+    lsu_mxu_act_type,
+    lsu_mxu_wfi,
+    //:for($i=0;$i<16;$i++){
+    mxu_lsu_int8_row{$i}_data,
+    mxu_lsu_int16_row{$i}_data,
+    //:}
+    mxu_lsu_data_rdy,
+    mxu_lsu_rdy
+);
+   
+    input clk;
+    input rst_n;
+    input lsu_mxu_vld;
+    input lsu_mxu_clr;
+    input [15:0] lsu_mxu_iram_vld;
+    input [127:0] lsu_mxu_iram_pld;
+    input [15:0] lsu_mxu_wram_vld;
+    input [127:0] lsu_mxu_wram_pld;
+    input lsu_mxu_pool_vld;
+    input [1:0] lsu_mxu_pool_size;
+    input lsu_mxu_act_vld;
+    input [1:0] lsu_mxu_act_type;
+    input lsu_mxu_wfi;
+    //:for($i=0;$i<16;$i++){
+    output [127:0] mxu_lsu_int8_row{$i}_data;
+    output [255:0] mxu_lsu_int16_row{$i}_data;
+    //:}
+    output mxu_lsu_data_rdy;
+    output mxu_lsu_rdy;
+
+    wire lsu_mxu_vld_qual;
+    wire mxu_vld;
+    wire mxu_vld_nxt;
+    wire mxu_done;
+
+    wire acc_clr;
+
+    wire [15:0] c1_vld [15:0];
+    wire [127:0] c1_data [15:0];
+
+    wire mxu_act_vld;
+    wire [15:0] act_vld [15:0];
+    wire [255:0] act_data [15:0];
+    wire act_busy;
+
+    wire mxu_conv_awake_cnt_en;
+    wire [2:0] mxu_conv_awake_cnt;   
+    wire [2:0] mxu_conv_awake_cnt_nxt;
+    wire [2:0] mxu_conv_awake_cnt_minus;
+
+    
+    //:for($row=0;$row<17;$row++){
+    wire [15:0] sys_arr_row{$row}_load_vld;
+    wire [127:0] sys_arr_row{$row}_load_data;
+
+    //:}     
+    wire [15:0] sys_arr_row_data_rdy;
+
+    //:for($row=0;$row<17;$row++){
+    assign sys_arr_row{$row}_load_vld = act_vld[{$row}];
+    assign sys_arr_row{$row}_load_data = act_data[{$row}];
+    assign sys_arr_row_data_rdy[{$row}] = ~(|c1_vld[{$row}]) & ~(|sys_arr_row{$row}_load_vld) & ~(|pe_doing[{$row}]);
+    //:}
+
+    assign lsu_mxu_vld_qual = lsu_mxu_vld & mxu_lsu_rdy;
+    assign mxu_vld_nxt = lsu_mxu_vld_qual | mxu_vld & ~mxu_done;
+
+    assign mxu_done =  ~(|mxu_conv_awake_cnt_minus) & (|sys_arr_row_data_rdy);
+    assign mxu_lsu_rdy = mxu_done | ~mxu_vld;
+
+    assign mxu_lsu_data_rdy =  (|sys_arr_row_data_rdy) & ~act_busy ;
+
+    DFFR #(.WIDTH(1))
+    ff_mxu_vld(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(mxu_vld_nxt),
+        .q(mxu_vld)
+    );
+
+    assign acc_clr_qual = lsu_mxu_clr & lsu_mxu_vld_qual;
+    assign mxu_act_vld = lsu_mxu_act_vld & lsu_mxu_vld_qual;
+
+    assign mxu_conv_awake_cnt_en = (|mxu_conv_awake_cnt) | lsu_mxu_vld_qual;
+    assign mxu_conv_awake_cnt_minus = mxu_conv_awake_cnt - 3'b1;
+    assign mxu_conv_awake_cnt_nxt = lsu_mxu_clr ? 3'b111 : mxu_conv_awake_cnt_minus;
+
+    DFFRE #(.WIDTH(3))
+    ff_mxu_conv_awake_cnt(
+        .clk(clk),
+        .rst_n(rst_n)
+        .en(mxu_conv_awake_cnt_en),
+        .d(mxu_conv_awake_cnt_nxt),
+        .q(mxu_conv_awake_cnt)
+    );
+
+
+
+    //:for($row=0;$row<17;$row++){
+    wire [15:0] sys_arr_row{$row}_vld;
+    wire [127:0] sys_arr_row{$row}_data;
+    //:} 
+
+    //:for($col=0;$col<17;$col++){
+    wire [15:0] sys_arr_col{$col}_vld;
+    wire [127:0] sys_arr_col{$col}_data;
+    //:}
+
+    wire [15:0] pe_doing [15:0];
+
+    assign sys_arr_row0_vld  = lsu_mxu_iram_vld;
+    assign sys_arr_row0_data = lsu_mxu_iram_pld;
+    assign sys_arr_col0_vld  = lsu_mxu_wram_vld;
+    assign sys_arr_col0_data = lsu_mxu_wram_pld;
+
+    //:for($row=0;$row<16;$row++){
+    //:for($col=0;$col<16;$col++){
+    pe u_pe_row{$row}_col{$col} (
+        .clk(clk),
+        .rst_n(rst_n),
+        .in0_vld(sys_arr_row{$row}_vld[{$col}]),
+        .in0_data(sys_arr_row{$row}_data[{7+$col*8}:{0+$col*8}]),
+        .in1_vld(sys_arr_col{$col}_vld[{$row}]),
+        .in1_data(sys_arr_col{$col}_data[{7+$row*8}:{0+$row*8}]),
+        .pe_en(mxu_vld),
+        .out0_vld(sys_arr_row{$row+1}_vld[{$col}]),
+        .out0_data(sys_arr_row{$row+1}_data[{7+$col*8}:{0+$col*8}]),
+        .out1_vld(sys_arr_col{$col+1}_vld[{$row}]),
+        .out1_data(sys_arr_col{$col+1}_data[{7+$row*8}:{0+$row*8}]),
+        .pe_doing(pe_doing[{$row}][{$col}]),
+        .c1_vld(c1_vld[{$row}][{$col}]),
+        .c1_data(c1_data[{$row}][{$col*8+7}:{$col*8+0}])
+    );
+    
+    //:}
+    //:}
+
+    //:for($row=0;$row<16;$row++){
+    //:for($col=0;$col<16;$col++){
+    acc u_acc_row{$row}_col{$col} (
+        .clk(clk),
+        .rst_n(rst_n),
+        .acc_clr(acc_clr_qual),
+        .acc_vld(c1_vld[{$row}][{$col}]),
+        .acc_data(c1_data[{$row}][{$col*8+7}:{$col*8+0}]),
+        .load_vld(sys_arr_row{$row}_load_vld[{$col}]),
+        .load_data(sys_arr_row{$row}_load_data[{$col*8+7}:{$col*8+0}]);
+        .out_data_int16(mxu_lsu_int16_row{$row}_data[{$col*16+15}:{$col*16+0}]),
+        .out_data_int8(mxu_lsu_int8_row{$row}_data[{$col*8+7}:{$col*8+0}])
+    );
+    
+    //:}
+    //:}
+
+    act_mod u_act_mod(
+        .clk(clk),
+        .rst_n(rst_n),
+        .act_type(lsu_mxu_act_type),
+        .act_vld(mxu_act_vld),
+        //:for($row=0;$row<16;$row++){
+        .row{$row}_data(mxu_lsu_int16_row{$row}_data),
+        .act_row{$row}_vld(act_vld[{$row}]),
+        .act_row{$row}_data(act_data[{$row}]),
+        //:}
+        .act_busy(act_busy)
+    );
+
+
+endmodule
