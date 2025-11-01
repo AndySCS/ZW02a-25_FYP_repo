@@ -1,1 +1,1 @@
-+f ../../verilog/rtl.f
+-f ../../rtl/rtl.f
