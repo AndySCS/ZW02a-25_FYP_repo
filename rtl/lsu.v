@@ -35,13 +35,13 @@ module lsu(
     idu_lsu_act_type,
     idu_lsu_pool_size,
 
-    //from axi 
-    axi_lsu_arready,
+    //from axi read
+    axi_lsu_arrdy,
     axi_lsu_rid,
     axi_lsu_rdata,
     axi_lsu_rresp,
     axi_lsu_rlast,
-    axi_lsu_rvalid,
+    axi_lsu_rvld,
 
     //to idu
     lsu_idu_rdy,
@@ -72,8 +72,10 @@ module lsu(
     lsu_axi_arlen,
     lsu_axi_arsize,
     lsu_axi_arburst,
-    lsu_axi_arvalid,
-    lsu_axi_rready
+    lsu_axi_arstr,
+    lsu_axi_arnum,
+    lsu_axi_arvld,
+    lsu_axi_rrdy
 
 
 );
@@ -122,12 +124,12 @@ module lsu(
     input [1:0] idu_lsu_pool_size; 
 
     //from axi
-    input axi_lsu_arready;
+    input axi_lsu_arrdy;
     input [7:0] axi_lsu_rid;
-    input [31:0] axi_lsu_rdata;
+    input [63:0] axi_lsu_rdata;
     input [1:0] axi_lsu_rresp;
     input axi_lsu_rlast;
-    input axi_lsu_rvalid;
+    input axi_lsu_rvld;
 
     //from mxu
     //:for($i=0;$i<16;$i++){
@@ -156,12 +158,14 @@ module lsu(
     //to axi interface
     //for read interface
     output [7:0] lsu_axi_arid;
-    output [11:0] lsu_axi_arraddr;
+    output [9:0] lsu_axi_arraddr;
     output [7:0] lsu_axi_arlen;
-    output [2:0]lsu_axi_arsize;
+    output [2:0] lsu_axi_arsize;
     output [1:0] lsu_axi_arburst;
-    output lsu_axi_arvalid;
-    output lsu_axi_rready;
+    output [2:0] lsu_axi_arstr;
+    output [7:0] lsu_axi_arnum;
+    output lsu_axi_arvld;
+    output lsu_axi_rrdy;
 
 
     ///iram ram_buffer payload
@@ -300,7 +304,7 @@ module lsu(
         //axi to lsu input
         .ctrl_sram_rdata(axi_lsu_rdata),
         .ctrl_sram_rlast(axi_lsu_rlast),
-        .ctrl_sram_rvld(axi_lsu_rvalid),
+        .ctrl_sram_rvld(axi_lsu_rvld),
 
         //to ram wrapper
         .load_sram_vld(lsu_ld_iram_cen),
@@ -314,11 +318,11 @@ module lsu(
         .load_axi_arlen(lsu_axi_arlen),
         .load_axi_arsize(lsu_axi_arsize),
         .load_axi_arburst(lsu_axi_arburst),
-        .load_axi_arvalid(lsu_axi_arvalid),
+        .load_axi_arvalid(lsu_axi_arvld),
         .load_axi_str(lsu_axi_str)
 
     );
-    assign lsu_axi_rready = idu_lsu_ld_iram ? lsu_iram_cen : (idu_lsu_ld_wram ? lsu_wram_cen : 1'b1);
+    assign lsu_axi_rrdy = idu_lsu_ld_iram ? lsu_iram_cen : (idu_lsu_ld_wram ? lsu_wram_cen : 1'b1);
     assign lsu_ld_region = idu_lsu_vld ? {idu_lsu_ld_iram,idu_lsu_ld_wram} : lsu_ld_region_ff;
 
     DFFE #(.WIDTH(2))
