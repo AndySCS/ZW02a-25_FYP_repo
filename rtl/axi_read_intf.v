@@ -12,14 +12,14 @@ module AXI_READ_INFT(
     ARREGION,
     ARVALID,
     ARREADY,
-    //read interface
+    //read & response interface
     RID,
     RDATA,
     RRESP,
     RLAST,
     RVALID,
     RREADY,
-    //internal interfaces
+    //lsu interface
     lsu_axi_arid,
     lsu_axi_araddr,
     lsu_axi_arlen,
@@ -28,14 +28,12 @@ module AXI_READ_INFT(
     lsu_axi_arstr,
     lsu_axi_arnum,
     lsu_axi_arvld,
-    //FIXME response addr in,
+    lsu_axi_rrdy,
     axi_lsu_rid,
     axi_lsu_rdata,
     axi_lsu_rresp,
     axi_lsu_rlast,
-    axi_lsu_rvld,
-    axi_lsu_rrdy
-    //FIXME response addr out
+    axi_lsu_rvld
 
 );
     //parameter
@@ -43,28 +41,25 @@ module AXI_READ_INFT(
     parameter ARADDR_WIDTH = 10;
     parameter RDATA_WIDTH = 64;
     parameter RSTRB_WIDTH = RDATA_WIDTH/8; // should be WDATA_WIDTH/8
-
     input clk;
-    input rst_n,
-    //read addr interface
-    ARID,
-    ARADDR,
-    ARLEN,
-    ARSIZE,
-    ARBURST,
-    ARREGION,
-    ARVALID,
-    ARREADY,
-    //read interface
-    RID,
-    RDATA,
-    RRESP,
-    RLAST,
-    RVALID,
-    RREADY,
-    //lsu_interface
-
-    //lsu-axi communication interface
+    input rst_n;
+    //addr read channel
+    output [ARID_WIDTH:0] ARID;
+    output [ARADDR_WIDTH-1:0] ARADDR;
+    output [7:0] ARLEN;
+    output [2:0] ARSIZE;
+    output [1:0] ARBURST;
+    output [3:0] ARREGION;
+    output ARVALID;
+    input ARREADY;
+    //read and response channel
+    input [ARID_WIDTH-1:0] RID;
+    input [RDATA_WIDTH-1:0] RDATA;
+    input [1:0] RRESP;
+    input RLAST;
+    input RVALID;
+    output RREADY; 
+    //lsu->axi intf
     input lsu_axi_arid;
     input lsu_axi_araddr;
     input lsu_axi_arlen;
@@ -73,19 +68,37 @@ module AXI_READ_INFT(
     input lsu_axi_arstr;
     input lsu_axi_arnum;
     input lsu_axi_arvld;
-    //FIXME response addr in;
+    input lsu_axi_rrdy;
+    //axi_lsu intf
     output axi_lsu_rid;
     output axi_lsu_rdata;
     output axi_lsu_rresp;
     output axi_lsu_rlast;
     output axi_lsu_rvld;
-    output axi_lsu_rrd;
-    //FIXME response addr out
+    output axi_lsu_arrdy;
+    
 
     //AXI ID
+    wire [15:0] axi_vld;
+    wire [15:0] axi_vld_nxt;
+    wire [15:0] axi_alloc_en;
+    wire [15:0] axi_alloc_ptr;
+    wire [15:0] axi_alloc_ptr_nxt;
+    wire [15:0] axi_invld;
+    wire [15:0] axi_recv;
+    wire [15:0] axi_recv_nxt;
+    wire [15:0] axi_recv_ptr;
+    wire axi_recv_en;
+    wire [15:0] axi_sent;
+    wire [15:0] axi_sent_nxt;
+    wire [15:0] axi_sent_ptr;
+    wire [15:0] axi_sent_ptr_nxt;
+    wire axi_sent_en;
+    wire axi_alloc_vld;
+
     assign axi_invld = ~axi_vld;
     assign axi_alloc_en = {16{axi_alloc_vld}} & axi_alloc_ptr & axi_invld;
-    assign axi_alloc_vld = lsu_axi_arvld_qual | axi_doing_st;
+    assign axi_alloc_vld = lsu_axi_arvld_qual | axi_doing_ld;
     assign axi_vld_nxt = axi_alloc_en | axi_vld & ~({16{lsu_resp_recv}} & axi_recv_ptr);
     assign axi_sent_nxt = {16{ARVALID_sent}} & axi_sent_ptr | axi_sent & ~axi_alloc_en;
     assign axi_recv_nxt = {16{RVALID_qual}} & BID_16 | axi_recv & ~axi_alloc_en; 
@@ -144,6 +157,29 @@ module AXI_READ_INFT(
     );
  
     //ADDR READ INTF
+
+    wire lsu_axi_arvld_qual;
+    wire ARVALID_nxt;
+    wire ARVALID_sent;
+    wire [ARID_WIDTH-1:0] ARID_nxt;
+    wire [ARADDR_WIDTH-1:0] ARADDR_nxt;
+    wire [ARADDR_WIDTH-1:0] ARADDR_pconst;
+    wire [ARADDR_WIDTH-1:0] ARADDR_add_str;
+    wire ARADDR_en;
+    wire [7:0] ARLEN_nxt;
+    wire [2:0] ARSIZE_nxt;
+    wire [1:0] ARBURST_nxt;
+    wire [3:0] ARREGION_nxt;
+    wire [2:0] arstr;
+    wire [2:0] arstr_nxt;
+    wire [3:0] arnum;
+    wire [3:0] arnum_nxt;
+    wire axi_doing_ld;
+    wire axi_doing_ld_nxt;
+    wire [3:0] arcnt;
+    wire [3:0] arcnt_nxt;
+    wire [3:0] arcnt_en;
+
     assign axi_lsu_arrdy = |axi_vld;
 
     assign ARVALID = |(axi_vld & ~axi_sent);
@@ -168,7 +204,7 @@ module AXI_READ_INFT(
     assign arnum_nxt = axi_ar_qual ? lsu_axi_arnum : arnum;
     assign arcnt_nxt = axi_ar_qual ? 4'b0 : arcnt + 4'b1;
     assign arcnt_en = |axi_alloc_en;
-    assign axi_doing_st = arcnt < arnum;
+    assign axi_doing_ld = arcnt < arnum;
 
     DFFRE ff_ARID #(.WIDTH(ARID_WIDTH))(
         .clk(clk),
@@ -229,29 +265,36 @@ module AXI_READ_INFT(
     //3/ rresp
     //4/ rlast
     //5/ rvld
+    wire RVALID_qual;
+    wire lsu_resp_recv;
+    wire [ARID_WIDTH-1:0] axi_lsu_rid_nxt;
+    wire [RDATA_WIDTH-1:0]axi_lsu_rdata_nxt;
+    wire [1:0] axi_lsu_rresp_nxt;
+    wire axi_lsu_rlast_nxt;
+    wire axi_lsu_rvld_nxt;
+
     //qual if can send read data to LSU
     assign RVALID_qual = RVALID & RREADY;
     assign lsu_resp_recv = lsu_axi_rrdy & axi_lsu_rvld;
     //update the read resp siganl if RVALID
     assign axi_lsu_rvld_nxt = RVALID_qual | axi_lsu_rvld & ~lsu_resp_recv;
-    assign axi_lsu_resp_rdata_nxt = RVALID_qual ? RDATA : axi_lsu_rdata;
     assign axi_lsu_rresp_nxt = RVALID_qual ? RRESP : axi_lsu_rresp;
     assign axi_lsu_rlast_nxt = RVALID_qual ? RLAST : axi_lsu_rlast;
     assign axi_lsu_rdata_nxt = RVALID_qual ? RDATA : axi_lsu_rdata;
 
     //FIXME change the RID back to the read addr 
-    assign axi_lsu_resp_bid_nxt = BVALID_qual ? RID : axi_lsu_rid;
+    assign axi_lsu_rid_nxt = RVALID_qual ? RID : axi_lsu_rid;
     assign RREADY = ~axi_lsu_rvld;
      
     //FIXME rid
-    DFFE ff_axi_lsu_resp_rid #(.WIDTH(1))(
+    DFFE ff_axi_lsu_rid #(.WIDTH(1))(
         .clk(clk),
         .en(RVALID),
-        .d(axi_lsu_resp_rid_nxt),
+        .d(axi_lsu_rid_nxt),
         .q(axi_lsu_rid)
     );
-    //rresp
-    DFFE ff_axi_lsu_resp #(.WIDTH(64))(
+    //rdata
+    DFFE ff_axi_lsu_rdata #(.WIDTH(64))(
         .clk(clk),
         .en(RVALID),
         .d(axi_lsu_rdata_nxt),
