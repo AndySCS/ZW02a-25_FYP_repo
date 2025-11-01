@@ -169,6 +169,7 @@ module mxu (
     wire [127:0] sys_arr_row16_load_data;
 
     wire [15:0] sys_arr_row_data_rdy;
+    wire [15:0] pe_doing [15:0];
 
     assign sys_arr_row0_load_vld = act_vld[0];
     assign sys_arr_row0_load_data = act_data[0];
@@ -326,7 +327,6 @@ module mxu (
     wire [15:0] sys_arr_col16_vld;
     wire [127:0] sys_arr_col16_data;
 
-    wire [15:0] pe_doing [15:0];
 
     assign sys_arr_row0_vld  = lsu_mxu_iram_vld;
     assign sys_arr_row0_data = lsu_mxu_iram_pld;
