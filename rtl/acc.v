@@ -5,7 +5,7 @@ module acc(
     acc_vld,
     acc_data,
     load_vld,
-    load_data;
+    load_data,
     out_data_int16,
     out_data_int8
 );
