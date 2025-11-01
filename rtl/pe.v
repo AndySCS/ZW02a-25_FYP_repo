@@ -52,7 +52,7 @@ module pe (
         .multi_busy(multi_busy),
         .out_vld(c0_vld),
         .out_data(c0_data)
-    )
+    );
 
     DFFR #(.WIDTH(1)) 
     ff_c1_vld(

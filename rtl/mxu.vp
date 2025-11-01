@@ -67,6 +67,7 @@ module mxu (
 
     //:}     
     wire [15:0] sys_arr_row_data_rdy;
+    wire [15:0] pe_doing [15:0];
 
     //:for($row=0;$row<17;$row++){
     assign sys_arr_row{$row}_load_vld = act_vld[{$row}];
@@ -100,7 +101,7 @@ module mxu (
     DFFRE #(.WIDTH(3))
     ff_mxu_conv_awake_cnt(
         .clk(clk),
-        .rst_n(rst_n)
+        .rst_n(rst_n),
         .en(mxu_conv_awake_cnt_en),
         .d(mxu_conv_awake_cnt_nxt),
         .q(mxu_conv_awake_cnt)
@@ -118,7 +119,6 @@ module mxu (
     wire [127:0] sys_arr_col{$col}_data;
     //:}
 
-    wire [15:0] pe_doing [15:0];
 
     assign sys_arr_row0_vld  = lsu_mxu_iram_vld;
     assign sys_arr_row0_data = lsu_mxu_iram_pld;
@@ -156,7 +156,7 @@ module mxu (
         .acc_vld(c1_vld[{$row}][{$col}]),
         .acc_data(c1_data[{$row}][{$col*8+7}:{$col*8+0}]),
         .load_vld(sys_arr_row{$row}_load_vld[{$col}]),
-        .load_data(sys_arr_row{$row}_load_data[{$col*8+7}:{$col*8+0}]);
+        .load_data(sys_arr_row{$row}_load_data[{$col*8+7}:{$col*8+0}]),
         .out_data_int16(mxu_lsu_int16_row{$row}_data[{$col*16+15}:{$col*16+0}]),
         .out_data_int8(mxu_lsu_int8_row{$row}_data[{$col*8+7}:{$col*8+0}])
     );
