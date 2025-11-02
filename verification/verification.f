@@ -1,4 +1,5 @@
-+incdir+./tr
-+incdir+./mxu_agent
-+incdir+./env
-+incdir+./th
+-f $MINITPU_VER/tr/tr.f
+-f $MINITPU_VER/mxu_agent/mxu_agt.f
+-f $MINITPU_VER/env/env.f
+
+$MINITPU_VER/th/harness.sv
