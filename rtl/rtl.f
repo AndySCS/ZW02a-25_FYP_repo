@@ -1,4 +1,4 @@
--f $MINITPU_RTL/lib.f
+-f $MINITPU_RTL/lib/lib.f
 
 $MINITPU_RTL/define.vh
 $MINITPU_RTL/acc.v
