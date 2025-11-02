@@ -1,4 +1,4 @@
-class mxu_output_monitor extends uvm_output_monitor;
+class mxu_output_monitor extends uvm_monitor;
 
     virtual mxu_intf mxu_if;
     uvm_analysis_port #(mxu_tr) ap;
