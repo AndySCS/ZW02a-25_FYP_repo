@@ -1,5 +1,4 @@
-+incdir+./lib
-+incdir+./mem_wrapper
+-f $MINITPU_RTL/rtl/lib.f
 
 $MINITPU_RTL/define.vh
 $MINITPU_RTL/acc.v
