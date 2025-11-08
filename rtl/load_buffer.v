@@ -10,6 +10,7 @@ module load_buffer(
     ctrl_load_size,
     ctrl_load_str,
     ctrl_load_ld_addr,
+    ctrl_load_sram_type,
 
     //ctrl_sram_input
     ctrl_sram_rid,
@@ -24,6 +25,7 @@ module load_buffer(
     load_sram_wen,
     load_sram_addr,
     load_sram_din,
+    load_sram_type,
 
     //to AXI read interface
     load_axi_arid,
@@ -47,19 +49,24 @@ module load_buffer(
     input [2:0]  ctrl_load_size;
     input [2:0]  ctrl_load_str;
     input [11:0] ctrl_load_ld_addr;
+    input [1:0]  ctrl_load_sram_type;
 
     //ctrl_sram_input
+    input [7:0]  ctrl_sram_rid;
     input [31:0] ctrl_sram_rdata;
+    input [1:0]  ctrl_sram_rresp,
     input ctrl_sram_rlast;
     input ctrl_sram_rvld;
+    input ctrl_dram_arrdy
 
     //to lsu the internal ram (sram store variables)
     //to ram wrapper
     output load_sram_vld;
-    //TODO this wen nee dto be byte valid / may need to change later
+    //TODO this wen need to be byte valid / may need to change later
     output load_sram_wen;
     output [7:0] load_sram_addr;
     output [31:0] load_sram_din;
+    output [1:0]  load_sram_type;
 
     //to AXI read interface
     output [7:0]  load_axi_arid;
@@ -78,6 +85,10 @@ module load_buffer(
     wire sram_data_store_sone;
     wire load_buffer_fsm_nxt;
 
+    assign load_sram_type_next = ctrl_load_sram_type;
+    assign load_sram_type_en = ctrl_load_vld;
+    assign load_sram_type = ctrl_load_vld ? ctrl_load_sram_type : load_sram_type_ff;
+
     // update for axi read interface load outout
     //if axi interface is ready and cur addr is vld 
     //update the new data
@@ -94,6 +105,14 @@ module load_buffer(
     assign load_axi_arvld_nxt = ctrl_load_vld;
     //TODO both axi read dun ahve this str variables need add back
     assign lsu_axi_str = idu_lsu_str;
+    DFFE #(.WIDTH(2))
+    load_sram_type_ff(
+        .clk(clk),
+        .rst_n(rst_n),
+        .en(load_sram_type_en),
+        .d(load_sram_type_next),
+        .q(load_sram_type_ff)
+    )
 
     DFFE #(.WIDTH(12))
     idu_lsu_ld_st_addr_ff(
