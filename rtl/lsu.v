@@ -56,7 +56,6 @@ module lsu(
     lsu_mxu_pool_vld,
     lsu_mxu_pool_size,
     lsu_mxu_act_vld,
-    lsu_mxu_act_vld,
     lsu_mxu_act_type,
     lsu_mxu_wfi,
     //:for($i=0;$i<16;$i++){
@@ -64,7 +63,7 @@ module lsu(
     //mxu_lsu_int8_row{$i}_data,
     //:}
     mxu_lsu_data_rdy,
-    mxu_lsu_rdy
+    mxu_lsu_rdy,
 
     //to axi
     lsu_axi_arid,
@@ -76,7 +75,6 @@ module lsu(
     lsu_axi_arnum,
     lsu_axi_arvld,
     lsu_axi_rrdy
-
 
 );
     input clk;
@@ -168,6 +166,7 @@ module lsu(
     output lsu_axi_rrdy;
 
 
+
     ///iram ram_buffer payload
     //from iram => ram_buffer
     wire lsu_iram_cen_ff;
@@ -214,24 +213,53 @@ module lsu(
     wire lsu_axu_rready;
     wire [1:0] lsu_ld_region;
     wire [1:0] lsu_ld_region_ff;
+ 
+    //update for load rdy
+    //if new instruction arrive in lsu => lsu not free => no rdy 
+    assign lsu_new_inst_arrive = idu_lsu_vld & !(idu_lsu_ld_iram | 
+                                                idu_lsu_ld_wram  | 
+                                                idu_lsu_st_iram  |
+                                                idu_lsu_st_wram  |
+                                                idu_lsu_st_oram  |
+                                                idu_lsu_st_dram  |
+                                                idu_lsu_conv);
+    
+    assign lsu_inst_finish = lsu_load_buffer_finished | lsu_store_buffer_finished | lsu_ram_buffer_finished;
+
+    assign lsu_idu_rdy = !lsu_new_inst_arrive & lsu_inst_finish;
+
+
+    ////lsu_fsm 
+    ////00:idle
+    ////01:doing 
+    ////10:finish  
+    ////11:reserved                                                                                                                            
+    //assign lsu_fsm_nxt = lsu_new_inst_arrive ? 2'b01 : 
+                                    //lsu_inst_finish ? 2'b10 : 
+                                    //idu_lsu_vld ? 2'b00 : 2'b01;     
+
 
     assign lsu_ldst_id = rst_n ? 1'b0 
                             : ((idu_lsu_vld & (idu_lsu_ld_iram | idu_lsu_ld_wram | idu_lsu_st_dram)) ? lsu_ldst_addrid + 1 : lsu_ldst_addrid);  
     
-    assign lsu_iram_ld_vld = idu_lsu_ld_iram & idu_lsu_vld;
+    assign lsu_sram_ld_vld = (idu_lsu_ld_iram|idu_lsu_ld_wram) & idu_lsu_vld;
+    assign lsu_sram_ld_type = (idu_lsu_ld_iram,idu_lsu_ld_wram);
 
     ////////////////////////////////////////////////////////////
     //For store instruction
 
     //store awvld ctl awpayload send action
     //1/ start of each instruction
-    //2/ response erorr need resend 
-    //FIXME not yet finish 2/
+    //2/ response erorr need resend
+
     assign lsu_awvld =  (idu_lsu_vld & idu_lsu_st_dram);
 
     store_buffer oram_dram_store_buffer(
         .clk(clk),
         .rst_n(rst_n),
+
+        //TYPE1 store
+        //from oram to dram
 
         //from lsu input
         //axi address related
@@ -284,6 +312,12 @@ module lsu(
 
         //response related
         .lsu_axi_brdy(lsu_axi_brdy)
+
+
+        //TYPE2 store
+        //from mxu to sram
+        .ctrl_store_sram_vld(),
+        .ctrl_
     );
 
     ////////////////////////////////////////////////////////////
@@ -291,26 +325,36 @@ module lsu(
     load_buffer dram_iram_load_buffer(
         .clk(clk),
         .rst_n(rst_n),
+        
+        //TYPE1 LOAD
+        //load from dram to sram
 
         //ctrl_load_input
-        .ctrl_load_vld(lsu_iram_ld_vld),
-        .ctrl_load_id(lsu_ldst_id),
-        .ctrl_load_dram_addr(idu_lsu_dram_addr),
-        .ctrl_load_len(idu_lsu_len),
-        .ctrl_load_size(idu_lsu_size),
-        .ctrl_load_str(idu_lsu_str),
+        //from idu to load_buffer
+        .ctrl_load_arid(lsu_ldst_id),
+        .ctrl_load_dram_araddr(idu_lsu_dram_addr),
+        .ctrl_load_arlen(idu_lsu_len),
+        .ctrl_load_arsize(idu_lsu_size),
+        .ctrl_load_arastr(idu_lsu_str),
+        .ctrl_load_arnum(lsu_axi_arnum),
+        .ctrl_load_arvld(lsu_sram_ld_vld),
         .ctrl_load_ld_addr(idu_lsu_ld_st_addr),
+        .ctrl_load_sram_type(lsu_ld_sram_type),
 
         //axi to lsu input
+        .ctrl_sram_rid(axi_lsu_rid),
         .ctrl_sram_rdata(axi_lsu_rdata),
+        .ctrl_sram_rresp(axi_lsu_rresp),
         .ctrl_sram_rlast(axi_lsu_rlast),
         .ctrl_sram_rvld(axi_lsu_rvld),
+        .ctrl_dram_arrdy(axi_lsu_arrdy),
 
         //to ram wrapper
-        .load_sram_vld(lsu_ld_iram_cen),
-        .load_sram_wen(lsu_ld_iram_wen),
-        .load_sram_addr(lsu_ld_iram_addr),
-        .load_sram_din(lsu_ld_iram_din),
+        .load_sram_vld(lsu_ld_buff_cen),
+        .load_sram_wen(lsu_ld_buff_wen),
+        .load_sram_addr(lsu_ld_buff_addr),
+        .load_sram_din(lsu_ld_buff_din),
+        .load_sram_type(lsu_ld_buff_sram_type),
 
         //to AXI read interface
         .load_axi_arid(lsu_axi_arid),
@@ -318,10 +362,15 @@ module lsu(
         .load_axi_arlen(lsu_axi_arlen),
         .load_axi_arsize(lsu_axi_arsize),
         .load_axi_arburst(lsu_axi_arburst),
-        .load_axi_arvalid(lsu_axi_arvld),
-        .load_axi_str(lsu_axi_str)
-
+        .load_axi_arstr(lsu_axi_arstr),
+        .load_axi_arnum(lsu_axi_arnum),
+        .load_axi_arvld(lsu_axi_arvld),
+        .load_axi_rrdy(lsu_axi_rrdy)
     );
+
+    //rrdy logic 
+    //=> check which ram is writing
+    //=> directly send the ram cen as the aci_rrdy
     assign lsu_axi_rrdy = idu_lsu_ld_iram ? lsu_iram_cen : (idu_lsu_ld_wram ? lsu_wram_cen : 1'b1);
     assign lsu_ld_region = idu_lsu_vld ? {idu_lsu_ld_iram,idu_lsu_ld_wram} : lsu_ld_region_ff;
 
@@ -370,10 +419,10 @@ module lsu(
         .ram_buff_mxu_data(lsu_iram_load_data) 
     );  
 
-    assign lsu_iram_cen = lsu_iram_wrapper_vld | lsu_ld_iram_cen;
-    assign lsu_iram_wen = lsu_ld_iram_wen;
-    assign lsu_iram_addr = lsu_iram_wrapper_addr | lsu_ld_iram_addr;
-    assign lsu_iram_din = lsu_ld_iram_din;
+    assign lsu_iram_cen = lsu_iram_wrapper_vld | (lsu_ld_buff_cen & lsu_ld_buff_sram_type[1]);
+    assign lsu_iram_wen = lsu_ld_iram_wen & (lsu_ld_buff_wen & lsu_ld_buff_sram_type[1]);
+    assign lsu_iram_addr = lsu_iram_wrapper_addr | (lsu_ld_sram_addr && lsu_ld_buff_sram_type[1]);
+    assign lsu_iram_din = lsu_ld_buff_din && lsu_ld_buff_sram_type;
 
     mem_wrapper iram(
         .clk (clk),
@@ -409,7 +458,7 @@ module lsu(
     assign lsu_wram_end_byte = idu_lsu_wram_col_dir?idu_lsu_wram_start_addr[3:0]+idu_lsu_wram_col_len:idu_lsu_wram_start_addr[3:0]-idu_lsu_wram_col_len;
     assign lsu_wram_ent_num  = idu_lsu_wram_row_len;
     assign lsu_iram_ent_rng  = {idu_lsu_iram_row_dir,idu_lsu_iram_row_len};
-    matrix_wram_load_buffer ram_buffer(
+    ram_buffer matrix_wram_load_buffer(
         .clk(clk),
         .rst_n(rst_n),
         //ram input
@@ -433,8 +482,8 @@ module lsu(
         .ram_buff_mxu_data(lsu_wram_load_data) 
     );  
 
-    assign lsu_wram_cen = lsu_wram_wrapper_vld;
-    assign lsu_wram_addr = lsu_wram_wrapper_addr;
+    assign lsu_wram_cen = lsu_wram_wrapper_vld | (lsu_ld_buff_cen & lsu_ld_buff_sram_type[0]);
+    assign lsu_wram_addr = lsu_wram_wrapper_addr | (lsu_ld_sram_addr && lsu_ld_buff_sram_type[0]);
     
     mem_wrapper wram(
         .clk (clk),

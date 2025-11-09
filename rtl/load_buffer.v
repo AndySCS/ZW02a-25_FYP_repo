@@ -3,24 +3,29 @@ module load_buffer(
     rst_n,
 
     //ctrl_load_inpput
-    ctrl_load_valid,
+    ctrl_load_vld,
     ctrl_load_id,
     ctrl_load_dram_addr,
     ctrl_load_len,
     ctrl_load_size,
     ctrl_load_str,
     ctrl_load_ld_addr,
+    ctrl_load_sram_type,
 
     //ctrl_sram_input
+    ctrl_sram_rid,
     ctrl_sram_rdata,
+    ctrl_sram_rresp,
     ctrl_sram_rlast,
     ctrl_sram_rvld,
+    ctrl_dram_arrdy,
         
     //to ram wrapper
     load_sram_vld,
     load_sram_wen,
     load_sram_addr,
     load_sram_din,
+    load_sram_type,
 
     //to AXI read interface
     load_axi_arid,
@@ -28,8 +33,10 @@ module load_buffer(
     load_axi_arlen,
     load_axi_arsize,
     load_axi_arburst,
-    load_axi_arvalid,
-    load_axi_str
+    load_axi_arstr,
+    load_axi_arnum,
+    load_axi_arvld,
+    load_axi_rrdy
 );
     input clk;
     input rst_n;
@@ -42,19 +49,24 @@ module load_buffer(
     input [2:0]  ctrl_load_size;
     input [2:0]  ctrl_load_str;
     input [11:0] ctrl_load_ld_addr;
+    input [1:0]  ctrl_load_sram_type;
 
     //ctrl_sram_input
+    input [7:0]  ctrl_sram_rid;
     input [31:0] ctrl_sram_rdata;
+    input [1:0]  ctrl_sram_rresp,
     input ctrl_sram_rlast;
     input ctrl_sram_rvld;
+    input ctrl_dram_arrdy
 
     //to lsu the internal ram (sram store variables)
     //to ram wrapper
     output load_sram_vld;
-    //TODO this wen nee dto be byte valid / may be to change later
+    //TODO this wen need to be byte valid / may need to change later
     output load_sram_wen;
     output [7:0] load_sram_addr;
     output [31:0] load_sram_din;
+    output [1:0]  load_sram_type;
 
     //to AXI read interface
     output [7:0]  load_axi_arid;
@@ -62,7 +74,7 @@ module load_buffer(
     output [7:0]  load_axi_arlen;
     output [2:0]  load_axi_arsize;
     output [1:0]  load_axi_arburst;
-    output load_axi_arvalid;
+    output load_axi_arvld;
     output load_axi_str;
 
     wire [11:0] ctrl_load_ld_addr_ff;
@@ -73,16 +85,34 @@ module load_buffer(
     wire sram_data_store_sone;
     wire load_buffer_fsm_nxt;
 
+    assign load_sram_type_next = ctrl_load_sram_type;
+    assign load_sram_type_en = ctrl_load_vld;
+    assign load_sram_type = ctrl_load_vld ? ctrl_load_sram_type : load_sram_type_ff;
+
     // update for axi read interface load outout
-    assign load_axi_arid = ctrl_load_id;
-    assign load_axi_arraddr = ctrl_load_dram_addr;
-    assign load_axi_arlen = ctrl_load_len;
-    assign load_axi_arsize = ctrl_load_size;
-    //no burst type now pre is 00 first
-    assign load_axi_arburst = 2'b00
-    assign load_axi_arvalid = ctrl_load_vld
+    //if axi interface is ready and cur addr is vld 
+    //update the new data
+    //addr update condition
+    // cond1 => update at the begining
+    // cond2 => update for the response resend
+    // if resent only sent the arid and arraddr arvld
+    assign load_buffer_addr_sent_en = ctrl_load_vld | ctrl_load_resp_resent;
+    assign load_axi_arid_nxt = ctrl_load_resp_resent ? ctrl_load_resent_arid : ctrl_load_arid;
+    assign load_axi_arraddr_nxt = ctrl_load_resp_resent ? ctrl_load_resent_arid : ctrl_load_dram_araddr;
+    assign load_axi_arlen_nxt = ctrl_load_len;
+    assign load_axi_arsize_nxt = ctrl_load_size;
+    assign load_axi_arburst = 2'b00; //no burst type now pre is 00 first
+    assign load_axi_arvld_nxt = ctrl_load_vld;
     //TODO both axi read dun ahve this str variables need add back
     assign lsu_axi_str = idu_lsu_str;
+    DFFE #(.WIDTH(2))
+    load_sram_type_ff(
+        .clk(clk),
+        .rst_n(rst_n),
+        .en(load_sram_type_en),
+        .d(load_sram_type_next),
+        .q(load_sram_type_ff)
+    )
 
     DFFE #(.WIDTH(12))
     idu_lsu_ld_st_addr_ff(

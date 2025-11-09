@@ -168,6 +168,39 @@ module tpu(
     wire axi_lsu_bvld;
     wire [11:0] axi_lsu_resp_oram_addr;
 
+    wire [ARID_WIDTH:0] ARID;
+    wire [ARADDR_WIDTH-1:0] ARADDR;
+    wire [7:0] ARLEN;
+    wire [2:0] ARSIZE;
+    wire [1:0] ARBURST;
+    wire [3:0] ARREGION;
+    wire ARVALID;
+    wire ARREADY;
+    //read and response channel
+    wire [ARID_WIDTH-1:0] RID;
+    wire [RDATA_WIDTH-1:0] RDATA;
+    wire [1:0] RRESP;
+    wire RLAST;
+    wire RVALID;
+    wire RREADY; 
+    //lsu->axi intf
+    wire [7:0] lsu_axi_arid;
+    wire [9:0] lsu_axi_araddr;
+    wire [7:0] lsu_axi_arlen;
+    wire [2:0] lsu_axi_arsize;
+    wire [1:0] lsu_axi_arburst;
+    wire [2:0] lsu_axi_arstr;
+    wire [7:0] lsu_axi_arnum;
+    wire lsu_axi_arvld;
+    wire lsu_axi_rrdy;
+    //axi_lsu intf
+    wire [7:0] axi_lsu_rid;
+    wire [63:0] axi_lsu_rdata;
+    wire [1:0] axi_lsu_rresp;
+    wire axi_lsu_rlast;
+    wire axi_lsu_rvld;
+    wire axi_lsu_arrdy;
+
     ifu u_ifu(
         .clk(clk),
         .rst_n(rst_n),
@@ -269,6 +302,138 @@ module tpu(
         .mxu_lsu_data_rdy(mxu_lsu_data_rdy),
         .mxu_lsu_rdy(mxu_lsu_rdy)
     );
+
+    
+    LSU u_LSU(
+        .clk(clk),
+        .rst_n(rst_n),
+        .idu_lsu_vld(idu_lsu_ld_iram),
+        .idu_lsu_ld_iram(idu_lsu_ld_iram),
+        .idu_lsu_ld_wram(idu_lsu_ld_wram),
+        .idu_lsu_st_iram(idu_lsu_st_iram),
+        .idu_lsu_st_wram(idu_lsu_st_wram),
+        .idu_lsu_st_oram(idu_lsu_st_oram),
+        .idu_lsu_st_dram(idu_lsu_st_dram),
+        .idu_lsu_conv(idu_lsu_conv),
+        .idu_lsu_act(idu_lsu_act),
+        .idu_lsu_pool(idu_lsu_pool),
+        .idu_lsu_wfi(idu_lsu_wfi),
+        .idu_lsu_dram_addr(idu_lsu_dram_addr),
+        .idu_lsu_num(idu_lsu_num),
+        .idu_lsu_len(idu_lsu_len),
+        .idu_lsu_str(idu_lsu_str),
+        .idu_lsu_start_x(idu_lsu_start_x),
+        .idu_lsu_start_y(idu_lsu_start_y),
+        .idu_lsu_ld_st_addr(idu_lsu_ld_st_addr),
+        .idu_lsu_st_low(idu_lsu_st_low),
+        .idu_lsu_iram_start_addr(idu_lsu_iram_start_addr),
+        .idu_lsu_iram_col_dir(idu_lsu_iram_col_dir),
+        .idu_lsu_iram_row_dir(idu_lsu_iram_row_dir),
+        .idu_lsu_iram_col_len(idu_lsu_iram_col_len),
+        .idu_lsu_iram_row_len(idu_lsu_iram_row_len),
+        .idu_lsu_wram_start_addr(idu_lsu_wram_start_addr),
+        .idu_lsu_wram_col_dir(idu_lsu_wram_col_dir),
+        .idu_lsu_wram_row_dir(idu_lsu_wram_row_dir),
+        .idu_lsu_wram_col_len(idu_lsu_wram_col_len),
+        .idu_lsu_wram_row_len(idu_lsu_wram_row_len),
+        .idu_lsu_act_type(idu_lsu_act_type),
+        .idu_lsu_pool_size(idu_lsu_pool_size),
+        .axi_lsu_arrdy(axi_lsu_arrdy),
+        .axi_lsu_rid(axi_lsu_rid),
+        .axi_lsu_rdata(axi_lsu_rdata),
+        .axi_lsu_rresp(axi_lsu_rresp),
+        .axi_lsu_rlast(axi_lsu_rlast),
+        .axi_lsu_rvld(axi_lsu_rvld),
+        .lsu_idu_rdy(lsu_idu_rdy),
+        .lsu_mxu_vld(lsu_mxu_vld),
+        .lsu_mxu_clr(lsu_mxu_clr),
+        .lsu_mxu_iram_vld(lsu_mxu_iram_vld),
+        .lsu_mxu_iram_pld(lsu_mxu_iram_pld),
+        .lsu_mxu_wram_vld(lsu_mxu_wram_vld),
+        .lsu_mxu_wram_pld(lsu_mxu_wram_pld),
+        .lsu_mxu_pool_vld(lsu_mxu_pool_vld),
+        .lsu_mxu_pool_size(lsu_mxu_pool_size),
+        .lsu_mxu_act_vld(lsu_mxu_act_vld),
+        .lsu_mxu_act_type(lsu_mxu_act_type),
+        .lsu_mxu_wfi(lsu_mxu_wfi),
+        .mxu_lsu_int8_row0_data(mxu_lsu_int8_row0_data),
+        .mxu_lsu_int16_row0_data(mxu_lsu_int16_row0_data),
+        .mxu_lsu_int8_row1_data(mxu_lsu_int8_row1_data),
+        .mxu_lsu_int16_row1_data(mxu_lsu_int16_row1_data),
+        .mxu_lsu_int8_row2_data(mxu_lsu_int8_row2_data),
+        .mxu_lsu_int16_row2_data(mxu_lsu_int16_row2_data),
+        .mxu_lsu_int8_row3_data(mxu_lsu_int8_row3_data),
+        .mxu_lsu_int16_row3_data(mxu_lsu_int16_row3_data),
+        .mxu_lsu_int8_row4_data(mxu_lsu_int8_row4_data),
+        .mxu_lsu_int16_row4_data(mxu_lsu_int16_row4_data),
+        .mxu_lsu_int8_row5_data(mxu_lsu_int8_row5_data),
+        .mxu_lsu_int16_row5_data(mxu_lsu_int16_row5_data),
+        .mxu_lsu_int8_row6_data(mxu_lsu_int8_row6_data),
+        .mxu_lsu_int16_row6_data(mxu_lsu_int16_row6_data),
+        .mxu_lsu_int8_row7_data(mxu_lsu_int8_row7_data),
+        .mxu_lsu_int16_row7_data(mxu_lsu_int16_row7_data),
+        .mxu_lsu_int8_row8_data(mxu_lsu_int8_row8_data),
+        .mxu_lsu_int16_row8_data(mxu_lsu_int16_row8_data),
+        .mxu_lsu_int8_row9_data(mxu_lsu_int8_row9_data),
+        .mxu_lsu_int16_row9_data(mxu_lsu_int16_row9_data),
+        .mxu_lsu_int8_row10_data(mxu_lsu_int8_row10_data),
+        .mxu_lsu_int16_row10_data(mxu_lsu_int16_row10_data),
+        .mxu_lsu_int8_row11_data(mxu_lsu_int8_row11_data),
+        .mxu_lsu_int16_row11_data(mxu_lsu_int16_row11_data),
+        .mxu_lsu_int8_row12_data(mxu_lsu_int8_row12_data),
+        .mxu_lsu_int16_row12_data(mxu_lsu_int16_row12_data),
+        .mxu_lsu_int8_row13_data(mxu_lsu_int8_row13_data),
+        .mxu_lsu_int16_row13_data(mxu_lsu_int16_row13_data),
+        .mxu_lsu_int8_row14_data(mxu_lsu_int8_row14_data),
+        .mxu_lsu_int16_row14_data(mxu_lsu_int16_row14_data),
+        .mxu_lsu_int8_row15_data(mxu_lsu_int8_row15_data),
+        .mxu_lsu_int16_row15_data(mxu_lsu_int16_row15_data),
+        .mxu_lsu_data_rdy(mxu_lsu_data_rdy),
+        .mxu_lsu_rdy(mxu_lsu_rdy)
+        .lsu_axi_arid(lsu_axi_arid),
+        .lsu_axi_araddr(lsu_axi_araddr),
+        .lsu_axi_arlen(lsu_axi_arlen),
+        .lsu_axi_arsize(lsu_axi_arsize),
+        .lsu_axi_arburst(lsu_axi_arburst),
+        .lsu_axi_arstr(lsu_axi_arstr),
+        .lsu_axi_arnum(lsu_axi_arnum),
+        .lsu_axi_arvld(lsu_axi_arvld),
+        .lsu_axi_rrdy(lsu_axi_rrdy)
+    );
+
+    AXI_READ_INFT u_AXI_READ_INTF(
+        .clk(clk),
+        .rst_n(rst_n),
+        .ARID(ARID),
+        .ARADDR(ARADDR),
+        .ARLEN(ARLEN),
+        .ARSIZE(ARSIZE),
+        .ARBURST(ARBURST),
+        .ARREGION(ARREGION),
+        .ARVALID(ARVALID),
+        .ARREADY(ARREADY),
+        .RID(RID),
+        .RDATA(RDATA),
+        .RRESP(RRESP),
+        .RLAST(RLAST),
+        .RVALID(RVALID),
+        .RREADY(RREADY),
+        .lsu_axi_arid(lsu_axi_arid),
+        .lsu_axi_araddr(lsu_axi_araddr),
+        .lsu_axi_arlen(lsu_axi_arlen),
+        .lsu_axi_arsize(lsu_axi_arsize),
+        .lsu_axi_arburst(lsu_axi_arburst),
+        .lsu_axi_arstr(lsu_axi_arstr),
+        .lsu_axi_arnum(lsu_axi_arnum),
+        .lsu_axi_arvld(lsu_axi_arvld),
+        .lsu_axi_rrdy(lsu_axi_rrdy),
+        .axi_lsu_rid(lsu_axi_rid),
+        .axi_lsu_rdata(lsu_axi_rdata),
+        .axi_lsu_rresp(lsu_axi_rresp),
+        .axi_lsu_rlast(lsu_axi_rlast),
+        .axi_lsu_rvld(lsu_axi_rvld)
+    );
+
 
     AXI_WRITE_INFT u_AXI_WRITE_INFT(
         .clk(clk),
