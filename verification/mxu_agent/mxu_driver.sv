@@ -3,6 +3,8 @@ class mxu_driver extends uvm_driver;
     this class is responsible for generating mxu stimulus to the dut
     */
 
+    virtual mxu_intf mxu_if;
+
     `uvm_component_utils(mxu_driver)
     
     function new(string name = "mxu_driver", uvm_component parent = null);
