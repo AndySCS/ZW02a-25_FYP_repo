@@ -47,7 +47,55 @@ module harness;
     wire mxu_lsu_data_rdy;
     wire mxu_lsu_rdy;
 
-    mxu_if mxu_if(clk, rst_n);
+    mxu_intf mxu_if(
+        .clk(clk),
+        .rst_n(rst_n),
+        .lsu_mxu_vld(lsu_mxu_vld),
+        .lsu_mxu_clr(lsu_mxu_clr),
+        .lsu_mxu_iram_vld(lsu_mxu_iram_vld),
+        .lsu_mxu_iram_pld(lsu_mxu_iram_pld),
+        .lsu_mxu_wram_vld(lsu_mxu_wram_vld),
+        .lsu_mxu_wram_pld(lsu_mxu_wram_pld),
+        .lsu_mxu_pool_vld(lsu_mxu_pool_vld),
+        .lsu_mxu_pool_size(lsu_mxu_pool_size),
+        .lsu_mxu_act_vld(lsu_mxu_act_vld),
+        .lsu_mxu_act_type(lsu_mxu_act_type),
+        .lsu_mxu_wfi(lsu_mxu_wfi),
+        .mxu_lsu_int8_row0_data(mxu_lsu_int8_row0_data),
+        .mxu_lsu_int16_row0_data(mxu_lsu_int16_row0_data),
+        .mxu_lsu_int8_row1_data(mxu_lsu_int8_row1_data),
+        .mxu_lsu_int16_row1_data(mxu_lsu_int16_row1_data),
+        .mxu_lsu_int8_row2_data(mxu_lsu_int8_row2_data),
+        .mxu_lsu_int16_row2_data(mxu_lsu_int16_row2_data),
+        .mxu_lsu_int8_row3_data(mxu_lsu_int8_row3_data),
+        .mxu_lsu_int16_row3_data(mxu_lsu_int16_row3_data),
+        .mxu_lsu_int8_row4_data(mxu_lsu_int8_row4_data),
+        .mxu_lsu_int16_row4_data(mxu_lsu_int16_row4_data),
+        .mxu_lsu_int8_row5_data(mxu_lsu_int8_row5_data),
+        .mxu_lsu_int16_row5_data(mxu_lsu_int16_row5_data),
+        .mxu_lsu_int8_row6_data(mxu_lsu_int8_row6_data),
+        .mxu_lsu_int16_row6_data(mxu_lsu_int16_row6_data),
+        .mxu_lsu_int8_row7_data(mxu_lsu_int8_row7_data),
+        .mxu_lsu_int16_row7_data(mxu_lsu_int16_row7_data),
+        .mxu_lsu_int8_row8_data(mxu_lsu_int8_row8_data),
+        .mxu_lsu_int16_row8_data(mxu_lsu_int16_row8_data),
+        .mxu_lsu_int8_row9_data(mxu_lsu_int8_row9_data),
+        .mxu_lsu_int16_row9_data(mxu_lsu_int16_row9_data),
+        .mxu_lsu_int8_row10_data(mxu_lsu_int8_row10_data),
+        .mxu_lsu_int16_row10_data(mxu_lsu_int16_row10_data),
+        .mxu_lsu_int8_row11_data(mxu_lsu_int8_row11_data),
+        .mxu_lsu_int16_row11_data(mxu_lsu_int16_row11_data),
+        .mxu_lsu_int8_row12_data(mxu_lsu_int8_row12_data),
+        .mxu_lsu_int16_row12_data(mxu_lsu_int16_row12_data),
+        .mxu_lsu_int8_row13_data(mxu_lsu_int8_row13_data),
+        .mxu_lsu_int16_row13_data(mxu_lsu_int16_row13_data),
+        .mxu_lsu_int8_row14_data(mxu_lsu_int8_row14_data),
+        .mxu_lsu_int16_row14_data(mxu_lsu_int16_row14_data),
+        .mxu_lsu_int8_row15_data(mxu_lsu_int8_row15_data),
+        .mxu_lsu_int16_row15_data(mxu_lsu_int16_row15_data),
+        .mxu_lsu_data_rdy(mxu_lsu_data_rdy),
+        .mxu_lsu_rdy(mxu_lsu_rdy)
+    );
 
     //set up config db'
     initial begin
