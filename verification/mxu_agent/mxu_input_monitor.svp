@@ -60,10 +60,10 @@ task mxu_input_monitor::collect_matrix_in(mxu_tr tr);
             continue;
         end
         //:for($row=0;$row<16;$row++){
-        if(mxu_if.lsu_mxu_iram_vld[{$row}]) tr.matrix_L[{$row}].pushback(mxu_if.lsu_mxu_iram_pld[{$row*8+7}:{$row*8}]);
+        if(mxu_if.lsu_mxu_iram_vld[{$row}]) tr.matrix_L[{$row}].q.pushback(mxu_if.lsu_mxu_iram_pld[{$row*8+7}:{$row*8}]);
         //:}
         //:for($col=0;$col<16;$col++){
-        if(mxu_if.lsu_mxu_wram_vld[{$col}]) tr.matrix_R[{$col}].pushback(mxu_if.lsu_mxu_wram_pld[{$col*8+7}:{$col*8}]);
+        if(mxu_if.lsu_mxu_wram_vld[{$col}]) tr.matrix_R[{$col}].q.pushback(mxu_if.lsu_mxu_wram_pld[{$col*8+7}:{$col*8}]);
         //:}
     end         
 
