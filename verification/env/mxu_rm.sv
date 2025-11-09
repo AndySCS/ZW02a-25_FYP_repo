@@ -35,7 +35,7 @@ task mxu_rm::main_phase(uvm_phase phase);
 
 endtask
 
-function mxu_tr mxu_rm::lmm_cal(mxu_tr tr);
+function mxu_tr mxu_rm::mm_cal(mxu_tr tr);
     /*
         matrix_L x matrix_R = matrix_result
         matrix_result_size = L_col*R_row
