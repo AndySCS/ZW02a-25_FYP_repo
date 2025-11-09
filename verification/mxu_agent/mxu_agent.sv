@@ -16,14 +16,14 @@ class mxu_agent extends uvm_agent;
 
 endclass //className extends superClass
 
-function void env::build_phase(uvm_phase phase);
+function void mxu_driver::build_phase(uvm_phase phase);
     super.build_phase(phase);
     mxu_drv = mxu_driver::type_id::create("mxu_drv", this);
     mxu_imon = mxu_driver::type_id::create("mxu_imon", this);
     mxu_omon = mxu_driver::type_id::create("mxu_omon", this);
 endfunction
 
-function void env::connect_phase(uvm_phase phase);
+function void mxu_driver::connect_phase(uvm_phase phase);
     super.connect_phase(phase);
     ap = mxu_imon.ap;
 endfunction
