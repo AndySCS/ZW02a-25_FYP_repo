@@ -51,7 +51,7 @@ task mxu_driver::send_matrix(mxu_tr tr);
                 pop_data = tr.matrix_L[i].q.pop_front();
                 mxu_if.lsu_mxu_iram_pld |= {{120{pop_data[7]}}, pop_data} << i*8;
                 mxu_if.lsu_mxu_wram_vld[i] = (tr.matrix_R[i].q.size() > 0);
-                pop_data = tr.matrix_L[i].q.op_front();
+                pop_data = tr.matrix_L[i].q.pop_front();
                 mxu_if.lsu_mxu_wram_pld |= {{120{pop_data[7]}}, pop_data} <<  i*8;
             end
         end
