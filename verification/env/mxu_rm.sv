@@ -1,4 +1,4 @@
-class mxu_rm extends uvm_model;
+class mxu_rm extends uvm_component;
 
     uvm_blocking_get_port #(mxu_tr) port;
     uvm_analysis_port #(mxu_tr) ap;
