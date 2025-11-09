@@ -3,6 +3,8 @@ class mxu_driver extends uvm_driver;
     this class is responsible for generating mxu stimulus to the dut
     */
 
+    virtual mxu_intf mxu_if;
+
     `uvm_component_utils(mxu_driver)
     
     function new(string name = "mxu_driver", uvm_component parent = null);
@@ -38,7 +40,7 @@ task mxu_driver::send_matrix(mxu_tr tr);
 
     while(matrix_sent_row != 16)begin
         matrix_sent_row = 0;
-        @(posedge clk)
+        @(posedge mxu_if.clk)
         for(int i = 0; i<16; i++)begin
             if((tr.matrix_L[i].size() == 0) & (tr.matrix_R[1].size() == 0))begin
                 matrix_sent_row++;
