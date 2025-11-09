@@ -43,15 +43,15 @@ task mxu_driver::send_matrix(mxu_tr tr);
         matrix_sent_row = 0;
         @(posedge mxu_if.clk)
         for(int i = 0; i<16; i++)begin
-            if((tr.matrix_L[i].size() == 0) & (tr.matrix_R[1].size() == 0))begin
+            if((tr.matrix_L[i].q.size() == 0) & (tr.matrix_R[i].q.size() == 0))begin
                 matrix_sent_row++;
             end
             if(i >= cur_row)begin
                 mxu_if.lsu_mxu_iram_vld[i] = (tr.matrix_L[i].size() > 0);
-                pop_data = tr.matrix_L[i].pop_front();
+                pop_data = tr.matrix_L[i].q.pop_front();
                 mxu_if.lsu_mxu_iram_pld |= {{120{pop_data[7]}}, pop_data} << i*8;
                 mxu_if.lsu_mxu_wram_vld[i] = (tr.matrix_R[i].size() > 0);
-                pop_data = tr.matrix_L[i].pop_front();
+                pop_data = tr.matrix_L[i].q.op_front();
                 mxu_if.lsu_mxu_wram_pld |= {{120{pop_data[7]}}, pop_data} <<  i*8;
             end
         end
