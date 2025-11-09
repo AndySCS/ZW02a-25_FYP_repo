@@ -1,4 +1,3 @@
-import uvm_pkg::*;
 
 module harness;
     

@@ -1,13 +1,12 @@
 class mxu_tr extends uvm_sequence_item;
 
     
-    typedef int queue_t[$];
+ //   typedef int queue_t[$];
 
-    queue_t[15:0] matrix_L;
-    queue_t[15:0] matrix_R;
-    queue_t[15:0] matrix_result;
+    int matrix_L[16][$];
+    int matrix_R[16][$];
+    int matrix_result[16][$];
 
-    `uvm_component_utils(mxu_tr)
     function new(string name = "mxu_tr");
        super.new(name);
     endfunction //new()
