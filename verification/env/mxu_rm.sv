@@ -16,13 +16,13 @@ class mxu_rm extends uvm_component;
 
 endclass //className extends superClass
 
-function void mxu_model::build_phase(uvm_phase phase);
+function void mxu_rm::build_phase(uvm_phase phase);
     super.build_phase(phase);
     port = new("port", this);
     ap = new("ap", this);
 endfunction
 
-task mxu_model::main_phase(uvm_phase phase);
+task mxu_rm::main_phase(uvm_phase phase);
     
     mxu_tr tr;
     super.main_phase(phase);
@@ -35,7 +35,7 @@ task mxu_model::main_phase(uvm_phase phase);
 
 endtask
 
-function mxu_tr mm_cal(mxu_tr tr);
+function mxu_tr mxu_rm::lmm_cal(mxu_tr tr);
     /*
         matrix_L x matrix_R = matrix_result
         matrix_result_size = L_col*R_row
