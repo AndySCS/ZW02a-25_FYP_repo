@@ -9,6 +9,11 @@ class mxu_tr extends uvm_sequence_item;
 
     function new(string name = "mxu_tr");
        super.new(name);
+       for(int i = 0; i < 16;i++)begin
+            matrix_L[i].q = {};
+            matrix_R[i].q = {};
+            matrix_result[i].q = {};
+       end
     endfunction //new()
 
     `uvm_object_utils(mxu_tr)
