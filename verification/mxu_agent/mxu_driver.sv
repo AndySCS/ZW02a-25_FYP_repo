@@ -3,8 +3,6 @@ class mxu_driver extends uvm_driver;
     this class is responsible for generating mxu stimulus to the dut
     */
 
-    virtual mxu_intf mxu_if;
-
     `uvm_component_utils(mxu_driver)
     
     function new(string name = "mxu_driver", uvm_component parent = null);
@@ -37,6 +35,7 @@ task mxu_driver::send_matrix(mxu_tr tr);
     int matrix_sent_row = 0;
     int cur_row = 0;
     int iter_cnt = 0;
+    bit[7:0] pop_data;
 
     while(matrix_sent_row != 16)begin
         matrix_sent_row = 0;
@@ -46,10 +45,12 @@ task mxu_driver::send_matrix(mxu_tr tr);
                 matrix_sent_row++;
             end
             if(i >= cur_row)begin
-                mxu_if.row_vld[i] = (tr.matrix_L[i].size() > 0);
-                mxu_if.row_data[i] = tr.matrix_L[i].pop_front();
-                mxu_if.col_vld[i] = (tr.matrix_R[i].size() > 0);
-                mxu_if.col_data[i] = tr.matrix_R[i].pop_front();
+                mxu_if.lsu_mxu_iram_vld[i] = (tr.matrix_L[i].size() > 0);
+                pop_data = tr.matrix_L[i].pop_front();
+                mxu_if.lsu_mxu_iram_pld |= {{120{pop_data[7]}}, pop_data} << i*8;
+                mxu_if.lsu_mxu_wram_vld[i] = (tr.matrix_R[i].size() > 0);
+                pop_data = tr.matrix_L[i].pop_front();
+                mxu_if.lsu_mxu_wram_pld |= {{120{pop_data[7]}}, pop_data} <<  i*8;
             end
         end
         cur_row++;
