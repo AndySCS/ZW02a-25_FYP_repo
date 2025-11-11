@@ -18,9 +18,9 @@ endclass //className extends superClass
 
 function void mxu_agent::build_phase(uvm_phase phase);
     super.build_phase(phase);
-    mxu_drv = mxu_agent::type_id::create("mxu_drv", this);
-    mxu_imon = mxu_agent::type_id::create("mxu_imon", this);
-    mxu_omon = mxu_agent::type_id::create("mxu_omon", this);
+    mxu_drv = mxu_driver::type_id::create("mxu_drv", this);
+    mxu_imon = mxu_input_monitor::type_id::create("mxu_imon", this);
+    mxu_omon = mxu_output_monitor::type_id::create("mxu_omon", this);
 endfunction
 
 function void mxu_agent::connect_phase(uvm_phase phase);
