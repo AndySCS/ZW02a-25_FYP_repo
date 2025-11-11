@@ -40,6 +40,7 @@ task mxu_input_monitor::collect_matrix_in(mxu_tr tr);
     /*
     collect data input from lsu to mxu and store in tr
     */
+    /*
 
     bit collect_begin;
 
@@ -91,6 +92,7 @@ task mxu_input_monitor::collect_matrix_in(mxu_tr tr);
         if(mxu_if.lsu_mxu_wram_vld[13]) tr.matrix_R[13].q.pushback(mxu_if.lsu_mxu_wram_pld[111:104]);
         if(mxu_if.lsu_mxu_wram_vld[14]) tr.matrix_R[14].q.pushback(mxu_if.lsu_mxu_wram_pld[119:112]);
         if(mxu_if.lsu_mxu_wram_vld[15]) tr.matrix_R[15].q.pushback(mxu_if.lsu_mxu_wram_pld[127:120]);
-    end         
+    end      
+    */   
 
 endtask     

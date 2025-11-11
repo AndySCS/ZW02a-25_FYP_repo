@@ -45,7 +45,7 @@ task mxu_driver::send_matrix(mxu_tr tr);
         send_matrix_needed = 0;
         for(int row = 0; row < tr.matrix_Lx; row++)begin
             if(cycle_cnt >= row && cycle_cnt < tr.matrix_Ly + row)begin
-                mxu_if.lsu_mxu_iram_vld[i] = 1;
+                mxu_if.lsu_mxu_iram_vld[row] = 1;
                 pop_data = tr.matrix_L[row][cycle_cnt-row];
                 mxu_if.lsu_mxu_iram_pld |= {{120{pop_data[7]}}, pop_data} << row*8;
                 send_matrix_needed = 1;
@@ -53,7 +53,7 @@ task mxu_driver::send_matrix(mxu_tr tr);
         end
         for(int col = 0; col < tr.matrix_Rx; col++)begin
             if(cycle_cnt >= col && cycle_cnt < tr.matrix_Ry + col)begin
-                mxu_if.lsu_mxu_wram_vld[i] = 1;
+                mxu_if.lsu_mxu_wram_vld[col] = 1;
                 pop_data = tr.matrix_R[col][cycle_cnt-col];
                 mxu_if.lsu_mxuwram_pld |= {{120{pop_data[7]}}, pop_data} << col*8;
                 send_matrix_needed = 1;
