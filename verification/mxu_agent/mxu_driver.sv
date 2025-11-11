@@ -38,7 +38,35 @@ task mxu_driver::send_matrix(mxu_tr tr);
     int cur_row = 0;
     int iter_cnt = 0;
     bit[7:0] pop_data;
+    int cycle_cnt = 0;
+    bit send_matrix_needed = 0;
 
+    while(1)begin
+        send_matrix_needed = 0;
+        for(int row = 0; row < tr.matrix_Lx; row++)begin
+            if(cycle_cnt >= row && cycle_cnt < tr.matrix_Ly + row)begin
+                mxu_if.lsu_mxu_iram_vld[i] = 1;
+                pop_data = tr.matrix_L[row][cycle_cnt-row];
+                mxu_if.lsu_mxu_iram_pld |= {{120{pop_data[7]}}, pop_data} << row*8;
+                send_matrix_needed = 1
+            end
+        end
+        for(int col = 0; col < tr.matrix_Rx; col++)begin
+            if(cycle_cnt >= col && cycle_cnt < tr.matrix_Ry + col)begin
+                mxu_if.lsu_mxu_wram_vld[i] = 1;
+                pop_data = tr.matrix_R[col][cycle_cnt-col];
+                mxu_if.lsu_mxuwram_pld |= {{120{pop_data[7]}}, pop_data} << col*8;
+                send_matrix_needed = 1;
+            end
+        end
+        cycle_cnt++;
+        iter_cnt++;
+        if(iter_cnt >= 500) `uvm_error("mxu_driver", "maxtrix send function have run over 500 times")
+        if(send_matrix_needed) break;
+        @(posedge mxu_if.clk)
+    end
+
+    /*
     while(matrix_sent_row != 16)begin
         matrix_sent_row = 0;
         @(posedge mxu_if.clk)
@@ -61,5 +89,6 @@ task mxu_driver::send_matrix(mxu_tr tr);
             `uvm_error("mxu_driver", "maxtrix send function have run over 500 times")
         end
     end
+    */
 
 endtask

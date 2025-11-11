@@ -29,7 +29,7 @@ task mxu_input_monitor::main_phase(uvm_phase phase);
     tr = new("tr");
 
     while (1) begin 
-        this.collect_matrix_in(tr);
+        //this.collect_matrix_in(tr);
         ap.write(tr);
     end
 
