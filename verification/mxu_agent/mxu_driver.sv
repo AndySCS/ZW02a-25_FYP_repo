@@ -55,7 +55,7 @@ task mxu_driver::send_matrix(mxu_tr tr);
             if(cycle_cnt >= col && cycle_cnt < tr.matrix_Ry + col)begin
                 mxu_if.lsu_mxu_wram_vld[col] = 1;
                 pop_data = tr.matrix_R[col][cycle_cnt-col];
-                mxu_if.lsu_mxuwram_pld |= {{120{pop_data[7]}}, pop_data} << col*8;
+                mxu_if.lsu_mxu_wram_pld |= {{120{pop_data[7]}}, pop_data} << col*8;
                 send_matrix_needed = 1;
             end
         end
