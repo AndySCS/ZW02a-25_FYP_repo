@@ -11,18 +11,18 @@ class mxu_driver extends uvm_driver;
         super.new(name, parent);
     endfunction //new()
     
-    extern virtual task build_phase(uvm_phase phase);
+    extern function void build_phase(uvm_phase phase);
     extern virtual task main_phase(uvm_phase phase);
     extern virtual task send_matrix(mxu_tr tr);
 
 endclass //className extends superClass
 
-task mxu_driver::build_phase(uvm_phase phase);
+function void mxu_driver::build_phase(uvm_phase phase);
     super.build_phase(phase);
     if(!uvm_config_db#(virtual mxu_intf)::get(this, "", "mxu_if", mxu_if))begin
         `uvm_fatal("mxu_driver", "mxu driver fail to get mxu if")
     end
-endtask
+endfunction
 
 task mxu_driver::main_phase(uvm_phase phase);
     
