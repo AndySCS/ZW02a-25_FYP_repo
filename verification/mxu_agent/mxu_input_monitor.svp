@@ -8,20 +8,20 @@ class mxu_input_monitor extends uvm_monitor;
        super.new(name, parent);
     endfunction //new()
     
-    extern virtual task build_phase(uvm_phase phase);
+    extern function void build_phase(uvm_phase phase);
     extern virtual task main_phase(uvm_phase phase);
     
     extern virtual task collect_matrix_in(mxu_tr tr);
 
 endclass //mxu_input_monitor extends superClass
 
-task mxu_input_monitor::build_phase(uvm_phase phase);
+function void mxu_input_monitor::build_phase(uvm_phase phase);
     super.build_phase(phase);
     if(!uvm_config_db#(virtual mxu_intf)::get(this, "", "mxu_if", mxu_if))begin
         `uvm_fatal("mxu_input_monitor", "mxu input_monitor fail to get mxu if")
     end
     ap = new("ap", this);
-endtask
+endfunction
 
 task mxu_input_monitor::main_phase(uvm_phase phase);
     mxu_tr tr;
