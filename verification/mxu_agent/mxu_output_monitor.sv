@@ -29,7 +29,7 @@ task mxu_output_monitor::main_phase(uvm_phase phase);
     tr = new("tr");
 
     while (1) begin 
-        this.collect_matrix(tr);
+        this.collect_matrix_out(tr);
         ap.write(tr);
     end
 
@@ -42,7 +42,7 @@ task mxu_output_monitor::collect_matrix_out(mxu_tr tr);
         if(mxu_if.lsu_mxu_vld) break;
     end
 
-    tr.clear_result();
+    //tr.clear_result();
     @(posedge mxu_if.clk);
     wait(mxu_if.mxu_lsu_data_rdy) 
     tr.matrix_result[0][0] = $signed(mxu_if.mxu_lsu_int16_row0_data[15:0]);
