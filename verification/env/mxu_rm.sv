@@ -52,21 +52,12 @@ function mxu_tr mxu_rm::mm_cal(mxu_tr tr);
         |[]|[]|[]|[]|
         ...
     */
-    //init matrix
-    for(int i = 0;i < 16;i++)begin
-        for(int j = 0; j < 16; j++)begin
-            tr.matrix_result[i].push_back(0);
-        end
-    end
     //apply actual calculation
-    for (int row = 0; row < tr.matrix_L.size(); row++) begin
-        if(!tr.matrix_L[row].size()) break; // done cal
-        for(int col = 0;col < tr.matrix_L[row].size(); col++)begin
-            for(int i = 0;i < tr.maxtrix_L[row].size(); i++)begin
-                tr.matrix_result[row][col] += tr.maxtrix_L[row][i]*tr.maxtrix_R[col][i];
-                // clamp result to int16
-                if(tr.matrix_result[row][col] > 15) tr.matrix_result[row][col] = 15; 
-                if(tr.matrix_result[row][col] < 0) tr.matrix_result[row][col] = 0;
+    for(int i =0; i < 16;i++)begin
+        for(int j = 0; j < 16; j++)begin
+            tr.matrix_result[i][j] = 0;
+            for(int k = 0; k < 16; k++)begin
+                tr.matrix_result[i][j] += tr.matrix_L[i][k] * tr.matrix_R[j][k];
             end
         end
     end
