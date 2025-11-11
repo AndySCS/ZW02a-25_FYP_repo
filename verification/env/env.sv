@@ -17,7 +17,7 @@ endclass //env extends superClass
 
 function void env::build_phase(uvm_phase phase);
     super.build_phase(phase);
-    mxu_agt = mxu_driver::type_id::create("mxu_agt", this);
+    mxu_agt = mxu_agent::type_id::create("mxu_agt", this);
 endfunction
 
 function void env::connect_phase(uvm_phase phase);
