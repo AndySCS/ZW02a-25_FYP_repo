@@ -48,7 +48,7 @@ task mxu_driver::send_matrix(mxu_tr tr);
                 mxu_if.lsu_mxu_iram_vld[i] = 1;
                 pop_data = tr.matrix_L[row][cycle_cnt-row];
                 mxu_if.lsu_mxu_iram_pld |= {{120{pop_data[7]}}, pop_data} << row*8;
-                send_matrix_needed = 1
+                send_matrix_needed = 1;
             end
         end
         for(int col = 0; col < tr.matrix_Rx; col++)begin
