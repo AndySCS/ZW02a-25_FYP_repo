@@ -61,9 +61,9 @@ task mxu_driver::send_matrix(mxu_tr tr);
         end
         cycle_cnt++;
         iter_cnt++;
-        if(iter_cnt >= 500) `uvm_error("mxu_driver", "maxtrix send function have run over 500 times")
+        if(iter_cnt >= 500) `uvm_error("mxu_driver", "maxtrix send function have run over 500 times");
         if(send_matrix_needed) break;
-        @(posedge mxu_if.clk)
+        @(posedge mxu_if.clk);
     end
 
 endtask
