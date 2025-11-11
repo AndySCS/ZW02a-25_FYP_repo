@@ -66,6 +66,8 @@ task mxu_driver::send_matrix(mxu_tr tr);
         @(posedge mxu_if.clk)
     end
 
+endtask
+
     /*
     while(matrix_sent_row != 16)begin
         matrix_sent_row = 0;
