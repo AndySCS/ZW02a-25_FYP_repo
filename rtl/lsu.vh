@@ -1,3 +1,4 @@
+
 module lsu(
     clk,
     rst_n,
@@ -58,38 +59,10 @@ module lsu(
     lsu_mxu_act_vld,
     lsu_mxu_act_type,
     lsu_mxu_wfi,
-    mxu_lsu_int8_row0_data,
-    mxu_lsu_int16_row0_data,
-    mxu_lsu_int8_row1_data,
-    mxu_lsu_int16_row1_data,
-    mxu_lsu_int8_row2_data,
-    mxu_lsu_int16_row2_data,
-    mxu_lsu_int8_row3_data,
-    mxu_lsu_int16_row3_data,
-    mxu_lsu_int8_row4_data,
-    mxu_lsu_int16_row4_data,
-    mxu_lsu_int8_row5_data,
-    mxu_lsu_int16_row5_data,
-    mxu_lsu_int8_row6_data,
-    mxu_lsu_int16_row6_data,
-    mxu_lsu_int8_row7_data,
-    mxu_lsu_int16_row7_data,
-    mxu_lsu_int8_row8_data,
-    mxu_lsu_int16_row8_data,
-    mxu_lsu_int8_row9_data,
-    mxu_lsu_int16_row9_data,
-    mxu_lsu_int8_row10_data,
-    mxu_lsu_int16_row10_data,
-    mxu_lsu_int8_row11_data,
-    mxu_lsu_int16_row11_data,
-    mxu_lsu_int8_row12_data,
-    mxu_lsu_int16_row12_data,
-    mxu_lsu_int8_row13_data,
-    mxu_lsu_int16_row13_data,
-    mxu_lsu_int8_row14_data,
-    mxu_lsu_int16_row14_data,
-    mxu_lsu_int8_row15_data,
-    mxu_lsu_int16_row15_data,
+    //:for($i=0;$i<16;$i++){
+    mxu_lsu_int8_row{$i}_data,
+    //mxu_lsu_int8_row{$i}_data,
+    //:}
     mxu_lsu_data_rdy,
     mxu_lsu_rdy,
 
@@ -158,38 +131,10 @@ module lsu(
     input axi_lsu_rvld;
 
     //from mxu
-    input [127:0] mxu_lsu_int8_row0_data;
-    input [255:0] mxu_lsu_int16_row0_data;
-    input [127:0] mxu_lsu_int8_row1_data;
-    input [255:0] mxu_lsu_int16_row1_data;
-    input [127:0] mxu_lsu_int8_row2_data;
-    input [255:0] mxu_lsu_int16_row2_data;
-    input [127:0] mxu_lsu_int8_row3_data;
-    input [255:0] mxu_lsu_int16_row3_data;
-    input [127:0] mxu_lsu_int8_row4_data;
-    input [255:0] mxu_lsu_int16_row4_data;
-    input [127:0] mxu_lsu_int8_row5_data;
-    input [255:0] mxu_lsu_int16_row5_data;
-    input [127:0] mxu_lsu_int8_row6_data;
-    input [255:0] mxu_lsu_int16_row6_data;
-    input [127:0] mxu_lsu_int8_row7_data;
-    input [255:0] mxu_lsu_int16_row7_data;
-    input [127:0] mxu_lsu_int8_row8_data;
-    input [255:0] mxu_lsu_int16_row8_data;
-    input [127:0] mxu_lsu_int8_row9_data;
-    input [255:0] mxu_lsu_int16_row9_data;
-    input [127:0] mxu_lsu_int8_row10_data;
-    input [255:0] mxu_lsu_int16_row10_data;
-    input [127:0] mxu_lsu_int8_row11_data;
-    input [255:0] mxu_lsu_int16_row11_data;
-    input [127:0] mxu_lsu_int8_row12_data;
-    input [255:0] mxu_lsu_int16_row12_data;
-    input [127:0] mxu_lsu_int8_row13_data;
-    input [255:0] mxu_lsu_int16_row13_data;
-    input [127:0] mxu_lsu_int8_row14_data;
-    input [255:0] mxu_lsu_int16_row14_data;
-    input [127:0] mxu_lsu_int8_row15_data;
-    input [255:0] mxu_lsu_int16_row15_data;
+    //:for($i=0;$i<16;$i++){
+    input [127:0] mxu_lsu_int8_row{$i}_data;
+    //input [255:0] mxu_lsu_int8_row{$i}_data;
+    //:}
     input mxu_lsu_data_rdy;
     input mxu_lsu_rdy;
 
