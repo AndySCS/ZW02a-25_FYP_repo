@@ -83,7 +83,7 @@ module multi(
 
     assign src_buff_data_en = src_buff_vld | src1_fifo_out_vld | src0_fifo_out_vld | multi_vld;
 
-    DFFR #(.WDITH(1))
+    DFFR #(.WIDTH(1))
     ff_src_vld(
         .clk(clk),
         .rst_n(rst_n),
@@ -91,7 +91,7 @@ module multi(
         .q(src_buff_vld)
     );
     
-    DFFE #(.WDITH(8))
+    DFFE #(.WIDTH(16))
     ff_src0_buff_data(
         .clk(clk),
         .en(src_buff_data_en),
@@ -99,7 +99,7 @@ module multi(
         .q(src0_buff_data_nxt)
     );    
     
-    DFFE #(.WDITH(8))
+    DFFE #(.WIDTH(16))
     ff_src1_buff_data(
         .clk(clk),
         .en(src_buff_data_en),

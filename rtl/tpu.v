@@ -167,7 +167,6 @@ module tpu(
     wire [1:0] axi_lsu_bresp;
     wire axi_lsu_bvld;
     wire [11:0] axi_lsu_resp_oram_addr;
-
     wire [ARID_WIDTH:0] ARID;
     wire [ARADDR_WIDTH-1:0] ARADDR;
     wire [7:0] ARLEN;
@@ -303,7 +302,6 @@ module tpu(
         .mxu_lsu_rdy(mxu_lsu_rdy)
     );
 
-    
     LSU u_LSU(
         .clk(clk),
         .rst_n(rst_n),
@@ -433,7 +431,6 @@ module tpu(
         .axi_lsu_rlast(lsu_axi_rlast),
         .axi_lsu_rvld(lsu_axi_rvld)
     );
-
 
     AXI_WRITE_INFT u_AXI_WRITE_INFT(
         .clk(clk),

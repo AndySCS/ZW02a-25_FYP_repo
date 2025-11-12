@@ -3,7 +3,7 @@ module DFFSE(
     rst_n,
     d,
     en,
-    q,
+    q
 );
 
 parameter WIDTH = 1;

@@ -61,7 +61,7 @@ module mxu (
     wire [2:0] mxu_conv_awake_cnt_minus;
 
     
-    //:for($row=0;$row<17;$row++){
+    //:for($row=0;$row<16;$row++){
     wire [15:0] sys_arr_row{$row}_load_vld;
     wire [127:0] sys_arr_row{$row}_load_data;
 
@@ -69,7 +69,7 @@ module mxu (
     wire [15:0] sys_arr_row_data_rdy;
     wire [15:0] pe_doing [15:0];
 
-    //:for($row=0;$row<17;$row++){
+    //:for($row=0;$row<16;$row++){
     assign sys_arr_row{$row}_load_vld = act_vld[{$row}];
     assign sys_arr_row{$row}_load_data = act_data[{$row}];
     assign sys_arr_row_data_rdy[{$row}] = ~(|c1_vld[{$row}]) & ~(|sys_arr_row{$row}_load_vld) & ~(|pe_doing[{$row}]);
@@ -109,12 +109,12 @@ module mxu (
 
 
 
-    //:for($row=0;$row<17;$row++){
+    //:for($row=0;$row<16;$row++){
     wire [15:0] sys_arr_row{$row}_vld;
     wire [127:0] sys_arr_row{$row}_data;
     //:} 
 
-    //:for($col=0;$col<17;$col++){
+    //:for($col=0;$col<16;$col++){
     wire [15:0] sys_arr_col{$col}_vld;
     wire [127:0] sys_arr_col{$col}_data;
     //:}
