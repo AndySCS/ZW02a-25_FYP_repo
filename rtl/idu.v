@@ -5,6 +5,7 @@ module idu (
     rst_n,
     ifu_idu_vld,
     ifu_idu_ins,
+    mxu_idu_rdy,
     lsu_idu_rdy,
     idu_ifu_rdy,
     idu_ifu_wfi,
@@ -39,7 +40,7 @@ module idu (
     idu_lsu_wram_row_len,
     idu_lsu_act_type,
     idu_lsu_pool_size
-
+    
 );
     
     input clk;
@@ -47,6 +48,7 @@ module idu (
     input ifu_idu_vld;
     input [63:0] ifu_idu_ins;
     input lsu_idu_rdy;
+    input mxu_idu_rdy;
     output idu_ifu_rdy;
     output idu_ifu_wfi;
     output idu_lsu_vld;
