@@ -65,7 +65,6 @@ module pe (
     DFFE #(.WIDTH(16)) 
     ff_c1_data(
         .clk(clk),
-        .rst_n(rst_n),
         .en(c0_vld),
         .d(c0_data),
         .q(c1_data)
@@ -82,7 +81,6 @@ module pe (
     DFFE #(.WIDTH(16)) 
     ff_out0_data(
         .clk(clk),
-        .rst_n(rst_n),
         .en(in0_vld),
         .d(in0_data),
         .q(out0_data)
@@ -99,7 +97,6 @@ module pe (
     DFFE #(.WIDTH(16)) 
     ff_out1_data(
         .clk(clk),
-        .rst_n(rst_n),
         .en(in1_vld),
         .d(in1_data),
         .q(out1_data)
