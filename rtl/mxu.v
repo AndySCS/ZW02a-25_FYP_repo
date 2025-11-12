@@ -118,52 +118,52 @@ module mxu (
 
     
     wire [15:0] sys_arr_row0_load_vld;
-    wire [127:0] sys_arr_row0_load_data;
+    wire [255:0] sys_arr_row0_load_data;
 
     wire [15:0] sys_arr_row1_load_vld;
-    wire [127:0] sys_arr_row1_load_data;
+    wire [255:0] sys_arr_row1_load_data;
 
     wire [15:0] sys_arr_row2_load_vld;
-    wire [127:0] sys_arr_row2_load_data;
+    wire [255:0] sys_arr_row2_load_data;
 
     wire [15:0] sys_arr_row3_load_vld;
-    wire [127:0] sys_arr_row3_load_data;
+    wire [255:0] sys_arr_row3_load_data;
 
     wire [15:0] sys_arr_row4_load_vld;
-    wire [127:0] sys_arr_row4_load_data;
+    wire [255:0] sys_arr_row4_load_data;
 
     wire [15:0] sys_arr_row5_load_vld;
-    wire [127:0] sys_arr_row5_load_data;
+    wire [255:0] sys_arr_row5_load_data;
 
     wire [15:0] sys_arr_row6_load_vld;
-    wire [127:0] sys_arr_row6_load_data;
+    wire [255:0] sys_arr_row6_load_data;
 
     wire [15:0] sys_arr_row7_load_vld;
-    wire [127:0] sys_arr_row7_load_data;
+    wire [255:0] sys_arr_row7_load_data;
 
     wire [15:0] sys_arr_row8_load_vld;
-    wire [127:0] sys_arr_row8_load_data;
+    wire [255:0] sys_arr_row8_load_data;
 
     wire [15:0] sys_arr_row9_load_vld;
-    wire [127:0] sys_arr_row9_load_data;
+    wire [255:0] sys_arr_row9_load_data;
 
     wire [15:0] sys_arr_row10_load_vld;
-    wire [127:0] sys_arr_row10_load_data;
+    wire [255:0] sys_arr_row10_load_data;
 
     wire [15:0] sys_arr_row11_load_vld;
-    wire [127:0] sys_arr_row11_load_data;
+    wire [255:0] sys_arr_row11_load_data;
 
     wire [15:0] sys_arr_row12_load_vld;
-    wire [127:0] sys_arr_row12_load_data;
+    wire [255:0] sys_arr_row12_load_data;
 
     wire [15:0] sys_arr_row13_load_vld;
-    wire [127:0] sys_arr_row13_load_data;
+    wire [255:0] sys_arr_row13_load_data;
 
     wire [15:0] sys_arr_row14_load_vld;
-    wire [127:0] sys_arr_row14_load_data;
+    wire [255:0] sys_arr_row14_load_data;
 
     wire [15:0] sys_arr_row15_load_vld;
-    wire [127:0] sys_arr_row15_load_data;
+    wire [255:0] sys_arr_row15_load_data;
 
     wire [15:0] sys_arr_row_data_rdy;
     wire [15:0] pe_doing [15:0];
@@ -4687,7 +4687,7 @@ module mxu (
         .acc_vld(c1_vld[0][0]),
         .acc_data(c1_data[0][15:0]),
         .load_vld(sys_arr_row0_load_vld[0]),
-        .load_data(sys_arr_row0_load_data[7:0]),
+        .load_data(sys_arr_row0_load_data[15:0]),
         .out_data_int16(mxu_lsu_int16_row0_data[15:0]),
         .out_data_int8(mxu_lsu_int8_row0_data[7:0])
     );
@@ -4699,7 +4699,7 @@ module mxu (
         .acc_vld(c1_vld[0][1]),
         .acc_data(c1_data[0][31:16]),
         .load_vld(sys_arr_row0_load_vld[1]),
-        .load_data(sys_arr_row0_load_data[15:8]),
+        .load_data(sys_arr_row0_load_data[31:16]),
         .out_data_int16(mxu_lsu_int16_row0_data[31:16]),
         .out_data_int8(mxu_lsu_int8_row0_data[15:8])
     );
@@ -4711,7 +4711,7 @@ module mxu (
         .acc_vld(c1_vld[0][2]),
         .acc_data(c1_data[0][47:32]),
         .load_vld(sys_arr_row0_load_vld[2]),
-        .load_data(sys_arr_row0_load_data[23:16]),
+        .load_data(sys_arr_row0_load_data[47:32]),
         .out_data_int16(mxu_lsu_int16_row0_data[47:32]),
         .out_data_int8(mxu_lsu_int8_row0_data[23:16])
     );
@@ -4723,7 +4723,7 @@ module mxu (
         .acc_vld(c1_vld[0][3]),
         .acc_data(c1_data[0][63:48]),
         .load_vld(sys_arr_row0_load_vld[3]),
-        .load_data(sys_arr_row0_load_data[31:24]),
+        .load_data(sys_arr_row0_load_data[63:48]),
         .out_data_int16(mxu_lsu_int16_row0_data[63:48]),
         .out_data_int8(mxu_lsu_int8_row0_data[31:24])
     );
@@ -4735,7 +4735,7 @@ module mxu (
         .acc_vld(c1_vld[0][4]),
         .acc_data(c1_data[0][79:64]),
         .load_vld(sys_arr_row0_load_vld[4]),
-        .load_data(sys_arr_row0_load_data[39:32]),
+        .load_data(sys_arr_row0_load_data[79:64]),
         .out_data_int16(mxu_lsu_int16_row0_data[79:64]),
         .out_data_int8(mxu_lsu_int8_row0_data[39:32])
     );
@@ -4747,7 +4747,7 @@ module mxu (
         .acc_vld(c1_vld[0][5]),
         .acc_data(c1_data[0][95:80]),
         .load_vld(sys_arr_row0_load_vld[5]),
-        .load_data(sys_arr_row0_load_data[47:40]),
+        .load_data(sys_arr_row0_load_data[95:80]),
         .out_data_int16(mxu_lsu_int16_row0_data[95:80]),
         .out_data_int8(mxu_lsu_int8_row0_data[47:40])
     );
@@ -4759,7 +4759,7 @@ module mxu (
         .acc_vld(c1_vld[0][6]),
         .acc_data(c1_data[0][111:96]),
         .load_vld(sys_arr_row0_load_vld[6]),
-        .load_data(sys_arr_row0_load_data[55:48]),
+        .load_data(sys_arr_row0_load_data[111:96]),
         .out_data_int16(mxu_lsu_int16_row0_data[111:96]),
         .out_data_int8(mxu_lsu_int8_row0_data[55:48])
     );
@@ -4771,7 +4771,7 @@ module mxu (
         .acc_vld(c1_vld[0][7]),
         .acc_data(c1_data[0][127:112]),
         .load_vld(sys_arr_row0_load_vld[7]),
-        .load_data(sys_arr_row0_load_data[63:56]),
+        .load_data(sys_arr_row0_load_data[127:112]),
         .out_data_int16(mxu_lsu_int16_row0_data[127:112]),
         .out_data_int8(mxu_lsu_int8_row0_data[63:56])
     );
@@ -4783,7 +4783,7 @@ module mxu (
         .acc_vld(c1_vld[0][8]),
         .acc_data(c1_data[0][143:128]),
         .load_vld(sys_arr_row0_load_vld[8]),
-        .load_data(sys_arr_row0_load_data[71:64]),
+        .load_data(sys_arr_row0_load_data[143:128]),
         .out_data_int16(mxu_lsu_int16_row0_data[143:128]),
         .out_data_int8(mxu_lsu_int8_row0_data[71:64])
     );
@@ -4795,7 +4795,7 @@ module mxu (
         .acc_vld(c1_vld[0][9]),
         .acc_data(c1_data[0][159:144]),
         .load_vld(sys_arr_row0_load_vld[9]),
-        .load_data(sys_arr_row0_load_data[79:72]),
+        .load_data(sys_arr_row0_load_data[159:144]),
         .out_data_int16(mxu_lsu_int16_row0_data[159:144]),
         .out_data_int8(mxu_lsu_int8_row0_data[79:72])
     );
@@ -4807,7 +4807,7 @@ module mxu (
         .acc_vld(c1_vld[0][10]),
         .acc_data(c1_data[0][175:160]),
         .load_vld(sys_arr_row0_load_vld[10]),
-        .load_data(sys_arr_row0_load_data[87:80]),
+        .load_data(sys_arr_row0_load_data[175:160]),
         .out_data_int16(mxu_lsu_int16_row0_data[175:160]),
         .out_data_int8(mxu_lsu_int8_row0_data[87:80])
     );
@@ -4819,7 +4819,7 @@ module mxu (
         .acc_vld(c1_vld[0][11]),
         .acc_data(c1_data[0][191:176]),
         .load_vld(sys_arr_row0_load_vld[11]),
-        .load_data(sys_arr_row0_load_data[95:88]),
+        .load_data(sys_arr_row0_load_data[191:176]),
         .out_data_int16(mxu_lsu_int16_row0_data[191:176]),
         .out_data_int8(mxu_lsu_int8_row0_data[95:88])
     );
@@ -4831,7 +4831,7 @@ module mxu (
         .acc_vld(c1_vld[0][12]),
         .acc_data(c1_data[0][207:192]),
         .load_vld(sys_arr_row0_load_vld[12]),
-        .load_data(sys_arr_row0_load_data[103:96]),
+        .load_data(sys_arr_row0_load_data[207:192]),
         .out_data_int16(mxu_lsu_int16_row0_data[207:192]),
         .out_data_int8(mxu_lsu_int8_row0_data[103:96])
     );
@@ -4843,7 +4843,7 @@ module mxu (
         .acc_vld(c1_vld[0][13]),
         .acc_data(c1_data[0][223:208]),
         .load_vld(sys_arr_row0_load_vld[13]),
-        .load_data(sys_arr_row0_load_data[111:104]),
+        .load_data(sys_arr_row0_load_data[223:208]),
         .out_data_int16(mxu_lsu_int16_row0_data[223:208]),
         .out_data_int8(mxu_lsu_int8_row0_data[111:104])
     );
@@ -4855,7 +4855,7 @@ module mxu (
         .acc_vld(c1_vld[0][14]),
         .acc_data(c1_data[0][239:224]),
         .load_vld(sys_arr_row0_load_vld[14]),
-        .load_data(sys_arr_row0_load_data[119:112]),
+        .load_data(sys_arr_row0_load_data[239:224]),
         .out_data_int16(mxu_lsu_int16_row0_data[239:224]),
         .out_data_int8(mxu_lsu_int8_row0_data[119:112])
     );
@@ -4867,7 +4867,7 @@ module mxu (
         .acc_vld(c1_vld[0][15]),
         .acc_data(c1_data[0][255:240]),
         .load_vld(sys_arr_row0_load_vld[15]),
-        .load_data(sys_arr_row0_load_data[127:120]),
+        .load_data(sys_arr_row0_load_data[255:240]),
         .out_data_int16(mxu_lsu_int16_row0_data[255:240]),
         .out_data_int8(mxu_lsu_int8_row0_data[127:120])
     );
@@ -4879,7 +4879,7 @@ module mxu (
         .acc_vld(c1_vld[1][0]),
         .acc_data(c1_data[1][15:0]),
         .load_vld(sys_arr_row1_load_vld[0]),
-        .load_data(sys_arr_row1_load_data[7:0]),
+        .load_data(sys_arr_row1_load_data[15:0]),
         .out_data_int16(mxu_lsu_int16_row1_data[15:0]),
         .out_data_int8(mxu_lsu_int8_row1_data[7:0])
     );
@@ -4891,7 +4891,7 @@ module mxu (
         .acc_vld(c1_vld[1][1]),
         .acc_data(c1_data[1][31:16]),
         .load_vld(sys_arr_row1_load_vld[1]),
-        .load_data(sys_arr_row1_load_data[15:8]),
+        .load_data(sys_arr_row1_load_data[31:16]),
         .out_data_int16(mxu_lsu_int16_row1_data[31:16]),
         .out_data_int8(mxu_lsu_int8_row1_data[15:8])
     );
@@ -4903,7 +4903,7 @@ module mxu (
         .acc_vld(c1_vld[1][2]),
         .acc_data(c1_data[1][47:32]),
         .load_vld(sys_arr_row1_load_vld[2]),
-        .load_data(sys_arr_row1_load_data[23:16]),
+        .load_data(sys_arr_row1_load_data[47:32]),
         .out_data_int16(mxu_lsu_int16_row1_data[47:32]),
         .out_data_int8(mxu_lsu_int8_row1_data[23:16])
     );
@@ -4915,7 +4915,7 @@ module mxu (
         .acc_vld(c1_vld[1][3]),
         .acc_data(c1_data[1][63:48]),
         .load_vld(sys_arr_row1_load_vld[3]),
-        .load_data(sys_arr_row1_load_data[31:24]),
+        .load_data(sys_arr_row1_load_data[63:48]),
         .out_data_int16(mxu_lsu_int16_row1_data[63:48]),
         .out_data_int8(mxu_lsu_int8_row1_data[31:24])
     );
@@ -4927,7 +4927,7 @@ module mxu (
         .acc_vld(c1_vld[1][4]),
         .acc_data(c1_data[1][79:64]),
         .load_vld(sys_arr_row1_load_vld[4]),
-        .load_data(sys_arr_row1_load_data[39:32]),
+        .load_data(sys_arr_row1_load_data[79:64]),
         .out_data_int16(mxu_lsu_int16_row1_data[79:64]),
         .out_data_int8(mxu_lsu_int8_row1_data[39:32])
     );
@@ -4939,7 +4939,7 @@ module mxu (
         .acc_vld(c1_vld[1][5]),
         .acc_data(c1_data[1][95:80]),
         .load_vld(sys_arr_row1_load_vld[5]),
-        .load_data(sys_arr_row1_load_data[47:40]),
+        .load_data(sys_arr_row1_load_data[95:80]),
         .out_data_int16(mxu_lsu_int16_row1_data[95:80]),
         .out_data_int8(mxu_lsu_int8_row1_data[47:40])
     );
@@ -4951,7 +4951,7 @@ module mxu (
         .acc_vld(c1_vld[1][6]),
         .acc_data(c1_data[1][111:96]),
         .load_vld(sys_arr_row1_load_vld[6]),
-        .load_data(sys_arr_row1_load_data[55:48]),
+        .load_data(sys_arr_row1_load_data[111:96]),
         .out_data_int16(mxu_lsu_int16_row1_data[111:96]),
         .out_data_int8(mxu_lsu_int8_row1_data[55:48])
     );
@@ -4963,7 +4963,7 @@ module mxu (
         .acc_vld(c1_vld[1][7]),
         .acc_data(c1_data[1][127:112]),
         .load_vld(sys_arr_row1_load_vld[7]),
-        .load_data(sys_arr_row1_load_data[63:56]),
+        .load_data(sys_arr_row1_load_data[127:112]),
         .out_data_int16(mxu_lsu_int16_row1_data[127:112]),
         .out_data_int8(mxu_lsu_int8_row1_data[63:56])
     );
@@ -4975,7 +4975,7 @@ module mxu (
         .acc_vld(c1_vld[1][8]),
         .acc_data(c1_data[1][143:128]),
         .load_vld(sys_arr_row1_load_vld[8]),
-        .load_data(sys_arr_row1_load_data[71:64]),
+        .load_data(sys_arr_row1_load_data[143:128]),
         .out_data_int16(mxu_lsu_int16_row1_data[143:128]),
         .out_data_int8(mxu_lsu_int8_row1_data[71:64])
     );
@@ -4987,7 +4987,7 @@ module mxu (
         .acc_vld(c1_vld[1][9]),
         .acc_data(c1_data[1][159:144]),
         .load_vld(sys_arr_row1_load_vld[9]),
-        .load_data(sys_arr_row1_load_data[79:72]),
+        .load_data(sys_arr_row1_load_data[159:144]),
         .out_data_int16(mxu_lsu_int16_row1_data[159:144]),
         .out_data_int8(mxu_lsu_int8_row1_data[79:72])
     );
@@ -4999,7 +4999,7 @@ module mxu (
         .acc_vld(c1_vld[1][10]),
         .acc_data(c1_data[1][175:160]),
         .load_vld(sys_arr_row1_load_vld[10]),
-        .load_data(sys_arr_row1_load_data[87:80]),
+        .load_data(sys_arr_row1_load_data[175:160]),
         .out_data_int16(mxu_lsu_int16_row1_data[175:160]),
         .out_data_int8(mxu_lsu_int8_row1_data[87:80])
     );
@@ -5011,7 +5011,7 @@ module mxu (
         .acc_vld(c1_vld[1][11]),
         .acc_data(c1_data[1][191:176]),
         .load_vld(sys_arr_row1_load_vld[11]),
-        .load_data(sys_arr_row1_load_data[95:88]),
+        .load_data(sys_arr_row1_load_data[191:176]),
         .out_data_int16(mxu_lsu_int16_row1_data[191:176]),
         .out_data_int8(mxu_lsu_int8_row1_data[95:88])
     );
@@ -5023,7 +5023,7 @@ module mxu (
         .acc_vld(c1_vld[1][12]),
         .acc_data(c1_data[1][207:192]),
         .load_vld(sys_arr_row1_load_vld[12]),
-        .load_data(sys_arr_row1_load_data[103:96]),
+        .load_data(sys_arr_row1_load_data[207:192]),
         .out_data_int16(mxu_lsu_int16_row1_data[207:192]),
         .out_data_int8(mxu_lsu_int8_row1_data[103:96])
     );
@@ -5035,7 +5035,7 @@ module mxu (
         .acc_vld(c1_vld[1][13]),
         .acc_data(c1_data[1][223:208]),
         .load_vld(sys_arr_row1_load_vld[13]),
-        .load_data(sys_arr_row1_load_data[111:104]),
+        .load_data(sys_arr_row1_load_data[223:208]),
         .out_data_int16(mxu_lsu_int16_row1_data[223:208]),
         .out_data_int8(mxu_lsu_int8_row1_data[111:104])
     );
@@ -5047,7 +5047,7 @@ module mxu (
         .acc_vld(c1_vld[1][14]),
         .acc_data(c1_data[1][239:224]),
         .load_vld(sys_arr_row1_load_vld[14]),
-        .load_data(sys_arr_row1_load_data[119:112]),
+        .load_data(sys_arr_row1_load_data[239:224]),
         .out_data_int16(mxu_lsu_int16_row1_data[239:224]),
         .out_data_int8(mxu_lsu_int8_row1_data[119:112])
     );
@@ -5059,7 +5059,7 @@ module mxu (
         .acc_vld(c1_vld[1][15]),
         .acc_data(c1_data[1][255:240]),
         .load_vld(sys_arr_row1_load_vld[15]),
-        .load_data(sys_arr_row1_load_data[127:120]),
+        .load_data(sys_arr_row1_load_data[255:240]),
         .out_data_int16(mxu_lsu_int16_row1_data[255:240]),
         .out_data_int8(mxu_lsu_int8_row1_data[127:120])
     );
@@ -5071,7 +5071,7 @@ module mxu (
         .acc_vld(c1_vld[2][0]),
         .acc_data(c1_data[2][15:0]),
         .load_vld(sys_arr_row2_load_vld[0]),
-        .load_data(sys_arr_row2_load_data[7:0]),
+        .load_data(sys_arr_row2_load_data[15:0]),
         .out_data_int16(mxu_lsu_int16_row2_data[15:0]),
         .out_data_int8(mxu_lsu_int8_row2_data[7:0])
     );
@@ -5083,7 +5083,7 @@ module mxu (
         .acc_vld(c1_vld[2][1]),
         .acc_data(c1_data[2][31:16]),
         .load_vld(sys_arr_row2_load_vld[1]),
-        .load_data(sys_arr_row2_load_data[15:8]),
+        .load_data(sys_arr_row2_load_data[31:16]),
         .out_data_int16(mxu_lsu_int16_row2_data[31:16]),
         .out_data_int8(mxu_lsu_int8_row2_data[15:8])
     );
@@ -5095,7 +5095,7 @@ module mxu (
         .acc_vld(c1_vld[2][2]),
         .acc_data(c1_data[2][47:32]),
         .load_vld(sys_arr_row2_load_vld[2]),
-        .load_data(sys_arr_row2_load_data[23:16]),
+        .load_data(sys_arr_row2_load_data[47:32]),
         .out_data_int16(mxu_lsu_int16_row2_data[47:32]),
         .out_data_int8(mxu_lsu_int8_row2_data[23:16])
     );
@@ -5107,7 +5107,7 @@ module mxu (
         .acc_vld(c1_vld[2][3]),
         .acc_data(c1_data[2][63:48]),
         .load_vld(sys_arr_row2_load_vld[3]),
-        .load_data(sys_arr_row2_load_data[31:24]),
+        .load_data(sys_arr_row2_load_data[63:48]),
         .out_data_int16(mxu_lsu_int16_row2_data[63:48]),
         .out_data_int8(mxu_lsu_int8_row2_data[31:24])
     );
@@ -5119,7 +5119,7 @@ module mxu (
         .acc_vld(c1_vld[2][4]),
         .acc_data(c1_data[2][79:64]),
         .load_vld(sys_arr_row2_load_vld[4]),
-        .load_data(sys_arr_row2_load_data[39:32]),
+        .load_data(sys_arr_row2_load_data[79:64]),
         .out_data_int16(mxu_lsu_int16_row2_data[79:64]),
         .out_data_int8(mxu_lsu_int8_row2_data[39:32])
     );
@@ -5131,7 +5131,7 @@ module mxu (
         .acc_vld(c1_vld[2][5]),
         .acc_data(c1_data[2][95:80]),
         .load_vld(sys_arr_row2_load_vld[5]),
-        .load_data(sys_arr_row2_load_data[47:40]),
+        .load_data(sys_arr_row2_load_data[95:80]),
         .out_data_int16(mxu_lsu_int16_row2_data[95:80]),
         .out_data_int8(mxu_lsu_int8_row2_data[47:40])
     );
@@ -5143,7 +5143,7 @@ module mxu (
         .acc_vld(c1_vld[2][6]),
         .acc_data(c1_data[2][111:96]),
         .load_vld(sys_arr_row2_load_vld[6]),
-        .load_data(sys_arr_row2_load_data[55:48]),
+        .load_data(sys_arr_row2_load_data[111:96]),
         .out_data_int16(mxu_lsu_int16_row2_data[111:96]),
         .out_data_int8(mxu_lsu_int8_row2_data[55:48])
     );
@@ -5155,7 +5155,7 @@ module mxu (
         .acc_vld(c1_vld[2][7]),
         .acc_data(c1_data[2][127:112]),
         .load_vld(sys_arr_row2_load_vld[7]),
-        .load_data(sys_arr_row2_load_data[63:56]),
+        .load_data(sys_arr_row2_load_data[127:112]),
         .out_data_int16(mxu_lsu_int16_row2_data[127:112]),
         .out_data_int8(mxu_lsu_int8_row2_data[63:56])
     );
@@ -5167,7 +5167,7 @@ module mxu (
         .acc_vld(c1_vld[2][8]),
         .acc_data(c1_data[2][143:128]),
         .load_vld(sys_arr_row2_load_vld[8]),
-        .load_data(sys_arr_row2_load_data[71:64]),
+        .load_data(sys_arr_row2_load_data[143:128]),
         .out_data_int16(mxu_lsu_int16_row2_data[143:128]),
         .out_data_int8(mxu_lsu_int8_row2_data[71:64])
     );
@@ -5179,7 +5179,7 @@ module mxu (
         .acc_vld(c1_vld[2][9]),
         .acc_data(c1_data[2][159:144]),
         .load_vld(sys_arr_row2_load_vld[9]),
-        .load_data(sys_arr_row2_load_data[79:72]),
+        .load_data(sys_arr_row2_load_data[159:144]),
         .out_data_int16(mxu_lsu_int16_row2_data[159:144]),
         .out_data_int8(mxu_lsu_int8_row2_data[79:72])
     );
@@ -5191,7 +5191,7 @@ module mxu (
         .acc_vld(c1_vld[2][10]),
         .acc_data(c1_data[2][175:160]),
         .load_vld(sys_arr_row2_load_vld[10]),
-        .load_data(sys_arr_row2_load_data[87:80]),
+        .load_data(sys_arr_row2_load_data[175:160]),
         .out_data_int16(mxu_lsu_int16_row2_data[175:160]),
         .out_data_int8(mxu_lsu_int8_row2_data[87:80])
     );
@@ -5203,7 +5203,7 @@ module mxu (
         .acc_vld(c1_vld[2][11]),
         .acc_data(c1_data[2][191:176]),
         .load_vld(sys_arr_row2_load_vld[11]),
-        .load_data(sys_arr_row2_load_data[95:88]),
+        .load_data(sys_arr_row2_load_data[191:176]),
         .out_data_int16(mxu_lsu_int16_row2_data[191:176]),
         .out_data_int8(mxu_lsu_int8_row2_data[95:88])
     );
@@ -5215,7 +5215,7 @@ module mxu (
         .acc_vld(c1_vld[2][12]),
         .acc_data(c1_data[2][207:192]),
         .load_vld(sys_arr_row2_load_vld[12]),
-        .load_data(sys_arr_row2_load_data[103:96]),
+        .load_data(sys_arr_row2_load_data[207:192]),
         .out_data_int16(mxu_lsu_int16_row2_data[207:192]),
         .out_data_int8(mxu_lsu_int8_row2_data[103:96])
     );
@@ -5227,7 +5227,7 @@ module mxu (
         .acc_vld(c1_vld[2][13]),
         .acc_data(c1_data[2][223:208]),
         .load_vld(sys_arr_row2_load_vld[13]),
-        .load_data(sys_arr_row2_load_data[111:104]),
+        .load_data(sys_arr_row2_load_data[223:208]),
         .out_data_int16(mxu_lsu_int16_row2_data[223:208]),
         .out_data_int8(mxu_lsu_int8_row2_data[111:104])
     );
@@ -5239,7 +5239,7 @@ module mxu (
         .acc_vld(c1_vld[2][14]),
         .acc_data(c1_data[2][239:224]),
         .load_vld(sys_arr_row2_load_vld[14]),
-        .load_data(sys_arr_row2_load_data[119:112]),
+        .load_data(sys_arr_row2_load_data[239:224]),
         .out_data_int16(mxu_lsu_int16_row2_data[239:224]),
         .out_data_int8(mxu_lsu_int8_row2_data[119:112])
     );
@@ -5251,7 +5251,7 @@ module mxu (
         .acc_vld(c1_vld[2][15]),
         .acc_data(c1_data[2][255:240]),
         .load_vld(sys_arr_row2_load_vld[15]),
-        .load_data(sys_arr_row2_load_data[127:120]),
+        .load_data(sys_arr_row2_load_data[255:240]),
         .out_data_int16(mxu_lsu_int16_row2_data[255:240]),
         .out_data_int8(mxu_lsu_int8_row2_data[127:120])
     );
@@ -5263,7 +5263,7 @@ module mxu (
         .acc_vld(c1_vld[3][0]),
         .acc_data(c1_data[3][15:0]),
         .load_vld(sys_arr_row3_load_vld[0]),
-        .load_data(sys_arr_row3_load_data[7:0]),
+        .load_data(sys_arr_row3_load_data[15:0]),
         .out_data_int16(mxu_lsu_int16_row3_data[15:0]),
         .out_data_int8(mxu_lsu_int8_row3_data[7:0])
     );
@@ -5275,7 +5275,7 @@ module mxu (
         .acc_vld(c1_vld[3][1]),
         .acc_data(c1_data[3][31:16]),
         .load_vld(sys_arr_row3_load_vld[1]),
-        .load_data(sys_arr_row3_load_data[15:8]),
+        .load_data(sys_arr_row3_load_data[31:16]),
         .out_data_int16(mxu_lsu_int16_row3_data[31:16]),
         .out_data_int8(mxu_lsu_int8_row3_data[15:8])
     );
@@ -5287,7 +5287,7 @@ module mxu (
         .acc_vld(c1_vld[3][2]),
         .acc_data(c1_data[3][47:32]),
         .load_vld(sys_arr_row3_load_vld[2]),
-        .load_data(sys_arr_row3_load_data[23:16]),
+        .load_data(sys_arr_row3_load_data[47:32]),
         .out_data_int16(mxu_lsu_int16_row3_data[47:32]),
         .out_data_int8(mxu_lsu_int8_row3_data[23:16])
     );
@@ -5299,7 +5299,7 @@ module mxu (
         .acc_vld(c1_vld[3][3]),
         .acc_data(c1_data[3][63:48]),
         .load_vld(sys_arr_row3_load_vld[3]),
-        .load_data(sys_arr_row3_load_data[31:24]),
+        .load_data(sys_arr_row3_load_data[63:48]),
         .out_data_int16(mxu_lsu_int16_row3_data[63:48]),
         .out_data_int8(mxu_lsu_int8_row3_data[31:24])
     );
@@ -5311,7 +5311,7 @@ module mxu (
         .acc_vld(c1_vld[3][4]),
         .acc_data(c1_data[3][79:64]),
         .load_vld(sys_arr_row3_load_vld[4]),
-        .load_data(sys_arr_row3_load_data[39:32]),
+        .load_data(sys_arr_row3_load_data[79:64]),
         .out_data_int16(mxu_lsu_int16_row3_data[79:64]),
         .out_data_int8(mxu_lsu_int8_row3_data[39:32])
     );
@@ -5323,7 +5323,7 @@ module mxu (
         .acc_vld(c1_vld[3][5]),
         .acc_data(c1_data[3][95:80]),
         .load_vld(sys_arr_row3_load_vld[5]),
-        .load_data(sys_arr_row3_load_data[47:40]),
+        .load_data(sys_arr_row3_load_data[95:80]),
         .out_data_int16(mxu_lsu_int16_row3_data[95:80]),
         .out_data_int8(mxu_lsu_int8_row3_data[47:40])
     );
@@ -5335,7 +5335,7 @@ module mxu (
         .acc_vld(c1_vld[3][6]),
         .acc_data(c1_data[3][111:96]),
         .load_vld(sys_arr_row3_load_vld[6]),
-        .load_data(sys_arr_row3_load_data[55:48]),
+        .load_data(sys_arr_row3_load_data[111:96]),
         .out_data_int16(mxu_lsu_int16_row3_data[111:96]),
         .out_data_int8(mxu_lsu_int8_row3_data[55:48])
     );
@@ -5347,7 +5347,7 @@ module mxu (
         .acc_vld(c1_vld[3][7]),
         .acc_data(c1_data[3][127:112]),
         .load_vld(sys_arr_row3_load_vld[7]),
-        .load_data(sys_arr_row3_load_data[63:56]),
+        .load_data(sys_arr_row3_load_data[127:112]),
         .out_data_int16(mxu_lsu_int16_row3_data[127:112]),
         .out_data_int8(mxu_lsu_int8_row3_data[63:56])
     );
@@ -5359,7 +5359,7 @@ module mxu (
         .acc_vld(c1_vld[3][8]),
         .acc_data(c1_data[3][143:128]),
         .load_vld(sys_arr_row3_load_vld[8]),
-        .load_data(sys_arr_row3_load_data[71:64]),
+        .load_data(sys_arr_row3_load_data[143:128]),
         .out_data_int16(mxu_lsu_int16_row3_data[143:128]),
         .out_data_int8(mxu_lsu_int8_row3_data[71:64])
     );
@@ -5371,7 +5371,7 @@ module mxu (
         .acc_vld(c1_vld[3][9]),
         .acc_data(c1_data[3][159:144]),
         .load_vld(sys_arr_row3_load_vld[9]),
-        .load_data(sys_arr_row3_load_data[79:72]),
+        .load_data(sys_arr_row3_load_data[159:144]),
         .out_data_int16(mxu_lsu_int16_row3_data[159:144]),
         .out_data_int8(mxu_lsu_int8_row3_data[79:72])
     );
@@ -5383,7 +5383,7 @@ module mxu (
         .acc_vld(c1_vld[3][10]),
         .acc_data(c1_data[3][175:160]),
         .load_vld(sys_arr_row3_load_vld[10]),
-        .load_data(sys_arr_row3_load_data[87:80]),
+        .load_data(sys_arr_row3_load_data[175:160]),
         .out_data_int16(mxu_lsu_int16_row3_data[175:160]),
         .out_data_int8(mxu_lsu_int8_row3_data[87:80])
     );
@@ -5395,7 +5395,7 @@ module mxu (
         .acc_vld(c1_vld[3][11]),
         .acc_data(c1_data[3][191:176]),
         .load_vld(sys_arr_row3_load_vld[11]),
-        .load_data(sys_arr_row3_load_data[95:88]),
+        .load_data(sys_arr_row3_load_data[191:176]),
         .out_data_int16(mxu_lsu_int16_row3_data[191:176]),
         .out_data_int8(mxu_lsu_int8_row3_data[95:88])
     );
@@ -5407,7 +5407,7 @@ module mxu (
         .acc_vld(c1_vld[3][12]),
         .acc_data(c1_data[3][207:192]),
         .load_vld(sys_arr_row3_load_vld[12]),
-        .load_data(sys_arr_row3_load_data[103:96]),
+        .load_data(sys_arr_row3_load_data[207:192]),
         .out_data_int16(mxu_lsu_int16_row3_data[207:192]),
         .out_data_int8(mxu_lsu_int8_row3_data[103:96])
     );
@@ -5419,7 +5419,7 @@ module mxu (
         .acc_vld(c1_vld[3][13]),
         .acc_data(c1_data[3][223:208]),
         .load_vld(sys_arr_row3_load_vld[13]),
-        .load_data(sys_arr_row3_load_data[111:104]),
+        .load_data(sys_arr_row3_load_data[223:208]),
         .out_data_int16(mxu_lsu_int16_row3_data[223:208]),
         .out_data_int8(mxu_lsu_int8_row3_data[111:104])
     );
@@ -5431,7 +5431,7 @@ module mxu (
         .acc_vld(c1_vld[3][14]),
         .acc_data(c1_data[3][239:224]),
         .load_vld(sys_arr_row3_load_vld[14]),
-        .load_data(sys_arr_row3_load_data[119:112]),
+        .load_data(sys_arr_row3_load_data[239:224]),
         .out_data_int16(mxu_lsu_int16_row3_data[239:224]),
         .out_data_int8(mxu_lsu_int8_row3_data[119:112])
     );
@@ -5443,7 +5443,7 @@ module mxu (
         .acc_vld(c1_vld[3][15]),
         .acc_data(c1_data[3][255:240]),
         .load_vld(sys_arr_row3_load_vld[15]),
-        .load_data(sys_arr_row3_load_data[127:120]),
+        .load_data(sys_arr_row3_load_data[255:240]),
         .out_data_int16(mxu_lsu_int16_row3_data[255:240]),
         .out_data_int8(mxu_lsu_int8_row3_data[127:120])
     );
@@ -5455,7 +5455,7 @@ module mxu (
         .acc_vld(c1_vld[4][0]),
         .acc_data(c1_data[4][15:0]),
         .load_vld(sys_arr_row4_load_vld[0]),
-        .load_data(sys_arr_row4_load_data[7:0]),
+        .load_data(sys_arr_row4_load_data[15:0]),
         .out_data_int16(mxu_lsu_int16_row4_data[15:0]),
         .out_data_int8(mxu_lsu_int8_row4_data[7:0])
     );
@@ -5467,7 +5467,7 @@ module mxu (
         .acc_vld(c1_vld[4][1]),
         .acc_data(c1_data[4][31:16]),
         .load_vld(sys_arr_row4_load_vld[1]),
-        .load_data(sys_arr_row4_load_data[15:8]),
+        .load_data(sys_arr_row4_load_data[31:16]),
         .out_data_int16(mxu_lsu_int16_row4_data[31:16]),
         .out_data_int8(mxu_lsu_int8_row4_data[15:8])
     );
@@ -5479,7 +5479,7 @@ module mxu (
         .acc_vld(c1_vld[4][2]),
         .acc_data(c1_data[4][47:32]),
         .load_vld(sys_arr_row4_load_vld[2]),
-        .load_data(sys_arr_row4_load_data[23:16]),
+        .load_data(sys_arr_row4_load_data[47:32]),
         .out_data_int16(mxu_lsu_int16_row4_data[47:32]),
         .out_data_int8(mxu_lsu_int8_row4_data[23:16])
     );
@@ -5491,7 +5491,7 @@ module mxu (
         .acc_vld(c1_vld[4][3]),
         .acc_data(c1_data[4][63:48]),
         .load_vld(sys_arr_row4_load_vld[3]),
-        .load_data(sys_arr_row4_load_data[31:24]),
+        .load_data(sys_arr_row4_load_data[63:48]),
         .out_data_int16(mxu_lsu_int16_row4_data[63:48]),
         .out_data_int8(mxu_lsu_int8_row4_data[31:24])
     );
@@ -5503,7 +5503,7 @@ module mxu (
         .acc_vld(c1_vld[4][4]),
         .acc_data(c1_data[4][79:64]),
         .load_vld(sys_arr_row4_load_vld[4]),
-        .load_data(sys_arr_row4_load_data[39:32]),
+        .load_data(sys_arr_row4_load_data[79:64]),
         .out_data_int16(mxu_lsu_int16_row4_data[79:64]),
         .out_data_int8(mxu_lsu_int8_row4_data[39:32])
     );
@@ -5515,7 +5515,7 @@ module mxu (
         .acc_vld(c1_vld[4][5]),
         .acc_data(c1_data[4][95:80]),
         .load_vld(sys_arr_row4_load_vld[5]),
-        .load_data(sys_arr_row4_load_data[47:40]),
+        .load_data(sys_arr_row4_load_data[95:80]),
         .out_data_int16(mxu_lsu_int16_row4_data[95:80]),
         .out_data_int8(mxu_lsu_int8_row4_data[47:40])
     );
@@ -5527,7 +5527,7 @@ module mxu (
         .acc_vld(c1_vld[4][6]),
         .acc_data(c1_data[4][111:96]),
         .load_vld(sys_arr_row4_load_vld[6]),
-        .load_data(sys_arr_row4_load_data[55:48]),
+        .load_data(sys_arr_row4_load_data[111:96]),
         .out_data_int16(mxu_lsu_int16_row4_data[111:96]),
         .out_data_int8(mxu_lsu_int8_row4_data[55:48])
     );
@@ -5539,7 +5539,7 @@ module mxu (
         .acc_vld(c1_vld[4][7]),
         .acc_data(c1_data[4][127:112]),
         .load_vld(sys_arr_row4_load_vld[7]),
-        .load_data(sys_arr_row4_load_data[63:56]),
+        .load_data(sys_arr_row4_load_data[127:112]),
         .out_data_int16(mxu_lsu_int16_row4_data[127:112]),
         .out_data_int8(mxu_lsu_int8_row4_data[63:56])
     );
@@ -5551,7 +5551,7 @@ module mxu (
         .acc_vld(c1_vld[4][8]),
         .acc_data(c1_data[4][143:128]),
         .load_vld(sys_arr_row4_load_vld[8]),
-        .load_data(sys_arr_row4_load_data[71:64]),
+        .load_data(sys_arr_row4_load_data[143:128]),
         .out_data_int16(mxu_lsu_int16_row4_data[143:128]),
         .out_data_int8(mxu_lsu_int8_row4_data[71:64])
     );
@@ -5563,7 +5563,7 @@ module mxu (
         .acc_vld(c1_vld[4][9]),
         .acc_data(c1_data[4][159:144]),
         .load_vld(sys_arr_row4_load_vld[9]),
-        .load_data(sys_arr_row4_load_data[79:72]),
+        .load_data(sys_arr_row4_load_data[159:144]),
         .out_data_int16(mxu_lsu_int16_row4_data[159:144]),
         .out_data_int8(mxu_lsu_int8_row4_data[79:72])
     );
@@ -5575,7 +5575,7 @@ module mxu (
         .acc_vld(c1_vld[4][10]),
         .acc_data(c1_data[4][175:160]),
         .load_vld(sys_arr_row4_load_vld[10]),
-        .load_data(sys_arr_row4_load_data[87:80]),
+        .load_data(sys_arr_row4_load_data[175:160]),
         .out_data_int16(mxu_lsu_int16_row4_data[175:160]),
         .out_data_int8(mxu_lsu_int8_row4_data[87:80])
     );
@@ -5587,7 +5587,7 @@ module mxu (
         .acc_vld(c1_vld[4][11]),
         .acc_data(c1_data[4][191:176]),
         .load_vld(sys_arr_row4_load_vld[11]),
-        .load_data(sys_arr_row4_load_data[95:88]),
+        .load_data(sys_arr_row4_load_data[191:176]),
         .out_data_int16(mxu_lsu_int16_row4_data[191:176]),
         .out_data_int8(mxu_lsu_int8_row4_data[95:88])
     );
@@ -5599,7 +5599,7 @@ module mxu (
         .acc_vld(c1_vld[4][12]),
         .acc_data(c1_data[4][207:192]),
         .load_vld(sys_arr_row4_load_vld[12]),
-        .load_data(sys_arr_row4_load_data[103:96]),
+        .load_data(sys_arr_row4_load_data[207:192]),
         .out_data_int16(mxu_lsu_int16_row4_data[207:192]),
         .out_data_int8(mxu_lsu_int8_row4_data[103:96])
     );
@@ -5611,7 +5611,7 @@ module mxu (
         .acc_vld(c1_vld[4][13]),
         .acc_data(c1_data[4][223:208]),
         .load_vld(sys_arr_row4_load_vld[13]),
-        .load_data(sys_arr_row4_load_data[111:104]),
+        .load_data(sys_arr_row4_load_data[223:208]),
         .out_data_int16(mxu_lsu_int16_row4_data[223:208]),
         .out_data_int8(mxu_lsu_int8_row4_data[111:104])
     );
@@ -5623,7 +5623,7 @@ module mxu (
         .acc_vld(c1_vld[4][14]),
         .acc_data(c1_data[4][239:224]),
         .load_vld(sys_arr_row4_load_vld[14]),
-        .load_data(sys_arr_row4_load_data[119:112]),
+        .load_data(sys_arr_row4_load_data[239:224]),
         .out_data_int16(mxu_lsu_int16_row4_data[239:224]),
         .out_data_int8(mxu_lsu_int8_row4_data[119:112])
     );
@@ -5635,7 +5635,7 @@ module mxu (
         .acc_vld(c1_vld[4][15]),
         .acc_data(c1_data[4][255:240]),
         .load_vld(sys_arr_row4_load_vld[15]),
-        .load_data(sys_arr_row4_load_data[127:120]),
+        .load_data(sys_arr_row4_load_data[255:240]),
         .out_data_int16(mxu_lsu_int16_row4_data[255:240]),
         .out_data_int8(mxu_lsu_int8_row4_data[127:120])
     );
@@ -5647,7 +5647,7 @@ module mxu (
         .acc_vld(c1_vld[5][0]),
         .acc_data(c1_data[5][15:0]),
         .load_vld(sys_arr_row5_load_vld[0]),
-        .load_data(sys_arr_row5_load_data[7:0]),
+        .load_data(sys_arr_row5_load_data[15:0]),
         .out_data_int16(mxu_lsu_int16_row5_data[15:0]),
         .out_data_int8(mxu_lsu_int8_row5_data[7:0])
     );
@@ -5659,7 +5659,7 @@ module mxu (
         .acc_vld(c1_vld[5][1]),
         .acc_data(c1_data[5][31:16]),
         .load_vld(sys_arr_row5_load_vld[1]),
-        .load_data(sys_arr_row5_load_data[15:8]),
+        .load_data(sys_arr_row5_load_data[31:16]),
         .out_data_int16(mxu_lsu_int16_row5_data[31:16]),
         .out_data_int8(mxu_lsu_int8_row5_data[15:8])
     );
@@ -5671,7 +5671,7 @@ module mxu (
         .acc_vld(c1_vld[5][2]),
         .acc_data(c1_data[5][47:32]),
         .load_vld(sys_arr_row5_load_vld[2]),
-        .load_data(sys_arr_row5_load_data[23:16]),
+        .load_data(sys_arr_row5_load_data[47:32]),
         .out_data_int16(mxu_lsu_int16_row5_data[47:32]),
         .out_data_int8(mxu_lsu_int8_row5_data[23:16])
     );
@@ -5683,7 +5683,7 @@ module mxu (
         .acc_vld(c1_vld[5][3]),
         .acc_data(c1_data[5][63:48]),
         .load_vld(sys_arr_row5_load_vld[3]),
-        .load_data(sys_arr_row5_load_data[31:24]),
+        .load_data(sys_arr_row5_load_data[63:48]),
         .out_data_int16(mxu_lsu_int16_row5_data[63:48]),
         .out_data_int8(mxu_lsu_int8_row5_data[31:24])
     );
@@ -5695,7 +5695,7 @@ module mxu (
         .acc_vld(c1_vld[5][4]),
         .acc_data(c1_data[5][79:64]),
         .load_vld(sys_arr_row5_load_vld[4]),
-        .load_data(sys_arr_row5_load_data[39:32]),
+        .load_data(sys_arr_row5_load_data[79:64]),
         .out_data_int16(mxu_lsu_int16_row5_data[79:64]),
         .out_data_int8(mxu_lsu_int8_row5_data[39:32])
     );
@@ -5707,7 +5707,7 @@ module mxu (
         .acc_vld(c1_vld[5][5]),
         .acc_data(c1_data[5][95:80]),
         .load_vld(sys_arr_row5_load_vld[5]),
-        .load_data(sys_arr_row5_load_data[47:40]),
+        .load_data(sys_arr_row5_load_data[95:80]),
         .out_data_int16(mxu_lsu_int16_row5_data[95:80]),
         .out_data_int8(mxu_lsu_int8_row5_data[47:40])
     );
@@ -5719,7 +5719,7 @@ module mxu (
         .acc_vld(c1_vld[5][6]),
         .acc_data(c1_data[5][111:96]),
         .load_vld(sys_arr_row5_load_vld[6]),
-        .load_data(sys_arr_row5_load_data[55:48]),
+        .load_data(sys_arr_row5_load_data[111:96]),
         .out_data_int16(mxu_lsu_int16_row5_data[111:96]),
         .out_data_int8(mxu_lsu_int8_row5_data[55:48])
     );
@@ -5731,7 +5731,7 @@ module mxu (
         .acc_vld(c1_vld[5][7]),
         .acc_data(c1_data[5][127:112]),
         .load_vld(sys_arr_row5_load_vld[7]),
-        .load_data(sys_arr_row5_load_data[63:56]),
+        .load_data(sys_arr_row5_load_data[127:112]),
         .out_data_int16(mxu_lsu_int16_row5_data[127:112]),
         .out_data_int8(mxu_lsu_int8_row5_data[63:56])
     );
@@ -5743,7 +5743,7 @@ module mxu (
         .acc_vld(c1_vld[5][8]),
         .acc_data(c1_data[5][143:128]),
         .load_vld(sys_arr_row5_load_vld[8]),
-        .load_data(sys_arr_row5_load_data[71:64]),
+        .load_data(sys_arr_row5_load_data[143:128]),
         .out_data_int16(mxu_lsu_int16_row5_data[143:128]),
         .out_data_int8(mxu_lsu_int8_row5_data[71:64])
     );
@@ -5755,7 +5755,7 @@ module mxu (
         .acc_vld(c1_vld[5][9]),
         .acc_data(c1_data[5][159:144]),
         .load_vld(sys_arr_row5_load_vld[9]),
-        .load_data(sys_arr_row5_load_data[79:72]),
+        .load_data(sys_arr_row5_load_data[159:144]),
         .out_data_int16(mxu_lsu_int16_row5_data[159:144]),
         .out_data_int8(mxu_lsu_int8_row5_data[79:72])
     );
@@ -5767,7 +5767,7 @@ module mxu (
         .acc_vld(c1_vld[5][10]),
         .acc_data(c1_data[5][175:160]),
         .load_vld(sys_arr_row5_load_vld[10]),
-        .load_data(sys_arr_row5_load_data[87:80]),
+        .load_data(sys_arr_row5_load_data[175:160]),
         .out_data_int16(mxu_lsu_int16_row5_data[175:160]),
         .out_data_int8(mxu_lsu_int8_row5_data[87:80])
     );
@@ -5779,7 +5779,7 @@ module mxu (
         .acc_vld(c1_vld[5][11]),
         .acc_data(c1_data[5][191:176]),
         .load_vld(sys_arr_row5_load_vld[11]),
-        .load_data(sys_arr_row5_load_data[95:88]),
+        .load_data(sys_arr_row5_load_data[191:176]),
         .out_data_int16(mxu_lsu_int16_row5_data[191:176]),
         .out_data_int8(mxu_lsu_int8_row5_data[95:88])
     );
@@ -5791,7 +5791,7 @@ module mxu (
         .acc_vld(c1_vld[5][12]),
         .acc_data(c1_data[5][207:192]),
         .load_vld(sys_arr_row5_load_vld[12]),
-        .load_data(sys_arr_row5_load_data[103:96]),
+        .load_data(sys_arr_row5_load_data[207:192]),
         .out_data_int16(mxu_lsu_int16_row5_data[207:192]),
         .out_data_int8(mxu_lsu_int8_row5_data[103:96])
     );
@@ -5803,7 +5803,7 @@ module mxu (
         .acc_vld(c1_vld[5][13]),
         .acc_data(c1_data[5][223:208]),
         .load_vld(sys_arr_row5_load_vld[13]),
-        .load_data(sys_arr_row5_load_data[111:104]),
+        .load_data(sys_arr_row5_load_data[223:208]),
         .out_data_int16(mxu_lsu_int16_row5_data[223:208]),
         .out_data_int8(mxu_lsu_int8_row5_data[111:104])
     );
@@ -5815,7 +5815,7 @@ module mxu (
         .acc_vld(c1_vld[5][14]),
         .acc_data(c1_data[5][239:224]),
         .load_vld(sys_arr_row5_load_vld[14]),
-        .load_data(sys_arr_row5_load_data[119:112]),
+        .load_data(sys_arr_row5_load_data[239:224]),
         .out_data_int16(mxu_lsu_int16_row5_data[239:224]),
         .out_data_int8(mxu_lsu_int8_row5_data[119:112])
     );
@@ -5827,7 +5827,7 @@ module mxu (
         .acc_vld(c1_vld[5][15]),
         .acc_data(c1_data[5][255:240]),
         .load_vld(sys_arr_row5_load_vld[15]),
-        .load_data(sys_arr_row5_load_data[127:120]),
+        .load_data(sys_arr_row5_load_data[255:240]),
         .out_data_int16(mxu_lsu_int16_row5_data[255:240]),
         .out_data_int8(mxu_lsu_int8_row5_data[127:120])
     );
@@ -5839,7 +5839,7 @@ module mxu (
         .acc_vld(c1_vld[6][0]),
         .acc_data(c1_data[6][15:0]),
         .load_vld(sys_arr_row6_load_vld[0]),
-        .load_data(sys_arr_row6_load_data[7:0]),
+        .load_data(sys_arr_row6_load_data[15:0]),
         .out_data_int16(mxu_lsu_int16_row6_data[15:0]),
         .out_data_int8(mxu_lsu_int8_row6_data[7:0])
     );
@@ -5851,7 +5851,7 @@ module mxu (
         .acc_vld(c1_vld[6][1]),
         .acc_data(c1_data[6][31:16]),
         .load_vld(sys_arr_row6_load_vld[1]),
-        .load_data(sys_arr_row6_load_data[15:8]),
+        .load_data(sys_arr_row6_load_data[31:16]),
         .out_data_int16(mxu_lsu_int16_row6_data[31:16]),
         .out_data_int8(mxu_lsu_int8_row6_data[15:8])
     );
@@ -5863,7 +5863,7 @@ module mxu (
         .acc_vld(c1_vld[6][2]),
         .acc_data(c1_data[6][47:32]),
         .load_vld(sys_arr_row6_load_vld[2]),
-        .load_data(sys_arr_row6_load_data[23:16]),
+        .load_data(sys_arr_row6_load_data[47:32]),
         .out_data_int16(mxu_lsu_int16_row6_data[47:32]),
         .out_data_int8(mxu_lsu_int8_row6_data[23:16])
     );
@@ -5875,7 +5875,7 @@ module mxu (
         .acc_vld(c1_vld[6][3]),
         .acc_data(c1_data[6][63:48]),
         .load_vld(sys_arr_row6_load_vld[3]),
-        .load_data(sys_arr_row6_load_data[31:24]),
+        .load_data(sys_arr_row6_load_data[63:48]),
         .out_data_int16(mxu_lsu_int16_row6_data[63:48]),
         .out_data_int8(mxu_lsu_int8_row6_data[31:24])
     );
@@ -5887,7 +5887,7 @@ module mxu (
         .acc_vld(c1_vld[6][4]),
         .acc_data(c1_data[6][79:64]),
         .load_vld(sys_arr_row6_load_vld[4]),
-        .load_data(sys_arr_row6_load_data[39:32]),
+        .load_data(sys_arr_row6_load_data[79:64]),
         .out_data_int16(mxu_lsu_int16_row6_data[79:64]),
         .out_data_int8(mxu_lsu_int8_row6_data[39:32])
     );
@@ -5899,7 +5899,7 @@ module mxu (
         .acc_vld(c1_vld[6][5]),
         .acc_data(c1_data[6][95:80]),
         .load_vld(sys_arr_row6_load_vld[5]),
-        .load_data(sys_arr_row6_load_data[47:40]),
+        .load_data(sys_arr_row6_load_data[95:80]),
         .out_data_int16(mxu_lsu_int16_row6_data[95:80]),
         .out_data_int8(mxu_lsu_int8_row6_data[47:40])
     );
@@ -5911,7 +5911,7 @@ module mxu (
         .acc_vld(c1_vld[6][6]),
         .acc_data(c1_data[6][111:96]),
         .load_vld(sys_arr_row6_load_vld[6]),
-        .load_data(sys_arr_row6_load_data[55:48]),
+        .load_data(sys_arr_row6_load_data[111:96]),
         .out_data_int16(mxu_lsu_int16_row6_data[111:96]),
         .out_data_int8(mxu_lsu_int8_row6_data[55:48])
     );
@@ -5923,7 +5923,7 @@ module mxu (
         .acc_vld(c1_vld[6][7]),
         .acc_data(c1_data[6][127:112]),
         .load_vld(sys_arr_row6_load_vld[7]),
-        .load_data(sys_arr_row6_load_data[63:56]),
+        .load_data(sys_arr_row6_load_data[127:112]),
         .out_data_int16(mxu_lsu_int16_row6_data[127:112]),
         .out_data_int8(mxu_lsu_int8_row6_data[63:56])
     );
@@ -5935,7 +5935,7 @@ module mxu (
         .acc_vld(c1_vld[6][8]),
         .acc_data(c1_data[6][143:128]),
         .load_vld(sys_arr_row6_load_vld[8]),
-        .load_data(sys_arr_row6_load_data[71:64]),
+        .load_data(sys_arr_row6_load_data[143:128]),
         .out_data_int16(mxu_lsu_int16_row6_data[143:128]),
         .out_data_int8(mxu_lsu_int8_row6_data[71:64])
     );
@@ -5947,7 +5947,7 @@ module mxu (
         .acc_vld(c1_vld[6][9]),
         .acc_data(c1_data[6][159:144]),
         .load_vld(sys_arr_row6_load_vld[9]),
-        .load_data(sys_arr_row6_load_data[79:72]),
+        .load_data(sys_arr_row6_load_data[159:144]),
         .out_data_int16(mxu_lsu_int16_row6_data[159:144]),
         .out_data_int8(mxu_lsu_int8_row6_data[79:72])
     );
@@ -5959,7 +5959,7 @@ module mxu (
         .acc_vld(c1_vld[6][10]),
         .acc_data(c1_data[6][175:160]),
         .load_vld(sys_arr_row6_load_vld[10]),
-        .load_data(sys_arr_row6_load_data[87:80]),
+        .load_data(sys_arr_row6_load_data[175:160]),
         .out_data_int16(mxu_lsu_int16_row6_data[175:160]),
         .out_data_int8(mxu_lsu_int8_row6_data[87:80])
     );
@@ -5971,7 +5971,7 @@ module mxu (
         .acc_vld(c1_vld[6][11]),
         .acc_data(c1_data[6][191:176]),
         .load_vld(sys_arr_row6_load_vld[11]),
-        .load_data(sys_arr_row6_load_data[95:88]),
+        .load_data(sys_arr_row6_load_data[191:176]),
         .out_data_int16(mxu_lsu_int16_row6_data[191:176]),
         .out_data_int8(mxu_lsu_int8_row6_data[95:88])
     );
@@ -5983,7 +5983,7 @@ module mxu (
         .acc_vld(c1_vld[6][12]),
         .acc_data(c1_data[6][207:192]),
         .load_vld(sys_arr_row6_load_vld[12]),
-        .load_data(sys_arr_row6_load_data[103:96]),
+        .load_data(sys_arr_row6_load_data[207:192]),
         .out_data_int16(mxu_lsu_int16_row6_data[207:192]),
         .out_data_int8(mxu_lsu_int8_row6_data[103:96])
     );
@@ -5995,7 +5995,7 @@ module mxu (
         .acc_vld(c1_vld[6][13]),
         .acc_data(c1_data[6][223:208]),
         .load_vld(sys_arr_row6_load_vld[13]),
-        .load_data(sys_arr_row6_load_data[111:104]),
+        .load_data(sys_arr_row6_load_data[223:208]),
         .out_data_int16(mxu_lsu_int16_row6_data[223:208]),
         .out_data_int8(mxu_lsu_int8_row6_data[111:104])
     );
@@ -6007,7 +6007,7 @@ module mxu (
         .acc_vld(c1_vld[6][14]),
         .acc_data(c1_data[6][239:224]),
         .load_vld(sys_arr_row6_load_vld[14]),
-        .load_data(sys_arr_row6_load_data[119:112]),
+        .load_data(sys_arr_row6_load_data[239:224]),
         .out_data_int16(mxu_lsu_int16_row6_data[239:224]),
         .out_data_int8(mxu_lsu_int8_row6_data[119:112])
     );
@@ -6019,7 +6019,7 @@ module mxu (
         .acc_vld(c1_vld[6][15]),
         .acc_data(c1_data[6][255:240]),
         .load_vld(sys_arr_row6_load_vld[15]),
-        .load_data(sys_arr_row6_load_data[127:120]),
+        .load_data(sys_arr_row6_load_data[255:240]),
         .out_data_int16(mxu_lsu_int16_row6_data[255:240]),
         .out_data_int8(mxu_lsu_int8_row6_data[127:120])
     );
@@ -6031,7 +6031,7 @@ module mxu (
         .acc_vld(c1_vld[7][0]),
         .acc_data(c1_data[7][15:0]),
         .load_vld(sys_arr_row7_load_vld[0]),
-        .load_data(sys_arr_row7_load_data[7:0]),
+        .load_data(sys_arr_row7_load_data[15:0]),
         .out_data_int16(mxu_lsu_int16_row7_data[15:0]),
         .out_data_int8(mxu_lsu_int8_row7_data[7:0])
     );
@@ -6043,7 +6043,7 @@ module mxu (
         .acc_vld(c1_vld[7][1]),
         .acc_data(c1_data[7][31:16]),
         .load_vld(sys_arr_row7_load_vld[1]),
-        .load_data(sys_arr_row7_load_data[15:8]),
+        .load_data(sys_arr_row7_load_data[31:16]),
         .out_data_int16(mxu_lsu_int16_row7_data[31:16]),
         .out_data_int8(mxu_lsu_int8_row7_data[15:8])
     );
@@ -6055,7 +6055,7 @@ module mxu (
         .acc_vld(c1_vld[7][2]),
         .acc_data(c1_data[7][47:32]),
         .load_vld(sys_arr_row7_load_vld[2]),
-        .load_data(sys_arr_row7_load_data[23:16]),
+        .load_data(sys_arr_row7_load_data[47:32]),
         .out_data_int16(mxu_lsu_int16_row7_data[47:32]),
         .out_data_int8(mxu_lsu_int8_row7_data[23:16])
     );
@@ -6067,7 +6067,7 @@ module mxu (
         .acc_vld(c1_vld[7][3]),
         .acc_data(c1_data[7][63:48]),
         .load_vld(sys_arr_row7_load_vld[3]),
-        .load_data(sys_arr_row7_load_data[31:24]),
+        .load_data(sys_arr_row7_load_data[63:48]),
         .out_data_int16(mxu_lsu_int16_row7_data[63:48]),
         .out_data_int8(mxu_lsu_int8_row7_data[31:24])
     );
@@ -6079,7 +6079,7 @@ module mxu (
         .acc_vld(c1_vld[7][4]),
         .acc_data(c1_data[7][79:64]),
         .load_vld(sys_arr_row7_load_vld[4]),
-        .load_data(sys_arr_row7_load_data[39:32]),
+        .load_data(sys_arr_row7_load_data[79:64]),
         .out_data_int16(mxu_lsu_int16_row7_data[79:64]),
         .out_data_int8(mxu_lsu_int8_row7_data[39:32])
     );
@@ -6091,7 +6091,7 @@ module mxu (
         .acc_vld(c1_vld[7][5]),
         .acc_data(c1_data[7][95:80]),
         .load_vld(sys_arr_row7_load_vld[5]),
-        .load_data(sys_arr_row7_load_data[47:40]),
+        .load_data(sys_arr_row7_load_data[95:80]),
         .out_data_int16(mxu_lsu_int16_row7_data[95:80]),
         .out_data_int8(mxu_lsu_int8_row7_data[47:40])
     );
@@ -6103,7 +6103,7 @@ module mxu (
         .acc_vld(c1_vld[7][6]),
         .acc_data(c1_data[7][111:96]),
         .load_vld(sys_arr_row7_load_vld[6]),
-        .load_data(sys_arr_row7_load_data[55:48]),
+        .load_data(sys_arr_row7_load_data[111:96]),
         .out_data_int16(mxu_lsu_int16_row7_data[111:96]),
         .out_data_int8(mxu_lsu_int8_row7_data[55:48])
     );
@@ -6115,7 +6115,7 @@ module mxu (
         .acc_vld(c1_vld[7][7]),
         .acc_data(c1_data[7][127:112]),
         .load_vld(sys_arr_row7_load_vld[7]),
-        .load_data(sys_arr_row7_load_data[63:56]),
+        .load_data(sys_arr_row7_load_data[127:112]),
         .out_data_int16(mxu_lsu_int16_row7_data[127:112]),
         .out_data_int8(mxu_lsu_int8_row7_data[63:56])
     );
@@ -6127,7 +6127,7 @@ module mxu (
         .acc_vld(c1_vld[7][8]),
         .acc_data(c1_data[7][143:128]),
         .load_vld(sys_arr_row7_load_vld[8]),
-        .load_data(sys_arr_row7_load_data[71:64]),
+        .load_data(sys_arr_row7_load_data[143:128]),
         .out_data_int16(mxu_lsu_int16_row7_data[143:128]),
         .out_data_int8(mxu_lsu_int8_row7_data[71:64])
     );
@@ -6139,7 +6139,7 @@ module mxu (
         .acc_vld(c1_vld[7][9]),
         .acc_data(c1_data[7][159:144]),
         .load_vld(sys_arr_row7_load_vld[9]),
-        .load_data(sys_arr_row7_load_data[79:72]),
+        .load_data(sys_arr_row7_load_data[159:144]),
         .out_data_int16(mxu_lsu_int16_row7_data[159:144]),
         .out_data_int8(mxu_lsu_int8_row7_data[79:72])
     );
@@ -6151,7 +6151,7 @@ module mxu (
         .acc_vld(c1_vld[7][10]),
         .acc_data(c1_data[7][175:160]),
         .load_vld(sys_arr_row7_load_vld[10]),
-        .load_data(sys_arr_row7_load_data[87:80]),
+        .load_data(sys_arr_row7_load_data[175:160]),
         .out_data_int16(mxu_lsu_int16_row7_data[175:160]),
         .out_data_int8(mxu_lsu_int8_row7_data[87:80])
     );
@@ -6163,7 +6163,7 @@ module mxu (
         .acc_vld(c1_vld[7][11]),
         .acc_data(c1_data[7][191:176]),
         .load_vld(sys_arr_row7_load_vld[11]),
-        .load_data(sys_arr_row7_load_data[95:88]),
+        .load_data(sys_arr_row7_load_data[191:176]),
         .out_data_int16(mxu_lsu_int16_row7_data[191:176]),
         .out_data_int8(mxu_lsu_int8_row7_data[95:88])
     );
@@ -6175,7 +6175,7 @@ module mxu (
         .acc_vld(c1_vld[7][12]),
         .acc_data(c1_data[7][207:192]),
         .load_vld(sys_arr_row7_load_vld[12]),
-        .load_data(sys_arr_row7_load_data[103:96]),
+        .load_data(sys_arr_row7_load_data[207:192]),
         .out_data_int16(mxu_lsu_int16_row7_data[207:192]),
         .out_data_int8(mxu_lsu_int8_row7_data[103:96])
     );
@@ -6187,7 +6187,7 @@ module mxu (
         .acc_vld(c1_vld[7][13]),
         .acc_data(c1_data[7][223:208]),
         .load_vld(sys_arr_row7_load_vld[13]),
-        .load_data(sys_arr_row7_load_data[111:104]),
+        .load_data(sys_arr_row7_load_data[223:208]),
         .out_data_int16(mxu_lsu_int16_row7_data[223:208]),
         .out_data_int8(mxu_lsu_int8_row7_data[111:104])
     );
@@ -6199,7 +6199,7 @@ module mxu (
         .acc_vld(c1_vld[7][14]),
         .acc_data(c1_data[7][239:224]),
         .load_vld(sys_arr_row7_load_vld[14]),
-        .load_data(sys_arr_row7_load_data[119:112]),
+        .load_data(sys_arr_row7_load_data[239:224]),
         .out_data_int16(mxu_lsu_int16_row7_data[239:224]),
         .out_data_int8(mxu_lsu_int8_row7_data[119:112])
     );
@@ -6211,7 +6211,7 @@ module mxu (
         .acc_vld(c1_vld[7][15]),
         .acc_data(c1_data[7][255:240]),
         .load_vld(sys_arr_row7_load_vld[15]),
-        .load_data(sys_arr_row7_load_data[127:120]),
+        .load_data(sys_arr_row7_load_data[255:240]),
         .out_data_int16(mxu_lsu_int16_row7_data[255:240]),
         .out_data_int8(mxu_lsu_int8_row7_data[127:120])
     );
@@ -6223,7 +6223,7 @@ module mxu (
         .acc_vld(c1_vld[8][0]),
         .acc_data(c1_data[8][15:0]),
         .load_vld(sys_arr_row8_load_vld[0]),
-        .load_data(sys_arr_row8_load_data[7:0]),
+        .load_data(sys_arr_row8_load_data[15:0]),
         .out_data_int16(mxu_lsu_int16_row8_data[15:0]),
         .out_data_int8(mxu_lsu_int8_row8_data[7:0])
     );
@@ -6235,7 +6235,7 @@ module mxu (
         .acc_vld(c1_vld[8][1]),
         .acc_data(c1_data[8][31:16]),
         .load_vld(sys_arr_row8_load_vld[1]),
-        .load_data(sys_arr_row8_load_data[15:8]),
+        .load_data(sys_arr_row8_load_data[31:16]),
         .out_data_int16(mxu_lsu_int16_row8_data[31:16]),
         .out_data_int8(mxu_lsu_int8_row8_data[15:8])
     );
@@ -6247,7 +6247,7 @@ module mxu (
         .acc_vld(c1_vld[8][2]),
         .acc_data(c1_data[8][47:32]),
         .load_vld(sys_arr_row8_load_vld[2]),
-        .load_data(sys_arr_row8_load_data[23:16]),
+        .load_data(sys_arr_row8_load_data[47:32]),
         .out_data_int16(mxu_lsu_int16_row8_data[47:32]),
         .out_data_int8(mxu_lsu_int8_row8_data[23:16])
     );
@@ -6259,7 +6259,7 @@ module mxu (
         .acc_vld(c1_vld[8][3]),
         .acc_data(c1_data[8][63:48]),
         .load_vld(sys_arr_row8_load_vld[3]),
-        .load_data(sys_arr_row8_load_data[31:24]),
+        .load_data(sys_arr_row8_load_data[63:48]),
         .out_data_int16(mxu_lsu_int16_row8_data[63:48]),
         .out_data_int8(mxu_lsu_int8_row8_data[31:24])
     );
@@ -6271,7 +6271,7 @@ module mxu (
         .acc_vld(c1_vld[8][4]),
         .acc_data(c1_data[8][79:64]),
         .load_vld(sys_arr_row8_load_vld[4]),
-        .load_data(sys_arr_row8_load_data[39:32]),
+        .load_data(sys_arr_row8_load_data[79:64]),
         .out_data_int16(mxu_lsu_int16_row8_data[79:64]),
         .out_data_int8(mxu_lsu_int8_row8_data[39:32])
     );
@@ -6283,7 +6283,7 @@ module mxu (
         .acc_vld(c1_vld[8][5]),
         .acc_data(c1_data[8][95:80]),
         .load_vld(sys_arr_row8_load_vld[5]),
-        .load_data(sys_arr_row8_load_data[47:40]),
+        .load_data(sys_arr_row8_load_data[95:80]),
         .out_data_int16(mxu_lsu_int16_row8_data[95:80]),
         .out_data_int8(mxu_lsu_int8_row8_data[47:40])
     );
@@ -6295,7 +6295,7 @@ module mxu (
         .acc_vld(c1_vld[8][6]),
         .acc_data(c1_data[8][111:96]),
         .load_vld(sys_arr_row8_load_vld[6]),
-        .load_data(sys_arr_row8_load_data[55:48]),
+        .load_data(sys_arr_row8_load_data[111:96]),
         .out_data_int16(mxu_lsu_int16_row8_data[111:96]),
         .out_data_int8(mxu_lsu_int8_row8_data[55:48])
     );
@@ -6307,7 +6307,7 @@ module mxu (
         .acc_vld(c1_vld[8][7]),
         .acc_data(c1_data[8][127:112]),
         .load_vld(sys_arr_row8_load_vld[7]),
-        .load_data(sys_arr_row8_load_data[63:56]),
+        .load_data(sys_arr_row8_load_data[127:112]),
         .out_data_int16(mxu_lsu_int16_row8_data[127:112]),
         .out_data_int8(mxu_lsu_int8_row8_data[63:56])
     );
@@ -6319,7 +6319,7 @@ module mxu (
         .acc_vld(c1_vld[8][8]),
         .acc_data(c1_data[8][143:128]),
         .load_vld(sys_arr_row8_load_vld[8]),
-        .load_data(sys_arr_row8_load_data[71:64]),
+        .load_data(sys_arr_row8_load_data[143:128]),
         .out_data_int16(mxu_lsu_int16_row8_data[143:128]),
         .out_data_int8(mxu_lsu_int8_row8_data[71:64])
     );
@@ -6331,7 +6331,7 @@ module mxu (
         .acc_vld(c1_vld[8][9]),
         .acc_data(c1_data[8][159:144]),
         .load_vld(sys_arr_row8_load_vld[9]),
-        .load_data(sys_arr_row8_load_data[79:72]),
+        .load_data(sys_arr_row8_load_data[159:144]),
         .out_data_int16(mxu_lsu_int16_row8_data[159:144]),
         .out_data_int8(mxu_lsu_int8_row8_data[79:72])
     );
@@ -6343,7 +6343,7 @@ module mxu (
         .acc_vld(c1_vld[8][10]),
         .acc_data(c1_data[8][175:160]),
         .load_vld(sys_arr_row8_load_vld[10]),
-        .load_data(sys_arr_row8_load_data[87:80]),
+        .load_data(sys_arr_row8_load_data[175:160]),
         .out_data_int16(mxu_lsu_int16_row8_data[175:160]),
         .out_data_int8(mxu_lsu_int8_row8_data[87:80])
     );
@@ -6355,7 +6355,7 @@ module mxu (
         .acc_vld(c1_vld[8][11]),
         .acc_data(c1_data[8][191:176]),
         .load_vld(sys_arr_row8_load_vld[11]),
-        .load_data(sys_arr_row8_load_data[95:88]),
+        .load_data(sys_arr_row8_load_data[191:176]),
         .out_data_int16(mxu_lsu_int16_row8_data[191:176]),
         .out_data_int8(mxu_lsu_int8_row8_data[95:88])
     );
@@ -6367,7 +6367,7 @@ module mxu (
         .acc_vld(c1_vld[8][12]),
         .acc_data(c1_data[8][207:192]),
         .load_vld(sys_arr_row8_load_vld[12]),
-        .load_data(sys_arr_row8_load_data[103:96]),
+        .load_data(sys_arr_row8_load_data[207:192]),
         .out_data_int16(mxu_lsu_int16_row8_data[207:192]),
         .out_data_int8(mxu_lsu_int8_row8_data[103:96])
     );
@@ -6379,7 +6379,7 @@ module mxu (
         .acc_vld(c1_vld[8][13]),
         .acc_data(c1_data[8][223:208]),
         .load_vld(sys_arr_row8_load_vld[13]),
-        .load_data(sys_arr_row8_load_data[111:104]),
+        .load_data(sys_arr_row8_load_data[223:208]),
         .out_data_int16(mxu_lsu_int16_row8_data[223:208]),
         .out_data_int8(mxu_lsu_int8_row8_data[111:104])
     );
@@ -6391,7 +6391,7 @@ module mxu (
         .acc_vld(c1_vld[8][14]),
         .acc_data(c1_data[8][239:224]),
         .load_vld(sys_arr_row8_load_vld[14]),
-        .load_data(sys_arr_row8_load_data[119:112]),
+        .load_data(sys_arr_row8_load_data[239:224]),
         .out_data_int16(mxu_lsu_int16_row8_data[239:224]),
         .out_data_int8(mxu_lsu_int8_row8_data[119:112])
     );
@@ -6403,7 +6403,7 @@ module mxu (
         .acc_vld(c1_vld[8][15]),
         .acc_data(c1_data[8][255:240]),
         .load_vld(sys_arr_row8_load_vld[15]),
-        .load_data(sys_arr_row8_load_data[127:120]),
+        .load_data(sys_arr_row8_load_data[255:240]),
         .out_data_int16(mxu_lsu_int16_row8_data[255:240]),
         .out_data_int8(mxu_lsu_int8_row8_data[127:120])
     );
@@ -6415,7 +6415,7 @@ module mxu (
         .acc_vld(c1_vld[9][0]),
         .acc_data(c1_data[9][15:0]),
         .load_vld(sys_arr_row9_load_vld[0]),
-        .load_data(sys_arr_row9_load_data[7:0]),
+        .load_data(sys_arr_row9_load_data[15:0]),
         .out_data_int16(mxu_lsu_int16_row9_data[15:0]),
         .out_data_int8(mxu_lsu_int8_row9_data[7:0])
     );
@@ -6427,7 +6427,7 @@ module mxu (
         .acc_vld(c1_vld[9][1]),
         .acc_data(c1_data[9][31:16]),
         .load_vld(sys_arr_row9_load_vld[1]),
-        .load_data(sys_arr_row9_load_data[15:8]),
+        .load_data(sys_arr_row9_load_data[31:16]),
         .out_data_int16(mxu_lsu_int16_row9_data[31:16]),
         .out_data_int8(mxu_lsu_int8_row9_data[15:8])
     );
@@ -6439,7 +6439,7 @@ module mxu (
         .acc_vld(c1_vld[9][2]),
         .acc_data(c1_data[9][47:32]),
         .load_vld(sys_arr_row9_load_vld[2]),
-        .load_data(sys_arr_row9_load_data[23:16]),
+        .load_data(sys_arr_row9_load_data[47:32]),
         .out_data_int16(mxu_lsu_int16_row9_data[47:32]),
         .out_data_int8(mxu_lsu_int8_row9_data[23:16])
     );
@@ -6451,7 +6451,7 @@ module mxu (
         .acc_vld(c1_vld[9][3]),
         .acc_data(c1_data[9][63:48]),
         .load_vld(sys_arr_row9_load_vld[3]),
-        .load_data(sys_arr_row9_load_data[31:24]),
+        .load_data(sys_arr_row9_load_data[63:48]),
         .out_data_int16(mxu_lsu_int16_row9_data[63:48]),
         .out_data_int8(mxu_lsu_int8_row9_data[31:24])
     );
@@ -6463,7 +6463,7 @@ module mxu (
         .acc_vld(c1_vld[9][4]),
         .acc_data(c1_data[9][79:64]),
         .load_vld(sys_arr_row9_load_vld[4]),
-        .load_data(sys_arr_row9_load_data[39:32]),
+        .load_data(sys_arr_row9_load_data[79:64]),
         .out_data_int16(mxu_lsu_int16_row9_data[79:64]),
         .out_data_int8(mxu_lsu_int8_row9_data[39:32])
     );
@@ -6475,7 +6475,7 @@ module mxu (
         .acc_vld(c1_vld[9][5]),
         .acc_data(c1_data[9][95:80]),
         .load_vld(sys_arr_row9_load_vld[5]),
-        .load_data(sys_arr_row9_load_data[47:40]),
+        .load_data(sys_arr_row9_load_data[95:80]),
         .out_data_int16(mxu_lsu_int16_row9_data[95:80]),
         .out_data_int8(mxu_lsu_int8_row9_data[47:40])
     );
@@ -6487,7 +6487,7 @@ module mxu (
         .acc_vld(c1_vld[9][6]),
         .acc_data(c1_data[9][111:96]),
         .load_vld(sys_arr_row9_load_vld[6]),
-        .load_data(sys_arr_row9_load_data[55:48]),
+        .load_data(sys_arr_row9_load_data[111:96]),
         .out_data_int16(mxu_lsu_int16_row9_data[111:96]),
         .out_data_int8(mxu_lsu_int8_row9_data[55:48])
     );
@@ -6499,7 +6499,7 @@ module mxu (
         .acc_vld(c1_vld[9][7]),
         .acc_data(c1_data[9][127:112]),
         .load_vld(sys_arr_row9_load_vld[7]),
-        .load_data(sys_arr_row9_load_data[63:56]),
+        .load_data(sys_arr_row9_load_data[127:112]),
         .out_data_int16(mxu_lsu_int16_row9_data[127:112]),
         .out_data_int8(mxu_lsu_int8_row9_data[63:56])
     );
@@ -6511,7 +6511,7 @@ module mxu (
         .acc_vld(c1_vld[9][8]),
         .acc_data(c1_data[9][143:128]),
         .load_vld(sys_arr_row9_load_vld[8]),
-        .load_data(sys_arr_row9_load_data[71:64]),
+        .load_data(sys_arr_row9_load_data[143:128]),
         .out_data_int16(mxu_lsu_int16_row9_data[143:128]),
         .out_data_int8(mxu_lsu_int8_row9_data[71:64])
     );
@@ -6523,7 +6523,7 @@ module mxu (
         .acc_vld(c1_vld[9][9]),
         .acc_data(c1_data[9][159:144]),
         .load_vld(sys_arr_row9_load_vld[9]),
-        .load_data(sys_arr_row9_load_data[79:72]),
+        .load_data(sys_arr_row9_load_data[159:144]),
         .out_data_int16(mxu_lsu_int16_row9_data[159:144]),
         .out_data_int8(mxu_lsu_int8_row9_data[79:72])
     );
@@ -6535,7 +6535,7 @@ module mxu (
         .acc_vld(c1_vld[9][10]),
         .acc_data(c1_data[9][175:160]),
         .load_vld(sys_arr_row9_load_vld[10]),
-        .load_data(sys_arr_row9_load_data[87:80]),
+        .load_data(sys_arr_row9_load_data[175:160]),
         .out_data_int16(mxu_lsu_int16_row9_data[175:160]),
         .out_data_int8(mxu_lsu_int8_row9_data[87:80])
     );
@@ -6547,7 +6547,7 @@ module mxu (
         .acc_vld(c1_vld[9][11]),
         .acc_data(c1_data[9][191:176]),
         .load_vld(sys_arr_row9_load_vld[11]),
-        .load_data(sys_arr_row9_load_data[95:88]),
+        .load_data(sys_arr_row9_load_data[191:176]),
         .out_data_int16(mxu_lsu_int16_row9_data[191:176]),
         .out_data_int8(mxu_lsu_int8_row9_data[95:88])
     );
@@ -6559,7 +6559,7 @@ module mxu (
         .acc_vld(c1_vld[9][12]),
         .acc_data(c1_data[9][207:192]),
         .load_vld(sys_arr_row9_load_vld[12]),
-        .load_data(sys_arr_row9_load_data[103:96]),
+        .load_data(sys_arr_row9_load_data[207:192]),
         .out_data_int16(mxu_lsu_int16_row9_data[207:192]),
         .out_data_int8(mxu_lsu_int8_row9_data[103:96])
     );
@@ -6571,7 +6571,7 @@ module mxu (
         .acc_vld(c1_vld[9][13]),
         .acc_data(c1_data[9][223:208]),
         .load_vld(sys_arr_row9_load_vld[13]),
-        .load_data(sys_arr_row9_load_data[111:104]),
+        .load_data(sys_arr_row9_load_data[223:208]),
         .out_data_int16(mxu_lsu_int16_row9_data[223:208]),
         .out_data_int8(mxu_lsu_int8_row9_data[111:104])
     );
@@ -6583,7 +6583,7 @@ module mxu (
         .acc_vld(c1_vld[9][14]),
         .acc_data(c1_data[9][239:224]),
         .load_vld(sys_arr_row9_load_vld[14]),
-        .load_data(sys_arr_row9_load_data[119:112]),
+        .load_data(sys_arr_row9_load_data[239:224]),
         .out_data_int16(mxu_lsu_int16_row9_data[239:224]),
         .out_data_int8(mxu_lsu_int8_row9_data[119:112])
     );
@@ -6595,7 +6595,7 @@ module mxu (
         .acc_vld(c1_vld[9][15]),
         .acc_data(c1_data[9][255:240]),
         .load_vld(sys_arr_row9_load_vld[15]),
-        .load_data(sys_arr_row9_load_data[127:120]),
+        .load_data(sys_arr_row9_load_data[255:240]),
         .out_data_int16(mxu_lsu_int16_row9_data[255:240]),
         .out_data_int8(mxu_lsu_int8_row9_data[127:120])
     );
@@ -6607,7 +6607,7 @@ module mxu (
         .acc_vld(c1_vld[10][0]),
         .acc_data(c1_data[10][15:0]),
         .load_vld(sys_arr_row10_load_vld[0]),
-        .load_data(sys_arr_row10_load_data[7:0]),
+        .load_data(sys_arr_row10_load_data[15:0]),
         .out_data_int16(mxu_lsu_int16_row10_data[15:0]),
         .out_data_int8(mxu_lsu_int8_row10_data[7:0])
     );
@@ -6619,7 +6619,7 @@ module mxu (
         .acc_vld(c1_vld[10][1]),
         .acc_data(c1_data[10][31:16]),
         .load_vld(sys_arr_row10_load_vld[1]),
-        .load_data(sys_arr_row10_load_data[15:8]),
+        .load_data(sys_arr_row10_load_data[31:16]),
         .out_data_int16(mxu_lsu_int16_row10_data[31:16]),
         .out_data_int8(mxu_lsu_int8_row10_data[15:8])
     );
@@ -6631,7 +6631,7 @@ module mxu (
         .acc_vld(c1_vld[10][2]),
         .acc_data(c1_data[10][47:32]),
         .load_vld(sys_arr_row10_load_vld[2]),
-        .load_data(sys_arr_row10_load_data[23:16]),
+        .load_data(sys_arr_row10_load_data[47:32]),
         .out_data_int16(mxu_lsu_int16_row10_data[47:32]),
         .out_data_int8(mxu_lsu_int8_row10_data[23:16])
     );
@@ -6643,7 +6643,7 @@ module mxu (
         .acc_vld(c1_vld[10][3]),
         .acc_data(c1_data[10][63:48]),
         .load_vld(sys_arr_row10_load_vld[3]),
-        .load_data(sys_arr_row10_load_data[31:24]),
+        .load_data(sys_arr_row10_load_data[63:48]),
         .out_data_int16(mxu_lsu_int16_row10_data[63:48]),
         .out_data_int8(mxu_lsu_int8_row10_data[31:24])
     );
@@ -6655,7 +6655,7 @@ module mxu (
         .acc_vld(c1_vld[10][4]),
         .acc_data(c1_data[10][79:64]),
         .load_vld(sys_arr_row10_load_vld[4]),
-        .load_data(sys_arr_row10_load_data[39:32]),
+        .load_data(sys_arr_row10_load_data[79:64]),
         .out_data_int16(mxu_lsu_int16_row10_data[79:64]),
         .out_data_int8(mxu_lsu_int8_row10_data[39:32])
     );
@@ -6667,7 +6667,7 @@ module mxu (
         .acc_vld(c1_vld[10][5]),
         .acc_data(c1_data[10][95:80]),
         .load_vld(sys_arr_row10_load_vld[5]),
-        .load_data(sys_arr_row10_load_data[47:40]),
+        .load_data(sys_arr_row10_load_data[95:80]),
         .out_data_int16(mxu_lsu_int16_row10_data[95:80]),
         .out_data_int8(mxu_lsu_int8_row10_data[47:40])
     );
@@ -6679,7 +6679,7 @@ module mxu (
         .acc_vld(c1_vld[10][6]),
         .acc_data(c1_data[10][111:96]),
         .load_vld(sys_arr_row10_load_vld[6]),
-        .load_data(sys_arr_row10_load_data[55:48]),
+        .load_data(sys_arr_row10_load_data[111:96]),
         .out_data_int16(mxu_lsu_int16_row10_data[111:96]),
         .out_data_int8(mxu_lsu_int8_row10_data[55:48])
     );
@@ -6691,7 +6691,7 @@ module mxu (
         .acc_vld(c1_vld[10][7]),
         .acc_data(c1_data[10][127:112]),
         .load_vld(sys_arr_row10_load_vld[7]),
-        .load_data(sys_arr_row10_load_data[63:56]),
+        .load_data(sys_arr_row10_load_data[127:112]),
         .out_data_int16(mxu_lsu_int16_row10_data[127:112]),
         .out_data_int8(mxu_lsu_int8_row10_data[63:56])
     );
@@ -6703,7 +6703,7 @@ module mxu (
         .acc_vld(c1_vld[10][8]),
         .acc_data(c1_data[10][143:128]),
         .load_vld(sys_arr_row10_load_vld[8]),
-        .load_data(sys_arr_row10_load_data[71:64]),
+        .load_data(sys_arr_row10_load_data[143:128]),
         .out_data_int16(mxu_lsu_int16_row10_data[143:128]),
         .out_data_int8(mxu_lsu_int8_row10_data[71:64])
     );
@@ -6715,7 +6715,7 @@ module mxu (
         .acc_vld(c1_vld[10][9]),
         .acc_data(c1_data[10][159:144]),
         .load_vld(sys_arr_row10_load_vld[9]),
-        .load_data(sys_arr_row10_load_data[79:72]),
+        .load_data(sys_arr_row10_load_data[159:144]),
         .out_data_int16(mxu_lsu_int16_row10_data[159:144]),
         .out_data_int8(mxu_lsu_int8_row10_data[79:72])
     );
@@ -6727,7 +6727,7 @@ module mxu (
         .acc_vld(c1_vld[10][10]),
         .acc_data(c1_data[10][175:160]),
         .load_vld(sys_arr_row10_load_vld[10]),
-        .load_data(sys_arr_row10_load_data[87:80]),
+        .load_data(sys_arr_row10_load_data[175:160]),
         .out_data_int16(mxu_lsu_int16_row10_data[175:160]),
         .out_data_int8(mxu_lsu_int8_row10_data[87:80])
     );
@@ -6739,7 +6739,7 @@ module mxu (
         .acc_vld(c1_vld[10][11]),
         .acc_data(c1_data[10][191:176]),
         .load_vld(sys_arr_row10_load_vld[11]),
-        .load_data(sys_arr_row10_load_data[95:88]),
+        .load_data(sys_arr_row10_load_data[191:176]),
         .out_data_int16(mxu_lsu_int16_row10_data[191:176]),
         .out_data_int8(mxu_lsu_int8_row10_data[95:88])
     );
@@ -6751,7 +6751,7 @@ module mxu (
         .acc_vld(c1_vld[10][12]),
         .acc_data(c1_data[10][207:192]),
         .load_vld(sys_arr_row10_load_vld[12]),
-        .load_data(sys_arr_row10_load_data[103:96]),
+        .load_data(sys_arr_row10_load_data[207:192]),
         .out_data_int16(mxu_lsu_int16_row10_data[207:192]),
         .out_data_int8(mxu_lsu_int8_row10_data[103:96])
     );
@@ -6763,7 +6763,7 @@ module mxu (
         .acc_vld(c1_vld[10][13]),
         .acc_data(c1_data[10][223:208]),
         .load_vld(sys_arr_row10_load_vld[13]),
-        .load_data(sys_arr_row10_load_data[111:104]),
+        .load_data(sys_arr_row10_load_data[223:208]),
         .out_data_int16(mxu_lsu_int16_row10_data[223:208]),
         .out_data_int8(mxu_lsu_int8_row10_data[111:104])
     );
@@ -6775,7 +6775,7 @@ module mxu (
         .acc_vld(c1_vld[10][14]),
         .acc_data(c1_data[10][239:224]),
         .load_vld(sys_arr_row10_load_vld[14]),
-        .load_data(sys_arr_row10_load_data[119:112]),
+        .load_data(sys_arr_row10_load_data[239:224]),
         .out_data_int16(mxu_lsu_int16_row10_data[239:224]),
         .out_data_int8(mxu_lsu_int8_row10_data[119:112])
     );
@@ -6787,7 +6787,7 @@ module mxu (
         .acc_vld(c1_vld[10][15]),
         .acc_data(c1_data[10][255:240]),
         .load_vld(sys_arr_row10_load_vld[15]),
-        .load_data(sys_arr_row10_load_data[127:120]),
+        .load_data(sys_arr_row10_load_data[255:240]),
         .out_data_int16(mxu_lsu_int16_row10_data[255:240]),
         .out_data_int8(mxu_lsu_int8_row10_data[127:120])
     );
@@ -6799,7 +6799,7 @@ module mxu (
         .acc_vld(c1_vld[11][0]),
         .acc_data(c1_data[11][15:0]),
         .load_vld(sys_arr_row11_load_vld[0]),
-        .load_data(sys_arr_row11_load_data[7:0]),
+        .load_data(sys_arr_row11_load_data[15:0]),
         .out_data_int16(mxu_lsu_int16_row11_data[15:0]),
         .out_data_int8(mxu_lsu_int8_row11_data[7:0])
     );
@@ -6811,7 +6811,7 @@ module mxu (
         .acc_vld(c1_vld[11][1]),
         .acc_data(c1_data[11][31:16]),
         .load_vld(sys_arr_row11_load_vld[1]),
-        .load_data(sys_arr_row11_load_data[15:8]),
+        .load_data(sys_arr_row11_load_data[31:16]),
         .out_data_int16(mxu_lsu_int16_row11_data[31:16]),
         .out_data_int8(mxu_lsu_int8_row11_data[15:8])
     );
@@ -6823,7 +6823,7 @@ module mxu (
         .acc_vld(c1_vld[11][2]),
         .acc_data(c1_data[11][47:32]),
         .load_vld(sys_arr_row11_load_vld[2]),
-        .load_data(sys_arr_row11_load_data[23:16]),
+        .load_data(sys_arr_row11_load_data[47:32]),
         .out_data_int16(mxu_lsu_int16_row11_data[47:32]),
         .out_data_int8(mxu_lsu_int8_row11_data[23:16])
     );
@@ -6835,7 +6835,7 @@ module mxu (
         .acc_vld(c1_vld[11][3]),
         .acc_data(c1_data[11][63:48]),
         .load_vld(sys_arr_row11_load_vld[3]),
-        .load_data(sys_arr_row11_load_data[31:24]),
+        .load_data(sys_arr_row11_load_data[63:48]),
         .out_data_int16(mxu_lsu_int16_row11_data[63:48]),
         .out_data_int8(mxu_lsu_int8_row11_data[31:24])
     );
@@ -6847,7 +6847,7 @@ module mxu (
         .acc_vld(c1_vld[11][4]),
         .acc_data(c1_data[11][79:64]),
         .load_vld(sys_arr_row11_load_vld[4]),
-        .load_data(sys_arr_row11_load_data[39:32]),
+        .load_data(sys_arr_row11_load_data[79:64]),
         .out_data_int16(mxu_lsu_int16_row11_data[79:64]),
         .out_data_int8(mxu_lsu_int8_row11_data[39:32])
     );
@@ -6859,7 +6859,7 @@ module mxu (
         .acc_vld(c1_vld[11][5]),
         .acc_data(c1_data[11][95:80]),
         .load_vld(sys_arr_row11_load_vld[5]),
-        .load_data(sys_arr_row11_load_data[47:40]),
+        .load_data(sys_arr_row11_load_data[95:80]),
         .out_data_int16(mxu_lsu_int16_row11_data[95:80]),
         .out_data_int8(mxu_lsu_int8_row11_data[47:40])
     );
@@ -6871,7 +6871,7 @@ module mxu (
         .acc_vld(c1_vld[11][6]),
         .acc_data(c1_data[11][111:96]),
         .load_vld(sys_arr_row11_load_vld[6]),
-        .load_data(sys_arr_row11_load_data[55:48]),
+        .load_data(sys_arr_row11_load_data[111:96]),
         .out_data_int16(mxu_lsu_int16_row11_data[111:96]),
         .out_data_int8(mxu_lsu_int8_row11_data[55:48])
     );
@@ -6883,7 +6883,7 @@ module mxu (
         .acc_vld(c1_vld[11][7]),
         .acc_data(c1_data[11][127:112]),
         .load_vld(sys_arr_row11_load_vld[7]),
-        .load_data(sys_arr_row11_load_data[63:56]),
+        .load_data(sys_arr_row11_load_data[127:112]),
         .out_data_int16(mxu_lsu_int16_row11_data[127:112]),
         .out_data_int8(mxu_lsu_int8_row11_data[63:56])
     );
@@ -6895,7 +6895,7 @@ module mxu (
         .acc_vld(c1_vld[11][8]),
         .acc_data(c1_data[11][143:128]),
         .load_vld(sys_arr_row11_load_vld[8]),
-        .load_data(sys_arr_row11_load_data[71:64]),
+        .load_data(sys_arr_row11_load_data[143:128]),
         .out_data_int16(mxu_lsu_int16_row11_data[143:128]),
         .out_data_int8(mxu_lsu_int8_row11_data[71:64])
     );
@@ -6907,7 +6907,7 @@ module mxu (
         .acc_vld(c1_vld[11][9]),
         .acc_data(c1_data[11][159:144]),
         .load_vld(sys_arr_row11_load_vld[9]),
-        .load_data(sys_arr_row11_load_data[79:72]),
+        .load_data(sys_arr_row11_load_data[159:144]),
         .out_data_int16(mxu_lsu_int16_row11_data[159:144]),
         .out_data_int8(mxu_lsu_int8_row11_data[79:72])
     );
@@ -6919,7 +6919,7 @@ module mxu (
         .acc_vld(c1_vld[11][10]),
         .acc_data(c1_data[11][175:160]),
         .load_vld(sys_arr_row11_load_vld[10]),
-        .load_data(sys_arr_row11_load_data[87:80]),
+        .load_data(sys_arr_row11_load_data[175:160]),
         .out_data_int16(mxu_lsu_int16_row11_data[175:160]),
         .out_data_int8(mxu_lsu_int8_row11_data[87:80])
     );
@@ -6931,7 +6931,7 @@ module mxu (
         .acc_vld(c1_vld[11][11]),
         .acc_data(c1_data[11][191:176]),
         .load_vld(sys_arr_row11_load_vld[11]),
-        .load_data(sys_arr_row11_load_data[95:88]),
+        .load_data(sys_arr_row11_load_data[191:176]),
         .out_data_int16(mxu_lsu_int16_row11_data[191:176]),
         .out_data_int8(mxu_lsu_int8_row11_data[95:88])
     );
@@ -6943,7 +6943,7 @@ module mxu (
         .acc_vld(c1_vld[11][12]),
         .acc_data(c1_data[11][207:192]),
         .load_vld(sys_arr_row11_load_vld[12]),
-        .load_data(sys_arr_row11_load_data[103:96]),
+        .load_data(sys_arr_row11_load_data[207:192]),
         .out_data_int16(mxu_lsu_int16_row11_data[207:192]),
         .out_data_int8(mxu_lsu_int8_row11_data[103:96])
     );
@@ -6955,7 +6955,7 @@ module mxu (
         .acc_vld(c1_vld[11][13]),
         .acc_data(c1_data[11][223:208]),
         .load_vld(sys_arr_row11_load_vld[13]),
-        .load_data(sys_arr_row11_load_data[111:104]),
+        .load_data(sys_arr_row11_load_data[223:208]),
         .out_data_int16(mxu_lsu_int16_row11_data[223:208]),
         .out_data_int8(mxu_lsu_int8_row11_data[111:104])
     );
@@ -6967,7 +6967,7 @@ module mxu (
         .acc_vld(c1_vld[11][14]),
         .acc_data(c1_data[11][239:224]),
         .load_vld(sys_arr_row11_load_vld[14]),
-        .load_data(sys_arr_row11_load_data[119:112]),
+        .load_data(sys_arr_row11_load_data[239:224]),
         .out_data_int16(mxu_lsu_int16_row11_data[239:224]),
         .out_data_int8(mxu_lsu_int8_row11_data[119:112])
     );
@@ -6979,7 +6979,7 @@ module mxu (
         .acc_vld(c1_vld[11][15]),
         .acc_data(c1_data[11][255:240]),
         .load_vld(sys_arr_row11_load_vld[15]),
-        .load_data(sys_arr_row11_load_data[127:120]),
+        .load_data(sys_arr_row11_load_data[255:240]),
         .out_data_int16(mxu_lsu_int16_row11_data[255:240]),
         .out_data_int8(mxu_lsu_int8_row11_data[127:120])
     );
@@ -6991,7 +6991,7 @@ module mxu (
         .acc_vld(c1_vld[12][0]),
         .acc_data(c1_data[12][15:0]),
         .load_vld(sys_arr_row12_load_vld[0]),
-        .load_data(sys_arr_row12_load_data[7:0]),
+        .load_data(sys_arr_row12_load_data[15:0]),
         .out_data_int16(mxu_lsu_int16_row12_data[15:0]),
         .out_data_int8(mxu_lsu_int8_row12_data[7:0])
     );
@@ -7003,7 +7003,7 @@ module mxu (
         .acc_vld(c1_vld[12][1]),
         .acc_data(c1_data[12][31:16]),
         .load_vld(sys_arr_row12_load_vld[1]),
-        .load_data(sys_arr_row12_load_data[15:8]),
+        .load_data(sys_arr_row12_load_data[31:16]),
         .out_data_int16(mxu_lsu_int16_row12_data[31:16]),
         .out_data_int8(mxu_lsu_int8_row12_data[15:8])
     );
@@ -7015,7 +7015,7 @@ module mxu (
         .acc_vld(c1_vld[12][2]),
         .acc_data(c1_data[12][47:32]),
         .load_vld(sys_arr_row12_load_vld[2]),
-        .load_data(sys_arr_row12_load_data[23:16]),
+        .load_data(sys_arr_row12_load_data[47:32]),
         .out_data_int16(mxu_lsu_int16_row12_data[47:32]),
         .out_data_int8(mxu_lsu_int8_row12_data[23:16])
     );
@@ -7027,7 +7027,7 @@ module mxu (
         .acc_vld(c1_vld[12][3]),
         .acc_data(c1_data[12][63:48]),
         .load_vld(sys_arr_row12_load_vld[3]),
-        .load_data(sys_arr_row12_load_data[31:24]),
+        .load_data(sys_arr_row12_load_data[63:48]),
         .out_data_int16(mxu_lsu_int16_row12_data[63:48]),
         .out_data_int8(mxu_lsu_int8_row12_data[31:24])
     );
@@ -7039,7 +7039,7 @@ module mxu (
         .acc_vld(c1_vld[12][4]),
         .acc_data(c1_data[12][79:64]),
         .load_vld(sys_arr_row12_load_vld[4]),
-        .load_data(sys_arr_row12_load_data[39:32]),
+        .load_data(sys_arr_row12_load_data[79:64]),
         .out_data_int16(mxu_lsu_int16_row12_data[79:64]),
         .out_data_int8(mxu_lsu_int8_row12_data[39:32])
     );
@@ -7051,7 +7051,7 @@ module mxu (
         .acc_vld(c1_vld[12][5]),
         .acc_data(c1_data[12][95:80]),
         .load_vld(sys_arr_row12_load_vld[5]),
-        .load_data(sys_arr_row12_load_data[47:40]),
+        .load_data(sys_arr_row12_load_data[95:80]),
         .out_data_int16(mxu_lsu_int16_row12_data[95:80]),
         .out_data_int8(mxu_lsu_int8_row12_data[47:40])
     );
@@ -7063,7 +7063,7 @@ module mxu (
         .acc_vld(c1_vld[12][6]),
         .acc_data(c1_data[12][111:96]),
         .load_vld(sys_arr_row12_load_vld[6]),
-        .load_data(sys_arr_row12_load_data[55:48]),
+        .load_data(sys_arr_row12_load_data[111:96]),
         .out_data_int16(mxu_lsu_int16_row12_data[111:96]),
         .out_data_int8(mxu_lsu_int8_row12_data[55:48])
     );
@@ -7075,7 +7075,7 @@ module mxu (
         .acc_vld(c1_vld[12][7]),
         .acc_data(c1_data[12][127:112]),
         .load_vld(sys_arr_row12_load_vld[7]),
-        .load_data(sys_arr_row12_load_data[63:56]),
+        .load_data(sys_arr_row12_load_data[127:112]),
         .out_data_int16(mxu_lsu_int16_row12_data[127:112]),
         .out_data_int8(mxu_lsu_int8_row12_data[63:56])
     );
@@ -7087,7 +7087,7 @@ module mxu (
         .acc_vld(c1_vld[12][8]),
         .acc_data(c1_data[12][143:128]),
         .load_vld(sys_arr_row12_load_vld[8]),
-        .load_data(sys_arr_row12_load_data[71:64]),
+        .load_data(sys_arr_row12_load_data[143:128]),
         .out_data_int16(mxu_lsu_int16_row12_data[143:128]),
         .out_data_int8(mxu_lsu_int8_row12_data[71:64])
     );
@@ -7099,7 +7099,7 @@ module mxu (
         .acc_vld(c1_vld[12][9]),
         .acc_data(c1_data[12][159:144]),
         .load_vld(sys_arr_row12_load_vld[9]),
-        .load_data(sys_arr_row12_load_data[79:72]),
+        .load_data(sys_arr_row12_load_data[159:144]),
         .out_data_int16(mxu_lsu_int16_row12_data[159:144]),
         .out_data_int8(mxu_lsu_int8_row12_data[79:72])
     );
@@ -7111,7 +7111,7 @@ module mxu (
         .acc_vld(c1_vld[12][10]),
         .acc_data(c1_data[12][175:160]),
         .load_vld(sys_arr_row12_load_vld[10]),
-        .load_data(sys_arr_row12_load_data[87:80]),
+        .load_data(sys_arr_row12_load_data[175:160]),
         .out_data_int16(mxu_lsu_int16_row12_data[175:160]),
         .out_data_int8(mxu_lsu_int8_row12_data[87:80])
     );
@@ -7123,7 +7123,7 @@ module mxu (
         .acc_vld(c1_vld[12][11]),
         .acc_data(c1_data[12][191:176]),
         .load_vld(sys_arr_row12_load_vld[11]),
-        .load_data(sys_arr_row12_load_data[95:88]),
+        .load_data(sys_arr_row12_load_data[191:176]),
         .out_data_int16(mxu_lsu_int16_row12_data[191:176]),
         .out_data_int8(mxu_lsu_int8_row12_data[95:88])
     );
@@ -7135,7 +7135,7 @@ module mxu (
         .acc_vld(c1_vld[12][12]),
         .acc_data(c1_data[12][207:192]),
         .load_vld(sys_arr_row12_load_vld[12]),
-        .load_data(sys_arr_row12_load_data[103:96]),
+        .load_data(sys_arr_row12_load_data[207:192]),
         .out_data_int16(mxu_lsu_int16_row12_data[207:192]),
         .out_data_int8(mxu_lsu_int8_row12_data[103:96])
     );
@@ -7147,7 +7147,7 @@ module mxu (
         .acc_vld(c1_vld[12][13]),
         .acc_data(c1_data[12][223:208]),
         .load_vld(sys_arr_row12_load_vld[13]),
-        .load_data(sys_arr_row12_load_data[111:104]),
+        .load_data(sys_arr_row12_load_data[223:208]),
         .out_data_int16(mxu_lsu_int16_row12_data[223:208]),
         .out_data_int8(mxu_lsu_int8_row12_data[111:104])
     );
@@ -7159,7 +7159,7 @@ module mxu (
         .acc_vld(c1_vld[12][14]),
         .acc_data(c1_data[12][239:224]),
         .load_vld(sys_arr_row12_load_vld[14]),
-        .load_data(sys_arr_row12_load_data[119:112]),
+        .load_data(sys_arr_row12_load_data[239:224]),
         .out_data_int16(mxu_lsu_int16_row12_data[239:224]),
         .out_data_int8(mxu_lsu_int8_row12_data[119:112])
     );
@@ -7171,7 +7171,7 @@ module mxu (
         .acc_vld(c1_vld[12][15]),
         .acc_data(c1_data[12][255:240]),
         .load_vld(sys_arr_row12_load_vld[15]),
-        .load_data(sys_arr_row12_load_data[127:120]),
+        .load_data(sys_arr_row12_load_data[255:240]),
         .out_data_int16(mxu_lsu_int16_row12_data[255:240]),
         .out_data_int8(mxu_lsu_int8_row12_data[127:120])
     );
@@ -7183,7 +7183,7 @@ module mxu (
         .acc_vld(c1_vld[13][0]),
         .acc_data(c1_data[13][15:0]),
         .load_vld(sys_arr_row13_load_vld[0]),
-        .load_data(sys_arr_row13_load_data[7:0]),
+        .load_data(sys_arr_row13_load_data[15:0]),
         .out_data_int16(mxu_lsu_int16_row13_data[15:0]),
         .out_data_int8(mxu_lsu_int8_row13_data[7:0])
     );
@@ -7195,7 +7195,7 @@ module mxu (
         .acc_vld(c1_vld[13][1]),
         .acc_data(c1_data[13][31:16]),
         .load_vld(sys_arr_row13_load_vld[1]),
-        .load_data(sys_arr_row13_load_data[15:8]),
+        .load_data(sys_arr_row13_load_data[31:16]),
         .out_data_int16(mxu_lsu_int16_row13_data[31:16]),
         .out_data_int8(mxu_lsu_int8_row13_data[15:8])
     );
@@ -7207,7 +7207,7 @@ module mxu (
         .acc_vld(c1_vld[13][2]),
         .acc_data(c1_data[13][47:32]),
         .load_vld(sys_arr_row13_load_vld[2]),
-        .load_data(sys_arr_row13_load_data[23:16]),
+        .load_data(sys_arr_row13_load_data[47:32]),
         .out_data_int16(mxu_lsu_int16_row13_data[47:32]),
         .out_data_int8(mxu_lsu_int8_row13_data[23:16])
     );
@@ -7219,7 +7219,7 @@ module mxu (
         .acc_vld(c1_vld[13][3]),
         .acc_data(c1_data[13][63:48]),
         .load_vld(sys_arr_row13_load_vld[3]),
-        .load_data(sys_arr_row13_load_data[31:24]),
+        .load_data(sys_arr_row13_load_data[63:48]),
         .out_data_int16(mxu_lsu_int16_row13_data[63:48]),
         .out_data_int8(mxu_lsu_int8_row13_data[31:24])
     );
@@ -7231,7 +7231,7 @@ module mxu (
         .acc_vld(c1_vld[13][4]),
         .acc_data(c1_data[13][79:64]),
         .load_vld(sys_arr_row13_load_vld[4]),
-        .load_data(sys_arr_row13_load_data[39:32]),
+        .load_data(sys_arr_row13_load_data[79:64]),
         .out_data_int16(mxu_lsu_int16_row13_data[79:64]),
         .out_data_int8(mxu_lsu_int8_row13_data[39:32])
     );
@@ -7243,7 +7243,7 @@ module mxu (
         .acc_vld(c1_vld[13][5]),
         .acc_data(c1_data[13][95:80]),
         .load_vld(sys_arr_row13_load_vld[5]),
-        .load_data(sys_arr_row13_load_data[47:40]),
+        .load_data(sys_arr_row13_load_data[95:80]),
         .out_data_int16(mxu_lsu_int16_row13_data[95:80]),
         .out_data_int8(mxu_lsu_int8_row13_data[47:40])
     );
@@ -7255,7 +7255,7 @@ module mxu (
         .acc_vld(c1_vld[13][6]),
         .acc_data(c1_data[13][111:96]),
         .load_vld(sys_arr_row13_load_vld[6]),
-        .load_data(sys_arr_row13_load_data[55:48]),
+        .load_data(sys_arr_row13_load_data[111:96]),
         .out_data_int16(mxu_lsu_int16_row13_data[111:96]),
         .out_data_int8(mxu_lsu_int8_row13_data[55:48])
     );
@@ -7267,7 +7267,7 @@ module mxu (
         .acc_vld(c1_vld[13][7]),
         .acc_data(c1_data[13][127:112]),
         .load_vld(sys_arr_row13_load_vld[7]),
-        .load_data(sys_arr_row13_load_data[63:56]),
+        .load_data(sys_arr_row13_load_data[127:112]),
         .out_data_int16(mxu_lsu_int16_row13_data[127:112]),
         .out_data_int8(mxu_lsu_int8_row13_data[63:56])
     );
@@ -7279,7 +7279,7 @@ module mxu (
         .acc_vld(c1_vld[13][8]),
         .acc_data(c1_data[13][143:128]),
         .load_vld(sys_arr_row13_load_vld[8]),
-        .load_data(sys_arr_row13_load_data[71:64]),
+        .load_data(sys_arr_row13_load_data[143:128]),
         .out_data_int16(mxu_lsu_int16_row13_data[143:128]),
         .out_data_int8(mxu_lsu_int8_row13_data[71:64])
     );
@@ -7291,7 +7291,7 @@ module mxu (
         .acc_vld(c1_vld[13][9]),
         .acc_data(c1_data[13][159:144]),
         .load_vld(sys_arr_row13_load_vld[9]),
-        .load_data(sys_arr_row13_load_data[79:72]),
+        .load_data(sys_arr_row13_load_data[159:144]),
         .out_data_int16(mxu_lsu_int16_row13_data[159:144]),
         .out_data_int8(mxu_lsu_int8_row13_data[79:72])
     );
@@ -7303,7 +7303,7 @@ module mxu (
         .acc_vld(c1_vld[13][10]),
         .acc_data(c1_data[13][175:160]),
         .load_vld(sys_arr_row13_load_vld[10]),
-        .load_data(sys_arr_row13_load_data[87:80]),
+        .load_data(sys_arr_row13_load_data[175:160]),
         .out_data_int16(mxu_lsu_int16_row13_data[175:160]),
         .out_data_int8(mxu_lsu_int8_row13_data[87:80])
     );
@@ -7315,7 +7315,7 @@ module mxu (
         .acc_vld(c1_vld[13][11]),
         .acc_data(c1_data[13][191:176]),
         .load_vld(sys_arr_row13_load_vld[11]),
-        .load_data(sys_arr_row13_load_data[95:88]),
+        .load_data(sys_arr_row13_load_data[191:176]),
         .out_data_int16(mxu_lsu_int16_row13_data[191:176]),
         .out_data_int8(mxu_lsu_int8_row13_data[95:88])
     );
@@ -7327,7 +7327,7 @@ module mxu (
         .acc_vld(c1_vld[13][12]),
         .acc_data(c1_data[13][207:192]),
         .load_vld(sys_arr_row13_load_vld[12]),
-        .load_data(sys_arr_row13_load_data[103:96]),
+        .load_data(sys_arr_row13_load_data[207:192]),
         .out_data_int16(mxu_lsu_int16_row13_data[207:192]),
         .out_data_int8(mxu_lsu_int8_row13_data[103:96])
     );
@@ -7339,7 +7339,7 @@ module mxu (
         .acc_vld(c1_vld[13][13]),
         .acc_data(c1_data[13][223:208]),
         .load_vld(sys_arr_row13_load_vld[13]),
-        .load_data(sys_arr_row13_load_data[111:104]),
+        .load_data(sys_arr_row13_load_data[223:208]),
         .out_data_int16(mxu_lsu_int16_row13_data[223:208]),
         .out_data_int8(mxu_lsu_int8_row13_data[111:104])
     );
@@ -7351,7 +7351,7 @@ module mxu (
         .acc_vld(c1_vld[13][14]),
         .acc_data(c1_data[13][239:224]),
         .load_vld(sys_arr_row13_load_vld[14]),
-        .load_data(sys_arr_row13_load_data[119:112]),
+        .load_data(sys_arr_row13_load_data[239:224]),
         .out_data_int16(mxu_lsu_int16_row13_data[239:224]),
         .out_data_int8(mxu_lsu_int8_row13_data[119:112])
     );
@@ -7363,7 +7363,7 @@ module mxu (
         .acc_vld(c1_vld[13][15]),
         .acc_data(c1_data[13][255:240]),
         .load_vld(sys_arr_row13_load_vld[15]),
-        .load_data(sys_arr_row13_load_data[127:120]),
+        .load_data(sys_arr_row13_load_data[255:240]),
         .out_data_int16(mxu_lsu_int16_row13_data[255:240]),
         .out_data_int8(mxu_lsu_int8_row13_data[127:120])
     );
@@ -7375,7 +7375,7 @@ module mxu (
         .acc_vld(c1_vld[14][0]),
         .acc_data(c1_data[14][15:0]),
         .load_vld(sys_arr_row14_load_vld[0]),
-        .load_data(sys_arr_row14_load_data[7:0]),
+        .load_data(sys_arr_row14_load_data[15:0]),
         .out_data_int16(mxu_lsu_int16_row14_data[15:0]),
         .out_data_int8(mxu_lsu_int8_row14_data[7:0])
     );
@@ -7387,7 +7387,7 @@ module mxu (
         .acc_vld(c1_vld[14][1]),
         .acc_data(c1_data[14][31:16]),
         .load_vld(sys_arr_row14_load_vld[1]),
-        .load_data(sys_arr_row14_load_data[15:8]),
+        .load_data(sys_arr_row14_load_data[31:16]),
         .out_data_int16(mxu_lsu_int16_row14_data[31:16]),
         .out_data_int8(mxu_lsu_int8_row14_data[15:8])
     );
@@ -7399,7 +7399,7 @@ module mxu (
         .acc_vld(c1_vld[14][2]),
         .acc_data(c1_data[14][47:32]),
         .load_vld(sys_arr_row14_load_vld[2]),
-        .load_data(sys_arr_row14_load_data[23:16]),
+        .load_data(sys_arr_row14_load_data[47:32]),
         .out_data_int16(mxu_lsu_int16_row14_data[47:32]),
         .out_data_int8(mxu_lsu_int8_row14_data[23:16])
     );
@@ -7411,7 +7411,7 @@ module mxu (
         .acc_vld(c1_vld[14][3]),
         .acc_data(c1_data[14][63:48]),
         .load_vld(sys_arr_row14_load_vld[3]),
-        .load_data(sys_arr_row14_load_data[31:24]),
+        .load_data(sys_arr_row14_load_data[63:48]),
         .out_data_int16(mxu_lsu_int16_row14_data[63:48]),
         .out_data_int8(mxu_lsu_int8_row14_data[31:24])
     );
@@ -7423,7 +7423,7 @@ module mxu (
         .acc_vld(c1_vld[14][4]),
         .acc_data(c1_data[14][79:64]),
         .load_vld(sys_arr_row14_load_vld[4]),
-        .load_data(sys_arr_row14_load_data[39:32]),
+        .load_data(sys_arr_row14_load_data[79:64]),
         .out_data_int16(mxu_lsu_int16_row14_data[79:64]),
         .out_data_int8(mxu_lsu_int8_row14_data[39:32])
     );
@@ -7435,7 +7435,7 @@ module mxu (
         .acc_vld(c1_vld[14][5]),
         .acc_data(c1_data[14][95:80]),
         .load_vld(sys_arr_row14_load_vld[5]),
-        .load_data(sys_arr_row14_load_data[47:40]),
+        .load_data(sys_arr_row14_load_data[95:80]),
         .out_data_int16(mxu_lsu_int16_row14_data[95:80]),
         .out_data_int8(mxu_lsu_int8_row14_data[47:40])
     );
@@ -7447,7 +7447,7 @@ module mxu (
         .acc_vld(c1_vld[14][6]),
         .acc_data(c1_data[14][111:96]),
         .load_vld(sys_arr_row14_load_vld[6]),
-        .load_data(sys_arr_row14_load_data[55:48]),
+        .load_data(sys_arr_row14_load_data[111:96]),
         .out_data_int16(mxu_lsu_int16_row14_data[111:96]),
         .out_data_int8(mxu_lsu_int8_row14_data[55:48])
     );
@@ -7459,7 +7459,7 @@ module mxu (
         .acc_vld(c1_vld[14][7]),
         .acc_data(c1_data[14][127:112]),
         .load_vld(sys_arr_row14_load_vld[7]),
-        .load_data(sys_arr_row14_load_data[63:56]),
+        .load_data(sys_arr_row14_load_data[127:112]),
         .out_data_int16(mxu_lsu_int16_row14_data[127:112]),
         .out_data_int8(mxu_lsu_int8_row14_data[63:56])
     );
@@ -7471,7 +7471,7 @@ module mxu (
         .acc_vld(c1_vld[14][8]),
         .acc_data(c1_data[14][143:128]),
         .load_vld(sys_arr_row14_load_vld[8]),
-        .load_data(sys_arr_row14_load_data[71:64]),
+        .load_data(sys_arr_row14_load_data[143:128]),
         .out_data_int16(mxu_lsu_int16_row14_data[143:128]),
         .out_data_int8(mxu_lsu_int8_row14_data[71:64])
     );
@@ -7483,7 +7483,7 @@ module mxu (
         .acc_vld(c1_vld[14][9]),
         .acc_data(c1_data[14][159:144]),
         .load_vld(sys_arr_row14_load_vld[9]),
-        .load_data(sys_arr_row14_load_data[79:72]),
+        .load_data(sys_arr_row14_load_data[159:144]),
         .out_data_int16(mxu_lsu_int16_row14_data[159:144]),
         .out_data_int8(mxu_lsu_int8_row14_data[79:72])
     );
@@ -7495,7 +7495,7 @@ module mxu (
         .acc_vld(c1_vld[14][10]),
         .acc_data(c1_data[14][175:160]),
         .load_vld(sys_arr_row14_load_vld[10]),
-        .load_data(sys_arr_row14_load_data[87:80]),
+        .load_data(sys_arr_row14_load_data[175:160]),
         .out_data_int16(mxu_lsu_int16_row14_data[175:160]),
         .out_data_int8(mxu_lsu_int8_row14_data[87:80])
     );
@@ -7507,7 +7507,7 @@ module mxu (
         .acc_vld(c1_vld[14][11]),
         .acc_data(c1_data[14][191:176]),
         .load_vld(sys_arr_row14_load_vld[11]),
-        .load_data(sys_arr_row14_load_data[95:88]),
+        .load_data(sys_arr_row14_load_data[191:176]),
         .out_data_int16(mxu_lsu_int16_row14_data[191:176]),
         .out_data_int8(mxu_lsu_int8_row14_data[95:88])
     );
@@ -7519,7 +7519,7 @@ module mxu (
         .acc_vld(c1_vld[14][12]),
         .acc_data(c1_data[14][207:192]),
         .load_vld(sys_arr_row14_load_vld[12]),
-        .load_data(sys_arr_row14_load_data[103:96]),
+        .load_data(sys_arr_row14_load_data[207:192]),
         .out_data_int16(mxu_lsu_int16_row14_data[207:192]),
         .out_data_int8(mxu_lsu_int8_row14_data[103:96])
     );
@@ -7531,7 +7531,7 @@ module mxu (
         .acc_vld(c1_vld[14][13]),
         .acc_data(c1_data[14][223:208]),
         .load_vld(sys_arr_row14_load_vld[13]),
-        .load_data(sys_arr_row14_load_data[111:104]),
+        .load_data(sys_arr_row14_load_data[223:208]),
         .out_data_int16(mxu_lsu_int16_row14_data[223:208]),
         .out_data_int8(mxu_lsu_int8_row14_data[111:104])
     );
@@ -7543,7 +7543,7 @@ module mxu (
         .acc_vld(c1_vld[14][14]),
         .acc_data(c1_data[14][239:224]),
         .load_vld(sys_arr_row14_load_vld[14]),
-        .load_data(sys_arr_row14_load_data[119:112]),
+        .load_data(sys_arr_row14_load_data[239:224]),
         .out_data_int16(mxu_lsu_int16_row14_data[239:224]),
         .out_data_int8(mxu_lsu_int8_row14_data[119:112])
     );
@@ -7555,7 +7555,7 @@ module mxu (
         .acc_vld(c1_vld[14][15]),
         .acc_data(c1_data[14][255:240]),
         .load_vld(sys_arr_row14_load_vld[15]),
-        .load_data(sys_arr_row14_load_data[127:120]),
+        .load_data(sys_arr_row14_load_data[255:240]),
         .out_data_int16(mxu_lsu_int16_row14_data[255:240]),
         .out_data_int8(mxu_lsu_int8_row14_data[127:120])
     );
@@ -7567,7 +7567,7 @@ module mxu (
         .acc_vld(c1_vld[15][0]),
         .acc_data(c1_data[15][15:0]),
         .load_vld(sys_arr_row15_load_vld[0]),
-        .load_data(sys_arr_row15_load_data[7:0]),
+        .load_data(sys_arr_row15_load_data[15:0]),
         .out_data_int16(mxu_lsu_int16_row15_data[15:0]),
         .out_data_int8(mxu_lsu_int8_row15_data[7:0])
     );
@@ -7579,7 +7579,7 @@ module mxu (
         .acc_vld(c1_vld[15][1]),
         .acc_data(c1_data[15][31:16]),
         .load_vld(sys_arr_row15_load_vld[1]),
-        .load_data(sys_arr_row15_load_data[15:8]),
+        .load_data(sys_arr_row15_load_data[31:16]),
         .out_data_int16(mxu_lsu_int16_row15_data[31:16]),
         .out_data_int8(mxu_lsu_int8_row15_data[15:8])
     );
@@ -7591,7 +7591,7 @@ module mxu (
         .acc_vld(c1_vld[15][2]),
         .acc_data(c1_data[15][47:32]),
         .load_vld(sys_arr_row15_load_vld[2]),
-        .load_data(sys_arr_row15_load_data[23:16]),
+        .load_data(sys_arr_row15_load_data[47:32]),
         .out_data_int16(mxu_lsu_int16_row15_data[47:32]),
         .out_data_int8(mxu_lsu_int8_row15_data[23:16])
     );
@@ -7603,7 +7603,7 @@ module mxu (
         .acc_vld(c1_vld[15][3]),
         .acc_data(c1_data[15][63:48]),
         .load_vld(sys_arr_row15_load_vld[3]),
-        .load_data(sys_arr_row15_load_data[31:24]),
+        .load_data(sys_arr_row15_load_data[63:48]),
         .out_data_int16(mxu_lsu_int16_row15_data[63:48]),
         .out_data_int8(mxu_lsu_int8_row15_data[31:24])
     );
@@ -7615,7 +7615,7 @@ module mxu (
         .acc_vld(c1_vld[15][4]),
         .acc_data(c1_data[15][79:64]),
         .load_vld(sys_arr_row15_load_vld[4]),
-        .load_data(sys_arr_row15_load_data[39:32]),
+        .load_data(sys_arr_row15_load_data[79:64]),
         .out_data_int16(mxu_lsu_int16_row15_data[79:64]),
         .out_data_int8(mxu_lsu_int8_row15_data[39:32])
     );
@@ -7627,7 +7627,7 @@ module mxu (
         .acc_vld(c1_vld[15][5]),
         .acc_data(c1_data[15][95:80]),
         .load_vld(sys_arr_row15_load_vld[5]),
-        .load_data(sys_arr_row15_load_data[47:40]),
+        .load_data(sys_arr_row15_load_data[95:80]),
         .out_data_int16(mxu_lsu_int16_row15_data[95:80]),
         .out_data_int8(mxu_lsu_int8_row15_data[47:40])
     );
@@ -7639,7 +7639,7 @@ module mxu (
         .acc_vld(c1_vld[15][6]),
         .acc_data(c1_data[15][111:96]),
         .load_vld(sys_arr_row15_load_vld[6]),
-        .load_data(sys_arr_row15_load_data[55:48]),
+        .load_data(sys_arr_row15_load_data[111:96]),
         .out_data_int16(mxu_lsu_int16_row15_data[111:96]),
         .out_data_int8(mxu_lsu_int8_row15_data[55:48])
     );
@@ -7651,7 +7651,7 @@ module mxu (
         .acc_vld(c1_vld[15][7]),
         .acc_data(c1_data[15][127:112]),
         .load_vld(sys_arr_row15_load_vld[7]),
-        .load_data(sys_arr_row15_load_data[63:56]),
+        .load_data(sys_arr_row15_load_data[127:112]),
         .out_data_int16(mxu_lsu_int16_row15_data[127:112]),
         .out_data_int8(mxu_lsu_int8_row15_data[63:56])
     );
@@ -7663,7 +7663,7 @@ module mxu (
         .acc_vld(c1_vld[15][8]),
         .acc_data(c1_data[15][143:128]),
         .load_vld(sys_arr_row15_load_vld[8]),
-        .load_data(sys_arr_row15_load_data[71:64]),
+        .load_data(sys_arr_row15_load_data[143:128]),
         .out_data_int16(mxu_lsu_int16_row15_data[143:128]),
         .out_data_int8(mxu_lsu_int8_row15_data[71:64])
     );
@@ -7675,7 +7675,7 @@ module mxu (
         .acc_vld(c1_vld[15][9]),
         .acc_data(c1_data[15][159:144]),
         .load_vld(sys_arr_row15_load_vld[9]),
-        .load_data(sys_arr_row15_load_data[79:72]),
+        .load_data(sys_arr_row15_load_data[159:144]),
         .out_data_int16(mxu_lsu_int16_row15_data[159:144]),
         .out_data_int8(mxu_lsu_int8_row15_data[79:72])
     );
@@ -7687,7 +7687,7 @@ module mxu (
         .acc_vld(c1_vld[15][10]),
         .acc_data(c1_data[15][175:160]),
         .load_vld(sys_arr_row15_load_vld[10]),
-        .load_data(sys_arr_row15_load_data[87:80]),
+        .load_data(sys_arr_row15_load_data[175:160]),
         .out_data_int16(mxu_lsu_int16_row15_data[175:160]),
         .out_data_int8(mxu_lsu_int8_row15_data[87:80])
     );
@@ -7699,7 +7699,7 @@ module mxu (
         .acc_vld(c1_vld[15][11]),
         .acc_data(c1_data[15][191:176]),
         .load_vld(sys_arr_row15_load_vld[11]),
-        .load_data(sys_arr_row15_load_data[95:88]),
+        .load_data(sys_arr_row15_load_data[191:176]),
         .out_data_int16(mxu_lsu_int16_row15_data[191:176]),
         .out_data_int8(mxu_lsu_int8_row15_data[95:88])
     );
@@ -7711,7 +7711,7 @@ module mxu (
         .acc_vld(c1_vld[15][12]),
         .acc_data(c1_data[15][207:192]),
         .load_vld(sys_arr_row15_load_vld[12]),
-        .load_data(sys_arr_row15_load_data[103:96]),
+        .load_data(sys_arr_row15_load_data[207:192]),
         .out_data_int16(mxu_lsu_int16_row15_data[207:192]),
         .out_data_int8(mxu_lsu_int8_row15_data[103:96])
     );
@@ -7723,7 +7723,7 @@ module mxu (
         .acc_vld(c1_vld[15][13]),
         .acc_data(c1_data[15][223:208]),
         .load_vld(sys_arr_row15_load_vld[13]),
-        .load_data(sys_arr_row15_load_data[111:104]),
+        .load_data(sys_arr_row15_load_data[223:208]),
         .out_data_int16(mxu_lsu_int16_row15_data[223:208]),
         .out_data_int8(mxu_lsu_int8_row15_data[111:104])
     );
@@ -7735,7 +7735,7 @@ module mxu (
         .acc_vld(c1_vld[15][14]),
         .acc_data(c1_data[15][239:224]),
         .load_vld(sys_arr_row15_load_vld[14]),
-        .load_data(sys_arr_row15_load_data[119:112]),
+        .load_data(sys_arr_row15_load_data[239:224]),
         .out_data_int16(mxu_lsu_int16_row15_data[239:224]),
         .out_data_int8(mxu_lsu_int8_row15_data[119:112])
     );
@@ -7747,7 +7747,7 @@ module mxu (
         .acc_vld(c1_vld[15][15]),
         .acc_data(c1_data[15][255:240]),
         .load_vld(sys_arr_row15_load_vld[15]),
-        .load_data(sys_arr_row15_load_data[127:120]),
+        .load_data(sys_arr_row15_load_data[255:240]),
         .out_data_int16(mxu_lsu_int16_row15_data[255:240]),
         .out_data_int8(mxu_lsu_int8_row15_data[127:120])
     );
