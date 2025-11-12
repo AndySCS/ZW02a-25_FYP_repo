@@ -165,9 +165,6 @@ module mxu (
     wire [15:0] sys_arr_row15_load_vld;
     wire [127:0] sys_arr_row15_load_data;
 
-    wire [15:0] sys_arr_row16_load_vld;
-    wire [127:0] sys_arr_row16_load_data;
-
     wire [15:0] sys_arr_row_data_rdy;
     wire [15:0] pe_doing [15:0];
 
@@ -219,9 +216,6 @@ module mxu (
     assign sys_arr_row15_load_vld = act_vld[15];
     assign sys_arr_row15_load_data = act_data[15];
     assign sys_arr_row_data_rdy[15] = ~(|c1_vld[15]) & ~(|sys_arr_row15_load_vld) & ~(|pe_doing[15]);
-    assign sys_arr_row16_load_vld = act_vld[16];
-    assign sys_arr_row16_load_data = act_data[16];
-    assign sys_arr_row_data_rdy[16] = ~(|c1_vld[16]) & ~(|sys_arr_row16_load_vld) & ~(|pe_doing[16]);
 
     assign lsu_mxu_vld_qual = lsu_mxu_vld & mxu_lsu_rdy;
     assign mxu_vld_nxt = lsu_mxu_vld_qual | mxu_vld & ~mxu_done;
@@ -289,8 +283,6 @@ module mxu (
     wire [127:0] sys_arr_row14_data;
     wire [15:0] sys_arr_row15_vld;
     wire [127:0] sys_arr_row15_data;
-    wire [15:0] sys_arr_row16_vld;
-    wire [127:0] sys_arr_row16_data;
 
     wire [15:0] sys_arr_col0_vld;
     wire [127:0] sys_arr_col0_data;
@@ -324,8 +316,6 @@ module mxu (
     wire [127:0] sys_arr_col14_data;
     wire [15:0] sys_arr_col15_vld;
     wire [127:0] sys_arr_col15_data;
-    wire [15:0] sys_arr_col16_vld;
-    wire [127:0] sys_arr_col16_data;
 
 
     assign sys_arr_row0_vld  = lsu_mxu_iram_vld;
