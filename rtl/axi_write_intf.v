@@ -93,6 +93,7 @@ module AXI_WRITE_INFT(
     //axi->lsu interface
     output axi_lsu_awrdy;
     output axi_lsu_wrdy;
+    output axi_lsu_bid;
     output [1:0] axi_lsu_bresp;
     output axi_lsu_bvld;
     output [11:0] axi_lsu_resp_oram_addr;
@@ -134,174 +135,6 @@ module AXI_WRITE_INFT(
     wire [11:0] oram_addr_nxt;
     wire oram_addr_en;
 
-    assign axi_invld = ~axi_vld;
-    assign axi_alloc_en = {16{axi_alloc_vld}} & axi_alloc_ptr & axi_invld;
-    assign axi_alloc_vld = lsu_axi_awvld_qual | axi_doing_st;
-    assign axi_vld_nxt = axi_alloc_en | axi_vld & ~({16{lsu_resp_recv}} & axi_recv_ptr);
-    assign axi_sent_nxt = {16{AWVALID_sent}} & axi_sent_ptr | axi_sent & ~axi_alloc_en;
-    assign axi_recv_nxt = {16{BVALID_qual}} & BID_16 | axi_recv & ~axi_alloc_en; 
-    assign axi_sent_ptr_nxt = {axi_sent_ptr[14:0], axi_sent_ptr[15]};
-    assign axi_alloc_ptr_nxt = {axi_alloc_ptr[14:0], axi_alloc_ptr[15]};
-    assign axi_sent_en = axi_alloc_vld | AWVALID_sent;
-    assign axi_recv_en = axi_alloc_vld | BVALID_qual;
-    assign oram_addr_nxt = lsu_axi_awvld_qual ? lsu_axi_oram_addr: oram_addr_cur + 12'b1;
-    assign oram_addr_en = lsu_axi_awvld_qual | (|axi_alloc_en);
-    
-    DFFSE ff_axi_sent_ptr_lo #(.WIDTH(1))(
-        .clk(clk),
-        .rst_n(rst_n),
-        .en(AWVALID_sent),
-        .d(axi_sent_ptr_nxt[0]),
-        .q(axi_sent_ptr[0])
-    );
-    DFFRE ff_axi_sent_ptr_lo #(.WIDTH(15))(
-        .clk(clk),
-        .rst_n(rst_n),
-        .en(AWVALID_sent),
-        .d(axi_sent_ptr_nxt[15:1]),
-        .q(axi_sent_ptr[15:1])
-    );
-
-    DFFSE ff_axi_alloc_ptr_lo #(.WIDTH(1))(
-        .clk(clk),
-        .rst_n(rst_n),
-        .en(AWVALID_alloc),
-        .d(axi_alloc_ptr_nxt[0]),
-        .q(axi_alloc_ptr[0])
-    );
-    DFFRE ff_axi_alloc_ptr_lo #(.WIDTH(15))(
-        .clk(clk),
-        .rst_n(rst_n),
-        .en(AWVALID_alloc),
-        .d(axi_alloc_ptr_nxt[15:1]),
-        .q(axi_alloc_ptr[15:1])
-    );
-
-    DFFR ff_axi_vld #(.WIDTH(16))(
-        .clk(clk),
-        .rst_n(rst_n),
-        .d(axi_vld_nxt),
-        .q(axi_vld)
-    );
-    DFFE ff_axi_sent #(.WIDTH(16))(
-        .clk(clk),
-        .en(axi_sent_en),
-        .d(axi_sent_nxt),
-        .q(axi_sent)
-    );
-    DFFE ff_axi_recv #(.WIDTH(16))(
-        .clk(clk),
-        .en(axi_recv_en),
-        .d(axi_recv_nxt),
-        .q(axi_recv)
-    );
-
-    DFFE ff_oram_addr_cur #(.WIDTH(12))(
-        .clk(clk),
-        .en(axi_recv_en),
-        .d(oram_addr_nxt),
-        .q(oram_addr_cur)
-    );
-    DFFE ff_oram_addr_0 #(.WIDTH(12))(
-        .clk(clk),
-        .en(axi_alloc_en),
-        .d(oram_addr_nxt),
-        .q(oram_addr_0)
-    );
-    DFFE ff_oram_addr_1 #(.WIDTH(12))(
-        .clk(clk),
-        .en(axi_alloc_en),
-        .d(oram_addr_nxt),
-        .q(oram_addr_1)
-    );
-    DFFE ff_oram_addr_2 #(.WIDTH(12))(
-        .clk(clk),
-        .en(axi_alloc_en),
-        .d(oram_addr_nxt),
-        .q(oram_addr_2)
-    );
-    DFFE ff_oram_addr_3 #(.WIDTH(12))(
-        .clk(clk),
-        .en(axi_alloc_en),
-        .d(oram_addr_nxt),
-        .q(oram_addr_3)
-    );
-    DFFE ff_oram_addr_4 #(.WIDTH(12))(
-        .clk(clk),
-        .en(axi_alloc_en),
-        .d(oram_addr_nxt),
-        .q(oram_addr_4)
-    );
-    DFFE ff_oram_addr_5 #(.WIDTH(12))(
-        .clk(clk),
-        .en(axi_alloc_en),
-        .d(oram_addr_nxt),
-        .q(oram_addr_5)
-    );
-    DFFE ff_oram_addr_6 #(.WIDTH(12))(
-        .clk(clk),
-        .en(axi_alloc_en),
-        .d(oram_addr_nxt),
-        .q(oram_addr_6)
-    );
-    DFFE ff_oram_addr_7 #(.WIDTH(12))(
-        .clk(clk),
-        .en(axi_alloc_en),
-        .d(oram_addr_nxt),
-        .q(oram_addr_7)
-    );
-    DFFE ff_oram_addr_8 #(.WIDTH(12))(
-        .clk(clk),
-        .en(axi_alloc_en),
-        .d(oram_addr_nxt),
-        .q(oram_addr_8)
-    );
-    DFFE ff_oram_addr_9 #(.WIDTH(12))(
-        .clk(clk),
-        .en(axi_alloc_en),
-        .d(oram_addr_nxt),
-        .q(oram_addr_9)
-    );
-    DFFE ff_oram_addr_10 #(.WIDTH(12))(
-        .clk(clk),
-        .en(axi_alloc_en),
-        .d(oram_addr_nxt),
-        .q(oram_addr_10)
-    );
-    DFFE ff_oram_addr_11 #(.WIDTH(12))(
-        .clk(clk),
-        .en(axi_alloc_en),
-        .d(oram_addr_nxt),
-        .q(oram_addr_11)
-    );
-    DFFE ff_oram_addr_12 #(.WIDTH(12))(
-        .clk(clk),
-        .en(axi_alloc_en),
-        .d(oram_addr_nxt),
-        .q(oram_addr_12)
-    );
-    DFFE ff_oram_addr_13 #(.WIDTH(12))(
-        .clk(clk),
-        .en(axi_alloc_en),
-        .d(oram_addr_nxt),
-        .q(oram_addr_13)
-    );
-    DFFE ff_oram_addr_14 #(.WIDTH(12))(
-        .clk(clk),
-        .en(axi_alloc_en),
-        .d(oram_addr_nxt),
-        .q(oram_addr_14)
-    );
-    DFFE ff_oram_addr_15 #(.WIDTH(12))(
-        .clk(clk),
-        .en(axi_alloc_en),
-        .d(oram_addr_nxt),
-        .q(oram_addr_15)
-    );
-    
-    
-    //
-
     //AW INTF
     wire lsu_axi_awvld_qual;
     wire AWVALID_nxt;
@@ -324,6 +157,195 @@ module AXI_WRITE_INFT(
     wire [3:0] awcnt;
     wire [3:0] awcnt_nxt;
     wire [3:0] awcnt_en;
+
+    assign axi_invld = ~axi_vld;
+    assign axi_alloc_en = {16{axi_alloc_vld}} & axi_alloc_ptr & axi_invld;
+    assign axi_alloc_vld = lsu_axi_awvld_qual | axi_doing_st;
+    assign axi_vld_nxt = axi_alloc_en | axi_vld & ~({16{lsu_resp_recv}} & axi_recv_ptr);
+    assign axi_sent_nxt = {16{AWVALID_sent}} & axi_sent_ptr | axi_sent & ~axi_alloc_en;
+    assign axi_recv_nxt = {16{BVALID_qual}} & BID_16 | axi_recv & ~axi_alloc_en; 
+    assign axi_sent_ptr_nxt = {axi_sent_ptr[14:0], axi_sent_ptr[15]};
+    assign axi_alloc_ptr_nxt = {axi_alloc_ptr[14:0], axi_alloc_ptr[15]};
+    assign axi_sent_en = axi_alloc_vld | AWVALID_sent;
+    assign axi_recv_en = axi_alloc_vld | BVALID_qual;
+    assign oram_addr_nxt = lsu_axi_awvld_qual ? lsu_axi_oram_addr: oram_addr_cur + 12'b1;
+    assign oram_addr_en = lsu_axi_awvld_qual | (|axi_alloc_en);
+    
+    DFFSE #(.WIDTH(1))
+    ff_axi_sent_ptr_lo(
+        .clk(clk),
+        .rst_n(rst_n),
+        .en(AWVALID_sent),
+        .d(axi_sent_ptr_nxt[0]),
+        .q(axi_sent_ptr[0])
+    );
+    DFFRE #(.WIDTH(15))
+    ff_axi_sent_ptr_hi(
+        .clk(clk),
+        .rst_n(rst_n),
+        .en(AWVALID_sent),
+        .d(axi_sent_ptr_nxt[15:1]),
+        .q(axi_sent_ptr[15:1])
+    );
+
+    DFFSE #(.WIDTH(1))
+    ff_axi_alloc_ptr_lo(
+        .clk(clk),
+        .rst_n(rst_n),
+        .en(AWVALID_alloc),
+        .d(axi_alloc_ptr_nxt[0]),
+        .q(axi_alloc_ptr[0])
+    );
+    DFFRE #(.WIDTH(15))
+    ff_axi_alloc_ptr_hi(
+        .clk(clk),
+        .rst_n(rst_n),
+        .en(AWVALID_alloc),
+        .d(axi_alloc_ptr_nxt[15:1]),
+        .q(axi_alloc_ptr[15:1])
+    );
+
+    DFFR #(.WIDTH(16))
+    ff_axi_vld(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(axi_vld_nxt),
+        .q(axi_vld)
+    );
+    DFFE #(.WIDTH(16))
+    ff_axi_sent(
+        .clk(clk),
+        .en(axi_sent_en),
+        .d(axi_sent_nxt),
+        .q(axi_sent)
+    );
+    DFFE #(.WIDTH(16))
+    ff_axi_recv(
+        .clk(clk),
+        .en(axi_recv_en),
+        .d(axi_recv_nxt),
+        .q(axi_recv)
+    );
+
+    DFFE #(.WIDTH(12))
+    ff_oram_addr_cur(
+        .clk(clk),
+        .en(axi_recv_en),
+        .d(oram_addr_nxt),
+        .q(oram_addr_cur)
+    );
+    DFFE #(.WIDTH(12))
+    ff_oram_addr_0(
+        .clk(clk),
+        .en(axi_alloc_en),
+        .d(oram_addr_nxt),
+        .q(oram_addr_0)
+    );
+    DFFE #(.WIDTH(12))
+    ff_oram_addr_1(
+        .clk(clk),
+        .en(axi_alloc_en),
+        .d(oram_addr_nxt),
+        .q(oram_addr_1)
+    );
+    DFFE #(.WIDTH(12))
+    ff_oram_addr_2(
+        .clk(clk),
+        .en(axi_alloc_en),
+        .d(oram_addr_nxt),
+        .q(oram_addr_2)
+    );
+    DFFE #(.WIDTH(12))
+    ff_oram_addr_3(
+        .clk(clk),
+        .en(axi_alloc_en),
+        .d(oram_addr_nxt),
+        .q(oram_addr_3)
+    );
+    DFFE #(.WIDTH(12))
+    ff_oram_addr_4(
+        .clk(clk),
+        .en(axi_alloc_en),
+        .d(oram_addr_nxt),
+        .q(oram_addr_4)
+    );
+    DFFE #(.WIDTH(12))
+    ff_oram_addr_5(
+        .clk(clk),
+        .en(axi_alloc_en),
+        .d(oram_addr_nxt),
+        .q(oram_addr_5)
+    );
+    DFFE #(.WIDTH(12))
+    ff_oram_addr_6(
+        .clk(clk),
+        .en(axi_alloc_en),
+        .d(oram_addr_nxt),
+        .q(oram_addr_6)
+    );
+    DFFE #(.WIDTH(12))
+    ff_oram_addr_7(
+        .clk(clk),
+        .en(axi_alloc_en),
+        .d(oram_addr_nxt),
+        .q(oram_addr_7)
+    );
+    DFFE #(.WIDTH(12))
+    ff_oram_addr_8(
+        .clk(clk),
+        .en(axi_alloc_en),
+        .d(oram_addr_nxt),
+        .q(oram_addr_8)
+    );
+    DFFE #(.WIDTH(12))
+    ff_oram_addr_9(
+        .clk(clk),
+        .en(axi_alloc_en),
+        .d(oram_addr_nxt),
+        .q(oram_addr_9)
+    );
+    DFFE #(.WIDTH(12))
+    ff_oram_addr_10(
+        .clk(clk),
+        .en(axi_alloc_en),
+        .d(oram_addr_nxt),
+        .q(oram_addr_10)
+    );
+    DFFE #(.WIDTH(12))
+    ff_oram_addr_11(
+        .clk(clk),
+        .en(axi_alloc_en),
+        .d(oram_addr_nxt),
+        .q(oram_addr_11)
+    );
+    DFFE #(.WIDTH(12))
+    ff_oram_addr_12(
+        .clk(clk),
+        .en(axi_alloc_en),
+        .d(oram_addr_nxt),
+        .q(oram_addr_12)
+    );
+    DFFE #(.WIDTH(12))
+    ff_oram_addr_13(
+        .clk(clk),
+        .en(axi_alloc_en),
+        .d(oram_addr_nxt),
+        .q(oram_addr_13)
+    );
+    DFFE #(.WIDTH(12))
+    ff_oram_addr_14(
+        .clk(clk),
+        .en(axi_alloc_en),
+        .d(oram_addr_nxt),
+        .q(oram_addr_14)
+    );
+    DFFE #(.WIDTH(12))
+    ff_oram_addr_15(
+        .clk(clk),
+        .en(axi_alloc_en),
+        .d(oram_addr_nxt),
+        .q(oram_addr_15)
+    );
 
     assign axi_lsu_awrdy = |axi_vld;
    
@@ -351,7 +373,8 @@ module AXI_WRITE_INFT(
     assign awcnt_en = |axi_alloc_en;
     assign axi_doing_st = awcnt < awnum;
     
-    DFFRE ff_AWID #(.WIDTH(AWID_WIDTH))(
+    DFFRE #(.WIDTH(AWID_WIDTH))
+    ff_AWID (
         .clk(clk),
         .rst_n(rst_n),
         .en(AWVALID_sent),
@@ -359,42 +382,48 @@ module AXI_WRITE_INFT(
         .q(AWID)
     );
 
-    DFFE ff_AWADDR #(.WIDTH(AWADDR_WIDTH))(
+    DFFE #(.WIDTH(AWADDR_WIDTH))
+    ff_AWADDR(
         .clk(clk),
         .en(AWADDR_en),
         .d(AWADDR_nxt),
         .q(AWADDR)
     );
 
-    DFFE ff_AWLEN #(.WIDTH(8))(
+    DFFE #(.WIDTH(8))
+    ff_AWLEN(
         .clk(clk),
         .en(lsu_axi_awvld),
         .d(AWLEN_nxt),
         .q(AWLEN)
     );
 
-    DFFE ff_AWSIZE #(.WIDTH(3))(
+    DFFE #(.WIDTH(3))
+    ff_AWSIZE(
         .clk(clk),
         .en(lsu_axi_awvld),
         .d(AWSIZE_nxt),
         .q(AWSIZE)
     );
 
-    DFFE ff_AWBURST #(.WIDTH(2))(
+    DFFE #(.WIDTH(2))
+    ff_AWBURST(
         .clk(clk),
         .en(lsu_axi_awvld),
         .d(AWBURST_nxt),
         .q(AWBURST)
     );
     
-    DFFE ff_awnum #(.WIDTH(4))(
+    DFFE #(.WIDTH(4))
+    ff_awnum(
         .clk(clk),
         .en(lsu_axi_awvld),
         .d(awnum_nxt),
         .q(awnum)
     );
     
-    DFFE ff_awstr #(.WIDTH(3))(
+    DFFE #(.WIDTH(3))
+    ff_awstr(
         .clk(clk),
         .en(lsu_axi_awvld),
         .d(awstr_nxt),
@@ -423,38 +452,43 @@ module AXI_WRITE_INFT(
     assign WSTRB_nxt = lsu_axi_wvld_qual ? lsu_axi_wdata : WSTRB;
     assign wcnt_full = wcnt == AWLEN;
     assign WLAST_nxt = wcnt_full;
-    assign wcnt_nxt = (lsu_axi_awvld_qual | wcnt_full) 8'b0 : wcnt_nxt + 7'b1;
+    assign wcnt_nxt = (lsu_axi_awvld_qual | wcnt_full) ? 8'b0 : wcnt_nxt + 7'b1;
     assign wcnt_en = lsu_axi_awvld_qual | lsu_axi_wvld_qual;
     
-    DFFR ff_WVALID #(.WIDTH(1))(
+    DFFR #(.WIDTH(1))
+    ff_WVALID(
         .clk(clk),
         .rst_n(rst_n),
         .d(WVALID_nxt),
         .q(WVALID)
     );
 
-    DFFE ff_WDATA #(.WIDTH(64))(
+    DFFE #(.WIDTH(64))
+    ff_WDATA(
         .clk(clk),
         .en(lsu_axi_wvld),
         .d(WDATA_nxt),
         .q(WDATA)
     );
 
-    DFFE ff_WSTRB #(.WIDTH(8))(
+    DFFE #(.WIDTH(8))
+    ff_WSTRB(
         .clk(clk),
         .en(lsu_axi_wvld),
         .d(WSTRB_nxt),
         .q(WSTRB)
     );
 
-    DFFE ff_WLAST #(.WIDTH(1))(
+    DFFE #(.WIDTH(1))
+    ff_WLAST(
         .clk(clk),
         .en(lsu_axi_wvld),
         .d(WLAST_nxt),
         .q(WLAST)
     );
     
-    DFFE ff_wcnt #(.WIDTH(1))(
+    DFFE #(.WIDTH(1))
+    ff_wcnt(
         .clk(clk),
         .en(wcnt_en),
         .d(wcnt_nxt),
@@ -472,12 +506,13 @@ module AXI_WRITE_INFT(
 
     assign BVALID_qual = BVALID & BREADY;
     assign lsu_resp_recv = lsu_axi_brdy & axi_lsu_bvld;
-    assign axi_lsu_bvld_nxt = BVALID_qual | axi_lsu_bvld & ~lsu-lsu_resp_recv;
+    assign axi_lsu_bvld_nxt = BVALID_qual | axi_lsu_bvld & ~lsu_resp_recv;
     assign axi_lsu_resp_bid_nxt = BVALID_qual ? BID : axi_lsu_resp_oram_addr;
     assign axi_lsu_bresp_nxt = BVALID_qual ? BRESP : axi_lsu_bresp;
     assign BREADY = ~axi_lsu_bvld;
 
-    mux16 reso_oram_addr_mux #(.WIDTH(12))(
+    mux16 #(.WIDTH(12))
+    reso_oram_addr_mux(
         .in0(oram_addr_0),
         .in0(oram_addr_1),
         .in0(oram_addr_2),
@@ -498,17 +533,19 @@ module AXI_WRITE_INFT(
         .out(axi_lsu_resp_oram_addr)
     );
 
-    dec4to16 BID_dec(.in(axi_lsu_resp_bid), .out(axi_recv_ptr));
-    dec4to16 BID_dec(.in(BID), .out(BID_16));
+    dec4to16 resp_BID_dec(.in(axi_lsu_resp_bid), .out(axi_recv_ptr));
+    dec4to16 out_BID_dec(.in(BID), .out(BID_16));
     
-    DFFR ff_axi_lsu_bvld #(.WIDTH(1))(
+    DFFR #(.WIDTH(1))
+    ff_axi_lsu_bvld(
         .clk(clk),
         .rst_n(rst_n),
         .d(axi_lsu_bvld_nxt),
         .q(axi_lsu_bvld)
     );
 
-    DFFE ff_axi_lsu_resp_bid #(.WIDTH(1))(
+    DFFE #(.WIDTH(1))
+    ff_axi_lsu_resp_bid(
         .clk(clk),
         .en(BVALID),
         .d(axi_lsu_resp_bid_nxt),
