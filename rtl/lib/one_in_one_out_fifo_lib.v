@@ -69,7 +69,6 @@ module one_in_one_out_fifo_lib(
             DFFE #(.WIDTH(DATA_SIZE)) ff_ent_data
             (
                 .clk(clk), 
-                .rst_n(rst_n), 
                 .en(alloc_ptr_oh_qual[i]), 
                 .d(in_data), 
                 .q(ent_data[i])
