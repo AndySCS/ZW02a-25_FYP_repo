@@ -78,7 +78,7 @@ module pe (
         .q(out0_vld)
     );
 
-    DFFE #(.WIDTH(16)) 
+    DFFE #(.WIDTH(8)) 
     ff_out0_data(
         .clk(clk),
         .en(in0_vld),
@@ -94,7 +94,7 @@ module pe (
         .q(out1_vld)
     );
 
-    DFFE #(.WIDTH(16)) 
+    DFFE #(.WIDTH(8)) 
     ff_out1_data(
         .clk(clk),
         .en(in1_vld),

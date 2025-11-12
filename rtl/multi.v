@@ -99,7 +99,7 @@ module multi(
         .q(src0_buff_data_nxt)
     );    
     
-    DFFE #(.WIDTH(16))
+    DFFE #(.WIDTH(8))
     ff_src1_buff_data(
         .clk(clk),
         .en(src_buff_data_en),
