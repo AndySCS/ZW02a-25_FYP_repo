@@ -104,7 +104,7 @@ module mxu (
     wire acc_clr;
 
     wire [15:0] c1_vld [15:0];
-    wire [127:0] c1_data [15:0];
+    wire [255:0] c1_data [15:0];
 
     wire mxu_act_vld;
     wire [15:0] act_vld [15:0];
