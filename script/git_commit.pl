@@ -34,6 +34,7 @@ my %base_type_dict = (
     1 => "Design",
     2 => "Verification",
     3 => "Script",
+    4 => "Project",
 );
 
 my %type_connector = (
@@ -68,8 +69,11 @@ sub show_options{
 
 my $base_type = show_options(%base_type_dict);
 print("$base_type");
-my $detail_type = show_options(%{ $type_connector{$base_type} });
-print("$detail_type");
+my $detail_type = "";
+if(exists($type_connector{$base_type})){
+	$detail_type = show_options(%{ $type_connector{$base_type} });
+	print("$detail_type");
+}
 print "\ncommit message: ";
 chomp(my $commit_msg = <STDIN>);
 print("$commit_msg");
