@@ -154,7 +154,7 @@ module mxu (
         .rst_n(rst_n),
         .acc_clr(acc_clr_qual),
         .acc_vld(c1_vld[{$row}][{$col}]),
-        .acc_data(c1_data[{$row}][{$col*8+7}:{$col*8+0}]),
+        .acc_data(c1_data[{$row}][{$col*16+15}:{$col*16+0}]),
         .load_vld(sys_arr_row{$row}_load_vld[{$col}]),
         .load_data(sys_arr_row{$row}_load_data[{$col*8+7}:{$col*8+0}]),
         .out_data_int16(mxu_lsu_int16_row{$row}_data[{$col*16+15}:{$col*16+0}]),
