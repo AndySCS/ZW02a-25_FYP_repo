@@ -109,12 +109,12 @@ module mxu (
 
 
 
-    //:for($row=0;$row<16;$row++){
+    //:for($row=0;$row<17;$row++){
     wire [15:0] sys_arr_row{$row}_vld;
     wire [127:0] sys_arr_row{$row}_data;
     //:} 
 
-    //:for($col=0;$col<16;$col++){
+    //:for($col=0;$col<17;$col++){
     wire [15:0] sys_arr_col{$col}_vld;
     wire [127:0] sys_arr_col{$col}_data;
     //:}

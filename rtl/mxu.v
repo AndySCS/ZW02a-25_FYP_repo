@@ -283,6 +283,8 @@ module mxu (
     wire [127:0] sys_arr_row14_data;
     wire [15:0] sys_arr_row15_vld;
     wire [127:0] sys_arr_row15_data;
+    wire [15:0] sys_arr_row16_vld;
+    wire [127:0] sys_arr_row16_data;
 
     wire [15:0] sys_arr_col0_vld;
     wire [127:0] sys_arr_col0_data;
@@ -316,6 +318,8 @@ module mxu (
     wire [127:0] sys_arr_col14_data;
     wire [15:0] sys_arr_col15_vld;
     wire [127:0] sys_arr_col15_data;
+    wire [15:0] sys_arr_col16_vld;
+    wire [127:0] sys_arr_col16_data;
 
 
     assign sys_arr_row0_vld  = lsu_mxu_iram_vld;
