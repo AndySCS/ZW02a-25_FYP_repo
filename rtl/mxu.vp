@@ -141,7 +141,7 @@ module mxu (
         .out1_data(sys_arr_col{$col+1}_data[{7+$row*8}:{0+$row*8}]),
         .pe_doing(pe_doing[{$row}][{$col}]),
         .c1_vld(c1_vld[{$row}][{$col}]),
-        .c1_data(c1_data[{$row}][{$col*8+7}:{$col*8+0}])
+        .c1_data(c1_data[{$row}][{$col*16+15}:{$col*16+0}])
     );
     
     //:}
