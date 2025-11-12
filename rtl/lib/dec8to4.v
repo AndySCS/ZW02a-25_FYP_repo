@@ -16,7 +16,7 @@ module dec8to3(
             'b000001xx: out <=  3'b010;
             'b0000001x: out <=  3'b001;
             'b00000001: out <=  3'b000;
-            default: 16'hxxxx;
+            default: out <= 3'bxxx;
         endcase
     end
 
