@@ -21,24 +21,24 @@ module mux16 (
 
     parameter WIDTH = 4;
 
-    input [WIDTH-1:0] in0,
-    input [WIDTH-1:0] in1,
-    input [WIDTH-1:0] in2,
-    input [WIDTH-1:0] in3,
-    input [WIDTH-1:0] in4,
-    input [WIDTH-1:0] in5,
-    input [WIDTH-1:0] in6,
-    input [WIDTH-1:0] in7,
-    input [WIDTH-1:0] in8,
-    input [WIDTH-1:0] in9,
-    input [WIDTH-1:0] in10,
-    input [WIDTH-1:0] in11,
-    input [WIDTH-1:0] in12,
-    input [WIDTH-1:0] in13,
-    input [WIDTH-1:0] in14,
-    input [WIDTH-1:0] in15,
-    input [3:0] sel,
-    output [WIDTH-1:0] out
+    input [WIDTH-1:0] in0;
+    input [WIDTH-1:0] in1;
+    input [WIDTH-1:0] in2;
+    input [WIDTH-1:0] in3;
+    input [WIDTH-1:0] in4;
+    input [WIDTH-1:0] in5;
+    input [WIDTH-1:0] in6;
+    input [WIDTH-1:0] in7;
+    input [WIDTH-1:0] in8;
+    input [WIDTH-1:0] in9;
+    input [WIDTH-1:0] in10;
+    input [WIDTH-1:0] in11;
+    input [WIDTH-1:0] in12;
+    input [WIDTH-1:0] in13;
+    input [WIDTH-1:0] in14;
+    input [WIDTH-1:0] in15;
+    input [3:0] sel;
+    output [WIDTH-1:0] out;
 
     assign out = (sel == 4'd0)  ? in0  :
                  (sel == 4'd1)  ? in1  :
