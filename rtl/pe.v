@@ -46,7 +46,7 @@ module pe (
     multi u_multi(
         .clk(clk),
         .rst_n(rst_n),
-        .multi_vld(mutlti_vld),
+        .multi_vld(multi_vld),
         .in0_data(in0_data),
         .in1_data(in1_data),
         .multi_busy(multi_busy),
@@ -62,7 +62,7 @@ module pe (
         .q(c1_vld)
     );
 
-    DFFE #(.WIDTH(15)) 
+    DFFE #(.WIDTH(16)) 
     ff_c1_data(
         .clk(clk),
         .rst_n(rst_n),
@@ -79,7 +79,7 @@ module pe (
         .q(out0_vld)
     );
 
-    DFFE #(.WIDTH(15)) 
+    DFFE #(.WIDTH(16)) 
     ff_out0_data(
         .clk(clk),
         .rst_n(rst_n),
@@ -96,7 +96,7 @@ module pe (
         .q(out1_vld)
     );
 
-    DFFE #(.WIDTH(15)) 
+    DFFE #(.WIDTH(16)) 
     ff_out1_data(
         .clk(clk),
         .rst_n(rst_n),
