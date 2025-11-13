@@ -1,4 +1,4 @@
-class env extends uvm_scoreboard;
+class mxu_sc extends uvm_scoreboard;
 
     mxu_tr exp_q[$];
     uvm_blocking_get_port #(mxu_tr) exp_port;

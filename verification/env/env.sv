@@ -2,7 +2,8 @@ class env extends uvm_env;
 
     mxu_agent mxu_agt;
     mxu_rm rm;
-    uvm_tlm_analysis_fifo #(mxu_tr) mxu_fifo;
+    mxu_sc sc;
+    //uvm_tlm_analysis_fifo #(mxu_tr) mxu_fifo;
 
     function new(string name = "env", uvm_component parent);
         super.new(name, parent);
@@ -18,10 +19,12 @@ endclass //env extends superClass
 function void env::build_phase(uvm_phase phase);
     super.build_phase(phase);
     mxu_agt = mxu_agent::type_id::create("mxu_agt", this);
+    rm = mxu_rm::type_id::create("rm", this);
+    sc = mxu_sc::type_id::create("sc", this);
 endfunction
 
 function void env::connect_phase(uvm_phase phase);
     super.connect_phase(phase);
-    mxu_agt.ap.connect(mxu_fifo.analysis_export);
-    rm.port.connect(mxu_fifo.blocking_get_export);
+    mxu_agt.ap.connect(sc.act_port);
+    rm.port.connect(sc.exp_port);
 endfunction

@@ -18,8 +18,17 @@ class mxu_tr extends uvm_sequence_item;
     endfunction //new()
 
     `uvm_object_utils(mxu_tr)
+        `uvm_field_array_int(matrix_L,	    UVM_DEFAULT)
+        `uvm_field_array_int (matrix_R,	    UVM_DEFAULT)
+        `uvm_field_array_int(matrix_result,	UVM_DEFAULT)
+        `uvm_field_int(matrix_Lx,	    UVM_DEFAULT)
+        `uvm_field_int(matrix_Ly,	    UVM_DEFAULT)
+        `uvm_field_int(matrix_Rx,	    UVM_DEFAULT)
+        `uvm_field_int(matrix_Ry,	    UVM_DEFAULT)
+    `uvm_object_utils_end
     
     extern function void init_matrix();
+    extern function bit compare(mxu_tr tr);
     //extern function void clear_result();
 
 endclass //mxu_tr extends superClass
@@ -39,6 +48,24 @@ function void mxu_tr::init_matrix();
             this.matrix_result[i][j] = 0;
         end
     end
+
+endfunction
+
+function void mxu_tr::compare(mxu_tr tr);
+    
+    bit match = 1;
+
+    for(int i = 0; i < 16; i++)begin
+        for(int j = 0; j < 16; j++)begin
+            if(this.matrix_result[i][j] != tr.matrix_result[i][j]) begin
+                match = 0;
+                break;
+            end
+        end
+        if(!match) break;
+    end
+
+    return match;
 
 endfunction
 
