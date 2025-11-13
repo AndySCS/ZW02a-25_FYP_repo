@@ -1,6 +1,6 @@
 class mxu_sc extends uvm_scoreboard;
 
-    mxu_tr exp_q[$];
+    mxu_tr exp_result_q[$];
     uvm_blocking_get_port #(mxu_tr) exp_port;
     uvm_blocking_get_port #(mxu_tr) act_port;
 
@@ -21,7 +21,7 @@ function void mxu_sc::build_phase(uvm_phase phase);
     act_port = new("act_port", this);
 endfunction
 
-function void mxu_sc::main_phase(uvm_phase phase);
+task mxu_sc::main_phase(uvm_phase phase);
     mxu_tr exp_tr;
     mxu_tr act_tr;
     mxu_tr tmp_tr;
@@ -30,13 +30,13 @@ function void mxu_sc::main_phase(uvm_phase phase);
 	
     fork
 	while(1)begin
-		exp_port.get(exp_tr);
-		exp_q.push(exp_tr);
+		this.exp_port.get(exp_tr);
+		this.exp_result_q.push_back(exp_tr);
 	end
 	while(1)begin
-		act_port.get(act_tr);
-		if(exp_q.size() > 0)begin
-			tmp_tr = exp_q.pop_front();
+		this.act_port.get(act_tr);
+		if(this.exp_result_q.size() > 0)begin
+			tmp_tr = this.exp_result_q.pop_front();
 			if(!tmp_tr.compare(act_tr))begin //compare false
 				$display("tmp_tr");
 				tmp_tr.print();
@@ -46,10 +46,10 @@ function void mxu_sc::main_phase(uvm_phase phase);
 			end
 		end
 		else begin
-			`uvm_error("mxu_sc", "exp_q is empty")
+			`uvm_error("mxu_sc", "exp_result_q is empty")
 		end
 	end
     join
 
 
-endfunction
+endtask
