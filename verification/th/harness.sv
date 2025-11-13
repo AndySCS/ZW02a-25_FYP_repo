@@ -1,5 +1,8 @@
 
 module harness;
+
+    reg clk;
+    reg rst_n;
     
     wire lsu_mxu_vld;
     wire lsu_mxu_clr;
@@ -104,6 +107,17 @@ module harness;
         uvm_config_db#(virtual mxu_intf)::set(null, "uvm_test_top.mxu_agt.mxu_omon", "mxu_if", mxu_if);
     end
     //
+
+    initial begin
+	clk <= 0;
+	forever #10 clk <= ~clk;
+    end
+
+    initial begin
+	rst_n <= 0;
+	#100;
+	rst_n <= 1;
+    end
 
     mxu u_mxu(
         .clk(clk),
