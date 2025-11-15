@@ -1,6 +1,6 @@
 #Default Variable
 seed := $(shell perl -e "print int(rand(10000000))")
-tc = tc_sanity
+tc = tc_base
 mode = sim_test
 printlv = UVM_LOW
 #fsdb_file_name = $(tc)_$(seed)
@@ -100,7 +100,7 @@ cov:
 	verdi -cov &
 
 verdi: 
-	verdi -f ../cfg/sim_filelist.f &
+	verdi -f ../cfg/file_list.f &
 
 clean: 
 	rm -rf core *_csrc simv* vc_hdrs.h ucli.key urg* *.log *.fsdb novas.* verdiLog vdCovLog *.rpt
