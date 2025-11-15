@@ -99,9 +99,9 @@ module harness;
 
     //set up config db'
     initial begin
-        uvm_config_db#(virtual mxu_intf)::set(null, "uvm_test_top.mxu_agt.mxu_drv", "mxu_if", mxu_if);
-        uvm_config_db#(virtual mxu_intf)::set(null, "uvm_test_top.mxu_agt.mxu_imon", "mxu_if", mxu_if);
-        uvm_config_db#(virtual mxu_intf)::set(null, "uvm_test_top.mxu_agt.mxu_omon", "mxu_if", mxu_if);
+        uvm_config_db#(virtual mxu_intf)::set(null, "uvm_test_top.tc_env.mxu_agt.mxu_drv", "mxu_if", mxu_if);
+        uvm_config_db#(virtual mxu_intf)::set(null, "uvm_test_top.tc_env.mxu_agt.mxu_imon", "mxu_if", mxu_if);
+        uvm_config_db#(virtual mxu_intf)::set(null, "uvm_test_top.tc_env.mxu_agt.mxu_omon", "mxu_if", mxu_if);
     end
     //
 
@@ -156,7 +156,7 @@ module harness;
     );
 
     initial begin
-        run_test("env");
+        run_test("tc_base");
     end
     
 endmodule
