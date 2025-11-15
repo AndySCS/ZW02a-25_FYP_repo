@@ -65,7 +65,7 @@ module one_in_one_out_fifo_lib(
 
     genvar i;
     generate
-        for (i = 0; i < ENT_NUM ;i=i+1) begin
+        for (i = 0; i < ENT_NUM ;i=i+1) begin: fifo_data
             DFFE #(.WIDTH(DATA_SIZE)) ff_ent_data
             (
                 .clk(clk), 
