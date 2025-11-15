@@ -19,7 +19,9 @@ function void tc_base::build_phase(uvm_phase phase);
 endfunction
 
 function void tc_base::report_phase(uvm_phase phase);
-    
+
+    int err_num;    
+
     uvm_report_server server;
     super.report_phase(phase);
 
