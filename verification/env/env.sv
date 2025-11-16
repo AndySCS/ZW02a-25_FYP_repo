@@ -3,7 +3,9 @@ class env extends uvm_env;
     mxu_agent mxu_agt;
     mxu_rm rm;
     mxu_sc sc;
-    //uvm_tlm_analysis_fifo #(mxu_tr) mxu_fifo;
+    uvm_tlm_analysis_fifo #(mxu_tr) agt_rm_fifo;
+    uvm_tlm_analysis_fifo #(mxu_tr) agt_sc_fifo;
+    uvm_tlm_analysis_fifo #(mxu_tr) rm_sc_fifo;
 
     function new(string name = "env", uvm_component parent);
         super.new(name, parent);
@@ -21,10 +23,23 @@ function void env::build_phase(uvm_phase phase);
     mxu_agt = mxu_agent::type_id::create("mxu_agt", this);
     rm = mxu_rm::type_id::create("rm", this);
     sc = mxu_sc::type_id::create("sc", this);
+    
+    agt_rm_fifo = new("agt_rm_fifo",this);
+    agt_sc_fifo = new("agt_sc_fifo",this);
+    rm_sc_fifo = new("rm_sc_fifo",this);
+
 endfunction
 
 function void env::connect_phase(uvm_phase phase);
     super.connect_phase(phase);
-    mxu_agt.ap.connect(sc.act_port);
-    rm.port.connect(sc.exp_port);
+
+    mxu_agt.iap.connect(agt_rm_fifo.analysis_export);
+    rm.port.connect(agt_rm_fifo.blocking_get_export);
+
+    mxu_agt.oap.connect(agt_sc_fifo.analysis_export);
+    sc.act_port.connect(agt_sc_fifo.blocking_get_export);
+    
+    rm.ap.connect(agt_sc_fifo.analysis_export);
+    sc.exp_port.connect(agt_sc_fifo.blocking_get_export);
+
 endfunction
