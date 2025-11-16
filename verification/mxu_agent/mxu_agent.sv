@@ -3,7 +3,8 @@ class mxu_agent extends uvm_agent;
     mxu_driver mxu_drv;
     mxu_input_monitor mxu_imon; //input monitor
     mxu_output_monitor mxu_omon; //output monitor
-    uvm_analysis_port #(mxu_tr) ap;
+    uvm_analysis_port #(mxu_tr) iap;
+    uvm_analysis_port #(mxu_tr) oap;
 
     function new(string name = "mxu_agent", uvm_component parent);
         super.new(name, parent);
@@ -25,5 +26,6 @@ endfunction
 
 function void mxu_agent::connect_phase(uvm_phase phase);
     super.connect_phase(phase);
-    ap = mxu_imon.ap;
+    iap = mxu_imon.ap;
+    oap = mxu_omon.ap;
 endfunction
