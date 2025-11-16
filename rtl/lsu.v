@@ -294,7 +294,7 @@ module lsu(
                                                 idu_lsu_st_dram  |
                                                 idu_lsu_conv);
     
-    assign lsu_inst_finish = lsu_load_buffer_finished | lsu_store_buffer_finished | lsu_mm_buffer_finished;
+    assign lsu_inst_finish = lsu_load_buffer_finished | lsu_store_buffer_finished | lsu_mm_buffer_finished | lsu_st_sram_done;
 
     assign lsu_idu_rdy = !lsu_new_inst_arrive & lsu_inst_finish;
 
@@ -330,7 +330,6 @@ module lsu(
 
         //TYPE1 store
         //from oram to dram
-
         //from lsu input
         //axi address related
         .ctrl_store_awvld(lsu_awvld),
@@ -382,13 +381,173 @@ module lsu(
 
         //response related
         .lsu_axi_brdy(lsu_axi_brdy),
-
-
-        //TYPE2 store
-        //from mxu to sram
-        .ctrl_store_sram_vld()
     );
 
+    //TYPE2 store
+    //from mxu to sram
+    assign lsu_st_sram_vld = lsu_vld & (idu_lsu_st_iram | idu_lsu_st_oram | idu_lsu_st_wram);
+
+    assign lsu_sram_doing_nxt = lsu_st_sram_vld; 
+    assign lsu_sram_doing_en = lsu_st_sram_vld | lsu_st_sram_done;
+
+    DFFER #(.WIDTH(12))
+    ff_lsu_type2_st_mxu_start_addr(
+        .clk(clk),
+        .rst_n(rst_n),
+        .en(lsu_store_sram_vld),
+        .d(idu_lsu_ld_st_addr),
+        .q(lsu_st_sram_addr)
+    );
+    
+    DFFER #(.WIDTH(4))
+    ff_lsu_type2_store_mxu_start_x(
+        .clk(clk),
+        .rst_n(rst_n),
+        .en(lsu_store_sram_vld),
+        .d(idu_lsu_start_x),
+        .q(lsu_st_mxu_start_x)
+    );
+
+    DFFER #(.WIDTH(4))
+    ff_lsu_type2_store_mxu_start_y(
+        .clk(clk),
+        .rst_n(rst_n),
+        .en(lsu_store_sram_vld),
+        .d(idu_lsu_start_y),
+        .q(lsu_st_mxu_start_y)
+    );
+
+    DFFER #(.WIDTH(8))
+    ff_lsu_type2_store_num (
+        .clk(clk),
+        .rst_n(rst_n),
+        .en(lsu_store_sram_vld),
+        .d(idu_lsu_len),
+        .q(lsu_st_sram_num)
+    );
+
+    DFFER #(.WIDTH(3))
+    ff_lsu_sram_doing (
+        .clk(clk),
+        .rst_n(rst_n),
+        .en(lsu_sram_doing_en),
+        .d(lsu_sram_doing_nxt),
+        .q(lsu_sram_doing)
+    );
+
+    assign lsu_st_sram_type = lsu_st_sram_vld ? (idu_lsu_st_iram ? 2'b01 : idu_lsu_st_wram ? 2'b10 : 2'b11) : lsu_st_sram_type_ff;
+    
+    DFFER #(.WIDTH(2))
+    ff_lsu_st_sram_type (
+        .clk(clk),
+        .rst_n(rst_n),
+        .en(lsu_st_sram_vld),
+        .d(lsu_st_sram_type),
+        .q(lsu_st_sram_type_ff)
+    );
+
+    //MXU count
+    //choose the row by Y
+    //total 16 row
+    //start = start Y
+    //end   = start Y + num_chunk
+    assign lsu_st_sram_done = lsu_st_sram_county == (lsu_st_sram_count_row+lsu_st_sram_num);
+    assign lsu_st_sram_count_row_nxt = lsu_st_sram_done ? st_sram_count_row : (lsu_st_sram_vld ? idu_lsu_start_y + 1 : st_sram_count_row + 1);
+    assign lsu_st_sram_count_row_en = (lsu_store_sram_vld | lsu_st_sram_doing);
+    assign lsu_st_sram_row_sel = lsu_st_sram_vld ? idu_lsu_start_y : lsu_st_sram_count_row; 
+
+    //filter the useable element in int8 => 128bit
+    //by the start_x and the len
+    //assume it will not over the boundary limit
+    dec_size dec_data_len(.dec_in(idu_lsu_size), .dec_out(lsu_st_sram_len));
+    assign lsu_st_col_target = lsu_st_sram_vld ? idu_lsu_start_x+lsu_st_sram_len : lsu_st_mxu_start_x+lsu_st_sram_len_ff;
+    mxu16 #(.WIDTH(8)) mux16rowdata_int8(.mxu_bank_in0(mxu_lsu_int8_row0_data),
+                                         .mxu_bank_in1(mxu_lsu_int8_row1_data),
+                                         .mxu_bank_in2(mxu_lsu_int8_row2_data),
+                                         .mxu_bank_in3(mxu_lsu_int8_row3_data),
+                                         .mxu_bank_in4(mxu_lsu_int8_row4_data),
+                                         .mxu_bank_in5(mxu_lsu_int8_row5_data),
+                                         .mxu_bank_in6(mxu_lsu_int8_row6_data),
+                                         .mxu_bank_in7(mxu_lsu_int8_row7_data),
+                                         .mxu_bank_in8(mxu_lsu_int8_row8_data),
+                                         .mxu_bank_in9(mxu_lsu_int8_row9_data),
+                                         .mxu_bank_in10(mxu_lsu_int8_row10_data),
+                                         .mxu_bank_in11(mxu_lsu_int8_row11_data),
+                                         .mxu_bank_in12(mxu_lsu_int8_row12_data),
+                                         .mxu_bank_in13(mxu_lsu_int8_row13_data),
+                                         .mxu_bank_in14(mxu_lsu_int8_row14_data),
+                                         .mxu_bank_in15(mxu_lsu_int8_row15_data),
+                                         .sel(lsu_st_sram_row_sel),
+                                         .mxu_out(lsu_st_sram_din_int8_raw)
+                                        );
+
+    
+    mxu16 #(.WIDTH(9)) mux16rowdata_int8(.mxu_bank_in0(mxu_lsu_int16_row0_data),
+                                         .mxu_bank_in1(mxu_lsu_int16_row1_data),
+                                         .mxu_bank_in2(mxu_lsu_int16_row2_data),
+                                         .mxu_bank_in3(mxu_lsu_int16_row3_data),
+                                         .mxu_bank_in4(mxu_lsu_int16_row4_data),
+                                         .mxu_bank_in5(mxu_lsu_int16_row5_data),
+                                         .mxu_bank_in6(mxu_lsu_int16_row6_data),
+                                         .mxu_bank_in7(mxu_lsu_int16_row7_data),
+                                         .mxu_bank_in8(mxu_lsu_int16_row8_data),
+                                         .mxu_bank_in9(mxu_lsu_int16_row9_data),
+                                         .mxu_bank_in10(mxu_lsu_int16_row10_data),
+                                         .mxu_bank_in11(mxu_lsu_int16_row11_data),
+                                         .mxu_bank_in12(mxu_lsu_int16_row12_data),
+                                         .mxu_bank_in13(mxu_lsu_int16_row13_data),
+                                         .mxu_bank_in14(mxu_lsu_int16_row14_data),
+                                         .mxu_bank_in15(mxu_lsu_int16_row15_data),
+                                         .sel(lsu_st_sram_row_sel),
+                                         .mxu_out(lsu_st_sram_din_int16_raw)
+                                        );
+
+    assign lsu_st_sram_din_int8 = lsu_st_sram_vld ? 
+                                    ({128{1'b0}} || {lsu_st_sram_din_raw[lsu_st_col_target:idu_lsu_start_x], {idu_lsu_start_x{1'b0}}}):
+                                    ({128{1'b0}} || {lsu_st_sram_din_raw[lsu_st_col_target:lsu_st_mxu_start_x], {lsu_st_mxu_start_x{1'b0}}}):
+    assign lsu_st_sram_din_int16 = lsu_st_sram_vld ? 
+                                    ({256{1'b0}} || {lsu_st_sram_din_raw[lsu_st_col_target:idu_lsu_start_x], {idu_lsu_start_x{1'b0}}}):
+                                    ({256{1'b0}} || {lsu_st_sram_din_raw[lsu_st_col_target:lsu_st_mxu_start_x], {lsu_st_mxu_start_x{1'b0}}}):
+
+    assign lsu_st_sram_din = lsu_st_sram_vld ? 
+                                        ((&lsu_st_sram_type) && lsu_st_sram_din_int16) | ((^lsu_st_sram_type) && lsu_st_sram_din_int8): 
+                                        ((&lsu_st_sram_type_ff) && lsu_st_sram_din_int16) | ((^lsu_st_sram_type_ff) && lsu_st_sram_din_int8): 
+                                    
+    assign lsu_st_sram_wen = lsu_st_sram_vld | lsu_st_sram_doing;
+    assign lsu_st_sram_cen = lsu_st_sram_vld |lsu_st_sram_doing;
+
+    //SRAM count
+    assign lsu_st_sram_addr = lsu_st_sram_vld ? idu_lsu_ld_st_addr[11:4] : lsu_st_sram_addr_ff;
+    assign lsu_st_sram_addr_ff_next = lsu_st_sram_vld ? idu_lsu_ld_st_addr[11:4] + 1 : lsu_st_sram_addr_ff + 1;
+    assign lsu_st_sram_addr_en =  (lsu_store_sram_vld | lsu_sram_doing | ~lsu_st_sram_done);
+
+    DFFER #(.WIDTH(8))
+    ff_lsu_type2_store_len (
+        .clk(clk),
+        .rst_n(rst_n),
+        .en(lsu_st_sram_addr_en),
+        .d(lsu_st_sram_addr_ff_nxt),
+        .q(lsu_st_sram_addr_ff)
+    );
+
+    DFFER #(.WIDTH(3))
+    ff_lsu_type2_store_len (
+        .clk(clk),
+        .rst_n(rst_n),
+        .en(lsu_store_sram_vld),
+        .d(lsu_st_sram_len),
+        .q(lsu_st_sram_len_ff)
+    );
+    
+    DFFER #(.WIDTH(4))
+    ff_lsu_type2_store_num (
+        .clk(clk),
+        .rst_n(rst_n),
+        .en(lsu_st_sram_count_row_en),
+        .d(lsu_st_sram_count_row_nxt),
+        .q(lsu_st_sram_count_row)
+    );
+    
     ////////////////////////////////////////////////////////////
     //For load instruction
     load_buffer dram_iram_load_buffer(
@@ -488,10 +647,10 @@ module lsu(
         .ram_buff_mxu_data(lsu_iram_load_data) 
     );  
 
-    assign lsu_iram_cen = lsu_iram_wrapper_vld | (lsu_ld_buff_cen & lsu_ld_buff_sram_type[1]);
-    assign lsu_iram_wen = lsu_ld_iram_wen & (lsu_ld_buff_wen & lsu_ld_buff_sram_type[1]);
-    assign lsu_iram_addr = lsu_iram_wrapper_addr | (lsu_ld_sram_addr && lsu_ld_buff_sram_type[1]);
-    assign lsu_iram_din = lsu_ld_buff_din && lsu_ld_buff_sram_type;
+    assign lsu_iram_cen = lsu_iram_wrapper_vld | (lsu_ld_buff_cen & lsu_ld_buff_sram_type[1]) | ((lsu_st_sram_type==2'b01)&lsu_st_sram_cen);
+    assign lsu_iram_wen = lsu_ld_iram_wen & (lsu_ld_buff_wen & lsu_ld_buff_sram_type[1]) | ((lsu_st_sram_type==2'b01)&lsu_st_sram_wen);
+    assign lsu_iram_addr = lsu_iram_wrapper_addr | (lsu_ld_sram_addr && lsu_ld_buff_sram_type[1]) | ((lsu_st_sram_type==2'b01)&&lsu_st_sram_addr);
+    assign lsu_iram_din = lsu_ld_buff_din && lsu_ld_buff_sram_type[1] | ((lsu_st_sram_type==2'b01)&&lsu_st_sram_din);
 
     mem_wrapper iram(
         .clk (clk),
@@ -551,8 +710,10 @@ module lsu(
         .ram_buff_mxu_data(lsu_wram_load_data) 
     );  
 
-    assign lsu_wram_cen = lsu_wram_wrapper_vld | (lsu_ld_buff_cen & lsu_ld_buff_sram_type[0]);
-    assign lsu_wram_addr = lsu_wram_wrapper_addr | (lsu_ld_sram_addr && lsu_ld_buff_sram_type[0]);
+    assign lsu_wram_cen = lsu_wram_wrapper_vld | (lsu_ld_buff_cen & lsu_ld_buff_sram_type[0]) | ((lsu_st_sram_type==2'b10)&lsu_st_sram_cen);
+    assign lsu_iram_wen = (lsu_ld_buff_wen & lsu_ld_buff_sram_type[0]) | ((lsu_st_sram_type==2'b10)&lsu_st_sram_wen);
+    assign lsu_wram_addr = lsu_wram_wrapper_addr | (lsu_ld_sram_addr && lsu_ld_buff_sram_type[0]) | ((lsu_st_sram_type==2'b01)&&lsu_st_sram_addr);
+    assign lsu_iram_din = lsu_ld_buff_din && lsu_ld_buff_sram_type[0] | ((lsu_st_sram_type==2'b10)&&lsu_st_sram_din);
     
     mem_wrapper wram(
         .clk (clk),
@@ -583,10 +744,10 @@ module lsu(
     assign lsu_mxu_wram_pld = lsu_wram_load_data;
 
     //FOR oram 
-    assign lsu_oram_wen = 'b0; //FIXME
-    assign lsu_oram_cen = lsu_st_buff_oram_cen;
-    assign lsu_oram_addr = lsu_st_buff_oram_addr;
-    assign lsu_oram_din = 'b0;
+    assign lsu_oram_wen = (lsu_st_sram_type==2'b10)&lsu_st_sram_cen; //FIXME
+    assign lsu_oram_cen = lsu_st_buff_oram_cen | ((lsu_st_sram_type==2'b10)&lsu_st_sram_wen);
+    assign lsu_oram_addr = lsu_st_buff_oram_addr | ((lsu_st_sram_type==2'b01)&&lsu_st_sram_addr);
+    assign lsu_oram_din = ((lsu_st_sram_type==2'b10)&&lsu_st_sram_din);
 
     mem_wrapper oram(
         .clk (clk),

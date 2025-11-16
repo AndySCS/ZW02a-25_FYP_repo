@@ -378,8 +378,7 @@ module store_buffer(
     //
     dec32to5 dec_bank_lo(.dec_in(st_buff_error_bank_addr_lo), .dec_out(st_buff_error_addr_lo));
 
-    // this place a bit confuse
-    assign st_bresp_resend_sram_addr = {st_buff_error_bank_addr_hi,st_buff_error_bank_addr_lo};
-    
+    // this will be the resend addr
+    assign st_bresp_resend_sram_addr = {st_buff_error_bank_addr_hi,st_buff_error_bank_addr_lo}; 
 
 endmodule
