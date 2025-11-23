@@ -13,6 +13,7 @@ class env extends uvm_env;
 
     extern virtual function void build_phase(uvm_phase phase);
     extern virtual function void connect_phase(uvm_phase phase);
+    extern virtual task main_phase(uvm_phase phase);
 
     `uvm_component_utils(env)
 
@@ -43,3 +44,19 @@ function void env::connect_phase(uvm_phase phase);
     sc.exp_port.connect(agt_sc_fifo.blocking_get_export);
 
 endfunction
+
+task env::main_phase(uvm_phase phase);
+    int phase_cnt;
+
+    super.main_phase(phase);
+
+    phase.raise_objection(phase);
+    
+    while(1)begin
+        @(posedge mxu_agt.mxu_drv.mxu_if.clk)begin
+	    phase_cnt++;
+	end
+        if(phase_cnt >= 2000) phase.drop_objection(phase);
+    end
+    
+endtask
