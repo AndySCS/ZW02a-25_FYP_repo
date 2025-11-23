@@ -701,7 +701,9 @@ module lsu(
         .load_axi_arstr(lsu_axi_arstr),
         .load_axi_arnum(lsu_axi_arnum),
         .load_axi_arvld(lsu_axi_arvld),
-        .load_axi_rrdy(lsu_axi_rrdy)
+        .load_axi_rrdy(lsu_axi_rrdy),
+        .ctrl_lsu_load_buffer_done(lsu_load_buffer_finished)
+
     );
 
     //rrdy logic 
