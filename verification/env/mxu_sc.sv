@@ -31,10 +31,12 @@ task mxu_sc::main_phase(uvm_phase phase);
     fork
 	while(1)begin
 		this.exp_port.get(exp_tr);
+    		`uvm_info("mxu_sc", "received exp matrix from rm", UVM_NONE);
 		this.exp_result_q.push_back(exp_tr);
 	end
 	while(1)begin
 		this.act_port.get(act_tr);
+    		`uvm_info("mxu_sc", "received act matrix from mon", UVM_NONE);
 		if(this.exp_result_q.size() > 0)begin
 			tmp_tr = this.exp_result_q.pop_front();
 			if(!tmp_tr.compare(act_tr))begin //compare false
