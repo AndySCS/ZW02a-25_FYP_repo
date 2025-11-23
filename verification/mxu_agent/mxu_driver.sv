@@ -41,6 +41,16 @@ task mxu_driver::send_matrix(mxu_tr tr);
     int cycle_cnt = 0;
     bit send_matrix_needed = 0;
 
+    while(1)begin
+        @(posedge mxu_if.clk);
+        if(mxu_if.mxu_lsu_rdy) begin
+            mxu_if.lsu_mxu_vld = 1;
+            @(posedge mxu_if.clk);
+            mxu_if.lsu_mxu_vld = 0;
+            break;
+        end
+    end
+
     `uvm_info("mxu_driver", "begin sending matrix", UVM_NONE)
 
     while(1)begin
