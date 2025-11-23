@@ -42,6 +42,10 @@ task mxu_driver::send_matrix(mxu_tr tr);
     bit send_matrix_needed = 0;
 
     while(1)begin
+        mxu_if.lsu_mxu_vld = 0;
+        mxu_if.lsu_mxu_iram_vld = 0;
+        mxu_if.lsu_mxu_wram_vld = 0;
+	@(posedge mxu_if.rst_n); // wait till rstn is high
         @(posedge mxu_if.clk);
         if(mxu_if.mxu_lsu_rdy) begin
             mxu_if.lsu_mxu_vld = 1;
