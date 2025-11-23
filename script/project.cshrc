@@ -46,6 +46,7 @@ alias prj_top 'cd $MINITPU_VER/toptest'
 alias prj_rtl 'cd $MINITPU_RTL'
 alias prj_cov 'cd $MINITPU_COV'
 alias prj_sva 'cd $MINITPU_SVA'
+alias gcommit 'perl $MINITPU_FOLDER/script/git_commit.pl'
 
 #Set up local tool
 source $MINITPU_FOLDER/script/set_local_bin.cshrc
