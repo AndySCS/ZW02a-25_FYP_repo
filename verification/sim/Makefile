@@ -15,7 +15,7 @@ riscdv_folder = "bin"
 flash_depth = 2048 
 max_chk = 15000 
 
-fsdb_file_name = $(tc)_$(riscdv_test)_$(seed)
+fsdb_file_name = $(tc)
 #TC Name
 #ifeq ($(tc), tc_riscdv)
 #	fsdb_file_name = $(tc)_$(riscdv_test)_$(seed)
@@ -109,7 +109,7 @@ merge:
 	urg -full64 -parallel -show tests -dir $(mode)/cov/simv.vdb -dbname $(dbname).vdb &
 
 #For TCL script
-export wave = 
+export wave = on
 export dump_fsdb_name = $(mode)/wave/$(fsdb_file_name)
 
 #Maybe can use for IP

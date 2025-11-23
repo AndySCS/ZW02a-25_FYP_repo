@@ -45,10 +45,14 @@ task mxu_input_monitor::collect_matrix_in(mxu_tr tr);
 
     bit collect_begin;
 
+    `uvm_info("mxu_input_monitor", "enter collect matrix", UVM_NONE)
+
     while(1)begin
         @(posedge mxu_if.clk);
         if(mxu_if.lsu_mxu_vld & mxu_if.mxu_lsu_rdy) break;
     end
+    
+    `uvm_info("mxu_input_monitor", "leave collect matrix", UVM_NONE)
 
 /*
     while(1)begin
