@@ -47,7 +47,8 @@ module store_buffer(
     lsu_axi_oram_addr,
 
     //response related
-    lsu_axi_brdy
+    lsu_axi_brdy,
+    ctrl_lsu_store_buffer_done
 );
     //parameter
     parameter AWID_WIDTH = 4;
@@ -108,8 +109,9 @@ module store_buffer(
 
     //response related
     output lsu_axi_brdy;
+    output ctrl_lsu_store_buffer_done;
 
-    wire lsu_awvld;;
+    wire lsu_awvld;
     wire st_buff_is_send;
     wire ctrl_store_wvld_en;
     wire lsu_awvld_ff;
@@ -148,17 +150,21 @@ module store_buffer(
     wire[2:0] lsu_axi_awstr_ff;
     wire[3:0] lsu_axi_awnum_ff;
     //if ctrl_store_awvld => update the address payload 
-    
+    reg[7:0] ctrl_store_resp_oram_addr_ff;
+    //pl for resend
+    assign lsu_axi_resend_vld = ctrl_store_resp_vld_ff;
+    assign lsu_axi_resend_awaddr = ctrl_store_resp_oram_addr_ff;
+
     //dircet pass the ctrl_store siganl to axi
     assign lsu_awvld = ctrl_store_awvld | lsu_awvld_ff;
-    assign st_buff_is_send = lsu_awvld & ctrl_store_awrdy;
+    assign st_buff_is_send = lsu_awvld & ctrl_store_awrdy | lsu_axi_resend_vld;
     assign ctrl_store_awvld_en = ctrl_store_awvld ^ st_buff_is_send;
 
     //handshake 
     //=> only need to care if lsu_axi_vld => then send variables 
-    assign lsu_axi_awvld   = lsu_awvld;
+    assign lsu_axi_awvld   = lsu_awvld | lsu_axi_resend_vld;
     assign lsu_axi_awid    = (ctrl_store_awvld ? lsu_axi_awid : lsu_axi_awid_ff); 
-    assign lsu_axi_awaddr  = (ctrl_store_awvld ? lsu_axi_awaddr : lsu_axi_awaddr_ff);
+    assign lsu_axi_awaddr  = (ctrl_store_awvld ? lsu_axi_awaddr : lsu_axi_awaddr_ff) | lsu_axi_resend_awaddr;
     assign lsu_axi_awlen   = (ctrl_store_awvld ? lsu_axi_awlen : lsu_axi_awlen_ff);
     assign lsu_axi_awsize  = (ctrl_store_awvld ? lsu_axi_awsize : lsu_axi_awsize_ff);
     assign lsu_axi_awburst = (ctrl_store_awvld ? lsu_axi_awburst : lsu_axi_awburst_ff);
@@ -258,7 +264,7 @@ module store_buffer(
     wire [8:0] st_buff_chunk_element;
     wire [8:0] st_buff_chunk_element_nxt;
     
-    
+    assign st_buff_resend_start = lsu_axi_resend_vld;
     assign st_buff_chunk_element_end = st_buff_chunk_element == ctrl_store_awlen_ff;
     assign st_buff_chunk_num_count_end = st_buff_chunk_num_count == ctrl_store_awnum_ff+1;
 
@@ -293,6 +299,7 @@ module store_buffer(
 
                                 
     wire [7:0] st_buff_resend_addr;
+    assign st_buff_resend_addr = lsu_axi_resend_awaddr;
     //cen depend on whether teh fsm point to read new sram
     assign ctrl_sram_vld = st_buff_sram_fsm[0];
     assign ctrl_sram_addr = st_buff_is_send ? (ctrl_st_sram_start_addr_ff | ctrl_st_sram_start_addr) : 
@@ -341,9 +348,22 @@ module store_buffer(
     );
 
     assign st_bresp_resend[ctrl_store_resp_oram_addr[7:0]] = (ctrl_store_bvld & lsu_axi_brdy) ? (|ctrl_store_bresp) : st_bresp_resend[ctrl_store_resp_oram_addr[7:0]];
+    //cancel back the last cycle resend one
+    assign st_bresp_resend[ctrl_store_resp_oram_addr_ff] = 1'b0;
     assign st_bresp_resend_have_error = (|st_bresp_resend) & st_buff_axi_write_fsm[1];
-    assign st_bresp_resend_end = !(|st_bresp_resend);
-    
+    assign st_bresp_resend_last = !(|st_bresp_resend);
+
+    DFFR #(.WIDTH(1))
+    ff_st_bresp_resend_last(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(st_bresp_resend_last),
+        .q(st_bresp_resend_last_ff)
+    );
+
+    assign st_bresp_resend_end = st_bresp_resend_last_ff &  ~(|ctrl_store_bresp);
+
+    assign ctrl_lsu_store_buffer_done = st_bresp_resend_end;
     //break into 8 bank 
     //each bank 31 bit => total 256
     wire[31:0] st_buff_bank0;
@@ -378,8 +398,24 @@ module store_buffer(
     //
     dec32to5 dec_bank_lo(.dec_in(st_buff_error_bank_addr_lo), .dec_out(st_buff_error_addr_lo));
 
-    // this place a bit confuse
+    // this will be the resend addr
     assign st_bresp_resend_sram_addr = {st_buff_error_bank_addr_hi,st_buff_error_bank_addr_lo};
-    
+
+    DFFER #(.WIDTH(8))
+    ff_st_bresp_resend_addr(
+        .clk(clk),
+        .rst_n(rst_n),
+        .en(ctrl_store_bvld & lsu_axi_brdy),
+        .d(st_bresp_resend_sram_addr),
+        .q(ctrl_store_resp_oram_addr_ff)
+    );
+
+    DFFR #(.WIDTH(1))
+    ff_st_bresp_resend_vld(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(ctrl_store_bvld & lsu_axi_brdy),
+        .q(ctrl_store_resp_vld_ff)
+    );
 
 endmodule
