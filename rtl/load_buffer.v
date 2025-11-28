@@ -36,7 +36,8 @@ module load_buffer(
     load_axi_arstr,
     load_axi_arnum,
     load_axi_arvld,
-    load_axi_rrdy
+    load_axi_rrdy,
+    lsu_store_buffer_finished
 );
     input clk;
     input rst_n;
@@ -78,6 +79,7 @@ module load_buffer(
     output [3:0] load_axi_arnum;
     output load_axi_arvld;
     output load_axi_rrdy;
+    output lsu_store_buffer_finished;
 
     wire [11:0] ctrl_load_ld_addr_ff;
     wire [11:0] ctrl_load_addr_nxt;
@@ -112,7 +114,7 @@ module load_buffer(
     //TODO both axi read dun ahve this str variables need add back
     assign lsu_axi_arstr = ctrl_load_str;
     
-    DFFE #(.WIDTH(2))
+    DFFER #(.WIDTH(2))
     ff_load_sram_type(
         .clk(clk),
         .rst_n(rst_n),
@@ -121,7 +123,7 @@ module load_buffer(
         .q(load_sram_type_ff)
     );
 
-    DFFE #(.WIDTH(12))
+    DFFER #(.WIDTH(12))
     ff_idu_lsu_ld_st_addr(
         .clk(clk),
         .rst_n(rst_n),
@@ -130,10 +132,14 @@ module load_buffer(
         .q(ctrl_load_ld_addr_ff)
     );
 
-    assign ctrl_load_addr_nxt = ctrl_sram_rvld ? ctrl_load_ld_addr + 1'b1 : ctrl_load_ld_addr_ff;
-    assign ctrl_load_addr_en = ctrl_load_vld | ctrl_sram_rvld;
-    DFFE #(.WIDTH(31))
-    sram_laod_addr(
+
+    // the below payload to sram must be
+    // 1/sram_rvld
+    // 2/rresp 00 only.
+    assign ctrl_load_addr_nxt = ctrl_sram_rvld ? ctrl_load_ld_addr + 1'b1 : ctrl_load_ld_addr_ff; 
+    assign ctrl_load_addr_en = (ctrl_load_vld | ctrl_sram_rvld) & ~(|ctrl_sram_rresp);
+    DFFRE #(.WIDTH(31))
+    ff_sram_laod_addr(
         .clk(clk),
         .rst_n(rst_n),
         .en(ctrl_load_addr_en),
@@ -141,29 +147,65 @@ module load_buffer(
         .q(ctrl_load_addr_ff)
     );
 
+    //update in the rresp count
+    assign ld_buff_rresp_count_nxt = ctrl_sram_rlast ? 1'b0 : ld_buff_rresp_count + 1;
+    assign ld_buff_rresp_count_en = ctrl_sram_rvld;
+    DFFRE #(.WDITH(4))
+    ff_ld_buff_rresp_count(
+        .clk(clk),
+        .rst_n(rst_n),
+        .en(ld_buff_rresp_count_en),
+        .d(ld_buff_rresp_count_nxt),
+        .q(ld_buff_rresp_count)
+    );
+
+    assign ld_buff_rresp_raw[ld_buff_rresp_count] = |ctrl_sram_rresp; 
 
     //the input data from axi
+    // try solve the bytes load problem with collect all chunk elemnet first then assign the data at once
     ///TODO this signal no good to have only one bit
-    assign lsu_sram_ld_wen = ctrl_sram_rvld;
-    assign lsu_ram_ld_cen = ctrl_sram_rvld;
-    assign lsu_sram_ld_addr = ctrl_load_addr_ff;
-    assign lsu_sram_ld_din =  ctrl_sram_rdata;
+    assign lsu_sram_ld_wen = ctrl_sram_rvld & ~(|ld_buff_rresp_raw);
+    assign lsu_ram_ld_cen = ctrl_sram_rvld & ~(|ld_buff_rresp_raw);
+    assign lsu_sram_ld_addr = ctrl_load_addr_ff && ~(|ld_buff_rresp_raw);
+    assign lsu_sram_ld_din =  ctrl_sram_rdata && ~(|ld_buff_rresp_raw);
 
-    wire axi_read_rlast;
-    wire [7:0] lsu_store_cur;
-    wire [7:0] lsu_store_len;
-    wire load_buffer_vld;
-    wire sram_data_store_done;
+    //deal with rresp
+    //if recive rresp resend whole chunk
+    assign rresp_row_count_nxt = ctrl_load_vld ? ctrl_load_dram_addr : rresp_row_count+1;
+    assign rresp_row_count_en = ctrl_load_vld | (ctrl_sram_rlast & ctrl_sram_rvld);
+    assign ld_buff_rresp[rresp_row_count] = |ld_buff_rresp_raw
+
+    DFFRE #(.WDITH(256))
+    ff_ld_buff_rresp_count(
+        .clk(clk),
+        .rst_n(rst_n),
+        .en(rresp_row_count_en),
+        .d(rresp_row_count_nxt),
+        .q(rresp_row_count)
+    );
+
+    assign load_buffer_fsm = load_buffer_vld ? 2'b01
+                            : ((rresp_row_count == load_axi_arnum) ? 
+                            (rresp_end ? 2'b00 : 2'b10) : 2'b01);  
+
+    //wire axi_read_rlast;
+    //wire [7:0] lsu_store_cur;
+    //wire [7:0] lsu_store_len;
+    //wire load_buffer_vld;
+    //wire sram_data_store_done;
     
-    //dram_data_load_done
-    assign dram_data_load_done = axi_read_rlast;
 
-    //sram_data_store_done
-    assign sran_data_store_done = lsu_store_cur == lsu_store_len;
 
-    assign load_buffer_fsm_nxt = load_buffer_vld? 2'b00
-                                : dram_data_load_done ? 2'b10
-                                : sram_data_store_done ? 2'b00 : 2'b11;
+    //assign axi_read_rlast = ctrl_sram_rlast & ~(|sram_rresp);
+    ////dram_data_load_done
+    //assign dram_data_load_done = axi_read_rlast;
+
+    ////sram_data_store_done
+    //assign sram_data_store_done = lsu_store_cur == lsu_store_len;
+
+    //assign load_buffer_fsm_nxt = load_buffer_vld? 2'b00
+                                //: dram_data_load_done ? 2'b10
+                                //: sram_data_store_done ? 2'b00 : 2'b11;
 
 
 endmodule
