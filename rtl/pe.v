@@ -42,7 +42,7 @@ module pe (
     wire [15:0] c0_data;
 
     assign multi_vld = in0_vld & in1_vld & pe_en;
-
+/*
     multi u_multi(
         .clk(clk),
         .rst_n(rst_n),
@@ -53,6 +53,9 @@ module pe (
         .out_vld(c0_vld),
         .out_data(c0_data)
     );
+*/
+    assign c0_vld = multi_vld;
+    assign c0_data = in0_data * in1_data;
 
     DFFR #(.WIDTH(1)) 
     ff_c1_vld(
