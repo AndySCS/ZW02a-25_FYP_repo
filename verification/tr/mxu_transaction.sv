@@ -21,6 +21,7 @@ class mxu_tr extends uvm_sequence_item;
     
     extern function void init_matrix();
     extern function bit compare(mxu_tr tr);
+    extern function void print_result();
     //extern function void clear_result();
 
 endclass //mxu_tr extends superClass
@@ -58,6 +59,18 @@ function bit mxu_tr::compare(mxu_tr tr);
     end
 
     return match;
+
+endfunction
+
+function void mxu_tr::print_result();
+    
+
+    for(int i = 0; i < 16; i++)begin
+        for(int j = 0; j < 16; j++)begin
+		$write("[%d]", matrix_result[i][j]);
+		if(j==15) $write("\n");
+        end
+    end
 
 endfunction
 
