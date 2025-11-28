@@ -49,8 +49,10 @@ task mxu_driver::send_matrix(mxu_tr tr);
         @(posedge mxu_if.clk);
         if(mxu_if.mxu_lsu_rdy) begin
             mxu_if.lsu_mxu_vld = 1;
+            mxu_if.lsu_mxu_clr = 1;
             @(posedge mxu_if.clk);
             mxu_if.lsu_mxu_vld = 0;
+            mxu_if.lsu_mxu_clr = 0;
             break;
         end
     end
@@ -59,6 +61,8 @@ task mxu_driver::send_matrix(mxu_tr tr);
 
     while(1)begin
         send_matrix_needed = 0;
+        mxu_if.lsu_mxu_iram_vld = 0;
+        mxu_if.lsu_mxu_wram_vld = 0;
         for(int row = 0; row < tr.matrix_Lx; row++)begin
             if(cycle_cnt >= row && cycle_cnt < tr.matrix_Ly + row)begin
                 mxu_if.lsu_mxu_iram_vld[row] = 1;
