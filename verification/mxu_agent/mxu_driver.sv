@@ -45,6 +45,8 @@ task mxu_driver::send_matrix(mxu_tr tr);
         mxu_if.lsu_mxu_vld = 0;
         mxu_if.lsu_mxu_iram_vld = 0;
         mxu_if.lsu_mxu_wram_vld = 0;
+        mxu_if.lsu_mxu_iram_pld = 0;
+        mxu_if.lsu_mxu_wram_pld = 0;
 	@(posedge mxu_if.rst_n); // wait till rstn is high
         @(posedge mxu_if.clk);
         if(mxu_if.mxu_lsu_rdy) begin
@@ -63,6 +65,8 @@ task mxu_driver::send_matrix(mxu_tr tr);
         send_matrix_needed = 0;
         mxu_if.lsu_mxu_iram_vld = 0;
         mxu_if.lsu_mxu_wram_vld = 0;
+        mxu_if.lsu_mxu_iram_pld = 0;
+        mxu_if.lsu_mxu_wram_pld = 0;
         for(int row = 0; row < tr.matrix_Lx; row++)begin
             if(cycle_cnt >= row && cycle_cnt < tr.matrix_Ly + row)begin
                 mxu_if.lsu_mxu_iram_vld[row] = 1;
