@@ -1,1 +1,1 @@
-$MINITPU_VER/tr/mxu_transaction.sv
+$MINITPU_VER/tr/lsu_transaction.sv
