@@ -3,15 +3,32 @@ class mxu_tr extends uvm_sequence_item;
     // shape of the input matrix
     //matrix_L = w
     //matrix_R = i
-    int matrix_Lx;
-    int matrix_Ly;
-    int matrix_Rx;
-    int matrix_Ry;
+    rand int matrix_Lx;
+    rand int matrix_Ly;
+    rand int matrix_Rx;
+    rand int matrix_Ry;
+    
+    constraint c_matrix_xy {
+        matrix_Lx inside {[0:16]};
+        matrix_Ly inside {[0:16]};
+        matrix_Rx inside {[0:16]};
+        matrix_Ry inside {[0:16]};
+    }
 
-    int matrix_L[15:0][15:0];
-    int matrix_R[15:0][15:0];
-    int matrix_result[15:0][15:0];
+    rand int matrix_L[15:0][15:0];
+    rand int matrix_R[15:0][15:0];
+    int      matrix_result[15:0][15:0];
 
+    constraint c_matrix_L_values {
+        foreach (matrix_L[i,j])
+            matrix_L[i][j] inside {[-128:127]};
+    }
+    
+    constraint c_matrix_R_values {
+        foreach (matrix_R[i,j])
+            matrix_R[i][j] inside {[-128:127]};
+    }
+    
     function new(string name = "mxu_tr");
        super.new(name);
        this.init_matrix();
@@ -27,19 +44,22 @@ class mxu_tr extends uvm_sequence_item;
 endclass //mxu_tr extends superClass
 
 function void mxu_tr::init_matrix();
-    
-    for(int i = 0; i < 16; i++)begin
-        for(int j = 0; j < 16; j++)begin
-            //FIXME: change to randome
-            this.matrix_Lx = 16;
-            this.matrix_Ly = 16;
-            this.matrix_Rx = 16;
-            this.matrix_Ry = 16;
-            //FIXME: chamge to random
-            this.matrix_R[i][j] = i;
-            this.matrix_L[i][j] = i;
-            this.matrix_result[i][j] = 0;
-        end
+
+    this.matrix_Lx = 16;
+    this.matrix_Ly = 16;
+    this.matrix_Rx = 16;
+    this.matrix_Ry = 16;
+
+    foreach (this.matrix_L[i, j]) begin
+        this.matrix_L[i][j] = i;
+    end
+
+    foreach (this.matrix_R[i, j]) begin
+        this.matrix_R[i][j] = i;
+    end
+
+    foreach (this.matrix_result[i, j]) begin
+        this.matrix_result[i][j] = 0;
     end
 
 endfunction
@@ -48,28 +68,22 @@ function bit mxu_tr::compare(mxu_tr tr);
     
     bit match = 1;
 
-    for(int i = 0; i < 16; i++)begin
-        for(int j = 0; j < 16; j++)begin
-            if(this.matrix_result[i][j] != tr.matrix_result[i][j]) begin
-                match = 0;
-                break;
-            end
+    foreach (this.matrix_result[i, j]) begin
+        if(this.matrix_result[i][j] != tr.matrix_result[i][j]) begin
+            match = 0;
+            break;
         end
-        if(!match) break;
     end
 
     return match;
 
 endfunction
 
-function void mxu_tr::print_result();
-    
+function void mxu_tr::print_result(); 
 
-    for(int i = 0; i < 16; i++)begin
-        for(int j = 0; j < 16; j++)begin
-		$write("[%d]", matrix_result[i][j]);
+    foreach (this.matrix_result[i, j]) begin
+		$write("[%d]", this.matrix_result[i][j]);
 		if(j==15) $write("\n");
-        end
     end
 
 endfunction
