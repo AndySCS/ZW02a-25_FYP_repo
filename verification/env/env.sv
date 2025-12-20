@@ -49,14 +49,4 @@ task env::main_phase(uvm_phase phase);
     int phase_cnt;
 
     super.main_phase(phase);
-
-    phase.raise_objection(phase);
-    
-    while(1)begin
-        @(posedge mxu_agt.mxu_drv.mxu_if.clk)begin
-	    phase_cnt++;
-	end
-        if(phase_cnt >= 2000) phase.drop_objection(phase);
-    end
-    
 endtask
