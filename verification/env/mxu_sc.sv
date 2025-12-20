@@ -40,7 +40,7 @@ task mxu_sc::main_phase(uvm_phase phase);
 		if(this.exp_result_q.size() > 0)begin
 			tmp_tr = this.exp_result_q.pop_front();
 			if(!tmp_tr.compare(act_tr))begin //compare false
-				$display("tmp_tr");
+				$display("exp_tr");
 				tmp_tr.print_result();
 				$display("act_tr");
 				act_tr.print_result();
