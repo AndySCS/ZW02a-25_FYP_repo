@@ -1,4 +1,4 @@
-class mxu_driver extends uvm_driver;
+class mxu_driver extends uvm_driver #(mxu_tr);
     /*
     this class is responsible for generating mxu stimulus to the dut
     */
@@ -27,9 +27,18 @@ endfunction
 task mxu_driver::main_phase(uvm_phase phase);
     
     mxu_tr tr;
-    tr = new("tr");
-    send_matrix(tr);
+    //tr = new("tr");
+    mxu_if.lsu_mxu_vld = 0;
+    mxu_if.lsu_mxu_iram_vld = 0;
+    mxu_if.lsu_mxu_wram_vld = 0;
+    @(posedge mxu_if.rst_n); // wait till rstn is high
 
+    while(1) begin
+        seq_item_port.get_next_item(tr);
+        send_matrix(tr);
+        seq_item_port.item_done();
+    end
+        
 endtask
 
 task mxu_driver::send_matrix(mxu_tr tr);
@@ -42,12 +51,6 @@ task mxu_driver::send_matrix(mxu_tr tr);
     bit send_matrix_needed = 0;
 
     while(1)begin
-        mxu_if.lsu_mxu_vld = 0;
-        mxu_if.lsu_mxu_iram_vld = 0;
-        mxu_if.lsu_mxu_wram_vld = 0;
-        mxu_if.lsu_mxu_iram_pld = 0;
-        mxu_if.lsu_mxu_wram_pld = 0;
-	@(posedge mxu_if.rst_n); // wait till rstn is high
         @(posedge mxu_if.clk);
         if(mxu_if.mxu_lsu_rdy) begin
             mxu_if.lsu_mxu_vld = 1;
