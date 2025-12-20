@@ -105,6 +105,7 @@ module harness;
         uvm_config_db#(virtual mxu_intf)::set(null, "uvm_test_top.tc_env.mxu_agt.mxu_drv", "mxu_if", mxu_if);
         uvm_config_db#(virtual mxu_intf)::set(null, "uvm_test_top.tc_env.mxu_agt.mxu_imon", "mxu_if", mxu_if);
         uvm_config_db#(virtual mxu_intf)::set(null, "uvm_test_top.tc_env.mxu_agt.mxu_omon", "mxu_if", mxu_if);
+        uvm_config_db#(virtual mxu_intf)::set(null, "uvm_test_top.tc_env.mxu_agt.mxu_sqr", "mxu_if", mxu_if);
     end
     //
 
