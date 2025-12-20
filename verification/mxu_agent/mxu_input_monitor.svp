@@ -42,8 +42,12 @@ task mxu_input_monitor::collect_matrix_in(mxu_tr tr);
     collect data input from lsu to mxu and store in tr
     */
     
-
+    int iram_array [16] = '{default:0}; //position of column in each row
+    int wram_array [16] = '{default:0};
+    bit [15:0][7:0] iram_data_tmp;
+    bit [15:0][7:0] wram_data_tmp;
     bit collect_begin;
+    bit has_vld;
 
     `uvm_info("mxu_input_monitor", "enter collect matrix", UVM_NONE)
 
@@ -54,25 +58,33 @@ task mxu_input_monitor::collect_matrix_in(mxu_tr tr);
 
     `uvm_info("mxu_input_monitor", "leave collect matrix", UVM_NONE)
 
-/*
     while(1)begin
+
         @(posedge mxu_if.clk);
-        if((|mxu_if.lsu_mxu_iram_vld) | (mxu_if.lsu_mxu_wram_vld))begin
-            collect_begin = 1;
+
+        has_vld = 0;
+
+        iram_data_tmp = mxu_if.lsu_mxu_iram_pld;
+        wram_data_tmp = mxu_if.lsu_mxu_wram_pld;
+
+        for(int i = 0;i < 16;i++)begin
+            if(mxu_if.lsu_mxu_iram_vld[i])begin
+                collect_begin = 1;
+                tr.matrix_L[i][iram_array[i]]  = iram_data_tmp[i];
+                iram_array[i]++;
+                has_vld = 1;
+            end
+            if(mxu_if.lsu_mxu_wram_vld[i])begin
+                collect_begin = 1;
+                tr.matrix_L[i][wram_array[i]]  = wram_data_tmp[i];
+                wram_array[i]++;
+                has_vld = 1;
+            end
         end
-        else if(collect_begin)begin
-            break;
-        end
-        else begin
-            continue;
-        end
-        //:for($row=0;$row<16;$row++){
-        if(mxu_if.lsu_mxu_iram_vld[{$row}]) tr.matrix_L[{$row}].q.pushback(mxu_if.lsu_mxu_iram_pld[{$row*8+7}:{$row*8}]);
-        //:}
-        //:for($col=0;$col<16;$col++){
-        if(mxu_if.lsu_mxu_wram_vld[{$col}]) tr.matrix_R[{$col}].q.pushback(mxu_if.lsu_mxu_wram_pld[{$col*8+7}:{$col*8}]);
-        //:}
+
+        if(~collect_begin) continue;
+        else if (~has_vld) break;
+
     end      
-*/
 
 endtask     
