@@ -35,7 +35,7 @@ module pe (
     output [15:0] c1_data;
 
     wire multi_vld;
-    wire multi_busy;
+    wire multi_busy = 1'b0;
 
     //pipeline signal
     wire c0_vld;
