@@ -76,7 +76,7 @@ task mxu_input_monitor::collect_matrix_in(mxu_tr tr);
             end
             if(mxu_if.lsu_mxu_wram_vld[i])begin
                 collect_begin = 1;
-                tr.matrix_L[i][wram_array[i]]  = wram_data_tmp[i];
+                tr.matrix_R[i][wram_array[i]]  = wram_data_tmp[i];
                 wram_array[i]++;
                 has_vld = 1;
             end
