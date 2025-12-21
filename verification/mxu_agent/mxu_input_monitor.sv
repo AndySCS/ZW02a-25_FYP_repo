@@ -56,7 +56,6 @@ task mxu_input_monitor::collect_matrix_in(ref mxu_tr tr);
         if(mxu_if.lsu_mxu_vld & mxu_if.mxu_lsu_rdy) break;
     end
 
-    `uvm_info("mxu_input_monitor", "leave collect matrix", UVM_NONE)
 
     while(1)begin
 
@@ -85,6 +84,12 @@ task mxu_input_monitor::collect_matrix_in(ref mxu_tr tr);
         if(~collect_begin) continue;
         else if (~has_vld) break;
 
-    end      
+    end     
+ 
+    //for(int i = 0;i < 16;i++)begin
+    //    `uvm_info("mxu_input_monitor", $sformatf("iram_array[%d] = %d", i, iram_array[i]), UVM_NONE)
+    //end
+    
+    `uvm_info("mxu_input_monitor", "leave collect matrix", UVM_NONE)
 
 endtask     
