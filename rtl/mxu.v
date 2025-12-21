@@ -220,7 +220,7 @@ module mxu (
     assign lsu_mxu_vld_qual = lsu_mxu_vld & mxu_lsu_rdy;
     assign mxu_vld_nxt = lsu_mxu_vld_qual | mxu_vld & ~mxu_done;
 
-    assign mxu_done =  ~(|mxu_conv_awake_cnt_minus) & (&sys_arr_row_data_rdy);
+    assign mxu_done =  ~(|mxu_conv_awake_cnt) & (&sys_arr_row_data_rdy);
     assign mxu_lsu_rdy = mxu_done | ~mxu_vld;
 
     assign mxu_lsu_data_rdy =  (&sys_arr_row_data_rdy) & ~act_busy ;
