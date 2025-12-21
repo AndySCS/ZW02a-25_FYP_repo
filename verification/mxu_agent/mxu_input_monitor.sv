@@ -11,7 +11,7 @@ class mxu_input_monitor extends uvm_monitor;
     extern function void build_phase(uvm_phase phase);
     extern virtual task main_phase(uvm_phase phase);
     
-    extern virtual task collect_matrix_in(mxu_tr tr);
+    extern virtual task collect_matrix_in(ref mxu_tr tr);
 
 endclass //mxu_input_monitor extends superClass
 
@@ -36,7 +36,7 @@ task mxu_input_monitor::main_phase(uvm_phase phase);
 
 endtask
 
-task mxu_input_monitor::collect_matrix_in(mxu_tr tr);
+task mxu_input_monitor::collect_matrix_in(ref mxu_tr tr);
 
     /*
     collect data input from lsu to mxu and store in tr
