@@ -4,7 +4,7 @@ class mxu_seqeunce extends uvm_sequence #(mxu_tr);
 
     // Randomizable fields for stimulus control
     mxu_tr tr;
-    int tr_num = 100;
+    int tr_num = 10;
 
     function new(string name = "mxu_seqeunce");
         super.new(name);

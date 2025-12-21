@@ -12,7 +12,7 @@ class mxu_rm extends uvm_component;
     extern function void build_phase(uvm_phase phase);
     extern virtual task main_phase(uvm_phase phase);
 
-    extern function mxu_tr mm_cal(mxu_tr tr);
+    extern function mxu_tr mm_cal(ref mxu_tr tr);
 
 endclass //className extends superClass
 
@@ -30,12 +30,13 @@ task mxu_rm::main_phase(uvm_phase phase);
     while(1)begin
         port.get(tr);
         this.mm_cal(tr);
+	//tr.print_result();
         ap.write(tr);
     end
 
 endtask
 
-function mxu_tr mxu_rm::mm_cal(mxu_tr tr);
+function mxu_tr mxu_rm::mm_cal(ref mxu_tr tr);
     /*
         matrix_L x matrix_R = matrix_result
         matrix_result_size = L_col*R_row

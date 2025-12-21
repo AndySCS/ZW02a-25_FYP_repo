@@ -40,8 +40,8 @@ function void env::connect_phase(uvm_phase phase);
     mxu_agt.oap.connect(agt_sc_fifo.analysis_export);
     sc.act_port.connect(agt_sc_fifo.blocking_get_export);
     
-    rm.ap.connect(agt_sc_fifo.analysis_export);
-    sc.exp_port.connect(agt_sc_fifo.blocking_get_export);
+    rm.ap.connect(rm_sc_fifo.analysis_export);
+    sc.exp_port.connect(rm_sc_fifo.blocking_get_export);
 
 endfunction
 
