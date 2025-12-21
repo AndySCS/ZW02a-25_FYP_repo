@@ -45,6 +45,7 @@ task mxu_output_monitor::collect_matrix_out(mxu_tr tr);
     //tr.clear_result();
     @(posedge mxu_if.clk);
     wait(mxu_if.mxu_lsu_data_rdy) 
+    `uvm_info("mxu_output_monitor", "begin collect result", UVM_NONE)
     tr.matrix_result[0][0] = $signed(mxu_if.mxu_lsu_int16_row0_data[15:0]);
     tr.matrix_result[0][1] = $signed(mxu_if.mxu_lsu_int16_row0_data[31:16]);
     tr.matrix_result[0][2] = $signed(mxu_if.mxu_lsu_int16_row0_data[47:32]);
