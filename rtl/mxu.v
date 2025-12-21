@@ -238,7 +238,7 @@ module mxu (
 
     assign mxu_conv_awake_cnt_en = (|mxu_conv_awake_cnt) | lsu_mxu_vld_qual;
     assign mxu_conv_awake_cnt_minus = mxu_conv_awake_cnt - 3'b1;
-    assign mxu_conv_awake_cnt_nxt = lsu_mxu_clr ? 3'b111 : mxu_conv_awake_cnt_minus;
+    assign mxu_conv_awake_cnt_nxt = (lsu_mxu_clr | |({lsu_mxu_iram_vld, lsu_mxu_wram_vld}) )? 3'b111 : mxu_conv_awake_cnt_minus;
 
     DFFRE #(.WIDTH(3))
     ff_mxu_conv_awake_cnt(
