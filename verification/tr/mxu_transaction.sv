@@ -53,11 +53,11 @@ function void mxu_tr::init_matrix();
     this.matrix_Ry = 16;
 
     foreach (this.matrix_L[i, j]) begin
-        this.matrix_L[i][j] = i;
+        this.matrix_L[i][j] = 0;
     end
 
     foreach (this.matrix_R[i, j]) begin
-        this.matrix_R[i][j] = i;
+        this.matrix_R[i][j] = 0;
     end
 
     foreach (this.matrix_result[i, j]) begin

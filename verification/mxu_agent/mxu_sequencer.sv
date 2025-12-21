@@ -8,9 +8,17 @@ class mxu_sequencer extends uvm_sequencer # (mxu_tr);
 
     `uvm_component_utils(mxu_sequencer)
     
+    extern virtual function void build_phase(uvm_phase phase);
     extern virtual task main_phase(uvm_phase phase);
 
 endclass
+
+function void mxu_sequencer::build_phase(uvm_phase phase);
+    super.build_phase(phase);
+    if(!uvm_config_db#(virtual mxu_intf)::get(this, "", "mxu_if", mxu_if))begin
+        `uvm_fatal("mxu_sqr", "mxu sqr fail to get mxu if")
+    end
+endfunction
 
 task mxu_sequencer::main_phase(uvm_phase phase);
     mxu_seqeunce mxu_seq;
