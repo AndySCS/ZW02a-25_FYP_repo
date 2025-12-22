@@ -35,6 +35,12 @@ task mxu_driver::main_phase(uvm_phase phase);
 
     while(1) begin
         seq_item_port.get_next_item(tr);
+        `uvm_info("mxu_driver", $sformatf("tr.matrix_Lx = %d", tr.matrix_Lx), UVM_NONE) 
+        `uvm_info("mxu_driver", $sformatf("tr.matrix_Ly = %d", tr.matrix_Ly), UVM_NONE) 
+        `uvm_info("mxu_driver", $sformatf("tr.matrix_Rx = %d", tr.matrix_Rx), UVM_NONE) 
+        `uvm_info("mxu_driver", $sformatf("tr.matrix_Ry = %d", tr.matrix_Ry), UVM_NONE)
+        tr.print_L(); 
+        tr.print_R(); 
         send_matrix(tr);
         seq_item_port.item_done();
     end
@@ -49,6 +55,7 @@ task mxu_driver::send_matrix(mxu_tr tr);
     bit[7:0] pop_data;
     int cycle_cnt = 0;
     bit send_matrix_needed = 0;
+    int row_pos = '{0,-1,-2,-3,-4,-5,-6,-7,-8,-9,-10,-11,-12,-13,-14,-15};
 
     while(1)begin
         @(posedge mxu_if.clk);
@@ -58,6 +65,7 @@ task mxu_driver::send_matrix(mxu_tr tr);
             @(posedge mxu_if.clk);
             mxu_if.lsu_mxu_vld = 0;
             mxu_if.lsu_mxu_clr = 0;
+            @(posedge mxu_if.clk);
             break;
         end
     end
@@ -70,11 +78,19 @@ task mxu_driver::send_matrix(mxu_tr tr);
         mxu_if.lsu_mxu_wram_vld = 0;
         mxu_if.lsu_mxu_iram_pld = 0;
         mxu_if.lsu_mxu_wram_pld = 0;
+        for(int i = 0; i < 16;i++)begin
+	    foreach(row_pos[j])begin
+		if(row_pos[j] < 0) begin
+		    row_pos[j]++;
+		end
+		if(row_pos)
+	    end
+	end
         for(int row = 0; row < tr.matrix_Lx; row++)begin
             if(cycle_cnt >= row && cycle_cnt < tr.matrix_Ly + row)begin
                 mxu_if.lsu_mxu_iram_vld[row] = 1;
                 pop_data = tr.matrix_L[row][cycle_cnt-row];
-                mxu_if.lsu_mxu_iram_pld |= {{120{pop_data[7]}}, pop_data} << row*8;
+                mxu_if.lsu_mxu_iram_pld |= {120'b0, pop_data} << row*8;
                 send_matrix_needed = 1;
             end
         end
@@ -82,7 +98,7 @@ task mxu_driver::send_matrix(mxu_tr tr);
             if(cycle_cnt >= col && cycle_cnt < tr.matrix_Ry + col)begin
                 mxu_if.lsu_mxu_wram_vld[col] = 1;
                 pop_data = tr.matrix_R[col][cycle_cnt-col];
-                mxu_if.lsu_mxu_wram_pld |= {{120{pop_data[7]}}, pop_data} << col*8;
+                mxu_if.lsu_mxu_wram_pld |= {120'b0, pop_data} << col*8;
                 send_matrix_needed = 1;
             end
         end

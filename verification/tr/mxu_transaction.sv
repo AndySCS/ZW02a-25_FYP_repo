@@ -13,6 +13,7 @@ class mxu_tr extends uvm_sequence_item;
         matrix_Ly inside {[0:16]};
         matrix_Rx inside {[0:16]};
         matrix_Ry inside {[0:16]};
+        matrix_Ly == matrix_Ry;
     }
 
     rand int matrix_L[15:0][15:0];
@@ -28,7 +29,7 @@ class mxu_tr extends uvm_sequence_item;
         foreach (matrix_R[i,j])
             matrix_R[i][j] inside {[-128:127]};
     }
-    
+
     function new(string name = "mxu_tr");
        super.new(name);
        this.init_matrix();
