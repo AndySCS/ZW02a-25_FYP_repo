@@ -55,7 +55,7 @@ module pe (
     );
 */
     assign c0_vld = multi_vld;
-    assign c0_data = in0_data * in1_data;
+    assign c0_data = {{8{in0_data[7]}}, in0_data} * {{8{in1_data[7]}}, in1_data};
 
     DFFR #(.WIDTH(1)) 
     ff_c1_vld(
