@@ -1,4 +1,4 @@
-module dec8to3(
+module dec8to4(
     in,
     out
 );

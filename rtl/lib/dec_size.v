@@ -1,4 +1,3 @@
-
 module dec_size(
     in,
     out
