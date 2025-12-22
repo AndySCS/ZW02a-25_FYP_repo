@@ -1,30 +1,30 @@
-class mxu_output_monitor extends uvm_monitor;
+class lsu_output_monitor extends uvm_monitor;
 
-    virtual mxu_intf mxu_if;
-    uvm_analysis_port #(mxu_tr) ap;
+    virtual lsu_intf lsu_if;
+    uvm_analysis_port #(lsu_tr) ap;
 
-    `uvm_component_utils(mxu_output_monitor)
-    function new(string name = "mxu_output_monitor", uvm_component parent = null);
+    `uvm_component_utils(lsu_output_monitor)
+    function new(string name = "lsu_output_monitor", uvm_component parent = null);
        super.new(name, parent);
     endfunction //new()
     
     extern function void build_phase(uvm_phase phase);
     extern virtual task main_phase(uvm_phase phase);
     
-    extern virtual task collect_matrix_out(mxu_tr tr);
+    extern virtual task collect_matrix_out(lsu_tr tr);
 
-endclass //mxu_output_monitor extends superClass
+endclass //lsu_output_monitor extends superClass
 
-function void mxu_output_monitor::build_phase(uvm_phase phase);
+function void lsu_output_monitor::build_phase(uvm_phase phase);
     super.build_phase(phase);
-    if(!uvm_config_db#(virtual mxu_intf)::get(this, "", "mxu_if", mxu_if))begin
-        `uvm_fatal("mxu_output_monitor", "mxu output_monitor fail to get mxu if")
+    if(!uvm_config_db#(virtual lsu_intf)::get(this, "", "lsu_if", lsu_if))begin
+        `uvm_fatal("lsu_output_monitor", "lsu output_monitor fail to get lsu if")
     end
     ap = new("ap", this);
 endfunction
 
-task mxu_output_monitor::main_phase(uvm_phase phase);
-    mxu_tr tr;
+task lsu_output_monitor::main_phase(uvm_phase phase);
+    lsu_tr tr;
 
     tr = new("tr");
 
@@ -35,14 +35,14 @@ task mxu_output_monitor::main_phase(uvm_phase phase);
 
 endtask
 
-task mxu_output_monitor::collect_matrix_out(mxu_tr tr);
+task lsu_output_monitor::collect_matrix_out(lsu_tr tr);
 
     while(1)begin
-        @(posedge mxu_if.clk);
-        if(mxu_if.lsu_mxu_vld) break;
+        @(posedge lsu_if.clk);
+        if(lsu_if.lsu_lsu_vld) break;
     end
 
     //tr.clear_result();
-    @(posedge mxu_if.clk);
-    wait(mxu_if.mxu_lsu_data_rdy) 
+    //@(posedge lsu_if.clk);
+    //wait(lsu_if.lsu_lsu_data_rdy) 
 endtask

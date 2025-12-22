@@ -1,4 +1,4 @@
-interface lsu(
+interface lsu_intf(
     clk,
     rst_n,
 
@@ -52,6 +52,23 @@ interface lsu(
     axi_lsu_rlast,
     axi_lsu_rvld,
 
+    //to idu
+    lsu_idu_rdy,
+
+    //to mxu
+    lsu_mxu_vld,
+    lsu_mxu_clr,
+    lsu_mxu_iram_vld,
+    lsu_mxu_iram_pld,
+    lsu_mxu_wram_vld,
+    lsu_mxu_wram_pld,
+    lsu_mxu_pool_vld,
+    lsu_mxu_pool_size,
+    lsu_mxu_act_vld,
+    lsu_mxu_act_type,
+    lsu_mxu_wfi,
+
+
     mxu_lsu_int8_row0_data,
     mxu_lsu_int16_row0_data,
     mxu_lsu_int8_row1_data,
@@ -86,6 +103,33 @@ interface lsu(
     mxu_lsu_int16_row15_data,
     mxu_lsu_data_rdy,
     mxu_lsu_rdy,
+
+    //to axi write
+    lsu_axi_awid,
+    lsu_axi_awaddr,
+    lsu_axi_awlen,
+    lsu_axi_awsize,
+    lsu_axi_awburst,
+    lsu_axi_awstr,
+    lsu_axi_awnum,
+    lsu_axi_awvld,
+    lsu_axi_oram_addr,
+    lsu_axi_wdata,
+    lsu_axi_wstrb,
+    lsu_axi_wlast,
+    lsu_axi_wvld,
+    lsu_axi_brdy,
+
+    //to axi read
+    lsu_axi_arid,
+    lsu_axi_araddr,
+    lsu_axi_arlen,
+    lsu_axi_arsize,
+    lsu_axi_arburst,
+    lsu_axi_arstr,
+    lsu_axi_arnum,
+    lsu_axi_arvld,
+    lsu_axi_rrdy
 
 );
     input clk;
@@ -185,5 +229,47 @@ interface lsu(
     input mxu_lsu_data_rdy;
     input mxu_lsu_rdy;
 
+    //to idu
+    output lsu_idu_rdy;
+
+    //to mxu
+    output lsu_mxu_vld;
+    output lsu_mxu_clr;
+    output [15:0] lsu_mxu_iram_vld;
+    output [127:0] lsu_mxu_iram_pld;
+    output [15:0] lsu_mxu_wram_vld;
+    output [127:0] lsu_mxu_wram_pld;
+    output lsu_mxu_pool_vld;
+    output [1:0] lsu_mxu_pool_size;
+    output lsu_mxu_act_vld;
+    output [1:0] lsu_mxu_act_type;
+    output lsu_mxu_wfi;
+
+    //to axi interface
+    //for write interface
+    output [7:0] lsu_axi_awid;
+    output [9:0] lsu_axi_awaddr;
+    output [7:0] lsu_axi_awlen;
+    output [2:0] lsu_axi_awsize;
+    output [1:0] lsu_axi_awburst;
+    output [2:0] lsu_axi_awstr;
+    output [7:0] lsu_axi_awnum;
+    output lsu_axi_awvld;
+    output [11:0] lsu_axi_oram_addr;
+    output [63:0] lsu_axi_wdata;
+    output lsu_axi_wstrb;
+    output lsu_axi_wlast;
+    output lsu_axi_wvld;
+    output lsu_axi_brdy;
+    //for read interface
+    output [7:0] lsu_axi_arid;
+    output [9:0] lsu_axi_araddr;
+    output [7:0] lsu_axi_arlen;
+    output [2:0] lsu_axi_arsize;
+    output [1:0] lsu_axi_arburst;
+    output [2:0] lsu_axi_arstr;
+    output [7:0] lsu_axi_arnum;
+    output lsu_axi_arvld;
+    output lsu_axi_rrdy;
 
 endinterface

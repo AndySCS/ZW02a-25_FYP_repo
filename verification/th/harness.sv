@@ -116,7 +116,7 @@ module harness;
     wire  lsu_axi_arvld;
     wire  lsu_axi_rrdy;
 
-    lsu_intf lsuif(
+    lsu_intf lsu_if(
         .clk(clk),
         .rst_n(rst_n),
         .idu_lsu_vld(idu_lsu_vld),
@@ -151,12 +151,14 @@ module harness;
         .idu_lsu_wram_row_len(idu_lsu_wram_row_len),
         .idu_lsu_act_type(idu_lsu_act_type),
         .idu_lsu_pool_size(idu_lsu_pool_size),
+
         .axi_lsu_awrdy(axi_lsu_awrdy),
         .axi_lsu_wrdy(axi_lsu_wrdy),
         .axi_lsu_bid(axi_lsu_bid),
         .axi_lsu_bresp(axi_lsu_bresp),
         .axi_lsu_bvld(axi_lsu_bvld),
         .axi_lsu_resp_oram_addr(axi_lsu_resp_oram_addr),
+
         .axi_lsu_arrdy(axi_lsu_arrdy),
         .axi_lsu_rid(axi_lsu_rid),
         .axi_lsu_rdata(axi_lsu_rdata),
@@ -164,6 +166,7 @@ module harness;
         .axi_lsu_rlast(axi_lsu_rlast),
         .axi_lsu_rvld(axi_lsu_rvld),
         .lsu_idu_rdy(lsu_idu_rdy),
+
         .lsu_mxu_vld(lsu_mxu_vld),
         .lsu_mxu_clr(lsu_mxu_clr),
         .lsu_mxu_iram_vld(lsu_mxu_iram_vld),
@@ -175,6 +178,7 @@ module harness;
         .lsu_mxu_act_vld(lsu_mxu_act_vld),
         .lsu_mxu_act_type(lsu_mxu_act_type),
         .lsu_mxu_wfi(lsu_mxu_wfi),
+
         .mxu_lsu_int8_row0_data(mxu_lsu_int8_row0_data),
         .mxu_lsu_int16_row0_data(mxu_lsu_int16_row0_data),
         .mxu_lsu_int8_row1_data(mxu_lsu_int8_row1_data),
@@ -253,7 +257,7 @@ module harness;
 	rst_n <= 1;
     end
 
-    lsu_intf lsuif(
+    lsu_intf u_lsu(
         .clk(clk),
         .rst_n(rst_n),
         .idu_lsu_vld(idu_lsu_vld),

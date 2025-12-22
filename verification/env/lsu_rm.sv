@@ -13,7 +13,7 @@ class lsu_rm extends uvm_component;
     extern virtual task main_phase(uvm_phase phase);
 
     extern function lsu_tr mm_inst(lsu_tr tr);
-    //extern function mxu_tr mm_cal(mxu_tr tr);
+    //extern function lsu_tr mm_cal(lsu_tr tr);
 
 endclass //className extends superClass
 
@@ -23,9 +23,9 @@ function void lsu_rm::build_phase(uvm_phase phase);
     ap = new("ap", this);
 endfunction
 
-task mxu_rm::main_phase(uvm_phase phase);
+task lsu_rm::main_phase(uvm_phase phase);
     
-    mxu_tr tr;
+    lsu_tr tr;
     super.main_phase(phase);
 
     while(1)begin
@@ -36,7 +36,7 @@ task mxu_rm::main_phase(uvm_phase phase);
 
 endtask
 
-//function mxu_tr mxu_rm::mm_cal(mxu_tr tr);
+//function lsu_tr lsu_rm::mm_cal(lsu_tr tr);
 //    /*
 //        matrix_L x matrix_R = matrix_result
 //        matrix_result_size = L_col*R_row
@@ -65,11 +65,11 @@ endtask
 //endfunction
 
 
-function mxu_tr mxu_rm::mm_inst(lsu_tr tr);
+function lsu_tr lsu_rm::mm_inst(lsu_tr tr);
     /*
         get the data from input ram and weight ram
         accounding to the row, col, dir.
-        each cycle pass the data to the mxu 
+        each cycle pass the data to the lsu 
     
         input i know
         idu_lsu_iram_start_addr
@@ -84,7 +84,7 @@ function mxu_tr mxu_rm::mm_inst(lsu_tr tr);
         idu_lsu_wram_row_len
 
         output i need
-        mxu_lsu_int8_row[i]_data
+        lsu_lsu_int8_row[i]_data
 
         //////////////////////////////////////////////////////////////////////
 
@@ -127,11 +127,11 @@ function mxu_tr mxu_rm::mm_inst(lsu_tr tr);
     for(int i = 0; i < (wram_row_len+wram_col_len-1); i++)begin
         for(int j = 0; j <= wram_row_len; j++)begin
             wram_target_row = (idu_lsu_wram_start_addr[11:4]+j);
-            wram_ram_data = tr.wram_ram[idu_lsu_wram_start_addr[wram_target_row]]
+            wram_ram_data = tr.wram_ram[idu_lsu_wram_start_addr[wram_target_row]];
             for(int k = 0; k < wram_col_len; k++) begin
                 wram_target_col = (idu_lsu_wram_start_addr[3:0]+k);
                 if(j<=i && k<=i && i==j+k)begin
-                    tr.matrix_row_in[j] = wram_ram_data[wram_target_col]
+                    tr.matrix_row_in[j] = wram_ram_data[wram_target_col];
                 end
             end
         end 
@@ -141,11 +141,11 @@ function mxu_tr mxu_rm::mm_inst(lsu_tr tr);
     for(int a = 0; a < (iram_row_len+iram_col_len-1); i++)begin
         for(int b = 0; b <= iram_row_len; b++)begin
             wram_target_row = (idu_lsu_wram_start_addr[11:4]+b);
-            wram_ram_data = tr.wram_ram[idu_lsu_wram_start_addr[wram_target_row]]
+            wram_ram_data = tr.wram_ram[idu_lsu_wram_start_addr[wram_target_row]];
             for(int c = 0; c < iram_col_len; c++) begin
                 wram_target_col = (idu_lsu_wram_start_addr[3:0]+c);
                 if(b<=a && c<=a && a==b+c)begin
-                    tr.matrix_row_in[j] = wram_ram_data[wram_target_col]
+                    tr.matrix_row_in[j] = wram_ram_data[wram_target_col];
                 end
             end
         end 

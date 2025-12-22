@@ -1,4 +1,4 @@
-class lsu_driver extends uvm_driver;
+class lsu_driver extends uvm_driver #(lsu_tr);
     /*
     this class is responsible for generating lsu stimulus to the dut
     */
@@ -27,14 +27,60 @@ endfunction
 task lsu_driver::main_phase(uvm_phase phase);
     
     lsu_tr tr;
-    tr = new("tr");
-    send_matrix(tr);
+    //tr = new("tr");
+    lsu_if.idu_lsu_vld = 0;
+    lsu_if.idu_lsu_ld_iram = 0;
+    lsu_if.idu_lsu_ld_wram = 0;
+    lsu_if.idu_lsu_st_iram = 0;
+    lsu_if.idu_lsu_st_wram = 0;
+    lsu_if.idu_lsu_st_oram = 0;
+    lsu_if.idu_lsu_st_dram = 0;
+    lsu_if.idu_lsu_conv = 0;
+    lsu_if.idu_lsu_act = 0;
+    lsu_if.idu_lsu_pool = 0;
+    lsu_if.idu_lsu_wfi = 0;
+    lsu_if.idu_lsu_dram_addr = 0;
+    lsu_if.idu_lsu_num = 0;
+    lsu_if.idu_lsu_len = 0;
+    lsu_if.idu_lsu_size = 0;
+    lsu_if.idu_lsu_str = 0;
+    lsu_if.idu_lsu_start_x = 0;
+    lsu_if.idu_lsu_start_y = 0;
+    lsu_if.idu_lsu_ld_st_addr = 0;
+    lsu_if.idu_lsu_st_low = 0;
+    lsu_if.idu_lsu_iram_start_addr = 0;
+    lsu_if.idu_lsu_iram_col_dir = 0;
+    lsu_if.idu_lsu_iram_row_dir = 0;
+    lsu_if.idu_lsu_iram_col_len = 0;
+    lsu_if.idu_lsu_iram_row_len = 0;
+    lsu_if.idu_lsu_wram_start_addr = 0;
+    lsu_if.idu_lsu_wram_col_dir = 0;
+    lsu_if.idu_lsu_wram_row_dir = 0;
+    lsu_if.idu_lsu_wram_col_len = 0;
+    lsu_if.idu_lsu_wram_row_len = 0;
+    lsu_if.idu_lsu_act_type = 0;
+    lsu_if.idu_lsu_pool_size = 0;
+    @(posedge lsu_if.rst_n); // wait till rstn is high
 
+    //while(1) begin
+        //seq_item_port.get_next_item(tr);
+        //`uvm_info("lsu_driver", $sformatf("tr.matrix_Lx = %d", tr.matrix_Lx), UVM_NONE) 
+        //`uvm_info("lsu_driver", $sformatf("tr.matrix_Ly = %d", tr.matrix_Ly), UVM_NONE) 
+        //`uvm_info("lsu_driver", $sformatf("tr.matrix_Rx = %d", tr.matrix_Rx), UVM_NONE) 
+        //`uvm_info("lsu_driver", $sformatf("tr.matrix_Ry = %d", tr.matrix_Ry), UVM_NONE)
+        //`uvm_info("lsu_driver", $sformatf("tr.matrix_L"), UVM_NONE)
+        //tr.print_L(); 
+        //`uvm_info("lsu_driver", $sformatf("tr.matrix_R"), UVM_NONE)
+        //tr.print_R(); 
+        //send_matrix(tr);
+        //seq_item_port.item_done();
+    //end
+        
 endtask
 
 task lsu_driver::send_matrix(lsu_tr tr);
 
-    int matrix_sent_row = 0;
+    /*int matrix_sent_row = 0;
     int cur_row = 0;
     int iter_cnt = 0;
     bit[7:0] pop_data;
@@ -42,19 +88,14 @@ task lsu_driver::send_matrix(lsu_tr tr);
     bit send_matrix_needed = 0;
 
     while(1)begin
-        lsu_if.lsu_lsu_vld = 0;
-        lsu_if.lsu_lsu_iram_vld = 0;
-        lsu_if.lsu_lsu_wram_vld = 0;
-        lsu_if.lsu_lsu_iram_pld = 0;
-        lsu_if.lsu_lsu_wram_pld = 0;
-	@(posedge lsu_if.rst_n); // wait till rstn is high
-        @(posedge lsu_if.clk);
+        @(negedge lsu_if.clk);
         if(lsu_if.lsu_lsu_rdy) begin
             lsu_if.lsu_lsu_vld = 1;
             lsu_if.lsu_lsu_clr = 1;
-            @(posedge lsu_if.clk);
+            @(negedge lsu_if.clk);
             lsu_if.lsu_lsu_vld = 0;
             lsu_if.lsu_lsu_clr = 0;
+            @(negedge lsu_if.clk);
             break;
         end
     end
@@ -69,17 +110,17 @@ task lsu_driver::send_matrix(lsu_tr tr);
         lsu_if.lsu_lsu_wram_pld = 0;
         for(int row = 0; row < tr.matrix_Lx; row++)begin
             if(cycle_cnt >= row && cycle_cnt < tr.matrix_Ly + row)begin
-                lsu_if.lsu_lsu_iram_vld[row] = 1;
+                lsu_if.lsu_lsu_wram_vld[row] = 1;
                 pop_data = tr.matrix_L[row][cycle_cnt-row];
-                lsu_if.lsu_lsu_iram_pld |= {{120{pop_data[7]}}, pop_data} << row*8;
+                lsu_if.lsu_lsu_wram_pld |= {120'b0, pop_data} << row*8;
                 send_matrix_needed = 1;
             end
         end
         for(int col = 0; col < tr.matrix_Rx; col++)begin
             if(cycle_cnt >= col && cycle_cnt < tr.matrix_Ry + col)begin
-                lsu_if.lsu_lsu_wram_vld[col] = 1;
+                lsu_if.lsu_lsu_iram_vld[col] = 1;
                 pop_data = tr.matrix_R[col][cycle_cnt-col];
-                lsu_if.lsu_lsu_wram_pld |= {{120{pop_data[7]}}, pop_data} << col*8;
+                lsu_if.lsu_lsu_iram_pld |= {120'b0, pop_data} << col*8;
                 send_matrix_needed = 1;
             end
         end
@@ -87,17 +128,17 @@ task lsu_driver::send_matrix(lsu_tr tr);
         iter_cnt++;
         if(iter_cnt >= 500) `uvm_error("lsu_driver", "maxtrix send function have run over 500 times");
         if(!send_matrix_needed) break;
-        @(posedge lsu_if.clk);
+        @(negedge lsu_if.clk);
     end
     
     `uvm_info("lsu_driver", "end sending matrix", UVM_NONE)
-
+*/
 endtask
 
     /*
     while(matrix_sent_row != 16)begin
         matrix_sent_row = 0;
-        @(posedge lsu_if.clk)
+        @(negedge lsu_if.clk)
         for(int i = 0; i<16; i++)begin
             if((tr.matrix_L[i].q.size() == 0) & (tr.matrix_R[i].q.size() == 0))begin
                 matrix_sent_row++;

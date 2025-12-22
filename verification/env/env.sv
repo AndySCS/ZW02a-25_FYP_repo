@@ -1,11 +1,11 @@
 class env extends uvm_env;
 
-    mxu_agent mxu_agt;
-    mxu_rm rm;
-    mxu_sc sc;
-    uvm_tlm_analysis_fifo #(mxu_tr) agt_rm_fifo;
-    uvm_tlm_analysis_fifo #(mxu_tr) agt_sc_fifo;
-    uvm_tlm_analysis_fifo #(mxu_tr) rm_sc_fifo;
+    lsu_agent lsu_agt;
+    lsu_rm rm;
+    lsu_sc sc;
+    uvm_tlm_analysis_fifo #(lsu_tr) agt_rm_fifo;
+    uvm_tlm_analysis_fifo #(lsu_tr) agt_sc_fifo;
+    uvm_tlm_analysis_fifo #(lsu_tr) rm_sc_fifo;
 
     function new(string name = "env", uvm_component parent);
         super.new(name, parent);
@@ -21,9 +21,9 @@ endclass //env extends superClass
 
 function void env::build_phase(uvm_phase phase);
     super.build_phase(phase);
-    mxu_agt = mxu_agent::type_id::create("mxu_agt", this);
-    rm = mxu_rm::type_id::create("rm", this);
-    sc = mxu_sc::type_id::create("sc", this);
+    lsu_agt = lsu_agent::type_id::create("lsu_agt", this);
+    rm = lsu_rm::type_id::create("rm", this);
+    sc = lsu_sc::type_id::create("sc", this);
     
     agt_rm_fifo = new("agt_rm_fifo",this);
     agt_sc_fifo = new("agt_sc_fifo",this);
@@ -34,10 +34,10 @@ endfunction
 function void env::connect_phase(uvm_phase phase);
     super.connect_phase(phase);
 
-    mxu_agt.iap.connect(agt_rm_fifo.analysis_export);
+    lsu_agt.iap.connect(agt_rm_fifo.analysis_export);
     rm.port.connect(agt_rm_fifo.blocking_get_export);
 
-    mxu_agt.oap.connect(agt_sc_fifo.analysis_export);
+    lsu_agt.oap.connect(agt_sc_fifo.analysis_export);
     sc.act_port.connect(agt_sc_fifo.blocking_get_export);
     
     rm.ap.connect(agt_sc_fifo.analysis_export);
@@ -53,7 +53,7 @@ task env::main_phase(uvm_phase phase);
     phase.raise_objection(phase);
     
     while(1)begin
-        @(posedge mxu_agt.mxu_drv.mxu_if.clk)begin
+        @(posedge lsu_agt.lsu_drv.lsu_if.clk)begin
 	    phase_cnt++;
 	end
         if(phase_cnt >= 2000) phase.drop_objection(phase);
