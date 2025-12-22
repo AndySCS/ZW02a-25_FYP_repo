@@ -81,10 +81,42 @@ module load_buffer(
     output load_axi_rrdy;
     output lsu_store_buffer_finished;
 
+
+    wire [1:0] load_sram_type_nxt;
+    wire load_sram_type_en;
+    wire [1:0] load_sram_type;
+    
+    wire laod_buffer_addr_sent_en;
+    wire [7:0]  load_axi_arid_nxt;
+    wire [11:0] load_axi_arraddr_nxt;
+    wire [7:0]  load_axi_arlen_nxt;
+    wire [2:0]  load_axi_arsize_nxt;
+    wire [1:0]  load_axi_arburst_nxt;
+    wire load_axi_arvld_nxt;
+    wire load_axi_arstr_nxt;
+
+
     wire [11:0] ctrl_load_ld_addr_ff;
     wire [11:0] ctrl_load_addr_nxt;
     wire ctrl_load_addr_en;
     wire [11:0] ctrl_load_addr_ff;
+
+    wire [3:0] ld_buff_rresp_count_nxt;
+    wire ld_buff_rresp_count_en;
+    wire [3:0] ld_buff_rresp_count;
+    wire [255:0] ld_buff_rresp_raw;
+
+    wire lsu_sram_ld_wen;
+    wire lsu_ram_ld_cen;
+    wire [7:0] lsu_sram_ld_addr;
+    wire [31:0 ]lsu_sram_ld_din;
+
+    wire [255:0] rresp_row_count_nxt;
+    wire rresp_row_count_en;
+    wire [255:0] ld_buff_rresp;
+
+    wire[1:0] load_buffer_fsm;
+
     wire dram_data_load_done;
     wire sram_data_store_sone;
     wire load_buffer_fsm_nxt;
@@ -92,8 +124,8 @@ module load_buffer(
     wire [7:0] ctrl_load_resent_arid;
     wire [7:0] ctrl_load_arid;
     wire [7:0] ctrl_load_dram_araddr;
-    
-    assign load_sram_type_next = ctrl_load_sram_type;
+
+    assign load_sram_type_nxt = ctrl_load_sram_type;
     assign load_sram_type_en = ctrl_load_vld;
     assign load_sram_type = ctrl_load_vld ? ctrl_load_sram_type : load_sram_type_ff;
 
@@ -119,7 +151,7 @@ module load_buffer(
         .clk(clk),
         .rst_n(rst_n),
         .en(load_sram_type_en),
-        .d(load_sram_type_next),
+        .d(load_sram_type_nxt),
         .q(load_sram_type_ff)
     );
 
@@ -168,6 +200,10 @@ module load_buffer(
     assign lsu_ram_ld_cen = ctrl_sram_rvld & ~(|ld_buff_rresp_raw);
     assign lsu_sram_ld_addr = ctrl_load_addr_ff && ~(|ld_buff_rresp_raw);
     assign lsu_sram_ld_din =  ctrl_sram_rdata && ~(|ld_buff_rresp_raw);
+    assign load_sram_wen = lsu_sram_ld_wen;
+    assign load_sram_addr = lsu_sram_ld_addr;
+    assign load_sram_din = lsu_sram_ld_din;
+    assign load_sram_type = load_sram_type;
 
     //deal with rresp
     //if recive rresp resend whole chunk
