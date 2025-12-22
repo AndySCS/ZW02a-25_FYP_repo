@@ -24,14 +24,26 @@ function void mxu_input_monitor::build_phase(uvm_phase phase);
 endfunction
 
 task mxu_input_monitor::main_phase(uvm_phase phase);
+    
     mxu_tr tr;
+    mxu_tr tr_send;
 
-    tr = new("tr");
+    tr = mxu_tr::type_id::create("imon_mxu_tr");
+    tr_send = mxu_tr::type_id::create("imon_mxu_tr_send");
 
     while (1) begin 
+
+        tr.clear();
+        
         this.collect_matrix_in(tr);
-        ap.write(tr);
+	tr_send.deep_copy(tr);
+        ap.write(tr_send);
+
         `uvm_info("mxu_input_monitor", "write input to iap", UVM_NONE)
+        `uvm_info("mxu_input_monitor", "matrix L", UVM_NONE)
+        tr_send.print_L();
+        `uvm_info("mxu_input_monitor", "matrix_R", UVM_NONE)
+        tr_send.print_R();
     end
 
 endtask
@@ -49,13 +61,13 @@ task mxu_input_monitor::collect_matrix_in(ref mxu_tr tr);
     bit collect_begin;
     bit has_vld;
 
-    `uvm_info("mxu_input_monitor", "enter collect matrix", UVM_NONE)
 
     while(1)begin
         @(posedge mxu_if.clk);
         if(mxu_if.lsu_mxu_vld & mxu_if.mxu_lsu_rdy) break;
     end
 
+    `uvm_info("mxu_input_monitor", "enter collect matrix", UVM_NONE)
 
     while(1)begin
 

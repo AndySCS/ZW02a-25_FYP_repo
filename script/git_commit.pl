@@ -23,6 +23,7 @@ my %verification_type = (
     6 => "env",
     7 => "cov", 
     7 => "monitor", 
+    8 => "tr", 
     8 => "others",
 );
 

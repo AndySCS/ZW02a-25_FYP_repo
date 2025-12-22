@@ -46,7 +46,8 @@ class mxu_tr extends uvm_sequence_item;
     extern function void print_result();
     extern function void print_L();
     extern function void print_R();
-    //extern function void clear_result();
+    extern function void clear();
+    extern function void deep_copy(ref mxu_tr tr);
 
 endclass //mxu_tr extends superClass
 
@@ -119,15 +120,36 @@ function void mxu_tr::print_R();
 
 endfunction
 
-/*
-function void mxu_tr::clear_result();
+
+function void mxu_tr::clear();
     
-    for(int i = 0; i < 16; i++)begin
-        this.matrix_result[i].q.delete();
-        for(int j = 0; j < 16; j++)begin
-            this.matrix_R[i].q.push_back(0);
-        end
+    foreach (this.matrix_L[i, j]) begin
+        this.matrix_L[i][j] = 0;
+    end
+
+    foreach (this.matrix_R[i, j]) begin
+        this.matrix_R[i][j] = 0;
+    end
+
+    foreach (this.matrix_result[i, j]) begin
+        this.matrix_result[i][j] = 0;
     end
 
 endfunction
-*/
+
+function void mxu_tr::deep_copy(ref mxu_tr tr);
+ 
+    foreach (this.matrix_L[i, j]) begin
+        this.matrix_L[i][j] = tr.matrix_L[i][j];
+    end
+
+    foreach (this.matrix_R[i, j]) begin
+        this.matrix_R[i][j] = tr.matrix_R[i][j];
+    end
+
+    foreach (this.matrix_result[i, j]) begin
+        this.matrix_result[i][j] = tr.matrix_result[i][j];
+    end
+
+endfunction
+
