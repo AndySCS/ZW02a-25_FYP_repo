@@ -149,6 +149,7 @@ module store_buffer(
     wire[1:0] lsu_axi_awburst_ff;
     wire[2:0] lsu_axi_awstr_ff;
     wire[3:0] lsu_axi_awnum_ff;
+    wire ctrl_store_resp_vld_ff;
     //if ctrl_store_awvld => update the address payload 
     reg[7:0] ctrl_store_resp_oram_addr_ff;
     //pl for resend

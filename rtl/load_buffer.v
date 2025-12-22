@@ -85,6 +85,7 @@ module load_buffer(
     wire [1:0] load_sram_type_nxt;
     wire load_sram_type_en;
     wire [1:0] load_sram_type;
+    wire [1:0] load_sram_type_ff;
     
     wire laod_buffer_addr_sent_en;
     wire [7:0]  load_axi_arid_nxt;
@@ -111,11 +112,13 @@ module load_buffer(
     wire [7:0] lsu_sram_ld_addr;
     wire [31:0 ]lsu_sram_ld_din;
 
+    wire [255:0] rresp_row_count;
     wire [255:0] rresp_row_count_nxt;
     wire rresp_row_count_en;
     wire [255:0] ld_buff_rresp;
 
     wire[1:0] load_buffer_fsm;
+    wire rresp_end;
 
     wire dram_data_load_done;
     wire sram_data_store_sone;
@@ -209,10 +212,10 @@ module load_buffer(
     //if recive rresp resend whole chunk
     assign rresp_row_count_nxt = ctrl_load_vld ? ctrl_load_dram_addr : rresp_row_count+1;
     assign rresp_row_count_en = ctrl_load_vld | (ctrl_sram_rlast & ctrl_sram_rvld);
-    assign ld_buff_rresp[rresp_row_count] = |ld_buff_rresp_raw
+    assign ld_buff_rresp[rresp_row_count] = |ld_buff_rresp_raw;
 
     DFFRE #(.WDITH(256))
-    ff_ld_buff_rresp_count(
+    ff_ld_buff_rresp_row_count(
         .clk(clk),
         .rst_n(rst_n),
         .en(rresp_row_count_en),
@@ -220,7 +223,7 @@ module load_buffer(
         .q(rresp_row_count)
     );
 
-    assign load_buffer_fsm = load_buffer_vld ? 2'b01
+    assign load_buffer_fsm = ctrl_load_vld ? 2'b01
                             : ((rresp_row_count == load_axi_arnum) ? 
                             (rresp_end ? 2'b00 : 2'b10) : 2'b01);  
 
