@@ -9,10 +9,14 @@ class mxu_tr extends uvm_sequence_item;
     rand int matrix_Ry;
     
     constraint c_matrix_xy {
-        matrix_Lx inside {[0:16]};
-        matrix_Ly inside {[0:16]};
-        matrix_Rx inside {[0:16]};
-        matrix_Ry inside {[0:16]};
+        matrix_Lx inside {[1:16]};
+        matrix_Ly inside {[1:16]};
+        matrix_Rx inside {[1:16]};
+        matrix_Ry inside {[1:16]};
+        //matrix_Lx == 1;
+        //matrix_Ly == 5;//inside {[5]};
+        //matrix_Rx == 5;//inside {[5]};
+        //matrix_Ry == 5;//inside {[5]};
         matrix_Ly == matrix_Ry;
     }
 
@@ -84,27 +88,33 @@ endfunction
 
 function void mxu_tr::print_result(); 
 
-    foreach (this.matrix_result[i, j]) begin
-		$write("[%d]", this.matrix_result[i][j]);
-		if(j==15) $write("\n");
+    for(int i = 0; i < 16; i++)begin
+        for(int j = 0; j < 16; j++)begin
+	    $write("[%6d]", this.matrix_result[i][j]);
+        end
+	$write("\n");
     end
 
 endfunction
 
 function void mxu_tr::print_L(); 
 
-    foreach (this.matrix_result[i, j]) begin
-		$write("[%d]", this.matrix_L[i][j]);
-		if(j==15) $write("\n");
+    for(int i = 0; i < 16; i++)begin
+        for(int j = 0; j < 16; j++)begin
+	    $write("[%6d]", this.matrix_L[i][j]);
+        end
+	$write("\n");
     end
 
 endfunction
 
 function void mxu_tr::print_R(); 
 
-    foreach (this.matrix_result[i, j]) begin
-		$write("[%d]", this.matrix_R[i][j]);
-		if(j==15) $write("\n");
+    for(int i = 0; i < 16; i++)begin
+        for(int j = 0; j < 16; j++)begin
+	    $write("[%6d]", this.matrix_R[i][j]);
+        end
+	$write("\n");
     end
 
 endfunction

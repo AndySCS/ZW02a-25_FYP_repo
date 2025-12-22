@@ -67,16 +67,16 @@ task mxu_input_monitor::collect_matrix_in(ref mxu_tr tr);
         wram_data_tmp = mxu_if.lsu_mxu_wram_pld;
 
         for(int i = 0;i < 16;i++)begin
-            if(mxu_if.lsu_mxu_iram_vld[i])begin
-                collect_begin = 1;
-                tr.matrix_L[i][iram_array[i]]  = {{32-8{iram_data_tmp[i][7]}},iram_data_tmp[i]};
-                iram_array[i]++;
-                has_vld = 1;
-            end
             if(mxu_if.lsu_mxu_wram_vld[i])begin
                 collect_begin = 1;
-                tr.matrix_R[i][wram_array[i]]  = {{32-8{wram_data_tmp[i][7]}},wram_data_tmp[i]};
+                tr.matrix_L[i][wram_array[i]]  = {{32-8{wram_data_tmp[i][7]}},wram_data_tmp[i]};
                 wram_array[i]++;
+                has_vld = 1;
+            end
+            if(mxu_if.lsu_mxu_iram_vld[i])begin
+                collect_begin = 1;
+                tr.matrix_R[i][iram_array[i]]  = {{32-8{iram_data_tmp[i][7]}},iram_data_tmp[i]};
+                iram_array[i]++;
                 has_vld = 1;
             end
         end
