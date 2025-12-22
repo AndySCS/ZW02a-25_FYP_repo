@@ -24,7 +24,7 @@ my %verification_type = (
     7 => "cov", 
     7 => "monitor", 
     8 => "tr", 
-    8 => "others",
+    9 => "others",
 );
 
 my %script_type = (
