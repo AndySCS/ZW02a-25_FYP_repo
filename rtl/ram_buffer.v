@@ -1,5 +1,3 @@
-`include "define.vh"
-
 module ram_buffer(
     clk,
     rst_n,
@@ -58,6 +56,10 @@ module ram_buffer(
     wire [ENT_NUM-1:0] ent_alloc_ptr;
     wire [ENT_NUM-1:0] ent_alloc_ptr_nxt;
     wire [ENT_NUM-1:0] ent_alloc_ptr_en;
+
+    wire [ENT_NUM-1:0] ent_invld_oh;
+    wire [ENT_NUM-1:0] ent_free_oh;
+
     wire [7:0] ent_alloc_addr;
     wire [127:0] ent_alloc_data;
     //
@@ -127,7 +129,7 @@ module ram_buffer(
     //done alloc ent
 
     //ctrl input store
-    DFFE #(.WIDTH(4)) 
+    DFFRE #(.WIDTH(4)) 
     ff_ctrl_ram_buff_start_byte(
         .clk(clk),
         .rst_n(rst_n),
@@ -136,7 +138,7 @@ module ram_buffer(
         .q(ctrl_ram_buff_start_byte_ff)
     );
 
-    DFFE #(.WIDTH(4)) 
+    DFFRE #(.WIDTH(4)) 
     ff_ctrl_ram_buff_end_byte(
         .clk(clk),
         .rst_n(rst_n),
@@ -145,7 +147,7 @@ module ram_buffer(
         .q(ctrl_ram_buff_end_byte_ff)
     );
     
-    DFFE #(.WIDTH(4)) 
+    DFFRE #(.WIDTH(4)) 
     ff_ctrl_ram_buff_ent_num(
         .clk(clk),
         .rst_n(rst_n),
@@ -154,7 +156,7 @@ module ram_buffer(
         .q(ctrl_ram_buff_ent_num_ff)
     );
     
-    DFFE #(.WIDTH(8)) 
+    DFFRE #(.WIDTH(8)) 
     ff_ctrl_ram_buff_start_addr(
         .clk(clk),
         .rst_n(rst_n),
@@ -163,7 +165,7 @@ module ram_buffer(
         .q(ctrl_ram_buff_start_addr_ff)
     );
     
-    DFFE #(.WIDTH(5)) 
+    DFFRE #(.WIDTH(5)) 
     ff_ctrl_ram_buff_ent_rng(
         .clk(clk),
         .rst_n(rst_n),
@@ -180,7 +182,7 @@ module ram_buffer(
                                          : ram_read_dir ? ram_buff_read_addr_offset + 5'b1
                                          : ram_buff_read_addr_offset - 5'b1;
 
-    DFFE #(.WIDTH(5)) 
+    DFFRE #(.WIDTH(5)) 
     ff_ram_buff_read_addr_offset(
         .clk(clk),
         .rst_n(rst_n),
@@ -251,7 +253,7 @@ module ram_buffer(
                 .ent_vld(ent_vld[i]),
                 .ent_data(ent_data[i]),
                 .ent_addr(ent_addr[i]),
-                .ent_cur(ent_cur[i]),
+                .ent_age(ent_cur[i]),
                 .ent_free(ent_free[i]),
                 .ent_vld_1_in_16(ent_vld_1_in_16[i])
             );

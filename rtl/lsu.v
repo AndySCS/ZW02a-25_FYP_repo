@@ -498,7 +498,7 @@ module lsu(
     assign lsu_st_sram_doing_nxt = lsu_st_sram_vld; 
     assign lsu_st_sram_doing_en = lsu_st_sram_vld | lsu_st_sram_done;
 
-    DFFER #(.WIDTH(12))
+    DFFRE #(.WIDTH(12))
     ff_lsu_type2_st_mxu_start_addr(
         .clk(clk),
         .rst_n(rst_n),
@@ -507,7 +507,7 @@ module lsu(
         .q(lsu_st_sram_addr)
     );
     
-    DFFER #(.WIDTH(4))
+    DFFRE #(.WIDTH(4))
     ff_lsu_type2_store_mxu_start_x(
         .clk(clk),
         .rst_n(rst_n),
@@ -516,7 +516,7 @@ module lsu(
         .q(lsu_st_mxu_start_x)
     );
 
-    DFFER #(.WIDTH(4))
+    DFFRE #(.WIDTH(4))
     ff_lsu_type2_store_mxu_start_y(
         .clk(clk),
         .rst_n(rst_n),
@@ -525,7 +525,7 @@ module lsu(
         .q(lsu_st_mxu_start_y)
     );
 
-    DFFER #(.WIDTH(8))
+    DFFRE #(.WIDTH(8))
     ff_lsu_type2_store_num (
         .clk(clk),
         .rst_n(rst_n),
@@ -534,7 +534,7 @@ module lsu(
         .q(lsu_st_sram_num)
     );
 
-    DFFER #(.WIDTH(1))
+    DFFRE #(.WIDTH(1))
     ff_lsu_sram_doing (
         .clk(clk),
         .rst_n(rst_n),
@@ -545,7 +545,7 @@ module lsu(
 
     assign lsu_st_sram_type = lsu_st_sram_vld ? (idu_lsu_st_iram ? 2'b01 : idu_lsu_st_wram ? 2'b10 : 2'b11) : lsu_st_sram_type_ff;
     
-    DFFER #(.WIDTH(2))
+    DFFRE #(.WIDTH(2))
     ff_lsu_st_sram_type (
         .clk(clk),
         .rst_n(rst_n),
@@ -567,47 +567,47 @@ module lsu(
     //filter the useable element in int8 => 128bit
     //by the start_x and the len
     //assume it will not over the boundary limit
-    dec_size dec_data_len(.dec_in(idu_lsu_size), .dec_out(lsu_st_sram_len));
+    dec_size dec_data_len(.in(idu_lsu_size), .out(lsu_st_sram_len));
     assign lsu_st_col_target = lsu_st_sram_vld ? idu_lsu_start_x+lsu_st_sram_len : lsu_st_mxu_start_x+lsu_st_sram_len_ff;
-    mxu16 #(.WIDTH(8)) mux16rowdata_int8(.mxu_bank_in0(mxu_lsu_int8_row0_data),
-                                         .mxu_bank_in1(mxu_lsu_int8_row1_data),
-                                         .mxu_bank_in2(mxu_lsu_int8_row2_data),
-                                         .mxu_bank_in3(mxu_lsu_int8_row3_data),
-                                         .mxu_bank_in4(mxu_lsu_int8_row4_data),
-                                         .mxu_bank_in5(mxu_lsu_int8_row5_data),
-                                         .mxu_bank_in6(mxu_lsu_int8_row6_data),
-                                         .mxu_bank_in7(mxu_lsu_int8_row7_data),
-                                         .mxu_bank_in8(mxu_lsu_int8_row8_data),
-                                         .mxu_bank_in9(mxu_lsu_int8_row9_data),
-                                         .mxu_bank_in10(mxu_lsu_int8_row10_data),
-                                         .mxu_bank_in11(mxu_lsu_int8_row11_data),
-                                         .mxu_bank_in12(mxu_lsu_int8_row12_data),
-                                         .mxu_bank_in13(mxu_lsu_int8_row13_data),
-                                         .mxu_bank_in14(mxu_lsu_int8_row14_data),
-                                         .mxu_bank_in15(mxu_lsu_int8_row15_data),
+    mux16 #(.WIDTH(8)) mux16rowdata_int8(.in0(mxu_lsu_int8_row0_data),
+                                         .in1(mxu_lsu_int8_row1_data),
+                                         .in2(mxu_lsu_int8_row2_data),
+                                         .in3(mxu_lsu_int8_row3_data),
+                                         .in4(mxu_lsu_int8_row4_data),
+                                         .in5(mxu_lsu_int8_row5_data),
+                                         .in6(mxu_lsu_int8_row6_data),
+                                         .in7(mxu_lsu_int8_row7_data),
+                                         .in8(mxu_lsu_int8_row8_data),
+                                         .in9(mxu_lsu_int8_row9_data),
+                                         .in10(mxu_lsu_int8_row10_data),
+                                         .in11(mxu_lsu_int8_row11_data),
+                                         .in12(mxu_lsu_int8_row12_data),
+                                         .in13(mxu_lsu_int8_row13_data),
+                                         .in14(mxu_lsu_int8_row14_data),
+                                         .in15(mxu_lsu_int8_row15_data),
                                          .sel(lsu_st_sram_row_sel),
-                                         .mxu_out(lsu_st_sram_din_int8_raw)
+                                         .out(lsu_st_sram_din_int8_raw)
                                         );
 
     
-    mxu16 #(.WIDTH(9)) mux16rowdata_int16(.mxu_bank_in0(mxu_lsu_int16_row0_data),
-                                         .mxu_bank_in1(mxu_lsu_int16_row1_data),
-                                         .mxu_bank_in2(mxu_lsu_int16_row2_data),
-                                         .mxu_bank_in3(mxu_lsu_int16_row3_data),
-                                         .mxu_bank_in4(mxu_lsu_int16_row4_data),
-                                         .mxu_bank_in5(mxu_lsu_int16_row5_data),
-                                         .mxu_bank_in6(mxu_lsu_int16_row6_data),
-                                         .mxu_bank_in7(mxu_lsu_int16_row7_data),
-                                         .mxu_bank_in8(mxu_lsu_int16_row8_data),
-                                         .mxu_bank_in9(mxu_lsu_int16_row9_data),
-                                         .mxu_bank_in10(mxu_lsu_int16_row10_data),
-                                         .mxu_bank_in11(mxu_lsu_int16_row11_data),
-                                         .mxu_bank_in12(mxu_lsu_int16_row12_data),
-                                         .mxu_bank_in13(mxu_lsu_int16_row13_data),
-                                         .mxu_bank_in14(mxu_lsu_int16_row14_data),
-                                         .mxu_bank_in15(mxu_lsu_int16_row15_data),
+    mux16 #(.WIDTH(9)) mux16rowdata_int16(.in0(mxu_lsu_int16_row0_data),
+                                         .in1(mxu_lsu_int16_row1_data),
+                                         .in2(mxu_lsu_int16_row2_data),
+                                         .in3(mxu_lsu_int16_row3_data),
+                                         .in4(mxu_lsu_int16_row4_data),
+                                         .in5(mxu_lsu_int16_row5_data),
+                                         .in6(mxu_lsu_int16_row6_data),
+                                         .in7(mxu_lsu_int16_row7_data),
+                                         .in8(mxu_lsu_int16_row8_data),
+                                         .in9(mxu_lsu_int16_row9_data),
+                                         .in10(mxu_lsu_int16_row10_data),
+                                         .in11(mxu_lsu_int16_row11_data),
+                                         .in12(mxu_lsu_int16_row12_data),
+                                         .in13(mxu_lsu_int16_row13_data),
+                                         .in14(mxu_lsu_int16_row14_data),
+                                         .in15(mxu_lsu_int16_row15_data),
                                          .sel(lsu_st_sram_row_sel),
-                                         .mxu_out(lsu_st_sram_din_int16_raw)
+                                         .out(lsu_st_sram_din_int16_raw)
                                         );
                                         
     assign lsu_st_sram_din_int8 = lsu_st_sram_vld ? (lsu_st_sram_din_int8_raw << idu_lsu_start_x) >> lsu_st_col_target :
@@ -629,7 +629,7 @@ module lsu(
     assign lsu_st_sram_addr_ff_next = lsu_st_sram_vld ? idu_lsu_ld_st_addr[11:4] + 1 : lsu_st_sram_addr_ff + 1;
     assign lsu_st_sram_addr_en =  (lsu_store_sram_vld | lsu_sram_doing | ~lsu_st_sram_done);
 
-    DFFER #(.WIDTH(8))
+    DFFRE #(.WIDTH(8))
     ff_lsu_type2_store_addr (
         .clk(clk),
         .rst_n(rst_n),
@@ -638,7 +638,7 @@ module lsu(
         .q(lsu_st_sram_addr_ff)
     );
 
-    DFFER #(.WIDTH(3))
+    DFFRE #(.WIDTH(3))
     ff_lsu_type2_store_len (
         .clk(clk),
         .rst_n(rst_n),
@@ -647,7 +647,7 @@ module lsu(
         .q(lsu_st_sram_len_ff)
     );
     
-    DFFER #(.WIDTH(4))
+    DFFRE #(.WIDTH(4))
     ff_lsu_type2_store_count_row (
         .clk(clk),
         .rst_n(rst_n),

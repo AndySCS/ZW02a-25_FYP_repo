@@ -149,7 +149,7 @@ module load_buffer(
     //TODO both axi read dun ahve this str variables need add back
     assign lsu_axi_arstr = ctrl_load_str;
     
-    DFFER #(.WIDTH(2))
+    DFFRE #(.WIDTH(2))
     ff_load_sram_type(
         .clk(clk),
         .rst_n(rst_n),
@@ -158,7 +158,7 @@ module load_buffer(
         .q(load_sram_type_ff)
     );
 
-    DFFER #(.WIDTH(12))
+    DFFRE #(.WIDTH(12))
     ff_idu_lsu_ld_st_addr(
         .clk(clk),
         .rst_n(rst_n),

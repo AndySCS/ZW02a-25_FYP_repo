@@ -14,6 +14,11 @@ module store_buffer(
     ctrl_store_awnum,
     ctrl_st_sram_start_addr,
 
+    //to ram wrapper
+    //(read the sram data out)
+    ctrl_sram_vld,
+    ctrl_sram_addr,
+
     //from ram input 
     ctrl_sram_input_vld,
     ctrl_sram_input_addr,
@@ -74,6 +79,8 @@ module store_buffer(
     //lsu address for ram_read
     input[11:0] ctrl_st_sram_start_addr;
 
+    input ctrl_sram_vld;
+    input [7:0] ctrl_sram_addr;
     //from ram input 
     input ctrl_sram_input_vld;
     input[7:0] ctrl_sram_input_addr;
@@ -126,6 +133,8 @@ module store_buffer(
     wire st_buff_chunk_element_end;
     wire st_buff_chunk_num_count_end;
     wire st_buff_chunk_trans_end;
+    wire st_buff_response_end;
+    wire st_buff_resend_start;
     wire[1:0] st_buff_axi_write_fsm;
     wire[1:0] st_buff_sram_fsm;
     wire[3:0] st_buff_chunk_element_nxt;
@@ -172,7 +181,7 @@ module store_buffer(
     assign lsu_axi_awstr   = (ctrl_store_awvld ? lsu_axi_awstr : lsu_axi_awstr_ff);
     assign lsu_axi_awnum   = (ctrl_store_awvld ? lsu_axi_awnum : lsu_axi_awnum_ff);
 
-    DFFER #(.WIDTH(1))
+    DFFRE #(.WIDTH(1))
     ff_awvld(
         .clk(clk),
         .rst_n(rst_n),
@@ -181,7 +190,7 @@ module store_buffer(
         .q(lsu_awvld_ff)
     );
 
-    DFFER #(.WIDTH(8))
+    DFFRE #(.WIDTH(8))
     ff_awid(
         .clk(clk),
         .rst_n(rst_n),
@@ -190,7 +199,7 @@ module store_buffer(
         .q(ctrl_store_awid_ff)
     );
 
-    DFFER #(.WIDTH(10))
+    DFFRE #(.WIDTH(10))
     ff_awaddr(
         .clk(clk),
         .rst_n(rst_n),
@@ -199,7 +208,7 @@ module store_buffer(
         .q(ctrl_store_awaddr_ff)
     );
 
-    DFFER #(.WIDTH(8))
+    DFFRE #(.WIDTH(8))
     ff_awlen (
         .clk(clk),
         .rst_n(rst_n),
@@ -208,7 +217,7 @@ module store_buffer(
         .q(ctrl_store_awlen_ff)
     );
 
-    DFFER #(.WIDTH(3))
+    DFFRE #(.WIDTH(3))
     ff_awsize (
         .clk(clk),
         .rst_n(rst_n),
@@ -216,7 +225,7 @@ module store_buffer(
         .d(ctrl_store_awsize),
         .q(ctrl_store_awsize_ff)
     );
-    DFFER #(.WIDTH(2))
+    DFFRE #(.WIDTH(2))
     ff_awburst(
         .clk(clk),
         .rst_n(rst_n),
@@ -225,7 +234,7 @@ module store_buffer(
         .q(ctrl_store_awburst_ff)
     );
 
-    DFFER #(.WIDTH(3))
+    DFFRE #(.WIDTH(3))
     ff_awstr(
         .clk(clk),
         .rst_n(rst_n),
@@ -234,7 +243,7 @@ module store_buffer(
         .q(ctrl_store_awstr_ff)
     );
 
-    DFFER #(.WIDTH(4))
+    DFFRE #(.WIDTH(4))
     ff_awnum (
         .clk(clk),
         .rst_n(rst_n),
@@ -243,7 +252,7 @@ module store_buffer(
         .q(ctrl_store_awnum_ff)
     );
 
-    DFFER #(.WIDTH(8))
+    DFFRE #(.WIDTH(8))
     ff_ctrl_st_sram_satrt_addr (
         .clk(clk),
         .rst_n(rst_n),
@@ -258,12 +267,6 @@ module store_buffer(
     // => count the chunk elemnet => chunk element reach the end 
     // => get new sram data
 
-    wire st_buff_chunk_element_end;
-    wire st_buff_chunk_num_count_end;
-    wire st_buff_response_end;
-    wire st_buff_resend_start;
-    wire [8:0] st_buff_chunk_element;
-    wire [8:0] st_buff_chunk_element_nxt;
     
     assign st_buff_resend_start = lsu_axi_resend_vld;
     assign st_buff_chunk_element_end = st_buff_chunk_element == ctrl_store_awlen_ff;
@@ -308,7 +311,7 @@ module store_buffer(
                                     st_buff_sram_fsm[0] ? ctrl_sram_addr + 1 : ctrl_sram_addr;
                                 
 
-    DFFER #(.WIDTH(8))
+    DFFRE #(.WIDTH(8))
     ff_st_buff_chunk_element(
         .clk(clk),
         .rst_n(rst_n),
@@ -317,7 +320,7 @@ module store_buffer(
         .q(st_buff_chunk_element)
     );
 
-    DFFER #(.WIDTH(8))
+    DFFRE #(.WIDTH(8))
     ff_st_buff_chunk_num_count(
         .clk(clk),
         .rst_n(rst_n),
@@ -339,7 +342,7 @@ module store_buffer(
 
     assign lsu_axi_brdy_en = st_buff_is_send | ctrl_store_bvld;
 
-    DFFER #(.WIDTH(1))
+    DFFRE #(.WIDTH(1))
     ff_lsu_axi_brdy(
         .clk(clk),
         .rst_n(rst_n),
@@ -391,18 +394,27 @@ module store_buffer(
     
     //8 bit 
     // the upper 8 bit matter for the bank_hi
-    dec8to4 dec_bank_hi(.dec_in(st_buff_bank_error), .dec_out(st_buff_error_bank_addr_hi));
+    dec8to4 dec_bank_hi(.in(st_buff_bank_error), .out(st_buff_error_bank_addr_hi));
 
-    //mxu select
-    mxu8 mux(.mxu_bank_in0(st_buff_bank0), .mxu_bank_in1(st_buff_bank1), .mxu_bank_in2(st_buff_bank2), .mxu_bank_in3(st_buff_bank3), .mxu_bank_in4(st_buff_bank4), .mxu_bank_in5(st_buff_bank5), .mxu_bank_in6(st_buff_bank6), .mxu_bank_in7(st_buff_bank7), .sel(st_buff_error_addr_hi), .mxu_out(st_buff_error_bank_addr_lo));
+    //mux select
+    mux8 mux(   .in0(st_buff_bank0), 
+                .in1(st_buff_bank1), 
+                .in2(st_buff_bank2), 
+                .in3(st_buff_bank3), 
+                .in4(st_buff_bank4), 
+                .in5(st_buff_bank5), 
+                .in6(st_buff_bank6), 
+                .in7(st_buff_bank7), 
+                .sel(st_buff_error_addr_hi), 
+                .out(st_buff_error_bank_addr_lo));
 
     //
-    dec32to5 dec_bank_lo(.dec_in(st_buff_error_bank_addr_lo), .dec_out(st_buff_error_addr_lo));
+    dec32to5 dec_bank_lo(.in(st_buff_error_bank_addr_lo), .out(st_buff_error_addr_lo));
 
     // this will be the resend addr
     assign st_bresp_resend_sram_addr = {st_buff_error_bank_addr_hi,st_buff_error_bank_addr_lo};
 
-    DFFER #(.WIDTH(8))
+    DFFRE #(.WIDTH(8))
     ff_st_bresp_resend_addr(
         .clk(clk),
         .rst_n(rst_n),
@@ -420,3 +432,4 @@ module store_buffer(
     );
 
 endmodule
+

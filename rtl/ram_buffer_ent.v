@@ -19,6 +19,15 @@ module ram_buffer_ent(
     ent_free,
     ent_vld_1_in_16
 );
+    //parameter
+    parameter AWID_WIDTH = 8;
+    parameter AWARRD_WIDTH = 11;
+    parameter WDATA_WIDTH = 32;
+    parameter WSTRB_WIDTH = 4; // should be WDATA_WIDTH/4
+    parameter RAM_WIDTH = 128;
+    parameter RAM_DEPTH = 256;
+    parameter RAM_TYPE  = `AXI_WRAM_REGION;
+    parameter ENT_NUM = 16;
 
     input clk;
     input rst_n;
