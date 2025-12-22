@@ -31,6 +31,7 @@ task mxu_driver::main_phase(uvm_phase phase);
     mxu_if.lsu_mxu_vld = 0;
     mxu_if.lsu_mxu_iram_vld = 0;
     mxu_if.lsu_mxu_wram_vld = 0;
+    mxu_if.lsu_mxu_act_vld = 0;
     @(posedge mxu_if.rst_n); // wait till rstn is high
 
     while(1) begin
@@ -39,7 +40,9 @@ task mxu_driver::main_phase(uvm_phase phase);
         `uvm_info("mxu_driver", $sformatf("tr.matrix_Ly = %d", tr.matrix_Ly), UVM_NONE) 
         `uvm_info("mxu_driver", $sformatf("tr.matrix_Rx = %d", tr.matrix_Rx), UVM_NONE) 
         `uvm_info("mxu_driver", $sformatf("tr.matrix_Ry = %d", tr.matrix_Ry), UVM_NONE)
+        `uvm_info("mxu_driver", $sformatf("tr.matrix_L"), UVM_NONE)
         tr.print_L(); 
+        `uvm_info("mxu_driver", $sformatf("tr.matrix_R"), UVM_NONE)
         tr.print_R(); 
         send_matrix(tr);
         seq_item_port.item_done();
