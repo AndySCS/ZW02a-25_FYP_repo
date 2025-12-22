@@ -57,14 +57,14 @@ task mxu_driver::send_matrix(mxu_tr tr);
     bit send_matrix_needed = 0;
 
     while(1)begin
-        @(posedge mxu_if.clk);
+        @(negedge mxu_if.clk);
         if(mxu_if.mxu_lsu_rdy) begin
             mxu_if.lsu_mxu_vld = 1;
             mxu_if.lsu_mxu_clr = 1;
-            @(posedge mxu_if.clk);
+            @(negedge mxu_if.clk);
             mxu_if.lsu_mxu_vld = 0;
             mxu_if.lsu_mxu_clr = 0;
-            @(posedge mxu_if.clk);
+            @(negedge mxu_if.clk);
             break;
         end
     end
@@ -97,7 +97,7 @@ task mxu_driver::send_matrix(mxu_tr tr);
         iter_cnt++;
         if(iter_cnt >= 500) `uvm_error("mxu_driver", "maxtrix send function have run over 500 times");
         if(!send_matrix_needed) break;
-        @(posedge mxu_if.clk);
+        @(negedge mxu_if.clk);
     end
     
     `uvm_info("mxu_driver", "end sending matrix", UVM_NONE)
@@ -107,7 +107,7 @@ endtask
     /*
     while(matrix_sent_row != 16)begin
         matrix_sent_row = 0;
-        @(posedge mxu_if.clk)
+        @(negedge mxu_if.clk)
         for(int i = 0; i<16; i++)begin
             if((tr.matrix_L[i].q.size() == 0) & (tr.matrix_R[i].q.size() == 0))begin
                 matrix_sent_row++;
