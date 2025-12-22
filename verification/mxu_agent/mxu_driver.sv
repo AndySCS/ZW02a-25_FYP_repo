@@ -55,7 +55,6 @@ task mxu_driver::send_matrix(mxu_tr tr);
     bit[7:0] pop_data;
     int cycle_cnt = 0;
     bit send_matrix_needed = 0;
-    int row_pos = '{0,-1,-2,-3,-4,-5,-6,-7,-8,-9,-10,-11,-12,-13,-14,-15};
 
     while(1)begin
         @(posedge mxu_if.clk);
@@ -78,14 +77,6 @@ task mxu_driver::send_matrix(mxu_tr tr);
         mxu_if.lsu_mxu_wram_vld = 0;
         mxu_if.lsu_mxu_iram_pld = 0;
         mxu_if.lsu_mxu_wram_pld = 0;
-        for(int i = 0; i < 16;i++)begin
-	    foreach(row_pos[j])begin
-		if(row_pos[j] < 0) begin
-		    row_pos[j]++;
-		end
-		if(row_pos)
-	    end
-	end
         for(int row = 0; row < tr.matrix_Lx; row++)begin
             if(cycle_cnt >= row && cycle_cnt < tr.matrix_Ly + row)begin
                 mxu_if.lsu_mxu_iram_vld[row] = 1;
