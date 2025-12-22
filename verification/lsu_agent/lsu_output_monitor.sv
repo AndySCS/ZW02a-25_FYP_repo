@@ -39,7 +39,7 @@ task lsu_output_monitor::collect_matrix_out(lsu_tr tr);
 
     while(1)begin
         @(posedge lsu_if.clk);
-        if(lsu_if.lsu_lsu_vld) break;
+        if(lsu_if.lsu_mxu_vld) break;
     end
 
     //tr.clear_result();

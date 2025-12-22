@@ -30,7 +30,8 @@ task lsu_rm::main_phase(uvm_phase phase);
 
     while(1)begin
         port.get(tr);
-        this.mm_cal(tr);
+	    this.mm_inst(tr);
+        //this.mm_cal(tr);
         ap.write(tr);
     end
 
@@ -123,32 +124,34 @@ function lsu_tr lsu_rm::mm_inst(lsu_tr tr);
         2nd : count row
         3rd : count col
     */
+    tr.matrix_result[0][0] = 'b0;
     //For WRAM 
-    for(int i = 0; i < (wram_row_len+wram_col_len-1); i++)begin
-        for(int j = 0; j <= wram_row_len; j++)begin
-            wram_target_row = (idu_lsu_wram_start_addr[11:4]+j);
-            wram_ram_data = tr.wram_ram[idu_lsu_wram_start_addr[wram_target_row]];
-            for(int k = 0; k < wram_col_len; k++) begin
-                wram_target_col = (idu_lsu_wram_start_addr[3:0]+k);
-                if(j<=i && k<=i && i==j+k)begin
-                    tr.matrix_row_in[j] = wram_ram_data[wram_target_col];
-                end
-            end
-        end 
-    end
+    //for(int i = 0; i < (wram_row_len+wram_col_len-1); i++)begin
+        //for(int j = 0; j <= wram_row_len; j++)begin
+            //wram_target_row = (idu_lsu_wram_start_addr[11:4]+j);
+            //wram_ram_data = tr.wram_ram[idu_lsu_wram_start_addr[wram_target_row]];
+            //for(int k = 0; k < wram_col_len; k++) begin
+                //wram_target_col = (idu_lsu_wram_start_addr[3:0]+k);
+                //if(j<=i && k<=i && i==j+k)begin
+                    //tr.matrix_row_in[j] = wram_ram_data[wram_target_col];
+                //end
+            //end
+        //end 
+    //end
 
-    // For IRAM
-    for(int a = 0; a < (iram_row_len+iram_col_len-1); i++)begin
-        for(int b = 0; b <= iram_row_len; b++)begin
-            wram_target_row = (idu_lsu_wram_start_addr[11:4]+b);
-            wram_ram_data = tr.wram_ram[idu_lsu_wram_start_addr[wram_target_row]];
-            for(int c = 0; c < iram_col_len; c++) begin
-                wram_target_col = (idu_lsu_wram_start_addr[3:0]+c);
-                if(b<=a && c<=a && a==b+c)begin
-                    tr.matrix_row_in[j] = wram_ram_data[wram_target_col];
-                end
-            end
-        end 
-    end
+    //// For IRAM
+    //for(int a = 0; a < (iram_row_len+iram_col_len-1); i++)begin
+        //for(int b = 0; b <= iram_row_len; b++)begin
+            //wram_target_row = (idu_lsu_wram_start_addr[11:4]+b);
+            //wram_ram_data = tr.wram_ram[idu_lsu_wram_start_addr[wram_target_row]];
+            //for(int c = 0; c < iram_col_len; c++) begin
+                //wram_target_col = (idu_lsu_wram_start_addr[3:0]+c);
+                //if(b<=a && c<=a && a==b+c)begin
+                    //tr.matrix_row_in[j] = wram_ram_data[wram_target_col];
+                //end
+            //end
+        //end 
+    //end
 
 endfunction
+

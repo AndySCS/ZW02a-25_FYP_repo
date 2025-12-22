@@ -135,7 +135,7 @@ module harness;
         .idu_lsu_len(idu_lsu_len),
         .idu_lsu_size(idu_lsu_size),
         .idu_lsu_str(idu_lsu_str),
-        .idu_lsu_start_x(idu_lsu__start_x),
+        .idu_lsu_start_x(idu_lsu_start_x),
         .idu_lsu_start_y(idu_lsu_start_y),
         .idu_lsu_ld_st_addr(idu_lsu_ld_st_addr),
         .idu_lsu_st_low(idu_lsu_st_low),
@@ -219,7 +219,7 @@ module harness;
         .lsu_axi_awsize(lsu_axi_awsize),
         .lsu_axi_awburst(lsu_axi_awburst),
         .lsu_axi_awstr(lsu_axi_awstr),
-        .lsu_axi_awnum(lsu_axi_swnum),
+        .lsu_axi_awnum(lsu_axi_awnum),
         .lsu_axi_awvld(lsu_axi_awvld),
         .lsu_axi_oram_addr(lsu_axi_oram_addr),
         .lsu_axi_wdata(lsu_axi_wdata),
@@ -257,7 +257,7 @@ module harness;
 	rst_n <= 1;
     end
 
-    lsu_intf u_lsu(
+    lsu u_lsu(
         .clk(clk),
         .rst_n(rst_n),
         .idu_lsu_vld(idu_lsu_vld),
@@ -276,7 +276,7 @@ module harness;
         .idu_lsu_len(idu_lsu_len),
         .idu_lsu_size(idu_lsu_size),
         .idu_lsu_str(idu_lsu_str),
-        .idu_lsu_start_x(idu_lsu__start_x),
+        .idu_lsu_start_x(idu_lsu_start_x),
         .idu_lsu_start_y(idu_lsu_start_y),
         .idu_lsu_ld_st_addr(idu_lsu_ld_st_addr),
         .idu_lsu_st_low(idu_lsu_st_low),
@@ -356,7 +356,7 @@ module harness;
         .lsu_axi_awsize(lsu_axi_awsize),
         .lsu_axi_awburst(lsu_axi_awburst),
         .lsu_axi_awstr(lsu_axi_awstr),
-        .lsu_axi_awnum(lsu_axi_swnum),
+        .lsu_axi_awnum(lsu_axi_awnum),
         .lsu_axi_awvld(lsu_axi_awvld),
         .lsu_axi_oram_addr(lsu_axi_oram_addr),
         .lsu_axi_wdata(lsu_axi_wdata),
