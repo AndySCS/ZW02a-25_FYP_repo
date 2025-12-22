@@ -1,0 +1,48 @@
+class mxu_output_monitor extends uvm_monitor;
+
+    virtual mxu_intf mxu_if;
+    uvm_analysis_port #(mxu_tr) ap;
+
+    `uvm_component_utils(mxu_output_monitor)
+    function new(string name = "mxu_output_monitor", uvm_component parent = null);
+       super.new(name, parent);
+    endfunction //new()
+    
+    extern function void build_phase(uvm_phase phase);
+    extern virtual task main_phase(uvm_phase phase);
+    
+    extern virtual task collect_matrix_out(mxu_tr tr);
+
+endclass //mxu_output_monitor extends superClass
+
+function void mxu_output_monitor::build_phase(uvm_phase phase);
+    super.build_phase(phase);
+    if(!uvm_config_db#(virtual mxu_intf)::get(this, "", "mxu_if", mxu_if))begin
+        `uvm_fatal("mxu_output_monitor", "mxu output_monitor fail to get mxu if")
+    end
+    ap = new("ap", this);
+endfunction
+
+task mxu_output_monitor::main_phase(uvm_phase phase);
+    mxu_tr tr;
+
+    tr = new("tr");
+
+    while (1) begin 
+        this.collect_matrix_out(tr);
+        ap.write(tr);
+    end
+
+endtask
+
+task mxu_output_monitor::collect_matrix_out(mxu_tr tr);
+
+    while(1)begin
+        @(posedge mxu_if.clk);
+        if(mxu_if.lsu_mxu_vld) break;
+    end
+
+    //tr.clear_result();
+    @(posedge mxu_if.clk);
+    wait(mxu_if.mxu_lsu_data_rdy) 
+endtask
