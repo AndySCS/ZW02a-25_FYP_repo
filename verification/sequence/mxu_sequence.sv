@@ -54,7 +54,7 @@ task mxu_seqeunce::send_cnn();
             tr.matrix_Ry = 9;
         end
 
-        $fscanf (line, "%d,%d,%d,%d,%d,%d,%d,%d,%d", 
+        $sscanf (line, "%d,%d,%d,%d,%d,%d,%d,%d,%d", 
                  tr.matrix_R[matrix_row][0], tr.matrix_R[matrix_row][1], tr.matrix_R[matrix_row][2],
                  tr.matrix_R[matrix_row][3], tr.matrix_R[matrix_row][4], tr.matrix_R[matrix_row][5],
                  tr.matrix_R[matrix_row][6], tr.matrix_R[matrix_row][7], tr.matrix_R[matrix_row][8]);
