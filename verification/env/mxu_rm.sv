@@ -62,9 +62,12 @@ function mxu_tr mxu_rm::mm_cal(ref mxu_tr tr);
         for(int j = 0; j < 16; j++)begin
             //tr.matrix_result[i][j] = 0;
             for(int k = 0; k < 16; k++)begin
-                tr.matrix_result[i][j] += tr.matrix_L[i][k] * tr.matrix_R[j][k];
-		if(tr.matrix_result[i][j] > 32767)  tr.matrix_result[i][j] = 32767;
-		if(tr.matrix_result[i][j] < -32768) tr.matrix_result[i][j] = -32768;
+                tr.matrix_result_int16[i][j] += tr.matrix_L[i][k] * tr.matrix_R[j][k];
+		        if(tr.matrix_result_int16[i][j] > 32767)  tr.matrix_result[i][j] = 32767;
+		        if(tr.matrix_result_int16[i][j] < -32768) tr.matrix_result[i][j] = -32768;
+                tr.matrix_result_int8[i][j] = tr.matrix_result_int16 > 32'h7f ? 32'h7f
+                                            : tr.matrix_result_int16 < -32'd128 ? -32'd128
+                                            : tr.matrix_result_int16;
             end
         end
     end

@@ -22,7 +22,9 @@ class mxu_tr extends uvm_sequence_item;
 
     rand int matrix_L[15:0][15:0]; //weight matrix
     rand int matrix_R[15:0][15:0]; //input matrix
-    int      matrix_result[15:0][15:0];
+
+    int      matrix_result_int8[15:0][15:0];
+    int      matrix_result_int16[15:0][15:0];
 
     constraint c_matrix_L_values {
         foreach (matrix_L[i,j])
@@ -58,17 +60,7 @@ function void mxu_tr::init_matrix();
     this.matrix_Rx = 16;
     this.matrix_Ry = 16;
 
-    foreach (this.matrix_L[i, j]) begin
-        this.matrix_L[i][j] = 0;
-    end
-
-    foreach (this.matrix_R[i, j]) begin
-        this.matrix_R[i][j] = 0;
-    end
-
-    foreach (this.matrix_result[i, j]) begin
-        this.matrix_result[i][j] = 0;
-    end
+    this.clear();
 
 endfunction
 
@@ -76,8 +68,12 @@ function bit mxu_tr::compare(mxu_tr tr);
     
     bit match = 1;
 
-    foreach (this.matrix_result[i, j]) begin
-        if(this.matrix_result[i][j] != tr.matrix_result[i][j]) begin
+    foreach (this.matrix_result_int8[i, j]) begin
+        if(this.matrix_result_int8[i][j] != tr.matrix_result_int8[i][j]) begin
+            match = 0;
+            break;
+        end
+        if(this.matrix_result_int16[i][j] != tr.matrix_result_int16[i][j]) begin
             match = 0;
             break;
         end
@@ -92,9 +88,16 @@ function void mxu_tr::print_result();
     for (int i = 0; i < 16; i++) begin
         string line = "";
         for (int j = 0; j < 16; j++) begin
-            line = {line, $sformatf("[%6d]", this.matrix_result[i][j])};
+            line = {line, $sformatf("[%6d]", this.matrix_result_int8[i][j])};
         end
-        `uvm_info("MATRIX_RESULT", line, UVM_LOW)
+        `uvm_info("MATRIX_RESULT_INT8", line, UVM_LOW)
+    end
+    for (int i = 0; i < 16; i++) begin
+        string line = "";
+        for (int j = 0; j < 16; j++) begin
+            line = {line, $sformatf("[%6d]", this.matrix_result_int16[i][j])};
+        end
+        `uvm_info("MATRIX_RESULT_INT16", line, UVM_LOW)
     end
 
 endfunction
@@ -128,14 +131,9 @@ function void mxu_tr::clear();
     
     foreach (this.matrix_L[i, j]) begin
         this.matrix_L[i][j] = 0;
-    end
-
-    foreach (this.matrix_R[i, j]) begin
         this.matrix_R[i][j] = 0;
-    end
-
-    foreach (this.matrix_result[i, j]) begin
-        this.matrix_result[i][j] = 0;
+        this.matrix_result_int8[i][j] = 0;
+        this.matrix_result_int16[i][j] = 0;
     end
 
 endfunction
@@ -150,8 +148,9 @@ function void mxu_tr::deep_copy(ref mxu_tr tr);
         this.matrix_R[i][j] = tr.matrix_R[i][j];
     end
 
-    foreach (this.matrix_result[i, j]) begin
-        this.matrix_result[i][j] = tr.matrix_result[i][j];
+    foreach (this.matrix_result_int8[i, j]) begin
+        this.matrix_result_int8[i][j] = tr.matrix_result_int8[i][j];
+        this.matrix_result_int16[i][j] = tr.matrix_result_int16[i][j];
     end
 
 endfunction

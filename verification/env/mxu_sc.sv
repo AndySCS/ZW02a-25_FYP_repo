@@ -10,6 +10,7 @@ class mxu_sc extends uvm_scoreboard;
 
     extern virtual function void build_phase(uvm_phase phase);
     extern virtual task main_phase(uvm_phase phase);
+    extern virtual function void write_cnn_result();
 
     `uvm_component_utils(mxu_sc)
 
@@ -55,3 +56,6 @@ task mxu_sc::main_phase(uvm_phase phase);
 
 
 endtask
+
+function void mxu_sc::write_cnn_result();
+endfunction
