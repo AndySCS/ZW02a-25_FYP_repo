@@ -10,8 +10,6 @@ fcov = off
 sim_ccov_opts = 
 sim_fcov_opts = 0
 dbname = cov
-riscdv_test = ""
-riscdv_folder = "bin"
 flash_depth = 2048 
 max_chk = 15000 
 
@@ -45,8 +43,6 @@ VCS = vcs -sverilog 	 		          \
           -cm_dir $(mode)/cov/simv.vdb    \
           -cm_log $(mode)/cov/cm.log      \
           -cm_name $(fsdb_file_name)      \
-          +riscdv_tc=$(riscdv_test)       \
-          +riscdv_folder=$(riscdv_folder) \
           +max_chk=$(max_chk)             \
           +define+FLASH_DEPTH=$(flash_depth)       
 
@@ -77,9 +73,8 @@ sim:
                    -cm_name $(fsdb_file_name)           \
                    -cg_coverage_control=$(sim_fcov_opts)\
                    $(sim_ccov_opts)                     \
-                   +riscdv_tc=$(riscdv_test)            \
-                   +riscdv_folder=$(riscdv_folder)      \
                    +max_chk=$(max_chk)                  \
+                   +cnn=$(cnn)
                    +define+FLASH_DEPTH=$(flash_depth)       
 
 regress: 
@@ -89,8 +84,6 @@ regress:
                    -cm_name $(fsdb_file_name)           \
                    -cg_coverage_control=$(sim_fcov_opts)\
                    $(sim_ccov_opts)                     \
-                   +riscdv_tc=$(riscdv_test)            \
-                   +riscdv_folder=$(riscdv_folder)      \
                    +max_chk=$(max_chk)                  \
                    +define+FLASH_DEPTH=$(flash_depth)       
 

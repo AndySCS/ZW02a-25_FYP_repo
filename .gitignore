@@ -1,3 +1,5 @@
 build
 /*.spec
 verification/sim
+!verification/sim/Makefile
+/*.swp
