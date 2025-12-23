@@ -20,8 +20,8 @@ class mxu_tr extends uvm_sequence_item;
         matrix_Ly == matrix_Ry;
     }
 
-    rand int matrix_L[15:0][15:0];
-    rand int matrix_R[15:0][15:0];
+    rand int matrix_L[15:0][15:0]; //weight matrix
+    rand int matrix_R[15:0][15:0]; //input matrix
     int      matrix_result[15:0][15:0];
 
     constraint c_matrix_L_values {
