@@ -10,11 +10,23 @@ class mxu_seqeunce extends uvm_sequence #(mxu_tr);
         super.new(name);
     endfunction
 
-    virtual task body();
-        repeat(tr_num) begin
-            `uvm_do(tr)
-        end
-        #1000;
-    endtask
+    extern virtual task body();    
+    extern virtual task send_random();    
+    extern virtual task send_cnn();    
 
 endclass
+    
+task mxu_seqeunce::body();
+    if($test$plusargs("cnn")) send_cnn();
+    else send_random();
+    #100;
+endtask
+
+task mxu_seqeunce::send_random();
+    repeat(tr_num) begin
+        `uvm_do(tr)
+    end
+endtask
+
+task mxu_seqeunce::send_cnn();
+endtask

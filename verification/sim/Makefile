@@ -14,10 +14,11 @@ flash_depth = 2048
 max_chk = 15000
 tc_opt = 
 
-tc_opt_dir = ../$(tc).opt
+tc_opt_dir = ../tc/$(tc).opt
 
-ifeq ($wildcard($(tc_opt_dir)),1)
-	tc_opt = $shell(cat $(tc_opt_dir))
+ifneq ($wildcard($(tc_opt_dir)),"")
+	tc_opt := $(shell cat $(tc_opt_dir))
+endif
 
 
 fsdb_file_name = $(tc)
@@ -71,7 +72,7 @@ cmp:
 	$(VCS) 
 
 sim: 
-	./$(mode)/simv +UVM_TESTNAME=$(tc)                  \
+	./$(mode)/simv +UVM_TESTNAME=tc_base                  \
                    +ntb_random_seed=$(seed)             \
 				   +UVM_VERBOSITY=$(printlv)            \
                    +fsdb+autoflush                      \
@@ -82,10 +83,10 @@ sim:
                    $(sim_ccov_opts)                     \
                    +max_chk=$(max_chk)                  \
                    +define+FLASH_DEPTH=$(flash_depth)   \
-                   tc_opt  
+                   $(tc_opt)
 
 regress: 
-	./$(mode)/simv +UVM_TESTNAME=$(tc)                  \
+	./$(mode)/simv +UVM_TESTNAME=tc_base                  \
                    +ntb_random_seed=$(seed)             \
 				   +UVM_VERBOSITY=UVM_NONE              \
                    -cm_name $(fsdb_file_name)           \
