@@ -54,9 +54,9 @@ function mxu_tr mxu_rm::mm_cal(ref mxu_tr tr);
         ...
     */
     //apply actual calculation
-    `uvm_info("mxu_rm", "print_L", UVM_NONE)
+    `uvm_info("mxu_rm", "print_L", UVM_MEDIUM)
     tr.print_L();
-    `uvm_info("mxu_rm", "print_R", UVM_NONE)
+    `uvm_info("mxu_rm", "print_R", UVM_MEDIUM)
     tr.print_R();
     for(int i =0; i < 16;i++)begin
         for(int j = 0; j < 16; j++)begin

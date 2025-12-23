@@ -36,13 +36,13 @@ task mxu_driver::main_phase(uvm_phase phase);
 
     while(1) begin
         seq_item_port.get_next_item(tr);
-        `uvm_info("mxu_driver", $sformatf("tr.matrix_Lx = %d", tr.matrix_Lx), UVM_NONE) 
-        `uvm_info("mxu_driver", $sformatf("tr.matrix_Ly = %d", tr.matrix_Ly), UVM_NONE) 
-        `uvm_info("mxu_driver", $sformatf("tr.matrix_Rx = %d", tr.matrix_Rx), UVM_NONE) 
-        `uvm_info("mxu_driver", $sformatf("tr.matrix_Ry = %d", tr.matrix_Ry), UVM_NONE)
-        `uvm_info("mxu_driver", $sformatf("tr.matrix_L"), UVM_NONE)
+        `uvm_info("mxu_driver", $sformatf("tr.matrix_Lx = %d", tr.matrix_Lx), UVM_MEDIUM) 
+        `uvm_info("mxu_driver", $sformatf("tr.matrix_Ly = %d", tr.matrix_Ly), UVM_MEDIUM) 
+        `uvm_info("mxu_driver", $sformatf("tr.matrix_Rx = %d", tr.matrix_Rx), UVM_MEDIUM) 
+        `uvm_info("mxu_driver", $sformatf("tr.matrix_Ry = %d", tr.matrix_Ry), UVM_MEDIUM)
+        `uvm_info("mxu_driver", $sformatf("tr.matrix_L"), UVM_MEDIUM)
         tr.print_L(); 
-        `uvm_info("mxu_driver", $sformatf("tr.matrix_R"), UVM_NONE)
+        `uvm_info("mxu_driver", $sformatf("tr.matrix_R"), UVM_MEDIUM)
         tr.print_R(); 
         send_matrix(tr);
         seq_item_port.item_done();
@@ -72,7 +72,7 @@ task mxu_driver::send_matrix(mxu_tr tr);
         end
     end
 
-    `uvm_info("mxu_driver", "begin sending matrix", UVM_NONE)
+    `uvm_info("mxu_driver", "begin sending matrix", UVM_MEDIUM)
 
     while(1)begin
         send_matrix_needed = 0;
@@ -103,7 +103,7 @@ task mxu_driver::send_matrix(mxu_tr tr);
         @(negedge mxu_if.clk);
     end
     
-    `uvm_info("mxu_driver", "end sending matrix", UVM_NONE)
+    `uvm_info("mxu_driver", "end sending matrix", UVM_MEDIUM)
 
 endtask
 

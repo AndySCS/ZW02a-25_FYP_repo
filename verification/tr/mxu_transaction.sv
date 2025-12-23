@@ -90,11 +90,11 @@ endfunction
 function void mxu_tr::print_result(); 
 
     for (int i = 0; i < 16; i++) begin
-        string line = "";
+        string line = "\n";
         for (int j = 0; j < 16; j++) begin
             line = {line, $sformatf("[%6d]", this.matrix_result[i][j])};
         end
-        `uvm_info("MATRIX_RESULT", line, UVM_LOW)
+        `uvm_info("MATRIX_RESULT", line, UVM_NONE)
     end
 
 endfunction
@@ -102,11 +102,11 @@ endfunction
 function void mxu_tr::print_L(); 
     
     for (int i = 0; i < 16; i++) begin
-        string line = "";
+        string line = "\n";
         for (int j = 0; j < 16; j++) begin
             line = {line, $sformatf("[%6d]", this.matrix_L[i][j])};
         end
-        `uvm_info("MATRIX_L", line, UVM_LOW)
+        `uvm_info("MATRIX_L", line, UVM_HIGH)
     end
 
 endfunction
@@ -114,11 +114,11 @@ endfunction
 function void mxu_tr::print_R(); 
 
     for (int i = 0; i < 16; i++) begin
-        string line = "";
+        string line = "\n";
         for (int j = 0; j < 16; j++) begin
             line = {line, $sformatf("[%6d]", this.matrix_R[i][j])};
         end
-        `uvm_info("MATRIX_R", line, UVM_LOW)
+        `uvm_info("MATRIX_R", line, UVM_HIGH)
     end
 
 endfunction
