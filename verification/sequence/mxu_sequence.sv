@@ -46,8 +46,12 @@ task mxu_seqeunce::send_cnn();
             tr = mxu_tr::type_id::create("tr");
             start_item(tr);
             item_doing = 1;
+            matrix_row = 0;
             tr.matrix_L[0][8:0] = '{-1, -2, -1, 0, 0, 0, 1, 2, 1};
             tr.matrix_L[1][8:0] = '{-1, 0, 1, -2, 0, 2, -1, 0, 1};
+            tr.matrix_Lx = 2;
+            tr.matrix_Ly = 9;
+            tr.matrix_Ry = 9;
         end
 
         $fscanf (line, "%d,%d,%d,%d,%d,%d,%d,%d,%d", 
@@ -57,7 +61,7 @@ task mxu_seqeunce::send_cnn();
         matrix_row++;
 
         if(matrix_row == 16)begin
-            matrix_row = 0;
+            tr.matrix_Rx = matrix_row;
             finish_item(tr);
             item_doing = 0;
         end
@@ -65,7 +69,9 @@ task mxu_seqeunce::send_cnn();
     end
 
     if(item_doing)begin
+        tr.matrix_Rx = matrix_row;
         finish_item(tr);
+        item_doing = 0;
     end
 
     // Close this file handle
