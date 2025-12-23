@@ -47,7 +47,7 @@ task mxu_output_monitor::collect_matrix_out(mxu_tr tr);
     @(posedge mxu_if.clk);
     //wait(mxu_if.mxu_lsu_data_rdy & mxu_if.mxu_lsu_rdy) 
         if(mxu_if.mxu_lsu_data_rdy & mxu_if.mxu_lsu_rdy & ~(|{mxu_if.lsu_mxu_iram_vld, mxu_if.lsu_mxu_wram_vld})) begin
-            `uvm_info("mxu_output_monitor", "begin collect result", UVM_NONE)
+            `uvm_info("mxu_output_monitor", "begin collect result", UVM_MEDIUM)
             tr.matrix_result[0][0] = {{16{mxu_if.mxu_lsu_int16_row0_data[15]}},mxu_if.mxu_lsu_int16_row0_data[15:0]};
             tr.matrix_result[0][1] = {{16{mxu_if.mxu_lsu_int16_row0_data[31]}},mxu_if.mxu_lsu_int16_row0_data[31:16]};
             tr.matrix_result[0][2] = {{16{mxu_if.mxu_lsu_int16_row0_data[47]}},mxu_if.mxu_lsu_int16_row0_data[47:32]};
