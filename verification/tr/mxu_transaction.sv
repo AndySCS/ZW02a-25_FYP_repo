@@ -9,10 +9,10 @@ class mxu_tr extends uvm_sequence_item;
     rand int matrix_Ry;
     
     constraint c_matrix_xy {
-        matrix_Lx inside {[1:16]};
-        matrix_Ly inside {[1:16]};
-        matrix_Rx inside {[1:16]};
-        matrix_Ry inside {[1:16]};
+        matrix_Lx inside {[1:17]};
+        matrix_Ly inside {[1:17]};
+        matrix_Rx inside {[1:17]};
+        matrix_Ry inside {[1:17]};
         //matrix_Lx == 1;
         //matrix_Ly == 5;//inside {[5]};
         //matrix_Rx == 5;//inside {[5]};
