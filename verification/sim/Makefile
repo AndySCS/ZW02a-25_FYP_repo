@@ -11,7 +11,14 @@ sim_ccov_opts =
 sim_fcov_opts = 0
 dbname = cov
 flash_depth = 2048 
-max_chk = 15000 
+max_chk = 15000
+tc_opt = 
+
+tc_opt_dir = ../$(tc).opt
+
+ifeq ($wildcard($(tc_opt_dir)),1)
+	tc_opt = $shell(cat $(tc_opt_dir))
+
 
 fsdb_file_name = $(tc)
 #TC Name
@@ -74,8 +81,8 @@ sim:
                    -cg_coverage_control=$(sim_fcov_opts)\
                    $(sim_ccov_opts)                     \
                    +max_chk=$(max_chk)                  \
-                   +cnn=$(cnn)
-                   +define+FLASH_DEPTH=$(flash_depth)       
+                   +define+FLASH_DEPTH=$(flash_depth)   \
+                   tc_opt  
 
 regress: 
 	./$(mode)/simv +UVM_TESTNAME=$(tc)                  \
