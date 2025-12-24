@@ -17,7 +17,6 @@ interface lsu_intf(
     idu_lsu_dram_addr,
     idu_lsu_num,
     idu_lsu_len,
-    idu_lsu_size,
     idu_lsu_str,
     idu_lsu_start_x,
     idu_lsu_start_y,
@@ -152,8 +151,7 @@ interface lsu_intf(
     //paylaod related for load store
     input [30:0] idu_lsu_dram_addr;
     input [7:0] idu_lsu_num;
-    input [7:0] idu_lsu_len;
-    input [2:0] idu_lsu_size;
+    input [2:0] idu_lsu_len;
     input [2:0] idu_lsu_str;
     input [3:0] idu_lsu_start_x;
     input [3:0] idu_lsu_start_y;

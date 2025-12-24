@@ -15,8 +15,7 @@ module harness;
     wire idu_lsu_wfi;
     wire [30:0] idu_lsu_dram_addr;
     wire [7:0] idu_lsu_num;
-    wire [7:0] idu_lsu_len;
-    wire [2:0] idu_lsu_size;
+    wire [2:0] idu_lsu_len;
     wire [2:0] idu_lsu_str;
     wire [3:0] idu_lsu_start_x;
     wire [3:0] idu_lsu_start_y;
@@ -133,7 +132,6 @@ module harness;
         .idu_lsu_dram_addr(idu_lsu_dram_addr),
         .idu_lsu_num(idu_lsu_num),
         .idu_lsu_len(idu_lsu_len),
-        .idu_lsu_size(idu_lsu_size),
         .idu_lsu_str(idu_lsu_str),
         .idu_lsu_start_x(idu_lsu_start_x),
         .idu_lsu_start_y(idu_lsu_start_y),
@@ -274,7 +272,6 @@ module harness;
         .idu_lsu_dram_addr(idu_lsu_dram_addr),
         .idu_lsu_num(idu_lsu_num),
         .idu_lsu_len(idu_lsu_len),
-        .idu_lsu_size(idu_lsu_size),
         .idu_lsu_str(idu_lsu_str),
         .idu_lsu_start_x(idu_lsu_start_x),
         .idu_lsu_start_y(idu_lsu_start_y),

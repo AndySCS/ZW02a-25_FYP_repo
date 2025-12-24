@@ -17,7 +17,6 @@ module lsu(
     idu_lsu_dram_addr,
     idu_lsu_num,
     idu_lsu_len,
-    idu_lsu_size,
     idu_lsu_str,
     idu_lsu_start_x,
     idu_lsu_start_y,
@@ -428,7 +427,7 @@ module lsu(
     //choose the row by Y
     //total 16 row
     //start = start Y
-    //end   = start Y + size
+    //end   = start Y + len
 
     //assign lsu_st_sram_done = lsu_st_sram_count_row == (lsu_st_mxu_start_y+lsu_st_sram_num);
     wire lsu_st_type1_doing;
@@ -596,5 +595,3 @@ module lsu(
     );
 
 endmodule   
-
-

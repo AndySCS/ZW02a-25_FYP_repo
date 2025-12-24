@@ -42,7 +42,6 @@ task lsu_driver::main_phase(uvm_phase phase);
     lsu_if.idu_lsu_dram_addr = 0;
     lsu_if.idu_lsu_num = 0;
     lsu_if.idu_lsu_len = 0;
-    lsu_if.idu_lsu_size = 0;
     lsu_if.idu_lsu_str = 0;
     lsu_if.idu_lsu_start_x = 0;
     lsu_if.idu_lsu_start_y = 0;
