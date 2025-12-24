@@ -83,8 +83,11 @@ task lsu_driver::send_matrix(lsu_tr tr);
         @(negedge lsu_if.clk);
         if(lsu_if.lsu_idu_rdy) begin
             lsu_if.idu_lsu_vld = 1;
+            lsu_if.idu_lsu_st_iram = 1;
+	    lsu_if.mxu_lsu_data_rdy = 1;
             @(negedge lsu_if.clk);
             lsu_if.idu_lsu_vld = 0;
+            lsu_if.idu_lsu_st_iram = 0;
             @(negedge lsu_if.clk);
             break;
         end

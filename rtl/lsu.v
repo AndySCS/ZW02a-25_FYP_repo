@@ -329,12 +329,47 @@ module lsu(
         .d(lsu_vld_nxt),
         .q(lsu_vld)
     );
+    wire lsu_st_iram_ff;
+    wire lsu_st_wram_ff;
+    wire lsu_st_oram_ff;
+    wire lsu_st_dram_ff;
+    DFFR #(.WIDTH(1))
+    ff_lsu_st_iram(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(idu_lsu_st_iram),
+        .q(lsu_st_iram_ff)
+    );
 
+    DFFR #(.WIDTH(1))
+    ff_lsu_st_wram(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(idu_lsu_st_wram),
+        .q(lsu_st_wram_ff)
+    );
+    DFFR #(.WIDTH(1))
+    ff_lsu_st_oram(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(idu_lsu_st_oram),
+        .q(lsu_st_oram_ff)
+    );
+    DFFR #(.WIDTH(1))
+    ff_lsu_st_dram(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(idu_lsu_st_dram),
+        .q(lsu_st_dram_ff)
+    );
+    
     //FOR store instr
+
 
     wire lsu_st_en;
     wire lsu_st_vld_ff;
-    assign lsu_st_vld = lsu_instr_vld & (idu_lsu_st_iram | idu_lsu_st_wram | idu_lsu_st_wram | idu_lsu_st_wram);
+    //assign lsu_st_vld = lsu_vld & (idu_lsu_st_iram_ff | idu_lsu_st_wram_ff | idu_lsu_st_wram_ff | idu_lsu_st_wram_ff);
+    assign lsu_st_vld = lsu_vld & (lsu_st_iram_ff | lsu_st_wram_ff | lsu_st_wram_ff | lsu_st_wram_ff);
     assign lsu_st_en = lsu_st_vld | lsu_st_finish;
     DFFRE #(.WIDTH(1))
     ff_lsu_st_vld(
@@ -351,9 +386,9 @@ module lsu(
     //01 : wram
     //10 : oram
     //11 : dram
-    assign lsu_st_type = idu_lsu_st_iram ? 2'b00 : 
-                         idu_lsu_st_wram ? 2'b01 :
-                         idu_lsu_st_oram ? 2'b10 : 2'b11;
+    assign lsu_st_type = lsu_st_iram_ff ? 2'b00 : 
+                         lsu_st_wram_ff ? 2'b01 :
+                         lsu_st_oram_ff ? 2'b10 : 2'b11;
    
      
     wire [1:0] lsu_st_type_ff;
@@ -394,7 +429,10 @@ module lsu(
     //choose the row by Y
     //total 16 row
     //start = start Y
-    //end   = start Y + num_chunk
+    //end   = start Y + size
+
+    //assign lsu_st_sram_done = lsu_st_sram_count_row == (lsu_st_mxu_start_y+lsu_st_sram_num);
+    assign lsu_st_type1_done = lsu_st_type1_cnt_row == (idu_lsu_start_y + idu_lsu_len);
     wire lsu_st_type1_doing;
     wire [3:0] lsu_st_type1_cnt_row_nxt;
     wire [3:0] lsu_st_type1_cnt_row;
