@@ -62,19 +62,11 @@ task lsu_driver::main_phase(uvm_phase phase);
     lsu_if.idu_lsu_pool_size = 0;
     @(posedge lsu_if.rst_n); // wait till rstn is high
 
-    //while(1) begin
+    while(1) begin
         //seq_item_port.get_next_item(tr);
-        //`uvm_info("lsu_driver", $sformatf("tr.matrix_Lx = %d", tr.matrix_Lx), UVM_NONE) 
-        //`uvm_info("lsu_driver", $sformatf("tr.matrix_Ly = %d", tr.matrix_Ly), UVM_NONE) 
-        //`uvm_info("lsu_driver", $sformatf("tr.matrix_Rx = %d", tr.matrix_Rx), UVM_NONE) 
-        //`uvm_info("lsu_driver", $sformatf("tr.matrix_Ry = %d", tr.matrix_Ry), UVM_NONE)
-        //`uvm_info("lsu_driver", $sformatf("tr.matrix_L"), UVM_NONE)
-        //tr.print_L(); 
-        //`uvm_info("lsu_driver", $sformatf("tr.matrix_R"), UVM_NONE)
-        //tr.print_R(); 
-        //send_matrix(tr);
+        send_matrix(tr);
         //seq_item_port.item_done();
-    //end
+    end
         
 endtask
 
@@ -86,22 +78,20 @@ task lsu_driver::send_matrix(lsu_tr tr);
     bit[7:0] pop_data;
     int cycle_cnt = 0;
     bit send_matrix_needed = 0;
-
+*/
     while(1)begin
         @(negedge lsu_if.clk);
-        if(lsu_if.lsu_lsu_rdy) begin
-            lsu_if.lsu_lsu_vld = 1;
-            lsu_if.lsu_lsu_clr = 1;
+        if(lsu_if.lsu_idu_rdy) begin
+            lsu_if.idu_lsu_vld = 1;
             @(negedge lsu_if.clk);
-            lsu_if.lsu_lsu_vld = 0;
-            lsu_if.lsu_lsu_clr = 0;
+            lsu_if.idu_lsu_vld = 0;
             @(negedge lsu_if.clk);
             break;
         end
     end
 
     `uvm_info("lsu_driver", "begin sending matrix", UVM_NONE)
-
+/*
     while(1)begin
         send_matrix_needed = 0;
         lsu_if.lsu_lsu_iram_vld = 0;
@@ -159,3 +149,4 @@ endtask
         end
     end
     */
+

@@ -310,17 +310,24 @@ module lsu(
     wire [127:0] lsu_oram_din;
     wire [127:0] lsu_oram_dout;
 
+    wire lsu_vld_nxt;
+    wire lsu_vld;
+
+
+
+    assign lsu_instr_vld = idu_lsu_vld & lsu_idu_rdy;
+    assign lsu_vld_nxt = lsu_instr_vld | lsu_vld & ~lsu_instr_finish;
+
     assign lsu_instr_finish = lsu_st_finish | lsu_ld_finish | lsu_mm_finish;
-    assign lsu_instr_vld = idu_lsu_vld & lsu_rdy;
-    assign lsu_rdy_nxt = lsu_instr_vld ? ~lsu_rdy : lsu_rdy; 
-    assign lsu_idu_rdy = lsu_instr_vld ? ~lsu_instr_vld : lsu_rdy|lsu_instr_finish; 
+    assign lsu_idu_rdy =  ~lsu_vld|lsu_instr_finish; 
+
 
     DFFR #(.WIDTH(1))
-    ff_lsu_rdy(
+    ff_lsu_vld(
         .clk(clk),
         .rst_n(rst_n),
-        .d(lsu_rdy_nxt),
-        .q(lsu_rdy)
+        .d(lsu_vld_nxt),
+        .q(lsu_vld)
     );
 
     //FOR store instr
@@ -508,7 +515,8 @@ module lsu(
     assign lsu_iram_din  = {128{~lsu_st_type[1] & ~lsu_st_type[0]}} & lsu_st_type1_din_int8_qual;
     assign lsu_iram_dout = 128'b0;
 
-    mem_wrapper iram(
+    mem_wrapper #(.DATA_WIDTH(128))
+    iram(
         .clk (clk),
         .we  (lsu_iram_we), 
         .ce  (lsu_iram_ce),
@@ -523,7 +531,8 @@ module lsu(
     assign lsu_wram_din  = {128{~lsu_st_type[1] & lsu_st_type[0]}} & lsu_st_type1_din_int8_qual;
     assign lsu_wram_dout = 128'b0;
 
-    mem_wrapper wram(
+    mem_wrapper #(.DATA_WIDTH(128))
+    wram(
         .clk (clk),
         .we  (lsu_wram_we), 
         .ce  (lsu_wram_ce),
@@ -538,7 +547,8 @@ module lsu(
     assign lsu_oram_din  = 128'b0;
     assign lsu_oram_dout = 128'b0;
 
-    mem_wrapper oram(
+    mem_wrapper #(.DATA_WIDTH(128))
+    oram(
         .clk (clk),
         .we  (lsu_oram_we), 
         .ce  (lsu_oram_ce),
@@ -548,4 +558,5 @@ module lsu(
     );
 
 endmodule   
+
 

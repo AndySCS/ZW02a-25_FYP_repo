@@ -4,8 +4,6 @@ $MINITPU_RTL/lib/DFFRE.v
 
 $MINITPU_RTL/lib/DFFS.v
 $MINITPU_RTL/lib/DFFSE.v
-$MINITPU_RTL/lib/DFFS.v
-$MINITPU_RTL/lib/DFFSE.v
 
 
 $MINITPU_RTL/lib/dec_size.v
