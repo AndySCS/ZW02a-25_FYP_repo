@@ -78,36 +78,69 @@ task lsu_driver::send_matrix(lsu_tr tr);
     int cycle_cnt = 0;
     bit send_matrix_needed = 0;
 */
+    int count = 0;
     while(1)begin
         @(negedge lsu_if.clk);
         if(lsu_if.lsu_idu_rdy) begin
-            lsu_if.idu_lsu_vld = 1;
-            lsu_if.idu_lsu_st_iram = 1;
-	    lsu_if.mxu_lsu_data_rdy = 1;
-            lsu_if.mxu_lsu_int8_row0_data = 10;
-            lsu_if.mxu_lsu_int8_row1_data = 20;
-            lsu_if.mxu_lsu_int8_row2_data = 30;
-            lsu_if.mxu_lsu_int8_row3_data = 40;
-            lsu_if.mxu_lsu_int8_row4_data = 50;
-            lsu_if.mxu_lsu_int8_row5_data = 60;
-            lsu_if.mxu_lsu_int8_row6_data = 70;
-            lsu_if.mxu_lsu_int8_row7_data = 80;
-            lsu_if.mxu_lsu_int8_row8_data = 90;
-            lsu_if.mxu_lsu_int8_row9_data = 100;
-            lsu_if.mxu_lsu_int8_row10_data = 110;
-            lsu_if.mxu_lsu_int8_row11_data = 120;
-            lsu_if.mxu_lsu_int8_row12_data = 130;
-            lsu_if.mxu_lsu_int8_row13_data = 140;
-            lsu_if.mxu_lsu_int8_row14_data = 150;
-            lsu_if.mxu_lsu_int8_row15_data = 160;
-            lsu_if.idu_lsu_num = 16; //max for mxu
-            lsu_if.idu_lsu_len = 4;
-            lsu_if.idu_lsu_start_x = 0;
-            lsu_if.idu_lsu_start_y = 0;
-            lsu_if.idu_lsu_ld_st_addr = 0;
+	    if (count == 0)begin
+            	lsu_if.idu_lsu_vld = 1;
+            	lsu_if.idu_lsu_st_iram = 1;
+	    	lsu_if.mxu_lsu_data_rdy = 1;
+            	lsu_if.mxu_lsu_int8_row0_data = 'b1111;
+            	lsu_if.mxu_lsu_int8_row1_data = 'b11101111;
+            	lsu_if.mxu_lsu_int8_row2_data = 'b110011101111;
+            	lsu_if.mxu_lsu_int8_row3_data = 40;
+           	lsu_if.mxu_lsu_int8_row4_data = 50;
+           	lsu_if.mxu_lsu_int8_row5_data = 60;
+           	lsu_if.mxu_lsu_int8_row6_data = 70;
+            	lsu_if.mxu_lsu_int8_row7_data = 80;
+            	lsu_if.mxu_lsu_int8_row8_data = 90;
+            	lsu_if.mxu_lsu_int8_row9_data = 100;
+            	lsu_if.mxu_lsu_int8_row10_data = 110;
+            	lsu_if.mxu_lsu_int8_row11_data = 120;
+            	lsu_if.mxu_lsu_int8_row12_data = 130;
+            	lsu_if.mxu_lsu_int8_row13_data = 140;
+            	lsu_if.mxu_lsu_int8_row14_data = 150;
+            	lsu_if.mxu_lsu_int8_row15_data = 160;
+            	lsu_if.idu_lsu_num = 3; //max for mxu
+            	lsu_if.idu_lsu_len = 3;
+            	lsu_if.idu_lsu_start_x = 1;
+            	lsu_if.idu_lsu_start_y = 0;
+            	lsu_if.idu_lsu_ld_st_addr = 'b10000;
+		count=count+1;
+	        
+	      end
+	      else begin
+		lsu_if.idu_lsu_vld = 1;
+		lsu_if.idu_lsu_st_iram = 0;
+            	lsu_if.idu_lsu_st_wram = 1;
+	    	lsu_if.mxu_lsu_data_rdy = 1;
+            	lsu_if.mxu_lsu_int8_row0_data = 10;
+            	lsu_if.mxu_lsu_int8_row1_data = 20;
+            	lsu_if.mxu_lsu_int8_row2_data = 30;
+            	lsu_if.mxu_lsu_int8_row3_data = 40;
+           	lsu_if.mxu_lsu_int8_row4_data = 50;
+           	lsu_if.mxu_lsu_int8_row5_data = 60;
+           	lsu_if.mxu_lsu_int8_row6_data = 70;
+            	lsu_if.mxu_lsu_int8_row7_data = 80;
+            	lsu_if.mxu_lsu_int8_row8_data = 90;
+            	lsu_if.mxu_lsu_int8_row9_data = 100;
+            	lsu_if.mxu_lsu_int8_row10_data = 110;
+            	lsu_if.mxu_lsu_int8_row11_data = 120;
+            	lsu_if.mxu_lsu_int8_row12_data = 130;
+            	lsu_if.mxu_lsu_int8_row13_data = 140;
+            	lsu_if.mxu_lsu_int8_row14_data = 150;
+            	lsu_if.mxu_lsu_int8_row15_data = 160;
+            	lsu_if.idu_lsu_num = 16; //max for mxu
+            	lsu_if.idu_lsu_len = 4;
+            	lsu_if.idu_lsu_start_x = 0;
+            	lsu_if.idu_lsu_start_y = 2;
+            	lsu_if.idu_lsu_ld_st_addr = 12'b10000;
+	      end
+
             @(negedge lsu_if.clk);
-            lsu_if.idu_lsu_vld = 0;
-            lsu_if.idu_lsu_st_iram = 0;
+            	lsu_if.idu_lsu_vld = 0;
+            	//lsu_if.idu_lsu_st_iram = 0;
             @(negedge lsu_if.clk);
             break;
         end

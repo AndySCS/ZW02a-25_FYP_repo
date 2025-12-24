@@ -331,11 +331,22 @@ module lsu(
     wire lsu_st_wram_ff;
     wire lsu_st_oram_ff;
     wire lsu_st_dram_ff;
+
+    wire lsu_st_iram_pulse;
+    wire lsu_st_wram_pulse;
+    wire lsu_st_oram_pulse;
+    wire lsu_st_dram_pulse;
+    
+    assign lsu_st_iram_pulse = idu_lsu_st_iram & lsu_instr_vld;
+    assign lsu_st_wram_pulse = idu_lsu_st_wram & lsu_instr_vld;
+    assign lsu_st_oram_pulse = idu_lsu_st_oram & lsu_instr_vld;
+    assign lsu_st_dram_pulse = idu_lsu_st_dram & lsu_instr_vld;
+
     DFFR #(.WIDTH(1))
     ff_lsu_st_iram(
         .clk(clk),
         .rst_n(rst_n),
-        .d(idu_lsu_st_iram),
+        .d(lsu_st_iram_pulse),
         .q(lsu_st_iram_ff)
     );
 
@@ -343,21 +354,21 @@ module lsu(
     ff_lsu_st_wram(
         .clk(clk),
         .rst_n(rst_n),
-        .d(idu_lsu_st_wram),
+        .d(lsu_st_wram_pulse),
         .q(lsu_st_wram_ff)
     );
     DFFR #(.WIDTH(1))
     ff_lsu_st_oram(
         .clk(clk),
         .rst_n(rst_n),
-        .d(idu_lsu_st_oram),
+        .d(lsu_st_oram_pulse),
         .q(lsu_st_oram_ff)
     );
     DFFR #(.WIDTH(1))
     ff_lsu_st_dram(
         .clk(clk),
         .rst_n(rst_n),
-        .d(idu_lsu_st_dram),
+        .d(lsu_st_dram_pulse),
         .q(lsu_st_dram_ff)
     );
     
@@ -523,6 +534,18 @@ module lsu(
     assign lsu_st_type1_iram_addr = lsu_st_vld ? {8{~lsu_st_type[1] & ~lsu_st_type[0]}} & lsu_st_type1_addr : {8{~lsu_st_type_ff[1] & ~lsu_st_type_ff[0]}} & lsu_st_type1_addr;
     assign lsu_st_type1_iram_din  = lsu_st_vld ? {128{~lsu_st_type[1] & ~lsu_st_type[0]}} & lsu_st_type1_din_int8_qual : {128{~lsu_st_type_ff[1] & ~lsu_st_type_ff[0]}} & lsu_st_type1_din_int8_qual;
     assign lsu_iram_dout = 128'b0;
+
+
+    wire lsu_st_type1_wram_we;
+    wire lsu_st_type1_wram_ce;
+    wire [7:0] lsu_st_type1_wram_addr;
+    wire [127:0] lsu_st_type1_wram_din;
+
+    assign lsu_st_type1_wram_we   = lsu_st_vld ? (~lsu_st_type[1] & lsu_st_type[0] & lsu_st_type1_we) : (~lsu_st_type_ff[1] & lsu_st_type_ff[0] & lsu_st_type1_we);
+    assign lsu_st_type1_wram_ce   = lsu_st_vld ? (~lsu_st_type[1] & lsu_st_type[0] & lsu_st_type1_ce) : (~lsu_st_type_ff[1] & lsu_st_type_ff[0] & lsu_st_type1_ce);
+    assign lsu_st_type1_wram_addr = lsu_st_vld ? {8{~lsu_st_type[1] & lsu_st_type[0]}} & lsu_st_type1_addr : {8{~lsu_st_type_ff[1] & lsu_st_type_ff[0]}} & lsu_st_type1_addr;
+    assign lsu_st_type1_wram_din  = lsu_st_vld ? {128{~lsu_st_type[1] & lsu_st_type[0]}} & lsu_st_type1_din_int8_qual : {128{~lsu_st_type_ff[1] & lsu_st_type_ff[0]}} & lsu_st_type1_din_int8_qual;
+    assign lsu_wram_dout = 128'b0;
 //    mux16 #(.WIDTH(9)) mux16rowdata_int16(.in0(mxu_lsu_int16_row0_data),
 //                                         .in1(mxu_lsu_int16_row1_data),
 //                                         .in2(mxu_lsu_int16_row2_data),
@@ -572,10 +595,10 @@ module lsu(
         .dout(lsu_iram_dout)
     );
 
-    assign lsu_wram_we   = (~lsu_st_type[1]&lsu_st_type[0]) & lsu_st_type1_we;
-    assign lsu_wram_ce   = (~lsu_st_type[1] & lsu_st_type[0] & lsu_st_type1_ce);
-    assign lsu_wram_addr = {8{~lsu_st_type[1] & lsu_st_type[0]}} & lsu_st_type1_addr;
-    assign lsu_wram_din  = {128{~lsu_st_type[1] & lsu_st_type[0]}} & lsu_st_type1_din_int8_qual;
+    assign lsu_wram_we   = lsu_st_type1_wram_we;
+    assign lsu_wram_ce   = lsu_st_type1_wram_ce;
+    assign lsu_wram_addr = lsu_st_type1_wram_addr;
+    assign lsu_wram_din  = lsu_st_type1_wram_din;
     assign lsu_wram_dout = 128'b0;
 
     mem_wrapper #(.DATA_WIDTH(128))
