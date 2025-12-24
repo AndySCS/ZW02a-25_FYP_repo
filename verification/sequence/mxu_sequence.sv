@@ -5,6 +5,7 @@ class mxu_seqeunce extends uvm_sequence #(mxu_tr);
     // Randomizable fields for stimulus control
     mxu_tr tr;
     int tr_num = 50;
+    int send_num = 0;
 
     function new(string name = "mxu_seqeunce");
         super.new(name);
@@ -19,7 +20,8 @@ endclass
 task mxu_seqeunce::body();
     if($test$plusargs("cnn")) send_cnn();
     else send_random();
-    #100;
+    `uvm_info("mxu_sequence", $sformatf("all tr is sent, send num is %d", send_num), UVM_LOW);
+    #200;
 endtask
 
 task mxu_seqeunce::send_random();
@@ -64,6 +66,7 @@ task mxu_seqeunce::send_cnn();
             tr.matrix_Rx = matrix_row;
             finish_item(tr);
             item_doing = 0;
+            send_num++;
         end
 
     end
@@ -72,6 +75,7 @@ task mxu_seqeunce::send_cnn();
         tr.matrix_Rx = matrix_row;
         finish_item(tr);
         item_doing = 0;
+        send_num++;
     end
 
     // Close this file handle

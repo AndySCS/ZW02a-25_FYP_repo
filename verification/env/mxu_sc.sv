@@ -1,7 +1,8 @@
 class mxu_sc extends uvm_scoreboard;
 
     mxu_tr exp_result_q[$];
-	bit wr_doing = 0;
+    bit wr_doing = 0;
+    int write_cnt = 0;
     uvm_blocking_get_port #(mxu_tr) exp_port;
     uvm_blocking_get_port #(mxu_tr) act_port;
 
@@ -13,6 +14,7 @@ class mxu_sc extends uvm_scoreboard;
     extern virtual task main_phase(uvm_phase phase);
     extern virtual function void write_cnn_result(mxu_tr tr);
     extern virtual function void write_file(string f_name, string wr_line);
+    extern virtual function void final_phase(uvm_phase phase);
 
     `uvm_component_utils(mxu_sc)
 
@@ -64,10 +66,13 @@ endtask
 
 function void mxu_sc::write_cnn_result(mxu_tr tr);
 
+
 	string int16_x_wr_line = "";
 	string int16_y_wr_line = "";
 	string int8_x_wr_line = "";
 	string int8_y_wr_line = "";
+	
+        write_cnt++;
 
 	for(int i = 0; i < 16; i++)begin
 		int16_x_wr_line = {int16_x_wr_line, $sformatf("%d", tr.matrix_result_int16[0][i])};
@@ -102,4 +107,10 @@ function void mxu_sc::write_file(string f_name, string wr_line);
 
 	$fclose(fd);
 
+endfunction
+
+function void mxu_sc::final_phase(uvm_phase phase);
+    super.final_phase(phase);
+    if(exp_result_q.size() > 0) `uvm_error("mxu_sc", $sformatf("exp_result_q is not empty when tc ends, exp_result_q size is %d", exp_result_q.size()))
+    `uvm_info("mxu_sc", $sformatf("enter fianl phase, mxu_sc write cnt is %d", write_cnt), UVM_LOW);
 endfunction

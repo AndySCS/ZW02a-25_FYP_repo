@@ -4,6 +4,7 @@ class mxu_driver extends uvm_driver #(mxu_tr);
     */
 
     virtual mxu_intf mxu_if;
+    int send_cnt = 0;
 
     `uvm_component_utils(mxu_driver)
     
@@ -14,6 +15,7 @@ class mxu_driver extends uvm_driver #(mxu_tr);
     extern function void build_phase(uvm_phase phase);
     extern virtual task main_phase(uvm_phase phase);
     extern virtual task send_matrix(mxu_tr tr);
+    extern virtual function void final_phase(uvm_phase phase);
 
 endclass //className extends superClass
 
@@ -36,6 +38,7 @@ task mxu_driver::main_phase(uvm_phase phase);
 
     while(1) begin
         seq_item_port.get_next_item(tr);
+        send_cnt++;
         `uvm_info("mxu_driver", $sformatf("tr.matrix_Lx = %d", tr.matrix_Lx), UVM_MEDIUM) 
         `uvm_info("mxu_driver", $sformatf("tr.matrix_Ly = %d", tr.matrix_Ly), UVM_MEDIUM) 
         `uvm_info("mxu_driver", $sformatf("tr.matrix_Rx = %d", tr.matrix_Rx), UVM_MEDIUM) 
@@ -107,27 +110,8 @@ task mxu_driver::send_matrix(mxu_tr tr);
 
 endtask
 
-    /*
-    while(matrix_sent_row != 16)begin
-        matrix_sent_row = 0;
-        @(negedge mxu_if.clk)
-        for(int i = 0; i<16; i++)begin
-            if((tr.matrix_L[i].q.size() == 0) & (tr.matrix_R[i].q.size() == 0))begin
-                matrix_sent_row++;
-            end
-            if(i >= cur_row)begin
-                mxu_if.lsu_mxu_iram_vld[i] = (tr.matrix_L[i].q.size() > 0);
-                pop_data = tr.matrix_L[i].q.pop_front();
-                mxu_if.lsu_mxu_iram_pld |= {{120{pop_data[7]}}, pop_data} << i*8;
-                mxu_if.lsu_mxu_wram_vld[i] = (tr.matrix_R[i].q.size() > 0);
-                pop_data = tr.matrix_L[i].q.pop_front();
-                mxu_if.lsu_mxu_wram_pld |= {{120{pop_data[7]}}, pop_data} <<  i*8;
-            end
-        end
-        cur_row++;
-        iter_cnt++;
-        if(iter_cnt >= 500)begin
-            `uvm_error("mxu_driver", "maxtrix send function have run over 500 times")
-        end
-    end
-    */
+function void mxu_driver::final_phase(uvm_phase phase);
+    super.final_phase(phase);
+    `uvm_info("mxu_drv", $sformatf("enter fianl phase, mxu_drv send cnt is %d", send_cnt), UVM_LOW);
+endfunction
+
