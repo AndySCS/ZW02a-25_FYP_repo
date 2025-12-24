@@ -31,6 +31,9 @@ fsdb_file_name = $(tc)
 #endif
 
 #Command
+$(shell ../../script/linux/file_extend -dir ../../verification)
+$(shell ../../script/linux/file_extend -dir ../../rtl)
+
 GEN_MODE = mkdir -p $(mode) $(mode)/log $(mode)/wave $(mode)/cov
 VCS = vcs -sverilog 	 		          \
           -ntb_opts uvm-1.2               \

@@ -1,5 +1,6 @@
 build
 /*.spec
+*.spec
 verification/sim/*
 !verification/sim/Makefile
 !verification/sim/*.csv
