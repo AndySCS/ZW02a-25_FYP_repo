@@ -83,7 +83,7 @@ task lsu_driver::send_matrix(lsu_tr tr);
         if(lsu_if.lsu_idu_rdy) begin
             lsu_if.idu_lsu_vld = 1;
             lsu_if.idu_lsu_st_iram = 1;
-	        lsu_if.mxu_lsu_data_rdy = 1;
+	    lsu_if.mxu_lsu_data_rdy = 1;
             lsu_if.mxu_lsu_int8_row0_data = 10;
             lsu_if.mxu_lsu_int8_row1_data = 20;
             lsu_if.mxu_lsu_int8_row2_data = 30;

@@ -489,7 +489,7 @@ module lsu(
     wire lsu_st_type1_we;
 
     wire [7:0] lsu_st_type1_addr;
-    wire [7:0] lsu_st_type1_addr_ff_nxt;
+    wire [7:0] lsu_st_type1_addr_nxt;
 
     wire [7:0] lsu_st_type1_addr_ff;
     //since our target is start_x*8
@@ -500,19 +500,29 @@ module lsu(
     assign lsu_st_type1_din_int8_qual = lsu_st_type1_din_int8_raw >> lsu_st_type1_shift_start << lsu_st_type1_shift_end >> lsu_st_type1_shift_end;
     assign lsu_st_type1_ce =  lsu_st_type1_doing;
     assign lsu_st_type1_we =  lsu_st_type1_doing;
-    assign lsu_st_type1_addr = lsu_st_type1_qual ? idu_lsu_ld_st_addr[11:4] : lsu_st_type1_addr_ff+1;
-
-    assign lsu_st_type1_addr_ff_next = lsu_st_type1_doing ? lsu_st_type1_addr+1 : lsu_st_type1_addr_ff;
+	
+    assign lsu_st_type1_addr = (lsu_st_type1_qual&lsu_st_vld) ? idu_lsu_ld_st_addr[11:4] : lsu_st_type1_addr_ff;
+    assign lsu_st_type1_addr_nxt = lsu_st_type1_addr + 1;
 
     DFFRE #(.WIDTH(8))
     ff_lsu_type1_store_addr (
         .clk(clk),
         .rst_n(rst_n),
-        .d(lsu_st_type1_addr_ff_nxt),
+        .d(lsu_st_type1_addr_nxt),
         .en(lsu_st_type1_doing),
         .q(lsu_st_type1_addr_ff)
     );
+    
+    wire lsu_st_type1_iram_we;
+    wire lsu_st_type1_iram_ce;
+    wire [7:0] lsu_st_type1_iram_addr;
+    wire [127:0] lsu_st_type1_iram_din;
 
+    assign lsu_st_type1_iram_we   = lsu_st_vld ? (~lsu_st_type[1] & ~lsu_st_type[0] & lsu_st_type1_we) : (~lsu_st_type_ff[1] & ~lsu_st_type_ff[0] & lsu_st_type1_we);
+    assign lsu_st_type1_iram_ce   = lsu_st_vld ? (~lsu_st_type[1] & ~lsu_st_type[0] & lsu_st_type1_ce) : (~lsu_st_type_ff[1] & ~lsu_st_type_ff[0] & lsu_st_type1_ce);
+    assign lsu_st_type1_iram_addr = lsu_st_vld ? {8{~lsu_st_type[1] & ~lsu_st_type[0]}} & lsu_st_type1_addr : {8{~lsu_st_type_ff[1] & ~lsu_st_type_ff[0]}} & lsu_st_type1_addr;
+    assign lsu_st_type1_iram_din  = lsu_st_vld ? {128{~lsu_st_type[1] & ~lsu_st_type[0]}} & lsu_st_type1_din_int8_qual : {128{~lsu_st_type_ff[1] & ~lsu_st_type_ff[0]}} & lsu_st_type1_din_int8_qual;
+    assign lsu_iram_dout = 128'b0;
 //    mux16 #(.WIDTH(9)) mux16rowdata_int16(.in0(mxu_lsu_int16_row0_data),
 //                                         .in1(mxu_lsu_int16_row1_data),
 //                                         .in2(mxu_lsu_int16_row2_data),
@@ -546,10 +556,10 @@ module lsu(
     //FOR sram memory wrapper
 
 
-    assign lsu_iram_we   = (~lsu_st_type[1] & ~lsu_st_type[0] & lsu_st_type1_we);
-    assign lsu_iram_ce   = (~lsu_st_type[1] & ~lsu_st_type[0] & lsu_st_type1_ce);
-    assign lsu_iram_addr = {8{~lsu_st_type[1] & ~lsu_st_type[0]}} & lsu_st_type1_addr;
-    assign lsu_iram_din  = {128{~lsu_st_type[1] & ~lsu_st_type[0]}} & lsu_st_type1_din_int8_qual;
+    assign lsu_iram_we   = lsu_st_type1_iram_we;
+    assign lsu_iram_ce   = lsu_st_type1_iram_ce;
+    assign lsu_iram_addr = lsu_st_type1_iram_addr;
+    assign lsu_iram_din  = lsu_st_type1_iram_din;
     assign lsu_iram_dout = 128'b0;
 
     mem_wrapper #(.DATA_WIDTH(128))
@@ -595,3 +605,4 @@ module lsu(
     );
 
 endmodule   
+
