@@ -1,1 +1,0 @@
-$MINITPU_VER/tr/lsu_transaction.sv
