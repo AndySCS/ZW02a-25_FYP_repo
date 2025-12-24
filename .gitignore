@@ -2,4 +2,5 @@ build
 /*.spec
 verification/sim/*
 !verification/sim/Makefile
+!verification/sim/*.csv
 *.swp
