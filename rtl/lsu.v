@@ -152,8 +152,7 @@ module lsu(
     //paylaod related for load store
     input [30:0] idu_lsu_dram_addr;
     input [7:0] idu_lsu_num;
-    input [7:0] idu_lsu_len;
-    input [2:0] idu_lsu_size;
+    input [2:0] idu_lsu_len;
     input [2:0] idu_lsu_str;
     input [3:0] idu_lsu_start_x;
     input [3:0] idu_lsu_start_y;
@@ -432,17 +431,18 @@ module lsu(
     //end   = start Y + size
 
     //assign lsu_st_sram_done = lsu_st_sram_count_row == (lsu_st_mxu_start_y+lsu_st_sram_num);
-    assign lsu_st_type1_done = lsu_st_type1_cnt_row == (idu_lsu_start_y + idu_lsu_len);
     wire lsu_st_type1_doing;
     wire [3:0] lsu_st_type1_cnt_row_nxt;
     wire [3:0] lsu_st_type1_cnt_row;
     wire lsu_st_type1_cnt_row_en;
+
+    assign lsu_st_type1_done = lsu_st_type1_cnt_row == (idu_lsu_start_y + idu_lsu_len);
     assign lsu_st_type1_doing = (lsu_st_type1_qual | lsu_st_type1_qual_ff) & ~lsu_st_type1_done;
     //if is start, then assign startY as first row
     //else if not yet end assign startY+1;
     //else assign currentY
-    assign lsu_st_type1_cnt_row_nxt = lsu_st_type1_qual & lsu_st_type1_doing ? idu_lsu_start_y + 1'b1 : lsu_st_type1_cnt_row + 1;
-    assign lsu_st_type1_cnt_row_en = lsu_st_type1_doing | lsu_st_type1_qual;
+    assign lsu_st_type1_cnt_row_nxt = lsu_st_vld & lsu_st_type1_doing ? idu_lsu_start_y + 1'b1 : lsu_st_type1_cnt_row + 1;
+    assign lsu_st_type1_cnt_row_en = lsu_st_type1_doing | lsu_st_vld;
     
     DFFRE #(.WIDTH(4))
     ff_lsu_type1_cnt_row (
@@ -455,7 +455,7 @@ module lsu(
     //get the mxu row
     wire [3:0]lsu_st_type1_row_sel;
     wire [127:0] lsu_st_type1_din_int8_raw;
-    assign lsu_st_type1_row_sel = lsu_st_type1_qual & lsu_st_type1_doing ? idu_lsu_start_y : lsu_st_type1_cnt_row;
+    assign lsu_st_type1_row_sel = lsu_st_vld & lsu_st_type1_doing ? idu_lsu_start_y : lsu_st_type1_cnt_row;
 
     mux16 #(.WIDTH(128)) mux16rowdata_int8(.in0(mxu_lsu_int8_row0_data),
                                          .in1(mxu_lsu_int8_row1_data),
@@ -482,7 +482,7 @@ module lsu(
     //filter the useable element in int8 => 128bit
     //by the start_x and the len
     //assume it will not over the boundary limit
-    wire [7:0] lsu_st_type1_shift_size;
+    wire [7:0] lsu_st_type1_shift_len;
     wire [7:0] lsu_st_type1_shift_start;
 
     wire [7:0] lsu_st_type1_shift_end;
@@ -495,9 +495,9 @@ module lsu(
     wire [7:0] lsu_st_type1_addr_ff;
     //since our target is start_x*8
     //so we need shift 3 bit to get *8
+    dec_len dec_data_len(.in(idu_lsu_len), .out(lsu_st_type1_shift_len));
     assign lsu_st_type1_shift_start = idu_lsu_start_x << 2'd3;
-    assign lsu_st_type1_shift_end = 8'd127-lsu_st_type1_shift_start-idu_lsu_size;
-    //dec_size dec_data_len(.in(idu_lsu_size), .out(lsu_st_type1_shift_size));
+    assign lsu_st_type1_shift_end = 8'd128-lsu_st_type1_shift_start-lsu_st_type1_shift_len;
     assign lsu_st_type1_din_int8_qual = lsu_st_type1_din_int8_raw >> lsu_st_type1_shift_start << lsu_st_type1_shift_end >> lsu_st_type1_shift_end;
     assign lsu_st_type1_ce =  lsu_st_type1_doing;
     assign lsu_st_type1_we =  lsu_st_type1_doing;
