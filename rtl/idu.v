@@ -1,5 +1,3 @@
-`include "define.vh"
-
 module idu (
     clk,
     rst_n,
