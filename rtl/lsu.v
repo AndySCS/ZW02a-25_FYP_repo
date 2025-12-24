@@ -266,310 +266,153 @@ module lsu(
     output [9:0] lsu_axi_araddr;
     output [7:0] lsu_axi_arlen;
     output [2:0] lsu_axi_arsize;
+    output [7:0] lsu_axi_arnum;
     output [1:0] lsu_axi_arburst;
     output [2:0] lsu_axi_arstr;
-    output [7:0] lsu_axi_arnum;
     output lsu_axi_arvld;
     output lsu_axi_rrdy;
+   
+    //for new instr
+    wire lsu_instr_vld;
+    wire lsu_rdy_nxt;
+    wire lsu_rdy;
 
-    //for contorl the lsu_rdy
-    //new inst arrive
-    wire lsu_new_inst_arrive;
-    //inst done
-    wire lsu_inst_finish;
-    wire lsu_load_buffer_finished;
-    wire lsu_store_buffer_finished;    
-    wire lsu_mm_buffer_finished;
-    wire lsu_st_sram_done;
+    //for instr end
+    wire lsu_instr_finish;
 
-    //the id init
-    wire lsu_ldst_id;
-    wire lsu_awvld;
+    //for store instr
+    wire lsu_st;
+    wire [1:0] lsu_st_type;
+    wire lsu_st_finish;
 
-    //store buffer
-    //ram wrapper payload in (from st_buff to sram)
-    wire lsu_st_buff_oram_cen;
-    wire [7:0] lsu_st_buff_oram_addr;
+    //for load instr
+    wire lsu_ld_finish;
 
-    //ram wrapper data out (from sram to st_buff)
-    wire lsu_oram_cen_ff;
-    wire [7:0] lsu_oram_addr_ff;
+    //for mm instr
+    wire lsu_mm_finish;
+
+    //for sram
+    wire lsu_iram_we;
+    wire lsu_iram_ce;
+    wire [7:0] lsu_iram_addr;
+    wire [127:0] lsu_iram_din;
+    wire [127:0] lsu_iram_dout;
+
+    wire lsu_wram_we;
+    wire lsu_wram_ce;
+    wire [7:0] lsu_wram_addr;
+    wire [127:0] lsu_wram_din;
+    wire [127:0] lsu_wram_dout;
+    
+    wire lsu_oram_we;
+    wire lsu_oram_ce;
+    wire [7:0] lsu_oram_addr;
+    wire [127:0] lsu_oram_din;
     wire [127:0] lsu_oram_dout;
 
-    //TYPE2 store var
-    wire lsu_st_sram_vld;
-    wire lsu_sram_doing_nxt;
-    wire lsu_sram_doing_en;
-    wire [11:0] lsu_st_sram_addr;
-    wire [7:0] lsu_st_mxu_start_x;
-    wire [7:0] lsu_st_mxu_start_y;
-    wire lsu_sram_doing;
-    wire [1:0] lsu_st_sram_type ;
-    wire [1:0] lsu_st_sram_type_ff;
-    wire [3:0] lsu_st_sram_count_row_nxt;
-    wire lsu_st_sram_count_row_en;
-    wire [3:0] lsu_st_sram_row_sel;
-    wire [7:0] lsu_st_sram_len;
-    wire [127:0] lsu_st_col_target;
-    wire [127:0] lsu_st_sram_din_int8_raw;
-    wire [255:0] lsu_st_sram_din_int16_raw;
-    wire [127:0] lsu_st_sram_din_int8;
-    wire [255:0] lsu_st_sram_din_int16;
-    wire [255:0] lsu_st_sram_din;
-    wire lsu_st_sram_wen;
-    wire lsu_st_sram_cen;
-    wire [7:0] lsu_st_sram_addr_ff_next;
-    wire lsu_st_sram_addr_en;
-    wire [7:0] lsu_st_sram_addr_ff;
-    wire [2:0] lsu_st_sram_len_ff;
-    wire [3:0] lsu_st_sram_count_row;
+    assign lsu_instr_finish = lsu_st_finish | lsu_ld_finish | lsu_mm_finish;
+    assign lsu_instr_vld = idu_lsu_vld & lsu_rdy;
+    assign lsu_rdy_nxt = lsu_instr_vld ? ~lsu_rdy : lsu_rdy; 
+    assign lsu_idu_rdy = lsu_instr_vld ? ~lsu_instr_vld : lsu_rdy|lsu_instr_finish; 
 
-    //Load inst
-    wire lsu_sram_ld_vld;
-    wire [1:0] lsu_sram_ld_type;
-    wire lsu_ld_buff_cen;
-    wire lsu_ld_buff_wen;    
-    wire [7:0] lsu_ld_buff_addr;
-    wire [127:0] lsu_ld_buff_din;
-    wire [2:0] lsu_ld_buff_sram_type;
+    DFFR #(.WIDTH(1))
+    ff_lsu_rdy(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(lsu_rdy_nxt),
+        .q(lsu_rdy)
+    );
 
-    //rrdy logic
-    wire [1:0] lsu_ld_region;
-    wire [1:0] lsu_ld_region_ff;
+    //FOR store instr
 
-    ///iram ram_buffer payload
-    //from iram => ram_buffer
-    wire lsu_iram_cen_ff;
-    wire [7:0] lsu_iram_addr_ff;
-    wire [127:0] lsu_iram_dout;
-    //ctrl_input
-    wire [3:0] lsu_iram_start_byte;
-    wire [3:0] lsu_iram_end_byte; 
-    wire [3:0] lsu_iram_ent_num;
-    wire [4:0] lsu_iram_ent_rng;
-    //from ram buffer to iram_wrapper
-    wire lsu_iram_wrapper_vld;
-    wire [7:0] lsu_iram_wrapper_addr;
-    //from ram_buffer to mxu
-    wire [15:0] lsu_iram_load_vld;
-    wire [127:0] lsu_iram_load_data;
-
-    //iram ram_wrapper element
-    wire lsu_iram_cen; 
-    wire lsu_iram_wen;
-    wire [7:0] lsu_iram_addr;
-    wire [31:0] lsu_iram_din;
-
-    ///wram ram_buffer payload
-    //from wram => ram_buffer
-    wire lsu_wram_cen_ff;
-    wire [7:0] lsu_wram_addr_ff;
-    wire [127:0] lsu_wram_dout;
-    //ctrl_input
-    wire [3:0] lsu_wram_start_byte;
-    wire [3:0] lsu_wram_end_byte; 
-    wire [3:0] lsu_wram_ent_num;
-    wire [4:0] lsu_wram_ent_rng;
-    //from ram buffer to wram_wrapper
-    wire lsu_wram_wrapper_vld;
-    wire [7:0] lsu_wram_wrapper_addr;
-    //from ram_buffer to mxu
-    wire [15:0] lsu_wram_load_vld;
-    wire [127:0] lsu_wram_load_data;
-    //wram ram_wrapper element
-    wire lsu_wram_cen; 
-    wire lsu_wram_wen;
-    wire [7:0] lsu_wram_addr;
-    wire [31:0] lsu_wram_din;
-
-    //oram ram_wrapper 
-    wire lsu_oram_cen; 
-    wire lsu_oram_wen;
-    wire [7:0] lsu_oram_addr;
-    wire [31:0] lsu_oram_din;
-
+    wire lsu_st_en;
+    wire lsu_st_vld_ff;
+    assign lsu_st_vld = lsu_instr_vld & (idu_lsu_st_iram | idu_lsu_st_wram | idu_lsu_st_wram | idu_lsu_st_wram);
+    assign lsu_st_en = lsu_st_vld | lsu_st_finish;
+    DFFRE #(.WIDTH(1))
+    ff_lsu_st_vld(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(lsu_st_vld),
+        .en(lsu_st_en),
+        .q(lsu_st_vld_ff)
+    );
+    //check what store is it
+    //lsu_st_type[0] == type1 store
+    //lsu_st_type[1] == type2 store
+    //00 : iram
+    //01 : wram
+    //10 : oram
+    //11 : dram
+    assign lsu_st_type = idu_lsu_st_iram ? 2'b00 : 
+                         idu_lsu_st_wram ? 2'b01 :
+                         idu_lsu_st_oram ? 2'b10 : 2'b11;
    
-    
-
-    //update for load rdy
-    //if new instruction arrive in lsu => lsu not free => no rdy 
-    assign lsu_new_inst_arrive = idu_lsu_vld & !(idu_lsu_ld_iram | 
-                                                idu_lsu_ld_wram  | 
-                                                idu_lsu_st_iram  |
-                                                idu_lsu_st_wram  |
-                                                idu_lsu_st_oram  |
-                                                idu_lsu_st_dram  |
-                                                idu_lsu_conv);
-    
-    assign lsu_inst_finish = lsu_load_buffer_finished | lsu_store_buffer_finished | lsu_mm_buffer_finished | lsu_st_sram_done;
-
-    assign lsu_idu_rdy = !lsu_new_inst_arrive & lsu_inst_finish;
-
-
-    ////lsu_fsm 
-    ////00:idle
-    ////01:doing 
-    ////10:finish  
-    ////11:reserved                                                                                                                            
-    //assign lsu_fsm_nxt = lsu_new_inst_arrive ? 2'b01 : 
-                                    //lsu_inst_finish ? 2'b10 : 
-                                    //idu_lsu_vld ? 2'b00 : 2'b01;     
-
-
-    assign lsu_ldst_id = rst_n ? 1'b0 
-                            : ((idu_lsu_vld & (idu_lsu_ld_iram | idu_lsu_ld_wram | idu_lsu_st_dram)) ? lsu_ldst_id + 1 : lsu_ldst_id);  
-    
-    assign lsu_sram_ld_vld = (idu_lsu_ld_iram|idu_lsu_ld_wram) & idu_lsu_vld;
-    assign lsu_sram_ld_type = {idu_lsu_ld_iram,idu_lsu_ld_wram};
-
-    ////////////////////////////////////////////////////////////
-    //For store instruction
-
-    //store awvld ctl awpayload send action
-    //1/ start of each instruction
-    //2/ response erorr need resend
-
-    assign lsu_awvld =  (idu_lsu_vld & idu_lsu_st_dram);
-
-    store_buffer oram_dram_store_buffer(
+     
+    wire [1:0] lsu_st_type_ff;
+    DFFRE #(.WIDTH(2))
+    ff_lsu_st_type(
         .clk(clk),
         .rst_n(rst_n),
-
-        //TYPE1 store
-        //from oram to dram
-        //from lsu input
-        //axi address related
-        .ctrl_store_awvld(lsu_awvld),
-        .ctrl_store_awid(lsu_ldst_id),
-        .ctrl_store_awaddr(idu_lsu_dram_addr),
-        .ctrl_store_awlen(idu_lsu_len),
-        .ctrl_store_awsize(idu_lsu_size),
-        .ctrl_store_awburst(idu_lsu_burst),
-        .ctrl_store_awstr(idu_lsu_str),
-        .ctrl_store_awnum(idu_lsu_num),
-        .ctrl_st_sram_start_addr(idu_lsu_ld_st_addr),
-
-        //to ram wrapper
-        //(read the sram data out)
-        .ctrl_sram_vld(lsu_st_buff_oram_cen),
-        .ctrl_sram_addr(lsu_st_buff_oram_addr),
-
-        //from ram input
-        .ctrl_sram_input_vld(lsu_oram_cen_ff),
-        .ctrl_sram_input_addr(lsu_oram_addr_ff), 
-        .ctrl_sram_input_data(lsu_oram_dout),
-
-        //from axi bres
-        .ctrl_store_wrdy(axi_lsu_wrdy),
-        .ctrl_store_awrdy(axi_lsu_awrdy),
-
-        //axi response related
-        .ctrl_store_bresp(axi_lsu_bresp),
-        .ctrl_store_bvld(axi_lsu_bvld),
-        .ctrl_store_resp_oram_addr(axi_lsu_resp_oram_addr),
-
-        //output
-        //address related
-        .lsu_axi_awvld(lsu_axi_awvld),
-        .lsu_axi_awid(lsu_axi_awid),
-        .lsu_axi_awaddr(lsu_axi_awaddr),
-        .lsu_axi_awlen(lsu_axi_awlen),
-        .lsu_axi_awsize(lsu_axi_awsize),
-        .lsu_axi_awburst(lsu_axi_awburst),
-        .lsu_axi_awstr(lsu_axi_awstr),
-        .lsu_axi_awnum(lsu_axi_awnum),
-
-        //write related
-        .lsu_axi_wvld(lsu_axi_wvld),
-        .lsu_axi_wdata(lsu_axi_wdata),
-        .lsu_axi_wstrb(lsu_axi_wstrb),
-        .lsu_axi_wlast(lsu_axi_wlast),
-        .lsu_axi_oram_addr(lsu_axi_oram_addr),
-
-        //response related
-        .lsu_axi_brdy(lsu_axi_brdy),
-        .ctrl_lsu_store_buffer_done(lsu_store_buffer_finished)
+        .d(lsu_st_type),
+        .en(lsu_st_en),
+        .q(lsu_st_type_ff)
     );
+    //type1 sram store
+    //basic flow
+    //1/check the incoming idu instr vld
+    //2/check the mxu rdy
+    //3/get the mxu data
+    //4/assign the sram memory wrapper element
+    //a/cen
+    //b/wen
+    //c/addr
+    //d/din
 
-    //TYPE2 store
-    //from mxu to sram
-    assign lsu_st_sram_vld = idu_lsu_vld & (idu_lsu_st_iram | idu_lsu_st_oram | idu_lsu_st_wram);
-
-    assign lsu_st_sram_doing_nxt = lsu_st_sram_vld; 
-    assign lsu_st_sram_doing_en = lsu_st_sram_vld | lsu_st_sram_done;
-
-    DFFRE #(.WIDTH(12))
-    ff_lsu_type2_st_mxu_start_addr(
-        .clk(clk),
-        .rst_n(rst_n),
-        .en(lsu_store_sram_vld),
-        .d(idu_lsu_ld_st_addr),
-        .q(lsu_st_sram_addr)
-    );
-    
-    DFFRE #(.WIDTH(4))
-    ff_lsu_type2_store_mxu_start_x(
-        .clk(clk),
-        .rst_n(rst_n),
-        .en(lsu_store_sram_vld),
-        .d(idu_lsu_start_x),
-        .q(lsu_st_mxu_start_x)
-    );
-
-    DFFRE #(.WIDTH(4))
-    ff_lsu_type2_store_mxu_start_y(
-        .clk(clk),
-        .rst_n(rst_n),
-        .en(lsu_store_sram_vld),
-        .d(idu_lsu_start_y),
-        .q(lsu_st_mxu_start_y)
-    );
-
-    DFFRE #(.WIDTH(8))
-    ff_lsu_type2_store_num (
-        .clk(clk),
-        .rst_n(rst_n),
-        .en(lsu_store_sram_vld),
-        .d(idu_lsu_len),
-        .q(lsu_st_sram_num)
-    );
+    //if the incoming instruction is vld pull high st_type1 qual
+    wire lsu_st_type1_qual;
+    wire lsu_st_type1_qual_ff;
+    assign lsu_st_type1_qual = lsu_st_vld ? (lsu_st_vld & ~lsu_st_type[1]) & mxu_lsu_data_rdy : (lsu_st_vld_ff & ~lsu_st_type_ff[1]) & mxu_lsu_data_rdy;
 
     DFFRE #(.WIDTH(1))
-    ff_lsu_sram_doing (
+    ff_lsu_st_type_qual(
         .clk(clk),
         .rst_n(rst_n),
-        .en(lsu_st_sram_doing_en),
-        .d(lsu_st_sram_doing_nxt),
-        .q(lsu_st_sram_doing)
+        .d(lsu_st_type1_qual),
+        .en(lsu_st_en),
+        .q(lsu_st_type1_qual_ff)
     );
-
-    assign lsu_st_sram_type = lsu_st_sram_vld ? (idu_lsu_st_iram ? 2'b01 : idu_lsu_st_wram ? 2'b10 : 2'b11) : lsu_st_sram_type_ff;
-    
-    DFFRE #(.WIDTH(2))
-    ff_lsu_st_sram_type (
-        .clk(clk),
-        .rst_n(rst_n),
-        .en(lsu_st_sram_vld),
-        .d(lsu_st_sram_type),
-        .q(lsu_st_sram_type_ff)
-    );
-
+    wire lsu_st_type1_done;
     //MXU count
     //choose the row by Y
     //total 16 row
     //start = start Y
     //end   = start Y + num_chunk
-    assign lsu_st_sram_done = lsu_st_sram_count_row == (lsu_st_mxu_start_y+lsu_st_sram_num);
-    assign lsu_st_sram_count_row_nxt = lsu_st_sram_done ? lsu_st_sram_count_row : (lsu_st_sram_vld ? idu_lsu_start_y + 1 : lsu_st_sram_count_row + 1);
-    assign lsu_st_sram_count_row_en = (lsu_store_sram_vld | lsu_st_sram_doing);
-    assign lsu_st_sram_row_sel = lsu_st_sram_vld ? idu_lsu_start_y : lsu_st_sram_count_row; 
+    wire lsu_st_type1_doing;
+    wire [3:0] lsu_st_type1_cnt_row_nxt;
+    wire [3:0] lsu_st_type1_cnt_row;
+    wire lsu_st_type1_cnt_row_en;
+    assign lsu_st_type1_doing = (lsu_st_type1_qual | lsu_st_type1_qual_ff) & ~lsu_st_type1_done;
+    //if is start, then assign startY as first row
+    //else if not yet end assign startY+1;
+    //else assign currentY
+    assign lsu_st_type1_cnt_row_nxt = lsu_st_type1_qual & lsu_st_type1_doing ? idu_lsu_start_y + 1'b1 : lsu_st_type1_cnt_row + 1;
+    assign lsu_st_type1_cnt_row_en = lsu_st_type1_doing | lsu_st_type1_qual;
+    
+    DFFRE #(.WIDTH(4))
+    ff_lsu_type1_cnt_row (
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(lsu_st_type1_cnt_row_nxt),
+        .en(lsu_st_type1_cnt_row_en),
+        .q(lsu_st_type1_cnt_row)
+    );
+    //get the mxu row
+    wire [3:0]lsu_st_type1_row_sel;
+    wire [127:0] lsu_st_type1_din_int8_raw;
+    assign lsu_st_type1_row_sel = lsu_st_type1_qual & lsu_st_type1_doing ? idu_lsu_start_y : lsu_st_type1_cnt_row;
 
-    //filter the useable element in int8 => 128bit
-    //by the start_x and the len
-    //assume it will not over the boundary limit
-    dec_size dec_data_len(.in(idu_lsu_size), .out(lsu_st_sram_len));
-    assign lsu_st_col_target = lsu_st_sram_vld ? idu_lsu_start_x+lsu_st_sram_len : lsu_st_mxu_start_x+lsu_st_sram_len_ff;
-    mux16 #(.WIDTH(8)) mux16rowdata_int8(.in0(mxu_lsu_int8_row0_data),
+    mux16 #(.WIDTH(128)) mux16rowdata_int8(.in0(mxu_lsu_int8_row0_data),
                                          .in1(mxu_lsu_int8_row1_data),
                                          .in2(mxu_lsu_int8_row2_data),
                                          .in3(mxu_lsu_int8_row3_data),
@@ -585,305 +428,124 @@ module lsu(
                                          .in13(mxu_lsu_int8_row13_data),
                                          .in14(mxu_lsu_int8_row14_data),
                                          .in15(mxu_lsu_int8_row15_data),
-                                         .sel(lsu_st_sram_row_sel),
-                                         .out(lsu_st_sram_din_int8_raw)
+                                         .sel(lsu_st_type1_row_sel),
+                                         .out(lsu_st_type1_din_int8_raw)
                                         );
+    //get the use col
+    wire [127:0] lsu_st_type1_din_int8_qual;
 
-    
-    mux16 #(.WIDTH(9)) mux16rowdata_int16(.in0(mxu_lsu_int16_row0_data),
-                                         .in1(mxu_lsu_int16_row1_data),
-                                         .in2(mxu_lsu_int16_row2_data),
-                                         .in3(mxu_lsu_int16_row3_data),
-                                         .in4(mxu_lsu_int16_row4_data),
-                                         .in5(mxu_lsu_int16_row5_data),
-                                         .in6(mxu_lsu_int16_row6_data),
-                                         .in7(mxu_lsu_int16_row7_data),
-                                         .in8(mxu_lsu_int16_row8_data),
-                                         .in9(mxu_lsu_int16_row9_data),
-                                         .in10(mxu_lsu_int16_row10_data),
-                                         .in11(mxu_lsu_int16_row11_data),
-                                         .in12(mxu_lsu_int16_row12_data),
-                                         .in13(mxu_lsu_int16_row13_data),
-                                         .in14(mxu_lsu_int16_row14_data),
-                                         .in15(mxu_lsu_int16_row15_data),
-                                         .sel(lsu_st_sram_row_sel),
-                                         .out(lsu_st_sram_din_int16_raw)
-                                        );
-                                        
-    assign lsu_st_sram_din_int8 = lsu_st_sram_vld ? (lsu_st_sram_din_int8_raw << idu_lsu_start_x) >> lsu_st_col_target :
-                                                     lsu_st_sram_din_int8_raw << lsu_st_mxu_start_x >> lsu_st_col_target;
-                                    
-    assign lsu_st_sram_din_int16 = lsu_st_sram_vld ? (lsu_st_sram_din_int16_raw << idu_lsu_start_x) >> lsu_st_col_target :
-                                                     lsu_st_sram_din_int16_raw << lsu_st_mxu_start_x >> lsu_st_col_target;
-                                    
+    //filter the useable element in int8 => 128bit
+    //by the start_x and the len
+    //assume it will not over the boundary limit
+    wire [7:0] lsu_st_type1_shift_size;
+    wire [7:0] lsu_st_type1_shift_start;
 
-    assign lsu_st_sram_din = lsu_st_sram_vld ? 
-                                        ((&lsu_st_sram_type) && lsu_st_sram_din_int16) | ((^lsu_st_sram_type) && lsu_st_sram_din_int8): 
-                                        ((&lsu_st_sram_type_ff) && lsu_st_sram_din_int16) | ((^lsu_st_sram_type_ff) && lsu_st_sram_din_int8);
-                                    
-    assign lsu_st_sram_wen = lsu_st_sram_vld | lsu_st_sram_doing;
-    assign lsu_st_sram_cen = lsu_st_sram_vld |lsu_st_sram_doing;
+    wire [7:0] lsu_st_type1_shift_end;
+    wire lsu_st_type1_ce;
+    wire lsu_st_type1_we;
 
-    //SRAM count
-    assign lsu_st_sram_addr = lsu_st_sram_vld ? idu_lsu_ld_st_addr[11:4] : lsu_st_sram_addr_ff;
-    assign lsu_st_sram_addr_ff_next = lsu_st_sram_vld ? idu_lsu_ld_st_addr[11:4] + 1 : lsu_st_sram_addr_ff + 1;
-    assign lsu_st_sram_addr_en =  (lsu_store_sram_vld | lsu_sram_doing | ~lsu_st_sram_done);
+    wire [7:0] lsu_st_type1_addr;
+    wire [7:0] lsu_st_type1_addr_ff_nxt;
+
+    wire [7:0] lsu_st_type1_addr_ff;
+    //since our target is start_x*8
+    //so we need shift 3 bit to get *8
+    assign lsu_st_type1_shift_start = idu_lsu_start_x << 2'd3;
+    assign lsu_st_type1_shift_end = 8'd127-lsu_st_type1_shift_start-idu_lsu_size;
+    //dec_size dec_data_len(.in(idu_lsu_size), .out(lsu_st_type1_shift_size));
+    assign lsu_st_type1_din_int8_qual = lsu_st_type1_din_int8_raw >> lsu_st_type1_shift_start << lsu_st_type1_shift_end >> lsu_st_type1_shift_end;
+    assign lsu_st_type1_ce =  lsu_st_type1_doing;
+    assign lsu_st_type1_we =  lsu_st_type1_doing;
+    assign lsu_st_type1_addr = lsu_st_type1_qual ? idu_lsu_ld_st_addr[11:4] : lsu_st_type1_addr_ff+1;
+
+    assign lsu_st_type1_addr_ff_next = lsu_st_type1_doing ? lsu_st_type1_addr+1 : lsu_st_type1_addr_ff;
 
     DFFRE #(.WIDTH(8))
-    ff_lsu_type2_store_addr (
+    ff_lsu_type1_store_addr (
         .clk(clk),
         .rst_n(rst_n),
-        .en(lsu_st_sram_addr_en),
-        .d(lsu_st_sram_addr_ff_nxt),
-        .q(lsu_st_sram_addr_ff)
+        .d(lsu_st_type1_addr_ff_nxt),
+        .en(lsu_st_type1_doing),
+        .q(lsu_st_type1_addr_ff)
     );
 
-    DFFRE #(.WIDTH(3))
-    ff_lsu_type2_store_len (
-        .clk(clk),
-        .rst_n(rst_n),
-        .en(lsu_store_sram_vld),
-        .d(lsu_st_sram_len),
-        .q(lsu_st_sram_len_ff)
-    );
+//    mux16 #(.WIDTH(9)) mux16rowdata_int16(.in0(mxu_lsu_int16_row0_data),
+//                                         .in1(mxu_lsu_int16_row1_data),
+//                                         .in2(mxu_lsu_int16_row2_data),
+//                                         .in3(mxu_lsu_int16_row3_data),
+//                                         .in4(mxu_lsu_int16_row4_data),
+//                                         .in5(mxu_lsu_int16_row5_data),
+//                                         .in6(mxu_lsu_int16_row6_data),
+//                                         .in7(mxu_lsu_int16_row7_data),
+//                                         .in8(mxu_lsu_int16_row8_data),
+//                                         .in9(mxu_lsu_int16_row9_data),
+//                                         .in10(mxu_lsu_int16_row10_data),
+//                                         .in11(mxu_lsu_int16_row11_data),
+//                                         .in12(mxu_lsu_int16_row12_data),
+//                                         .in13(mxu_lsu_int16_row13_data),
+//                                         .in14(mxu_lsu_int16_row14_data),
+//                                         .in15(mxu_lsu_int16_row15_data),
+//                                         .sel(lsu_st_type1_row_sel),
+//                                         .out(lsu_st_type1_din_int16_raw)
+//                                        );
+
+
+
+
+    assign lsu_st_finish = 1'b0;
+    //FOR load instr
+    assign lsu_ld_finish = 1'b0;
     
-    DFFRE #(.WIDTH(4))
-    ff_lsu_type2_store_count_row (
-        .clk(clk),
-        .rst_n(rst_n),
-        .en(lsu_st_sram_count_row_en),
-        .d(lsu_st_sram_count_row_nxt),
-        .q(lsu_st_sram_count_row)
-    );
-    
-    ////////////////////////////////////////////////////////////
-    //For load instruction
-    load_buffer dram_iram_load_buffer(
-        .clk(clk),
-        .rst_n(rst_n),
-        
-        //TYPE1 LOAD
-        //load from dram to sram
+    //FOR mm instr
+    assign lsu_mm_finish = 1'b0;
 
-        //ctrl_load_input
-        //from idu to load_buffer
-        .ctrl_load_arid(lsu_ldst_id),
-        .ctrl_load_dram_araddr(idu_lsu_dram_addr),
-        .ctrl_load_arlen(idu_lsu_len),
-        .ctrl_load_arsize(idu_lsu_size),
-        .ctrl_load_arastr(idu_lsu_str),
-        .ctrl_load_arnum(lsu_axi_arnum),
-        .ctrl_load_arvld(lsu_sram_ld_vld),
-        .ctrl_load_ld_addr(idu_lsu_ld_st_addr),
-        .ctrl_load_sram_type(lsu_ld_sram_type),
-
-        //axi to lsu input
-        .ctrl_sram_rid(axi_lsu_rid),
-        .ctrl_sram_rdata(axi_lsu_rdata),
-        .ctrl_sram_rresp(axi_lsu_rresp),
-        .ctrl_sram_rlast(axi_lsu_rlast),
-        .ctrl_sram_rvld(axi_lsu_rvld),
-        .ctrl_dram_arrdy(axi_lsu_arrdy),
-
-        //to ram wrapper
-        .load_sram_vld(lsu_ld_buff_cen),
-        .load_sram_wen(lsu_ld_buff_wen),
-        .load_sram_addr(lsu_ld_buff_addr),
-        .load_sram_din(lsu_ld_buff_din),
-        .load_sram_type(lsu_ld_buff_sram_type),
-
-        //to AXI read interface
-        .load_axi_arid(lsu_axi_arid),
-        .load_axi_arraddr(lsu_axi_arraddr),
-        .load_axi_arlen(lsu_axi_arlen),
-        .load_axi_arsize(lsu_axi_arsize),
-        .load_axi_arburst(lsu_axi_arburst),
-        .load_axi_arstr(lsu_axi_arstr),
-        .load_axi_arnum(lsu_axi_arnum),
-        .load_axi_arvld(lsu_axi_arvld),
-        .load_axi_rrdy(lsu_axi_rrdy),
-        .ctrl_lsu_load_buffer_done(lsu_load_buffer_finished)
-
-    );
-
-    //rrdy logic 
-    //=> check which ram is writing
-    //=> directly send the ram cen as the aci_rrdy
-    assign lsu_axi_rrdy = idu_lsu_ld_iram ? lsu_iram_cen : (idu_lsu_ld_wram ? lsu_wram_cen : 1'b1);
-    assign lsu_ld_region = idu_lsu_vld ? {idu_lsu_ld_iram,idu_lsu_ld_wram} : lsu_ld_region_ff;
-
-    DFFE #(.WIDTH(2))
-    lsu_region_ff(
-        .clk(clk), 
-        .rst_n(rst_n), 
-        .en(idu_lsu_vld), 
-        .d(lsu_ld_region), 
-        .q(lsu_ld_region_ff));
-
-    //if recive conv, first set clr siganl
-    assign lsu_mxu_clr = idu_lsu_vld & idu_lsu_conv;
-   
-    //first draft 
-    //use back the ram_buffer original input and output
+    //FOR sram memory wrapper
 
 
-    //IRAM part
-    //set the start_byte and end byte for the iram
-    assign lsu_iram_start_byte = idu_lsu_conv && idu_lsu_iram_start_addr[3:0];
-    assign lsu_iram_end_byte = idu_lsu_iram_col_dir?idu_lsu_iram_start_addr[3:0]+idu_lsu_iram_col_len:idu_lsu_iram_start_addr[3:0]-idu_lsu_iram_col_len;
-    assign lsu_iram_ent_num  = idu_lsu_iram_row_len;
-    assign lsu_iram_ent_rng  = {idu_lsu_iram_row_dir,idu_lsu_iram_row_len};
-    ram_buffer matrix_iram_load_buffer (
-        .clk(clk),
-        .rst_n(rst_n),
-        //ram input
-        .ram_buff_alloc_vld(lsu_iram_cen_ff),
-        .ram_buff_alloc_addr(lsu_iram_addr_ff),
-        .ram_buff_alloc_data(lsu_iram_dout),
-
-        //ctrl input
-        .ctrl_ram_buff_vld(idu_lsu_conv),
-        .ctrl_ram_buff_start_byte(idu_lsu_iram_start_addr[3:0]),
-        .ctrl_ram_buff_end_byte(lsu_iram_end_byte),
-        .ctrl_ram_buff_ent_num(lsu_iram_ent_num),
-        .ctrl_ram_buff_start_addr(idu_lsu_iram_start_addr),
-        .ctrl_ram_buff_ent_rng(lsu_iram_ent_rng),
-
-        //to ram output
-        .ram_read_vld(lsu_iram_wrapper_vld),
-        .ram_read_addr(lsu_iram_wrapper_addr),
-        //to mxu output
-        .ram_buff_mxu_vld(lsu_iram_load_vld),
-        .ram_buff_mxu_data(lsu_iram_load_data) 
-    );  
-
-    assign lsu_iram_cen = lsu_iram_wrapper_vld | (lsu_ld_buff_cen & lsu_ld_buff_sram_type[1]) | ((lsu_st_sram_type==2'b01)&lsu_st_sram_cen);
-    assign lsu_iram_wen = (lsu_ld_buff_wen & lsu_ld_buff_sram_type[1]) | ((lsu_st_sram_type==2'b01)&lsu_st_sram_wen);
-    assign lsu_iram_addr = lsu_iram_wrapper_addr | (lsu_ld_buff_addr && lsu_ld_buff_sram_type[1]) | ((lsu_st_sram_type==2'b01)&&lsu_st_sram_addr);
-    assign lsu_iram_din = lsu_ld_buff_din && lsu_ld_buff_sram_type[1] | ((lsu_st_sram_type==2'b01)&&lsu_st_sram_din);
+    assign lsu_iram_we   = (~lsu_st_type[1] & ~lsu_st_type[0] & lsu_st_type1_we);
+    assign lsu_iram_ce   = (~lsu_st_type[1] & ~lsu_st_type[0] & lsu_st_type1_ce);
+    assign lsu_iram_addr = {8{~lsu_st_type[1] & ~lsu_st_type[0]}} & lsu_st_type1_addr;
+    assign lsu_iram_din  = {128{~lsu_st_type[1] & ~lsu_st_type[0]}} & lsu_st_type1_din_int8_qual;
+    assign lsu_iram_dout = 128'b0;
 
     mem_wrapper iram(
         .clk (clk),
-        .wen (lsu_iram_wen), 
-        .cen (lsu_iram_cen),
+        .we  (lsu_iram_we), 
+        .ce  (lsu_iram_ce),
         .addr(lsu_iram_addr),
         .din (lsu_iram_din),
         .dout(lsu_iram_dout)
     );
 
-    DFFR #(.WIDTH(1))
-    ff_lsu_iram_cen(
-        .clk(clk),
-        .rst_n(rst_n),
-        .d(lsu_iram_cen),
-        .q(lsu_iram_cen_ff)
-    );
+    assign lsu_wram_we   = (~lsu_st_type[1]&lsu_st_type[0]) & lsu_st_type1_we;
+    assign lsu_wram_ce   = (~lsu_st_type[1] & lsu_st_type[0] & lsu_st_type1_ce);
+    assign lsu_wram_addr = {8{~lsu_st_type[1] & lsu_st_type[0]}} & lsu_st_type1_addr;
+    assign lsu_wram_din  = {128{~lsu_st_type[1] & lsu_st_type[0]}} & lsu_st_type1_din_int8_qual;
+    assign lsu_wram_dout = 128'b0;
 
-    DFFR #(.WIDTH(8))
-    ff_lsu_iram_addr(
-        .rst_n(rst_n),
-        .d(lsu_iram_addr),
-        .q(lsu_iram_addr_ff)
-    );
-
-    assign lsu_mxu_iram_vld = lsu_iram_load_vld;
-    assign lsu_mxu_iram_pld = lsu_iram_load_data;
-
-    
-    //WRAM part
-    //set the start_byte and end byte for the wram
-    assign lsu_wram_start_byte = idu_lsu_conv && idu_lsu_wram_start_addr[3:0];
-    assign lsu_wram_end_byte = idu_lsu_wram_col_dir?idu_lsu_wram_start_addr[3:0]+idu_lsu_wram_col_len:idu_lsu_wram_start_addr[3:0]-idu_lsu_wram_col_len;
-    assign lsu_wram_ent_num  = idu_lsu_wram_row_len;
-    assign lsu_iram_ent_rng  = {idu_lsu_iram_row_dir,idu_lsu_iram_row_len};
-    ram_buffer matrix_wram_load_buffer(
-        .clk(clk),
-        .rst_n(rst_n),
-        //ram input
-        .ram_buff_alloc_vld(lsu_wram_cen_ff),
-        .ram_buff_alloc_addr(lsu_wram_addr_ff),
-        .ram_buff_alloc_data(lsu_wram_dout),
-
-        //ctrl input
-        .ctrl_ram_buff_vld(idu_lsu_conv),
-        .ctrl_ram_buff_start_byte(idu_lsu_iram_start_addr[3:0]),
-        .ctrl_ram_buff_end_byte(lsu_wram_end_byte),
-        .ctrl_ram_buff_ent_num(lsu_wram_ent_num),
-        .ctrl_ram_buff_start_addr(lsu_wram_start_addr),
-        .ctrl_ram_buff_ent_rng(idu_lsu_wram_row_len),
-
-        //to ram output
-        .ram_read_vld(lsu_wram_wrapper_vld),
-        .ram_read_addr(lsu_wram_wrapper_addr),
-        //to mxu output
-        .ram_buff_mxu_vld(lsu_wram_load_vld),
-        .ram_buff_mxu_data(lsu_wram_load_data) 
-    );  
-
-    assign lsu_wram_cen = lsu_wram_wrapper_vld | (lsu_ld_buff_cen & lsu_ld_buff_sram_type[0]) | ((lsu_st_sram_type==2'b10)&lsu_st_sram_cen);
-    assign lsu_iram_wen = (lsu_ld_buff_wen & lsu_ld_buff_sram_type[0]) | ((lsu_st_sram_type==2'b10)&lsu_st_sram_wen);
-    assign lsu_wram_addr = lsu_wram_wrapper_addr | (lsu_ld_buff_addr && lsu_ld_buff_sram_type[0]) | ((lsu_st_sram_type==2'b01)&&lsu_st_sram_addr);
-    assign lsu_iram_din = lsu_ld_buff_din && lsu_ld_buff_sram_type[0] | ((lsu_st_sram_type==2'b10)&&lsu_st_sram_din);
-    
     mem_wrapper wram(
         .clk (clk),
-        .wen (), 
-        .cen (lsu_wram_cen),
+        .we  (lsu_wram_we), 
+        .ce  (lsu_wram_ce),
         .addr(lsu_wram_addr),
-        .din (),
+        .din (lsu_wram_din),
         .dout(lsu_wram_dout)
     );
 
-    DFFR #(.WIDTH(1))
-    ff_lsu_wram_cen(
-        .clk(clk),
-        .rst_n(rst_n),
-        .d(lsu_wram_cen),
-        .q(lsu_wram_cen_ff)
-    );
-
-    DFFR #(.WIDTH(8))
-    ff_lsu_wram_addr(
-        .clk(clk),
-        .rst_n(rst_n),
-        .d(lsu_wram_addr),
-        .q(lsu_wram_addr_ff)
-    );
-
-    assign lsu_mxu_wram_vld = lsu_wram_load_vld;
-    assign lsu_mxu_wram_pld = lsu_wram_load_data;
-
-    //FOR oram 
-    assign lsu_oram_wen = (lsu_st_sram_type==2'b10)&lsu_st_sram_cen; //FIXME
-    assign lsu_oram_cen = lsu_st_buff_oram_cen | ((lsu_st_sram_type==2'b10)&lsu_st_sram_wen);
-    assign lsu_oram_addr = lsu_st_buff_oram_addr | ((lsu_st_sram_type==2'b01)&&lsu_st_sram_addr);
-    assign lsu_oram_din = ((lsu_st_sram_type==2'b10)&&lsu_st_sram_din);
+    assign lsu_oram_we   = 1'b0;
+    assign lsu_oram_ce   = 1'b0;
+    assign lsu_oram_addr = 8'b0;
+    assign lsu_oram_din  = 128'b0;
+    assign lsu_oram_dout = 128'b0;
 
     mem_wrapper oram(
         .clk (clk),
-        .wen (lsu_oram_wen), 
-        .cen (lsu_oram_cen),
+        .we  (lsu_oram_we), 
+        .ce  (lsu_oram_ce),
         .addr(lsu_oram_addr),
         .din (lsu_oram_din),
         .dout(lsu_oram_dout)
     );
 
-    DFFR #(.WIDTH(1))
-    ff_lsu_oram_cen(
-        .clk(clk),
-        .rst_n(rst_n),
-        .d(lsu_oram_cen),
-        .q(lsu_oram_cen_ff)
-    );
+endmodule   
 
-    DFFR #(.WIDTH(8))
-    ff_lsu_oram_addr(
-        .clk(clk),
-        .rst_n(rst_n),
-        .d(lsu_oram_addr),
-        .q(lsu_oram_addr_ff)
-    );
-
-
-
-endmodule

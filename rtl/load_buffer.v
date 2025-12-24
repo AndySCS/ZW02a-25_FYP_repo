@@ -3,12 +3,13 @@ module load_buffer(
     rst_n,
 
     //ctrl_load_inpput
-    ctrl_load_vld,
-    ctrl_load_id,
-    ctrl_load_dram_addr,
-    ctrl_load_len,
-    ctrl_load_size,
-    ctrl_load_str,
+    ctrl_load_arid,
+    ctrl_load_dram_araddr,
+    ctrl_load_arlen,
+    ctrl_load_arsize,
+    ctrl_load_arstr,
+
+    ctrl_load_arvld,
     ctrl_load_ld_addr,
     ctrl_load_sram_type,
 
@@ -32,23 +33,23 @@ module load_buffer(
     load_axi_arraddr,
     load_axi_arlen,
     load_axi_arsize,
+    load_axi_arnum,
     load_axi_arburst,
     load_axi_arstr,
-    load_axi_arnum,
     load_axi_arvld,
     load_axi_rrdy,
-    lsu_store_buffer_finished
+    lsu_load_buffer_finished
 );
     input clk;
     input rst_n;
 
     //ctrl_axi_input
-    input ctrl_load_vld;
-    input [7:0]  ctrl_load_id;
-    input [11:0] ctrl_load_dram_addr;
-    input [7:0]  ctrl_load_len;
-    input [2:0]  ctrl_load_size;
-    input [2:0]  ctrl_load_str;
+    input [7:0]  ctrl_load_arid;
+    input [11:0] ctrl_load_dram_araddr;
+    input [7:0]  ctrl_load_arlen;
+    input [2:0]  ctrl_load_arsize;
+    input [2:0]  ctrl_load_arstr;
+    input ctrl_load_arvld;
     input [11:0] ctrl_load_ld_addr;
     input [1:0]  ctrl_load_sram_type;
 
@@ -71,15 +72,15 @@ module load_buffer(
 
     //to AXI read interface
     output [7:0]  load_axi_arid;
-    output [11:0] load_axi_arraddr;
+    output [9:0] load_axi_arraddr;
     output [7:0]  load_axi_arlen;
     output [2:0]  load_axi_arsize;
+    output [7:0] load_axi_arnum;
     output [1:0]  load_axi_arburst;
-    output load_axi_arstr;
-    output [3:0] load_axi_arnum;
+    output [2:0]load_axi_arstr;
     output load_axi_arvld;
     output load_axi_rrdy;
-    output lsu_store_buffer_finished;
+    output lsu_load_buffer_finished;
 
 
     wire [1:0] load_sram_type_nxt;
@@ -106,7 +107,8 @@ module load_buffer(
     wire ld_buff_rresp_count_en;
     wire [3:0] ld_buff_rresp_count;
     wire [255:0] ld_buff_rresp_raw;
-
+    wire [255:0] ld_buff_rresp_out;
+    
     wire lsu_sram_ld_wen;
     wire lsu_ram_ld_cen;
     wire [7:0] lsu_sram_ld_addr;
@@ -129,8 +131,8 @@ module load_buffer(
     wire [7:0] ctrl_load_dram_araddr;
 
     assign load_sram_type_nxt = ctrl_load_sram_type;
-    assign load_sram_type_en = ctrl_load_vld;
-    assign load_sram_type = ctrl_load_vld ? ctrl_load_sram_type : load_sram_type_ff;
+    assign load_sram_type_en = ctrl_load_arvld;
+    assign load_sram_type = ctrl_load_arvld ? ctrl_load_sram_type : load_sram_type_ff;
 
     // update for axi read interface load outout
     //if axi interface is ready and cur addr is vld 
@@ -139,15 +141,15 @@ module load_buffer(
     // cond1 => update at the begining
     // cond2 => update for the response resend
     // if resent only sent the arid and arraddr arvld
-    assign load_buffer_addr_sent_en = ctrl_load_vld | ctrl_load_resp_resent;
+    assign load_buffer_addr_sent_en = ctrl_load_arvld | ctrl_load_resp_resent;
     assign load_axi_arid_nxt = ctrl_load_resp_resent ? ctrl_load_resent_arid : ctrl_load_arid;
     assign load_axi_arraddr_nxt = ctrl_load_resp_resent ? ctrl_load_resent_arid : ctrl_load_dram_araddr;
-    assign load_axi_arlen_nxt = ctrl_load_len;
-    assign load_axi_arsize_nxt = ctrl_load_size;
+    assign load_axi_arlen_nxt = ctrl_load_arlen;
+    assign load_axi_arsize_nxt = ctrl_load_arsize;
     assign load_axi_arburst = 2'b00; //no burst type now pre is 00 first
-    assign load_axi_arvld_nxt = ctrl_load_vld;
+    assign load_axi_arvld_nxt = ctrl_load_arvld;
     //TODO both axi read dun ahve this str variables need add back
-    assign lsu_axi_arstr = ctrl_load_str;
+    assign lsu_axi_arstr = ctrl_load_arstr;
     
     DFFRE #(.WIDTH(2))
     ff_load_sram_type(
@@ -162,7 +164,7 @@ module load_buffer(
     ff_idu_lsu_ld_st_addr(
         .clk(clk),
         .rst_n(rst_n),
-        .en(ctrl_load_vld),
+        .en(ctrl_load_arvld),
         .d(ctrl_load_ld_addr),
         .q(ctrl_load_ld_addr_ff)
     );
@@ -172,7 +174,7 @@ module load_buffer(
     // 1/sram_rvld
     // 2/rresp 00 only.
     assign ctrl_load_addr_nxt = ctrl_sram_rvld ? ctrl_load_ld_addr + 1'b1 : ctrl_load_ld_addr_ff; 
-    assign ctrl_load_addr_en = (ctrl_load_vld | ctrl_sram_rvld) & ~(|ctrl_sram_rresp);
+    assign ctrl_load_addr_en = (ctrl_load_arvld | ctrl_sram_rvld) & ~(|ctrl_sram_rresp);
     DFFRE #(.WIDTH(31))
     ff_sram_laod_addr(
         .clk(clk),
@@ -210,9 +212,12 @@ module load_buffer(
 
     //deal with rresp
     //if recive rresp resend whole chunk
-    assign rresp_row_count_nxt = ctrl_load_vld ? ctrl_load_dram_addr : rresp_row_count+1;
-    assign rresp_row_count_en = ctrl_load_vld | (ctrl_sram_rlast & ctrl_sram_rvld);
-    assign ld_buff_rresp[rresp_row_count] = |ld_buff_rresp_raw;
+    assign rresp_row_count_nxt = ctrl_load_arvld ? ctrl_load_dram_araddr : rresp_row_count+1;
+    assign rresp_row_count_en = ctrl_load_arvld | (ctrl_sram_rlast & ctrl_sram_rvld);
+    //assign ld_buff_rresp[rresp_row_count] = |ld_buff_rresp_raw;
+    assign ld_buff_rresp = {ld_buff_rresp[255:rresp_row_count],(|ld_buff_rresp_raw),ld_buff_rresp[(rresp_row_count-1):0]};
+
+    assign ld_buff_rresp = ld_buff_rresp_out;
 
     DFFRE #(.WDITH(256))
     ff_ld_buff_rresp_row_count(
@@ -223,7 +228,7 @@ module load_buffer(
         .q(rresp_row_count)
     );
 
-    assign load_buffer_fsm = ctrl_load_vld ? 2'b01
+    assign load_buffer_fsm = ctrl_load_arvld ? 2'b01
                             : ((rresp_row_count == load_axi_arnum) ? 
                             (rresp_end ? 2'b00 : 2'b10) : 2'b01);  
 
