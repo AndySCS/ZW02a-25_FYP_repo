@@ -431,19 +431,19 @@ module lsu(
 
     //assign lsu_st_sram_done = lsu_st_sram_count_row == (lsu_st_mxu_start_y+lsu_st_sram_num);
     wire lsu_st_type1_doing;
-    wire [3:0] lsu_st_type1_cnt_row_nxt;
-    wire [3:0] lsu_st_type1_cnt_row;
+    wire [7:0] lsu_st_type1_cnt_row_nxt;
+    wire [7:0] lsu_st_type1_cnt_row;
     wire lsu_st_type1_cnt_row_en;
 
-    assign lsu_st_type1_done = lsu_st_type1_cnt_row == (idu_lsu_start_y + idu_lsu_len);
+    assign lsu_st_type1_done = lsu_st_type1_cnt_row == (idu_lsu_start_y + idu_lsu_num) & ~lsu_st_vld;
     assign lsu_st_type1_doing = (lsu_st_type1_qual | lsu_st_type1_qual_ff) & ~lsu_st_type1_done;
     //if is start, then assign startY as first row
     //else if not yet end assign startY+1;
     //else assign currentY
     assign lsu_st_type1_cnt_row_nxt = lsu_st_vld & lsu_st_type1_doing ? idu_lsu_start_y + 1'b1 : lsu_st_type1_cnt_row + 1;
-    assign lsu_st_type1_cnt_row_en = lsu_st_type1_doing | lsu_st_vld;
+    assign lsu_st_type1_cnt_row_en = lsu_st_type1_doing ;
     
-    DFFRE #(.WIDTH(4))
+    DFFRE #(.WIDTH(8))
     ff_lsu_type1_cnt_row (
         .clk(clk),
         .rst_n(rst_n),
@@ -546,7 +546,7 @@ module lsu(
 
 
 
-    assign lsu_st_finish = 1'b0;
+    assign lsu_st_finish = lsu_st_type1_done;
     //FOR load instr
     assign lsu_ld_finish = 1'b0;
     
