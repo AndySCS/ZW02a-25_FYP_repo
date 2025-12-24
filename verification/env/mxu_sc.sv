@@ -98,7 +98,7 @@ function void mxu_sc::write_file(string f_name, string wr_line);
 	if(!wr_doing) fd = $fopen(f_name, "w");
 	else fd = $fopen(f_name, "a");
 
-	$fdisplay(wr_line);
+	$fdisplay(fd, wr_line);
 
 	$fclose(fd);
 
