@@ -3,11 +3,11 @@ import os
 import glob
 import re
 
-parser = argparse.ArgumentParser()
-parser.add_argument("-dir", help = "directory or folder of the file")
-args = parser.parse_args()
-
-dir = args.dir
+def get_img_dir():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-dir", help = "directory or folder of the file")
+    args = parser.parse_args()
+    return args.dir
 
 def check_is_for_loop(read_content, line_num):
     in_for_loop = False
@@ -48,7 +48,6 @@ def check_is_for_loop(read_content, line_num):
             for_loop_content_tmp.append(line)
             read_idx += 1
 
-
 def extend_file(file):
 
     generate_file_dir = file[:-1]
@@ -78,14 +77,20 @@ def extend_file(file):
         for content in write_content:
             wr_file.write(content)
 
-if os.path.isfile(dir):
-    if not re.match(r'.*\.\w*p$', dir):
-        print(f"Error: input file is not extendable, file name is:\n{dir}")
+def extend_dir(dir):
+    if os.path.isfile(dir):
+        if not re.match(r'.*\.\w*p$', dir):
+            print(f"Error: input file is not extendable, file name is:\n{dir}")
+        else:
+            extend_file(dir)
+    elif os.path.isdir(dir):
+        file_list = glob.glob(os.path.join(dir, "**", "*.*p"), recursive=True)
+        for file in file_list:
+            extend_file(file)
     else:
-        extend_file(dir)
-elif os.path.isdir(dir):
-    file_list = glob.glob(f"{dir}*.*p", recursive=True)
-    for file in file_list:
-        extend_file(file)
-else:
-    print(f"Error: input dir is neither foler nor dir, dir is:\n{dir}")
+        print(f"Error: input dir is neither foler nor dir, dir is:\n{dir}")
+
+if __name__ == '__main__':
+    dest_dir = get_img_dir()
+    extend_dir(dest_dir)
+    #print(reshaped_img_data.shape)
