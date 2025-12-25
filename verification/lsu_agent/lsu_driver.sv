@@ -200,13 +200,12 @@ task lsu_driver::idu_signal_config_type2_store(lsu_tr tr);
             lsu_if.idu_lsu_vld = 1;
             lsu_if.idu_lsu_st_dram = 1;
 	    lsu_if.axi_lsu_awrdy = 1;
-            lsu_if.idu_lsu_num = 1;
-            lsu_if.idu_lsu_len = 4;
-            lsu_if.idu_lsu_start_x = 0;
-            lsu_if.idu_lsu_start_y = 0;
-            lsu_if.idu_lsu_ld_st_addr = 'b00000;
+            lsu_if.idu_lsu_num = 16;
+            lsu_if.idu_lsu_len = 3;
+	    lsu_if.idu_lsu_ld_st_addr = 'b00000;
             @(negedge lsu_if.clk);
             	lsu_if.idu_lsu_vld = 0;
+	    	//lsu_if.axi_lsu_awrdy = 0;
             @(negedge lsu_if.clk);
             break;
 	    end

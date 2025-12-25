@@ -505,6 +505,105 @@ module lsu(
     assign lsu_axi_awstr   = (lsu_st_vld & (&lsu_st_type)) ? idu_lsu_str       : {3{(lsu_st_vld_ff  &(&lsu_st_type_ff))}} & lsu_st_type2_awstr;
     assign lsu_axi_awnum   = (lsu_st_vld & (&lsu_st_type)) ? lsu_awnum_raw     : {5{(lsu_st_vld_ff  &(&lsu_st_type_ff))}} & lsu_st_type2_awnum;
 
+    //write data part
+    //once we know lsu_st_type2_qual => axi_awrdy & vld
+    wire lsu_st_type2_oram_ce;
+    wire lsu_st_type2_oram_ce_ff;
+
+    wire lsu_st_type2_oram_we;
+    wire [7:0] lsu_st_type2_oram_addr;
+    wire [7:0] lsu_st_type2_oram_addr_ff;
+    wire [7:0] lsu_st_type2_oram_addr_nxt;
+    wire [127:0] lsu_st_type2_oram_din;
+    wire [127:0] lsu_st_type2_oram_dout;
+    wire lsu_st_type2_doing;
+    wire lsu_st_type2_wr_done;
+
+    wire [7:0] lsu_st_type2_cnt_row_nxt;
+    wire [7:0] lsu_st_type2_cnt_row;
+    wire lsu_st_type2_cnt_row_en;
+    wire lsu_st_type2_new_chunk;
+    wire lsu_st_type2_chunk_last;
+    wire [7:0] lsu_st_type2_chunk_count;
+    wire [7:0] lsu_st_type2_chunk_count_nxt;
+
+    assign lsu_st_type2_chunk_count_nxt = (lsu_st_type2_qual & lsu_st_vld) | lsu_st_type2_chunk_last? 8'b0 : lsu_st_type2_chunk_count + 1'b1;
+    assign lsu_st_type2_chunk_last = (lsu_st_type2_chunk_count == (lsu_axi_awnum-1'b1)) & (|lsu_axi_awnum) & ~lsu_st_type2_wr_done;
+    assign lsu_st_type2_new_chunk = (lsu_st_type2_qual & lsu_st_vld) | lsu_st_type2_chunk_last;
+	//type2_qual may not same as st_vld
+
+
+    assign lsu_st_type2_wr_done = (lsu_st_type2_cnt_row == idu_lsu_num) & ~lsu_st_vld;
+    assign lsu_st_type2_doing = (lsu_st_type2_qual | lsu_st_type2_qual_ff) & ~lsu_st_type2_wr_done; 
+    assign lsu_st_type2_oram_addr = ((&lsu_st_type)&lsu_st_vld) ? idu_lsu_ld_st_addr[11:4] : lsu_st_type2_oram_addr_ff;
+    assign lsu_st_type2_oram_addr_nxt = lsu_st_type2_oram_addr + 1;
+    assign lsu_st_type2_oram_ce = lsu_st_type2_doing & lsu_st_type2_new_chunk;
+    assign lsu_st_type2_oram_we = 1'b0;
+    assign lsu_st_type2_oram_din = {127{1'b0}};
+    assign lsu_st_type2_oram_dout = lsu_st_type2_oram_ce_ff ? lsu_oram_dout : {127{1'b0}};
+
+    assign lsu_st_type2_cnt_row_nxt = lsu_st_vld & lsu_st_type2_doing ? 1'b1 : lsu_st_type2_cnt_row + 1;
+    assign lsu_st_type2_cnt_row_en = lsu_st_type2_doing;
+    // 1/ always get oram_dout 
+    // 2/ shift right 
+    // if oram_dout_raw == 0 => finish
+
+    wire [127:0] lsu_st_type2_wdata_mdf_nxt;
+    wire [127:0] lsu_st_type2_wdata_mdf;
+    wire [127:0] lsu_st_type2_wdata;
+    wire [7:0] lsu_st_type2_shift_len;
+    wire [7:0] lsu_st_type2_target_shift;
+    wire [127:0] lsu_st_type2_wdata_raw;
+
+    dec_len dec_data2_len(.in(lsu_axi_awsize), .out(lsu_st_type2_shift_len));
+    assign lsu_st_type2_target_shift = ~(|lsu_axi_awsize) ? 8'd120 : ((8'd128)-(lsu_st_type2_shift_len));
+    assign lsu_st_type2_wdata_raw = lsu_st_type2_oram_ce_ff ? lsu_st_type2_oram_dout & (lsu_st_type2_oram_dout << lsu_st_type2_target_shift >> lsu_st_type2_target_shift) : lsu_st_type2_wdata_mdf & (lsu_st_type2_oram_dout << lsu_st_type2_target_shift >> lsu_st_type2_target_shift) ; 
+   assign lsu_st_type2_wdata_mdf_nxt = lsu_st_type2_oram_dout >> (lsu_st_type2_shift_len); 
+   assign lsu_axi_wdata = lsu_st_type2_wdata_raw[63:0];
+   assign lsu_axi_wvld = lsu_st_type2_doing & ~lsu_st_vld;
+   assign lsu_axi_wstrb = 7'b0;
+   assign lsu_axi_wlast = lsu_st_type2_wr_done;
+    DFFR #(.WIDTH(128))
+    ff_lsu_type2_wdata (
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(lsu_st_type2_wdata_mdf_nxt),
+        .q(lsu_st_type2_wdata_mdf)
+    );
+ 
+ 
+    DFFRE #(.WIDTH(8))
+    ff_lsu_type2_chunk_count (
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(lsu_st_type2_chunk_count_nxt),
+        .en(lsu_st_type2_doing),
+        .q(lsu_st_type2_chunk_count)
+    );
+    DFFRE #(.WIDTH(8))
+    ff_lsu_type2_cnt_row (
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(lsu_st_type2_cnt_row_nxt),
+        //.en(lsu_st_type2_cnt_row_en),
+        .en(lsu_st_type2_oram_ce),
+	.q(lsu_st_type2_cnt_row)
+    );
+    DFFRE #(.WIDTH(8))
+    ff_lsu_type2_store_addr (
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(lsu_st_type2_oram_addr_nxt),
+        .en(lsu_st_type2_oram_ce),
+        .q(lsu_st_type2_oram_addr_ff)
+    );
+    DFFR #(.WIDTH(1))
+    ff_lsu_type2_store_ce_ff (
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(lsu_st_type2_oram_ce),
+        .q(lsu_st_type2_oram_ce_ff)
+    );
     //type1 sram store
     //basic flow
     //1/check the incoming idu instr vld
@@ -731,10 +830,10 @@ module lsu(
         .dout(lsu_wram_dout)
     );
 
-    assign lsu_oram_we   = lsu_st_type1_oram_we;
-    assign lsu_oram_ce   = lsu_st_type1_oram_ce;
-    assign lsu_oram_addr = lsu_st_type1_oram_addr;
-    assign lsu_oram_din  = lsu_st_type1_oram_din;
+    assign lsu_oram_we   = lsu_st_type1_oram_we | lsu_st_type2_oram_we;
+    assign lsu_oram_ce   = lsu_st_type1_oram_ce | lsu_st_type2_oram_ce;
+    assign lsu_oram_addr = lsu_st_type1_oram_addr | lsu_st_type2_oram_addr;
+    assign lsu_oram_din  = lsu_st_type1_oram_din | lsu_st_type2_oram_din;
     assign lsu_oram_dout = 128'b0;
 
     mem_wrapper #(.DATA_WIDTH(128))
@@ -748,6 +847,7 @@ module lsu(
     );
 
 endmodule   
+
 
 
 
