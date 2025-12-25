@@ -26,8 +26,6 @@ def load_image( infilename ) :
 
 def reshape_arr_for_cnn(nparray):
     patches = sliding_window_view(nparray, (3, 3))
-#    print(patches.shape)
-#    print(patches)
     return patches.reshape(-1, 9)
 
 def nparray2txt(nparray, output_dir):
