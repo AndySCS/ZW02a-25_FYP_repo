@@ -97,11 +97,11 @@ module harness;
     wire  [2:0] lsu_axi_awsize;
     wire  [1:0] lsu_axi_awburst;
     wire  [2:0] lsu_axi_awstr;
-    wire  [7:0] lsu_axi_awnum;
+    wire  [4:0] lsu_axi_awnum;
     wire  lsu_axi_awvld;
     wire  [11:0] lsu_axi_oram_addr;
     wire  [63:0] lsu_axi_wdata;
-    wire  lsu_axi_wstrb;
+    wire  [7:0] lsu_axi_wstrb;
     wire  lsu_axi_wlast;
     wire  lsu_axi_wvld;
     wire  lsu_axi_brdy;
@@ -376,3 +376,4 @@ module harness;
     end
     
 endmodule
+

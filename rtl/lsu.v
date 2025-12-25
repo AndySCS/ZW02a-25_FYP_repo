@@ -251,11 +251,11 @@ module lsu(
     output [2:0] lsu_axi_awsize;
     output [1:0] lsu_axi_awburst;
     output [2:0] lsu_axi_awstr;
-    output [7:0] lsu_axi_awnum;
+    output [4:0] lsu_axi_awnum;
     output lsu_axi_awvld;
     output [11:0] lsu_axi_oram_addr;
     output [63:0] lsu_axi_wdata;
-    output lsu_axi_wstrb;
+    output [7:0] lsu_axi_wstrb;
     output lsu_axi_wlast;
     output lsu_axi_wvld;
     output lsu_axi_brdy;
@@ -373,12 +373,10 @@ module lsu(
     );
     
     //FOR store instr
-
-
     wire lsu_st_en;
     wire lsu_st_vld_ff;
     //assign lsu_st_vld = lsu_vld & (idu_lsu_st_iram_ff | idu_lsu_st_wram_ff | idu_lsu_st_wram_ff | idu_lsu_st_wram_ff);
-    assign lsu_st_vld = lsu_vld & (lsu_st_iram_ff | lsu_st_wram_ff | lsu_st_wram_ff | lsu_st_wram_ff);
+    assign lsu_st_vld = lsu_vld & (lsu_st_iram_ff | lsu_st_wram_ff | lsu_st_oram_ff | lsu_st_dram_ff);
     assign lsu_st_en = lsu_st_vld | lsu_st_finish;
     DFFRE #(.WIDTH(1))
     ff_lsu_st_vld(
@@ -409,6 +407,104 @@ module lsu(
         .en(lsu_st_en),
         .q(lsu_st_type_ff)
     );
+
+    //type2 dram store
+    wire lsu_st_type2_qual;
+    wire lsu_st_type2_qual_ff;
+
+
+    assign lsu_st_type2_qual = lsu_st_vld ? (lsu_st_vld & (&lsu_st_type) & axi_lsu_awrdy) : (lsu_st_vld_ff & (&lsu_st_type_ff)) & axi_lsu_awrdy;
+    DFFRE #(.WIDTH(1))
+    ff_lsu_st_type2_qual(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(lsu_st_type2_qual),
+        .en(lsu_st_en),
+        .q(lsu_st_type2_qual_ff)
+    );
+
+    wire [7:0] lsu_st_type2_awid;
+    wire [9:0] lsu_st_type2_awaddr;
+    wire [7:0] lsu_st_type2_awlen;
+    wire [2:0] lsu_st_type2_awsize;
+    wire [1:0] lsu_st_type2_awburst;
+    wire [2:0] lsu_st_type2_awstr;
+    wire [4:0] lsu_st_type2_awnum;
+
+    wire lsu_st_type2_aw_en;
+    assign lsu_st_type2_aw_en = lsu_st_en & (&lsu_st_type);
+    
+    DFFRE #(.WIDTH(8))
+    ff_lsu_st_type2_awid(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(8'b0),
+        .en(lsu_st_type2_aw_en),
+        .q(lsu_st_type2_awid)
+    );
+    DFFRE #(.WIDTH(10))
+    ff_lsu_st_type2_awaddr(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(idu_lsu_dram_addr[13:4]),
+        .en(lsu_st_type2_aw_en),
+        .q(lsu_st_type2_awaddr)
+    );
+    DFFRE #(.WIDTH(8))
+    ff_lsu_st_type2_awlen(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(idu_lsu_num),
+        .en(lsu_st_type2_aw_en),
+        .q(lsu_st_type2_awlen)
+    );
+    DFFRE #(.WIDTH(3))
+    ff_lsu_st_type2_awsize(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(idu_lsu_len),
+        .en(lsu_st_type2_aw_en),
+        .q(lsu_st_type2_awsize)
+    );
+    //burst type not support
+    DFFRE #(.WIDTH(2))
+    ff_lsu_st_type2_awburst(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(2'b0),
+        .en(lsu_st_type2_aw_en),
+        .q(lsu_st_type2_awburst)
+    );
+    DFFRE #(.WIDTH(3))
+    ff_lsu_st_type2_awstr(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(idu_lsu_str),
+        .en(lsu_st_type2_aw_en),
+        .q(lsu_st_type2_awstr)
+    );
+    wire [4:0] lsu_awnum_raw;
+    assign lsu_awnum_raw = 5'b10000 >> idu_lsu_len; 
+    DFFRE #(.WIDTH(5))
+    ff_lsu_st_type2_awnum(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(lsu_awnum_raw),
+        .en(lsu_st_type2_aw_en),
+        .q(lsu_st_type2_awnum)
+    );
+    //adress write part
+    //once we sense store instr give awvld and other aw signal
+    //id and burst not support 
+    assign lsu_axi_awvld   = (lsu_st_vld & (&lsu_st_type)) | (lsu_st_type_ff & (&lsu_st_type_ff)) ; 
+    assign lsu_axi_awid    = (lsu_st_vld & (&lsu_st_type)) ? 'b0               : {8{(lsu_st_type_ff  &(&lsu_st_type_ff))}} & lsu_st_type2_awid;
+    assign lsu_axi_awaddr  = (lsu_st_vld & (&lsu_st_type)) ? idu_lsu_dram_addr : {10{(lsu_st_type_ff &(&lsu_st_type_ff))}} & lsu_st_type2_awaddr;
+    assign lsu_axi_awlen   = (lsu_st_vld & (&lsu_st_type)) ? idu_lsu_num       : {8{(lsu_st_type_ff  &(&lsu_st_type_ff))}} & lsu_st_type2_awlen;
+    assign lsu_axi_awsize  = (lsu_st_vld & (&lsu_st_type)) ? idu_lsu_len       : {3{(lsu_st_type_ff  &(&lsu_st_type_ff))}} & lsu_st_type2_awsize;
+    assign lsu_axi_awburst = (lsu_st_vld & (&lsu_st_type)) ? 2'b00             : {2{(lsu_st_type_ff  &(&lsu_st_type_ff))}} & lsu_st_type2_awburst;
+    assign lsu_axi_awstr   = (lsu_st_vld & (&lsu_st_type)) ? idu_lsu_str       : {3{(lsu_st_type_ff  &(&lsu_st_type_ff))}} & lsu_st_type2_awstr;
+    assign lsu_axi_awnum   = (lsu_st_vld & (&lsu_st_type)) ? lsu_awnum_raw     : {5{(lsu_st_type_ff  &(&lsu_st_type_ff))}} & lsu_st_type2_awnum;
+
     //type1 sram store
     //basic flow
     //1/check the incoming idu instr vld
@@ -652,4 +748,6 @@ module lsu(
     );
 
 endmodule   
+
+
 

@@ -251,11 +251,11 @@ interface lsu_intf(
     output [2:0] lsu_axi_awsize;
     output [1:0] lsu_axi_awburst;
     output [2:0] lsu_axi_awstr;
-    output [7:0] lsu_axi_awnum;
+    output [4:0] lsu_axi_awnum;
     output lsu_axi_awvld;
     output [11:0] lsu_axi_oram_addr;
     output [63:0] lsu_axi_wdata;
-    output lsu_axi_wstrb;
+    output [7:0] lsu_axi_wstrb;
     output lsu_axi_wlast;
     output lsu_axi_wvld;
     output lsu_axi_brdy;
@@ -271,3 +271,4 @@ interface lsu_intf(
     output lsu_axi_rrdy;
 
 endinterface
+
