@@ -507,8 +507,8 @@ module lsu(
     //so we need shift 3 bit to get *8
     dec_len dec_data_len(.in(idu_lsu_len), .out(lsu_st_type1_shift_len));
     assign lsu_st_type1_shift_start = idu_lsu_start_x << 2'd3;
-    assign lsu_st_type1_shift_end = 8'd128-lsu_st_type1_shift_start-lsu_st_type1_shift_len;
-    assign lsu_st_type1_din_int8_qual = lsu_st_type1_din_int8_raw >> lsu_st_type1_shift_start << lsu_st_type1_shift_end >> lsu_st_type1_shift_end;
+    assign lsu_st_type1_shift_end = 8'd128-lsu_st_type1_shift_len;
+    assign lsu_st_type1_din_int8_qual = lsu_st_type1_din_int8_raw >> lsu_st_type1_shift_start << lsu_st_type1_shift_end >> lsu_st_type1_shift_end << lsu_st_type1_shift_start;
     assign lsu_st_type1_ce =  lsu_st_type1_doing;
     assign lsu_st_type1_we =  lsu_st_type1_doing;
 	
