@@ -39,10 +39,10 @@ task mxu_input_monitor::main_phase(uvm_phase phase);
 	tr_send.deep_copy(tr);
         ap.write(tr_send);
 
-        `uvm_info("mxu_input_monitor", "write input to iap", UVM_NONE)
-        `uvm_info("mxu_input_monitor", "matrix L", UVM_NONE)
+        `uvm_info("mxu_input_monitor", "write input to iap", UVM_MEDIUM)
+        `uvm_info("mxu_input_monitor", "matrix L", UVM_MEDIUM)
         tr_send.print_L();
-        `uvm_info("mxu_input_monitor", "matrix_R", UVM_NONE)
+        `uvm_info("mxu_input_monitor", "matrix_R", UVM_MEDIUM)
         tr_send.print_R();
     end
 
@@ -67,7 +67,7 @@ task mxu_input_monitor::collect_matrix_in(ref mxu_tr tr);
         if(mxu_if.lsu_mxu_vld & mxu_if.mxu_lsu_rdy) break;
     end
 
-    `uvm_info("mxu_input_monitor", "enter collect matrix", UVM_NONE)
+    `uvm_info("mxu_input_monitor", "enter collect matrix", UVM_MEDIUM)
 
     while(1)begin
 
@@ -99,9 +99,9 @@ task mxu_input_monitor::collect_matrix_in(ref mxu_tr tr);
     end     
  
     //for(int i = 0;i < 16;i++)begin
-    //    `uvm_info("mxu_input_monitor", $sformatf("iram_array[%d] = %d", i, iram_array[i]), UVM_NONE)
+    //    `uvm_info("mxu_input_monitor", $sformatf("iram_array[%d] = %d", i, iram_array[i]), UVM_MEDIUM)
     //end
     
-    `uvm_info("mxu_input_monitor", "leave collect matrix", UVM_NONE)
+    `uvm_info("mxu_input_monitor", "leave collect matrix", UVM_MEDIUM)
 
 endtask     

@@ -54,17 +54,20 @@ function mxu_tr mxu_rm::mm_cal(ref mxu_tr tr);
         ...
     */
     //apply actual calculation
-    `uvm_info("mxu_rm", "print_L", UVM_NONE)
+    `uvm_info("mxu_rm", "print_L", UVM_MEDIUM)
     tr.print_L();
-    `uvm_info("mxu_rm", "print_R", UVM_NONE)
+    `uvm_info("mxu_rm", "print_R", UVM_MEDIUM)
     tr.print_R();
     for(int i =0; i < 16;i++)begin
         for(int j = 0; j < 16; j++)begin
             //tr.matrix_result[i][j] = 0;
             for(int k = 0; k < 16; k++)begin
-                tr.matrix_result[i][j] += tr.matrix_L[i][k] * tr.matrix_R[j][k];
-		if(tr.matrix_result[i][j] > 32767)  tr.matrix_result[i][j] = 32767;
-		if(tr.matrix_result[i][j] < -32768) tr.matrix_result[i][j] = -32768;
+                tr.matrix_result_int16[i][j] += tr.matrix_L[i][k] * tr.matrix_R[j][k];
+		if(tr.matrix_result_int16[i][j] > 32767)  tr.matrix_result_int16[i][j] = 32767;
+	        if(tr.matrix_result_int16[i][j] < -32768) tr.matrix_result_int16[i][j] = -32768;
+                tr.matrix_result_int8[i][j] = tr.matrix_result_int16[i][j] > 127 ? 127
+                                            : tr.matrix_result_int16[i][j] < -128 ? -128
+                                            : tr.matrix_result_int16[i][j];
             end
         end
     end
