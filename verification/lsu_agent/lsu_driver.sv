@@ -13,7 +13,8 @@ class lsu_driver extends uvm_driver #(lsu_tr);
     
     extern function void build_phase(uvm_phase phase);
     extern virtual task main_phase(uvm_phase phase);
-    extern virtual task send_matrix(lsu_tr tr);
+    extern virtual task idu_signal_config_type1_store(lsu_tr tr);
+    extern virtual task idu_signal_config_type2_store(lsu_tr tr);
 
 endclass //className extends superClass
 
@@ -63,13 +64,14 @@ task lsu_driver::main_phase(uvm_phase phase);
 
     while(1) begin
         //seq_item_port.get_next_item(tr);
-        send_matrix(tr);
+        //idu_signal_config_type1_store(tr);
+        idu_signal_config_type2_store(tr);
         //seq_item_port.item_done();
     end
         
 endtask
 
-task lsu_driver::send_matrix(lsu_tr tr);
+task lsu_driver::idu_signal_config_type1_store(lsu_tr tr);
 
     /*int matrix_sent_row = 0;
     int cur_row = 0;
@@ -84,15 +86,18 @@ task lsu_driver::send_matrix(lsu_tr tr);
         if(lsu_if.lsu_idu_rdy) begin
 	    if (count == 0)begin
             	lsu_if.idu_lsu_vld = 1;
-            	lsu_if.idu_lsu_st_iram = 1;
-	    	lsu_if.mxu_lsu_data_rdy = 1;
+                lsu_if.idu_lsu_st_iram = 1;
+                lsu_if.idu_lsu_st_wram = 0;
+                lsu_if.idu_lsu_st_oram = 0;
+                lsu_if.idu_lsu_st_dram = 0;
+	    	    lsu_if.mxu_lsu_data_rdy = 1;
             	lsu_if.mxu_lsu_int8_row0_data = 'b1111;
             	lsu_if.mxu_lsu_int8_row1_data = 'b11101111;
             	lsu_if.mxu_lsu_int8_row2_data = 'b110011101111;
             	lsu_if.mxu_lsu_int8_row3_data = 40;
-           	lsu_if.mxu_lsu_int8_row4_data = 50;
-           	lsu_if.mxu_lsu_int8_row5_data = 60;
-           	lsu_if.mxu_lsu_int8_row6_data = 70;
+           	    lsu_if.mxu_lsu_int8_row4_data = 50;
+           	    lsu_if.mxu_lsu_int8_row5_data = 60;
+           	    lsu_if.mxu_lsu_int8_row6_data = 70;
             	lsu_if.mxu_lsu_int8_row7_data = 80;
             	lsu_if.mxu_lsu_int8_row8_data = 90;
             	lsu_if.mxu_lsu_int8_row9_data = 100;
@@ -107,21 +112,20 @@ task lsu_driver::send_matrix(lsu_tr tr);
             	lsu_if.idu_lsu_start_x = 1;
             	lsu_if.idu_lsu_start_y = 0;
             	lsu_if.idu_lsu_ld_st_addr = 'b10000;
-		count=count+1;
-	        
+		        count=count+1;      
 	      end
 	      else begin
-		lsu_if.idu_lsu_vld = 1;
-		lsu_if.idu_lsu_st_iram = 0;
+		        lsu_if.idu_lsu_vld = 1;
+		        lsu_if.idu_lsu_st_iram = 0;
             	lsu_if.idu_lsu_st_wram = 1;
-	    	lsu_if.mxu_lsu_data_rdy = 1;
+	    	    lsu_if.mxu_lsu_data_rdy = 1;
             	lsu_if.mxu_lsu_int8_row0_data = 10;
             	lsu_if.mxu_lsu_int8_row1_data = 20;
             	lsu_if.mxu_lsu_int8_row2_data = 30;
             	lsu_if.mxu_lsu_int8_row3_data = 40;
-           	lsu_if.mxu_lsu_int8_row4_data = 50;
-           	lsu_if.mxu_lsu_int8_row5_data = 60;
-           	lsu_if.mxu_lsu_int8_row6_data = 70;
+                lsu_if.mxu_lsu_int8_row4_data = 50;
+                lsu_if.mxu_lsu_int8_row5_data = 60;
+           	    lsu_if.mxu_lsu_int8_row6_data = 70;
             	lsu_if.mxu_lsu_int8_row7_data = 80;
             	lsu_if.mxu_lsu_int8_row8_data = 90;
             	lsu_if.mxu_lsu_int8_row9_data = 100;
@@ -146,7 +150,7 @@ task lsu_driver::send_matrix(lsu_tr tr);
         end
     end
 
-    `uvm_info("lsu_driver", "begin sending matrix", UVM_NONE)
+    `uvm_info("lsu_driver", "begin sending idu data config", UVM_NONE)
 /*
     while(1)begin
         send_matrix_needed = 0;
@@ -181,6 +185,34 @@ task lsu_driver::send_matrix(lsu_tr tr);
 */
 endtask
 
+task lsu_driver::idu_signal_config_type2_store(lsu_tr tr);
+
+    /*int matrix_sent_row = 0;
+    int cur_row = 0;
+    int iter_cnt = 0;
+    bit[7:0] pop_data;
+    int cycle_cnt = 0;
+    bit send_matrix_needed = 0;
+*/
+    while(1)begin
+        @(negedge lsu_if.clk);
+        if(lsu_if.lsu_idu_rdy) begin
+            lsu_if.idu_lsu_vld = 1;
+            lsu_if.idu_lsu_st_dram = 1;
+	    	lsu_if.mxu_lsu_data_rdy = 1;
+            lsu_if.idu_lsu_num = 16; 
+            lsu_if.idu_lsu_len = 4;
+            lsu_if.idu_lsu_start_x = 0;
+            lsu_if.idu_lsu_start_y = 0;
+            lsu_if.idu_lsu_ld_st_addr = 'b10000;
+            @(negedge lsu_if.clk);
+            	lsu_if.idu_lsu_vld = 0;
+            	//lsu_if.idu_lsu_st_iram = 0;
+            @(negedge lsu_if.clk);
+            break;
+	    end
+    end
+endtask
     /*
     while(matrix_sent_row != 16)begin
         matrix_sent_row = 0;
