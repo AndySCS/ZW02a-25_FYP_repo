@@ -1,5 +1,3 @@
-`include "define.vh"
-
 module idu (
     clk,
     rst_n,
@@ -21,8 +19,8 @@ module idu (
     idu_lsu_pool,
     idu_lsu_wfi,
     idu_lsu_dram_addr,
+    idu_lsu_num,
     idu_lsu_len,
-    idu_lsu_size,
     idu_lsu_str,
     idu_lsu_start_x,
     idu_lsu_start_y,
@@ -63,8 +61,8 @@ module idu (
     output idu_lsu_pool;
     output idu_lsu_wfi;
     output [30:0] idu_lsu_dram_addr;
-    output [7:0] idu_lsu_len;
-    output [2:0] idu_lsu_size;
+    output [7:0] idu_lsu_num;
+    output [2:0] idu_lsu_len;
     output [2:0] idu_lsu_str;
     output [3:0] idu_lsu_start_x;
     output [3:0] idu_lsu_start_y;
@@ -153,8 +151,8 @@ module idu (
     assign idu_lsu_wfi = inst_type_is_wfi;
 
     assign idu_lsu_dram_addr = idu_ins[`DRAM_ADDR_RNG];
-    assign idu_lsu_len = idu_ins[`NUM_RNG];
-    assign idu_lsu_size = idu_ins[`LEN_RNG];
+    assign idu_lsu_num = idu_ins[`NUM_RNG];
+    assign idu_lsu_len = idu_ins[`LEN_RNG];
     assign idu_lsu_str = idu_ins[`STR_RNG];
     assign idu_lsu_start_x = idu_ins[`START_X_RNG];
     assign idu_lsu_start_y = idu_ins[`START_Y_RNG];
