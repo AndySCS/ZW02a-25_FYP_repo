@@ -389,8 +389,8 @@ module lsu(
         .q(lsu_st_vld_ff)
     );
     //check what store is it
-    //lsu_st_type[0] == type1 store
-    //lsu_st_type[1] == type2 store
+    // type1 store ==> sram store
+    // type2 store ==> dram store
     //00 : iram
     //01 : wram
     //10 : oram
@@ -421,19 +421,20 @@ module lsu(
     //d/din
 
     //if the incoming instruction is vld pull high st_type1 qual
+    //include iram wram oram
     wire lsu_st_type1_qual;
     wire lsu_st_type1_qual_ff;
-    assign lsu_st_type1_qual = lsu_st_vld ? (lsu_st_vld & ~lsu_st_type[1]) & mxu_lsu_data_rdy : (lsu_st_vld_ff & ~lsu_st_type_ff[1]) & mxu_lsu_data_rdy;
-
+    // type[1] == 0 iram,wram
+    // type[1] == 1 & type[0] == 0 oram
+    assign lsu_st_type1_qual = lsu_st_vld ? (lsu_st_vld & (~lsu_st_type[1] | (lsu_st_type[1] & ~lsu_st_type[0]))) & mxu_lsu_data_rdy : (lsu_st_vld_ff & (~lsu_st_type_ff[1] | (lsu_st_type_ff[1] & ~lsu_st_type_ff[0]))) & mxu_lsu_data_rdy;
     DFFRE #(.WIDTH(1))
-    ff_lsu_st_type_qual(
+    ff_lsu_st_type1_qual(
         .clk(clk),
         .rst_n(rst_n),
         .d(lsu_st_type1_qual),
         .en(lsu_st_en),
         .q(lsu_st_type1_qual_ff)
     );
-    wire lsu_st_type1_done;
     //MXU count
     //choose the row by Y
     //total 16 row
@@ -499,6 +500,9 @@ module lsu(
     wire lsu_st_type1_ce;
     wire lsu_st_type1_we;
 
+    wire lsu_st_type1_wen_raw;
+    wire lsu_st_type1_wen;
+    
     wire [7:0] lsu_st_type1_addr;
     wire [7:0] lsu_st_type1_addr_nxt;
 
@@ -511,7 +515,9 @@ module lsu(
     assign lsu_st_type1_din_int8_qual = lsu_st_type1_din_int8_raw >> lsu_st_type1_shift_start << lsu_st_type1_shift_end >> lsu_st_type1_shift_end << lsu_st_type1_shift_start;
     assign lsu_st_type1_ce =  lsu_st_type1_doing;
     assign lsu_st_type1_we =  lsu_st_type1_doing;
-	
+    assign lsu_st_type1_wen_raw = {127{1'b1}};
+    assign lsu_st_type1_wen = lsu_st_type1_wen_raw >> lsu_st_type1_shift_start << lsu_st_type1_shift_end >> lsu_st_type1_shift_end << lsu_st_type1_shift_start;
+    
     assign lsu_st_type1_addr = (lsu_st_type1_qual&lsu_st_vld) ? idu_lsu_ld_st_addr[11:4] : lsu_st_type1_addr_ff;
     assign lsu_st_type1_addr_nxt = lsu_st_type1_addr + 1;
 
@@ -524,11 +530,13 @@ module lsu(
         .q(lsu_st_type1_addr_ff)
     );
     
+    wire [127:0] lsu_st_type1_iram_wen;
     wire lsu_st_type1_iram_we;
     wire lsu_st_type1_iram_ce;
     wire [7:0] lsu_st_type1_iram_addr;
     wire [127:0] lsu_st_type1_iram_din;
 
+    assign lsu_st_type1_iram_wen  = lsu_st_vld ? {128{~lsu_st_type[1] & ~lsu_st_type[0]}} & lsu_st_type1_wen : {128{~lsu_st_type_ff[1] & ~lsu_st_type_ff[0]}} & lsu_st_type1_wen;
     assign lsu_st_type1_iram_we   = lsu_st_vld ? (~lsu_st_type[1] & ~lsu_st_type[0] & lsu_st_type1_we) : (~lsu_st_type_ff[1] & ~lsu_st_type_ff[0] & lsu_st_type1_we);
     assign lsu_st_type1_iram_ce   = lsu_st_vld ? (~lsu_st_type[1] & ~lsu_st_type[0] & lsu_st_type1_ce) : (~lsu_st_type_ff[1] & ~lsu_st_type_ff[0] & lsu_st_type1_ce);
     assign lsu_st_type1_iram_addr = lsu_st_vld ? {8{~lsu_st_type[1] & ~lsu_st_type[0]}} & lsu_st_type1_addr : {8{~lsu_st_type_ff[1] & ~lsu_st_type_ff[0]}} & lsu_st_type1_addr;
@@ -536,16 +544,32 @@ module lsu(
     assign lsu_iram_dout = 128'b0;
 
 
+    wire [127:0] lsu_st_type1_wram_wen;
     wire lsu_st_type1_wram_we;
     wire lsu_st_type1_wram_ce;
     wire [7:0] lsu_st_type1_wram_addr;
     wire [127:0] lsu_st_type1_wram_din;
 
+    assign lsu_st_type1_wram_wen  = lsu_st_vld ? {128{~lsu_st_type[1] & lsu_st_type[0]}} & lsu_st_type1_wen : {128{~lsu_st_type_ff[1] & lsu_st_type_ff[0]}} & lsu_st_type1_wen;
     assign lsu_st_type1_wram_we   = lsu_st_vld ? (~lsu_st_type[1] & lsu_st_type[0] & lsu_st_type1_we) : (~lsu_st_type_ff[1] & lsu_st_type_ff[0] & lsu_st_type1_we);
     assign lsu_st_type1_wram_ce   = lsu_st_vld ? (~lsu_st_type[1] & lsu_st_type[0] & lsu_st_type1_ce) : (~lsu_st_type_ff[1] & lsu_st_type_ff[0] & lsu_st_type1_ce);
     assign lsu_st_type1_wram_addr = lsu_st_vld ? {8{~lsu_st_type[1] & lsu_st_type[0]}} & lsu_st_type1_addr : {8{~lsu_st_type_ff[1] & lsu_st_type_ff[0]}} & lsu_st_type1_addr;
     assign lsu_st_type1_wram_din  = lsu_st_vld ? {128{~lsu_st_type[1] & lsu_st_type[0]}} & lsu_st_type1_din_int8_qual : {128{~lsu_st_type_ff[1] & lsu_st_type_ff[0]}} & lsu_st_type1_din_int8_qual;
     assign lsu_wram_dout = 128'b0;
+
+
+    wire [127:0] lsu_st_type1_oram_wen;
+    wire lsu_st_type1_oram_we;
+    wire lsu_st_type1_oram_ce;
+    wire [7:0] lsu_st_type1_oram_addr;
+    wire [127:0] lsu_st_type1_oram_din;
+
+    assign lsu_st_type1_oram_wen  = lsu_st_vld ? {128{lsu_st_type[1] & ~lsu_st_type[0]}} & lsu_st_type1_wen : {128{lsu_st_type_ff[1] & ~lsu_st_type_ff[0]}} & lsu_st_type1_wen;
+    assign lsu_st_type1_oram_we   = lsu_st_vld ? (lsu_st_type[1] & ~lsu_st_type[0] & lsu_st_type1_we) : (lsu_st_type_ff[1] & ~lsu_st_type_ff[0] & lsu_st_type1_we);
+    assign lsu_st_type1_oram_ce   = lsu_st_vld ? (lsu_st_type[1] & ~lsu_st_type[0] & lsu_st_type1_ce) : (lsu_st_type_ff[1] & ~lsu_st_type_ff[0] & lsu_st_type1_ce);
+    assign lsu_st_type1_oram_addr = lsu_st_vld ? {8{lsu_st_type[1] & ~lsu_st_type[0]}} & lsu_st_type1_addr : {8{lsu_st_type_ff[1] & ~lsu_st_type_ff[0]}} & lsu_st_type1_addr;
+    assign lsu_st_type1_oram_din  = lsu_st_vld ? {128{lsu_st_type[1] & ~lsu_st_type[0]}} & lsu_st_type1_din_int8_qual : {128{lsu_st_type_ff[1] & ~lsu_st_type_ff[0]}} & lsu_st_type1_din_int8_qual;
+    assign lsu_oram_dout = 128'b0;
 //    mux16 #(.WIDTH(9)) mux16rowdata_int16(.in0(mxu_lsu_int16_row0_data),
 //                                         .in1(mxu_lsu_int16_row1_data),
 //                                         .in2(mxu_lsu_int16_row2_data),
@@ -611,10 +635,10 @@ module lsu(
         .dout(lsu_wram_dout)
     );
 
-    assign lsu_oram_we   = 1'b0;
-    assign lsu_oram_ce   = 1'b0;
-    assign lsu_oram_addr = 8'b0;
-    assign lsu_oram_din  = 128'b0;
+    assign lsu_oram_we   = lsu_st_type1_oram_we;
+    assign lsu_oram_ce   = lsu_st_type1_oram_ce;
+    assign lsu_oram_addr = lsu_st_type1_oram_addr;
+    assign lsu_oram_din  = lsu_st_type1_oram_din;
     assign lsu_oram_dout = 128'b0;
 
     mem_wrapper #(.DATA_WIDTH(128))
