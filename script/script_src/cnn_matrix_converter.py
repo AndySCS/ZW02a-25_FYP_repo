@@ -8,10 +8,10 @@ from numpy.lib.stride_tricks import sliding_window_view
 
 def get_img_dir():
     parser = argparse.ArgumentParser()
-    parser.add_argument("-ImgDir", help = "dir of image")
+    parser.add_argument("-imgDir", help = "dir of image")
     parser.add_argument("-txtDir", help = "dir of output txt file (including file name)")
     args = parser.parse_args()
-    img_dir = args.ImgDir
+    img_dir = args.imgDir
     output_dir = args.txtDir
     if os.path.isfile(img_dir):
         return img_dir, output_dir
@@ -26,7 +26,9 @@ def load_image( infilename ) :
 
 def reshape_arr_for_cnn(nparray):
     patches = sliding_window_view(nparray, (3, 3))
-    return patches.reshape(9, -1).T
+#    print(patches.shape)
+#    print(patches)
+    return patches.reshape(-1, 9)
 
 def nparray2txt(nparray, output_dir):
     np.savetxt(output_dir, nparray, fmt='%d', delimiter=',')
