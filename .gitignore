@@ -1,8 +1,8 @@
 build
 /*.spec
 *.spec
-verification/sim/*
-!verification/sim/Makefile
-!verification/sim/img.txt
-!verification/sim/*.csv
+verification/**/sim/*
+!verification/**/sim/Makefile
+!verification/**/sim/img.txt
+!verification/**/sim/*.csv
 *.swp

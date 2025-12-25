@@ -31,8 +31,8 @@ fsdb_file_name = $(tc)
 #endif
 
 #Command
-$(shell ../../script/linux/file_extend -dir ../../verification)
-$(shell ../../script/linux/file_extend -dir ../../rtl)
+$(shell $MINITPU_SCRIPT/linux/file_extend -dir $MINITPU_VER)
+$(shell $MINITPU_SCRIPT/linux/file_extend -dir $MINITPU_RTL)
 
 GEN_MODE = mkdir -p $(mode) $(mode)/log $(mode)/wave $(mode)/cov
 VCS = vcs -sverilog 	 		          \
