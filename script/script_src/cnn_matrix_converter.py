@@ -2,8 +2,6 @@ from PIL import Image
 import numpy as np
 import argparse
 import os
-import glob
-import re
 from numpy.lib.stride_tricks import sliding_window_view
 
 def get_img_dir():
