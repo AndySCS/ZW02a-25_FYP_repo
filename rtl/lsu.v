@@ -496,14 +496,14 @@ module lsu(
     //adress write part
     //once we sense store instr give awvld and other aw signal
     //id and burst not support 
-    assign lsu_axi_awvld   = (lsu_st_vld & (&lsu_st_type)) | (lsu_st_type_ff & (&lsu_st_type_ff)) ; 
-    assign lsu_axi_awid    = (lsu_st_vld & (&lsu_st_type)) ? 'b0               : {8{(lsu_st_type_ff  &(&lsu_st_type_ff))}} & lsu_st_type2_awid;
-    assign lsu_axi_awaddr  = (lsu_st_vld & (&lsu_st_type)) ? idu_lsu_dram_addr : {10{(lsu_st_type_ff &(&lsu_st_type_ff))}} & lsu_st_type2_awaddr;
-    assign lsu_axi_awlen   = (lsu_st_vld & (&lsu_st_type)) ? idu_lsu_num       : {8{(lsu_st_type_ff  &(&lsu_st_type_ff))}} & lsu_st_type2_awlen;
-    assign lsu_axi_awsize  = (lsu_st_vld & (&lsu_st_type)) ? idu_lsu_len       : {3{(lsu_st_type_ff  &(&lsu_st_type_ff))}} & lsu_st_type2_awsize;
-    assign lsu_axi_awburst = (lsu_st_vld & (&lsu_st_type)) ? 2'b00             : {2{(lsu_st_type_ff  &(&lsu_st_type_ff))}} & lsu_st_type2_awburst;
-    assign lsu_axi_awstr   = (lsu_st_vld & (&lsu_st_type)) ? idu_lsu_str       : {3{(lsu_st_type_ff  &(&lsu_st_type_ff))}} & lsu_st_type2_awstr;
-    assign lsu_axi_awnum   = (lsu_st_vld & (&lsu_st_type)) ? lsu_awnum_raw     : {5{(lsu_st_type_ff  &(&lsu_st_type_ff))}} & lsu_st_type2_awnum;
+    assign lsu_axi_awvld   = (lsu_st_vld & (&lsu_st_type)) | (lsu_st_vld_ff & (&lsu_st_type_ff)) ; 
+    assign lsu_axi_awid    = (lsu_st_vld & (&lsu_st_type)) ? 'b0               : {8{(lsu_st_vld_ff  &(&lsu_st_type_ff))}} & lsu_st_type2_awid;
+    assign lsu_axi_awaddr  = (lsu_st_vld & (&lsu_st_type)) ? idu_lsu_dram_addr : {10{(lsu_st_vld_ff &(&lsu_st_type_ff))}} & lsu_st_type2_awaddr;
+    assign lsu_axi_awlen   = (lsu_st_vld & (&lsu_st_type)) ? idu_lsu_num       : {8{(lsu_st_vld_ff  &(&lsu_st_type_ff))}} & lsu_st_type2_awlen;
+    assign lsu_axi_awsize  = (lsu_st_vld & (&lsu_st_type)) ? idu_lsu_len       : {3{(lsu_st_vld_ff  &(&lsu_st_type_ff))}} & lsu_st_type2_awsize;
+    assign lsu_axi_awburst = (lsu_st_vld & (&lsu_st_type)) ? 2'b00             : {2{(lsu_st_vld_ff  &(&lsu_st_type_ff))}} & lsu_st_type2_awburst;
+    assign lsu_axi_awstr   = (lsu_st_vld & (&lsu_st_type)) ? idu_lsu_str       : {3{(lsu_st_vld_ff  &(&lsu_st_type_ff))}} & lsu_st_type2_awstr;
+    assign lsu_axi_awnum   = (lsu_st_vld & (&lsu_st_type)) ? lsu_awnum_raw     : {5{(lsu_st_vld_ff  &(&lsu_st_type_ff))}} & lsu_st_type2_awnum;
 
     //type1 sram store
     //basic flow
@@ -689,7 +689,7 @@ module lsu(
 
 
 
-    assign lsu_st_finish = lsu_st_type1_done;
+    assign lsu_st_finish = lsu_st_type1_done & (lsu_st_type1_qual | lsu_st_type1_qual_ff);
     //FOR load instr
     assign lsu_ld_finish = 1'b0;
     
@@ -748,6 +748,7 @@ module lsu(
     );
 
 endmodule   
+
 
 
 

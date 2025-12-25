@@ -107,11 +107,11 @@ task lsu_driver::idu_signal_config_type1_store(lsu_tr tr);
             	lsu_if.mxu_lsu_int8_row13_data = 140;
             	lsu_if.mxu_lsu_int8_row14_data = 150;
             	lsu_if.mxu_lsu_int8_row15_data = 160;
-            	lsu_if.idu_lsu_num = 3; //max for mxu
-            	lsu_if.idu_lsu_len = 3;
-            	lsu_if.idu_lsu_start_x = 1;
+            	lsu_if.idu_lsu_num = 3; //number of chunk
+            	lsu_if.idu_lsu_len = 4; //element size
+            	lsu_if.idu_lsu_start_x = 0;
             	lsu_if.idu_lsu_start_y = 0;
-            	lsu_if.idu_lsu_ld_st_addr = 'b10000;
+            	lsu_if.idu_lsu_ld_st_addr = 'b00000;
 		        count=count+1;      
 	      end
 	      else begin
@@ -193,21 +193,20 @@ task lsu_driver::idu_signal_config_type2_store(lsu_tr tr);
     bit[7:0] pop_data;
     int cycle_cnt = 0;
     bit send_matrix_needed = 0;
-*/
+    */
     while(1)begin
         @(negedge lsu_if.clk);
         if(lsu_if.lsu_idu_rdy) begin
             lsu_if.idu_lsu_vld = 1;
             lsu_if.idu_lsu_st_dram = 1;
-	    	lsu_if.mxu_lsu_data_rdy = 1;
-            lsu_if.idu_lsu_num = 16; 
+	    lsu_if.axi_lsu_awrdy = 1;
+            lsu_if.idu_lsu_num = 1;
             lsu_if.idu_lsu_len = 4;
             lsu_if.idu_lsu_start_x = 0;
             lsu_if.idu_lsu_start_y = 0;
-            lsu_if.idu_lsu_ld_st_addr = 'b10000;
+            lsu_if.idu_lsu_ld_st_addr = 'b00000;
             @(negedge lsu_if.clk);
             	lsu_if.idu_lsu_vld = 0;
-            	//lsu_if.idu_lsu_st_iram = 0;
             @(negedge lsu_if.clk);
             break;
 	    end
@@ -237,4 +236,5 @@ endtask
         end
     end
     */
+
 
