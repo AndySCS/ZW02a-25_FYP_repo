@@ -493,6 +493,15 @@ module lsu(
         .en(lsu_st_type2_aw_en),
         .q(lsu_st_type2_awnum)
     );
+    wire lsu_st_type2_st_low_ff;
+    DFFRE #(.WIDTH(1))
+    ff_lsu_st_type2_st_low(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(idu_lsu_st_low),
+        .en(lsu_st_type2_aw_en),
+        .q(lsu_st_type2_st_low_ff)
+    );
     //adress write part
     //once we sense store instr give awvld and other aw signal
     //id and burst not support 
@@ -504,7 +513,6 @@ module lsu(
     assign lsu_axi_awburst = (lsu_st_vld & (&lsu_st_type)) ? 2'b00             : {2{(lsu_st_vld_ff  &(&lsu_st_type_ff))}} & lsu_st_type2_awburst;
     assign lsu_axi_awstr   = (lsu_st_vld & (&lsu_st_type)) ? idu_lsu_str       : {3{(lsu_st_vld_ff  &(&lsu_st_type_ff))}} & lsu_st_type2_awstr;
     assign lsu_axi_awnum   = (lsu_st_vld & (&lsu_st_type)) ? lsu_awnum_raw     : {5{(lsu_st_vld_ff  &(&lsu_st_type_ff))}} & lsu_st_type2_awnum;
-
     //write data part
     //once we know lsu_st_type2_qual => axi_awrdy & vld
     wire lsu_st_type2_oram_ce;
@@ -526,9 +534,9 @@ module lsu(
     wire lsu_st_type2_chunk_last;
     wire [7:0] lsu_st_type2_chunk_count;
     wire [7:0] lsu_st_type2_chunk_count_nxt;
-
     assign lsu_st_type2_chunk_count_nxt = (lsu_st_type2_qual & lsu_st_vld) | lsu_st_type2_chunk_last? 8'b0 : lsu_st_type2_chunk_count + 1'b1;
-    assign lsu_st_type2_chunk_last = (lsu_st_type2_chunk_count == (lsu_axi_awnum-1'b1)) & (|lsu_axi_awnum) & ~lsu_st_type2_wr_done;
+    //if element size 128 => need wait 2 cycle sin update 
+    assign lsu_st_type2_chunk_last = lsu_axi_awsize[2] ? (lsu_st_type2_chunk_count == (lsu_axi_awnum)) & (|lsu_axi_awnum) & ~lsu_st_type2_wr_done : (lsu_st_type2_chunk_count == (lsu_axi_awnum-1'b1)) & (|lsu_axi_awnum) & ~lsu_st_type2_wr_done;
     assign lsu_st_type2_new_chunk = (lsu_st_type2_qual & lsu_st_vld) | lsu_st_type2_chunk_last;
 	//type2_qual may not same as st_vld
 
@@ -556,13 +564,17 @@ module lsu(
     wire [127:0] lsu_st_type2_wdata_raw;
 
     dec_len dec_data2_len(.in(lsu_axi_awsize), .out(lsu_st_type2_shift_len));
-    assign lsu_st_type2_target_shift = ~(|lsu_axi_awsize) ? 8'd120 : ((8'd128)-(lsu_st_type2_shift_len));
-    assign lsu_st_type2_wdata_raw = lsu_st_type2_oram_ce_ff ? lsu_st_type2_oram_dout & (lsu_st_type2_oram_dout << lsu_st_type2_target_shift >> lsu_st_type2_target_shift) : lsu_st_type2_wdata_mdf & (lsu_st_type2_oram_dout << lsu_st_type2_target_shift >> lsu_st_type2_target_shift) ; 
-   assign lsu_st_type2_wdata_mdf_nxt = lsu_st_type2_oram_dout >> (lsu_st_type2_shift_len); 
-   assign lsu_axi_wdata = lsu_st_type2_wdata_raw[63:0];
-   assign lsu_axi_wvld = lsu_st_type2_doing & ~lsu_st_vld;
-   assign lsu_axi_wstrb = 7'b0;
-   assign lsu_axi_wlast = lsu_st_type2_wr_done;
+    //assign lsu_st_type2_target_shift = ~(|lsu_axi_awsize) ? 8'd120 : ((8'd128)-(lsu_st_type2_shift_len));
+    assign lsu_st_type2_target_shift = lsu_st_type2_st_low_ff ? 8'd120 : ~(|lsu_axi_awsize) ? 8'd112 : ((8'd128)-(lsu_st_type2_shift_len));
+    //assign lsu_st_type2_wdata_raw = lsu_st_type2_oram_ce_ff ? lsu_st_type2_oram_dout & (lsu_st_type2_oram_dout << lsu_st_type2_target_shift >> lsu_st_type2_target_shift) : lsu_st_type2_wdata_mdf & (lsu_st_type2_oram_dout << lsu_st_type2_target_shift >> lsu_st_type2_target_shift) ; 
+    assign lsu_st_type2_wdata_raw = lsu_st_type2_oram_ce_ff ? lsu_st_type2_oram_dout : lsu_st_type2_wdata_mdf;
+    assign lsu_st_type2_wdata_mdf_nxt = lsu_st_type2_oram_dout >> (lsu_st_type2_shift_len); 
+    assign lsu_axi_wdata = lsu_st_type2_wdata_raw[63:0];
+    assign lsu_axi_wvld = lsu_st_type2_doing & ~lsu_st_vld;
+    //update strb according the awsize
+    assign lsu_axi_wstrb = lsu_axi_awsize[2] ? {8{1'b1}} : lsu_st_type2_st_low_ff ? 8'b1 : lsu_axi_awsize*8;
+    assign lsu_axi_wlast = lsu_st_type2_wr_done;
+    assign lsu_axi_oram_addr = lsu_st_type2_oram_ce ? lsu_st_type2_oram_addr : lsu_st_type2_oram_addr_ff;
     DFFR #(.WIDTH(128))
     ff_lsu_type2_wdata (
         .clk(clk),
