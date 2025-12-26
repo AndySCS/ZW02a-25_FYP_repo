@@ -8,7 +8,8 @@ $MINITPU_RTL/lib/DFFSE.v
 
 $MINITPU_RTL/lib/dec_len.v
 $MINITPU_RTL/lib/dec4to16.v
-$MINITPU_RTL/lib/dec8to4.v
+//$MINITPU_RTL/lib/dec8to4.v
+$MINITPU_RTL/lib/dec8to3.v
 $MINITPU_RTL/lib/dec32to5.v
 $MINITPU_RTL/lib/enc16to4.v
 

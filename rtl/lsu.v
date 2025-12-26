@@ -311,6 +311,7 @@ module lsu(
     wire lsu_vld_nxt;
     wire lsu_vld;
 
+    wire lsu_st_type1_doing;
 
 
     assign lsu_instr_vld = idu_lsu_vld & lsu_idu_rdy;
@@ -616,6 +617,84 @@ module lsu(
         .d(lsu_st_type2_oram_ce),
         .q(lsu_st_type2_oram_ce_ff)
     );
+   
+    //TODO update for the load doing and mm doing later
+    wire lsu_st_type2_bresp_qual;
+    wire lsu_st_type2_bresp_qual_ff;
+    wire lsu_st_type2_bresp_qual_en;
+    wire [7:0] lsu_st_type2_bresp_end;
+    assign lsu_axi_brdy = lsu_vld | lsu_st_type2_doing | lsu_st_type1_doing;
+    assign lsu_st_type2_bresp_qual = lsu_axi_brdy & axi_lsu_bvld;
+    assign lsu_st_type2_bresp_qual_en = lsu_st_type2_bresp_qual | lsu_st_type2_bresp_end;
+    DFFRE #(.WIDTH(1))
+    ff_lsu_st_type2_bresp_qual(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(lsu_st_type2_bresp_qual),
+        .en(lsu_st_type2_bresp_qual_en),
+        .q(lsu_st_type2_bresp_qual_ff)
+    );
+    wire [255:0] lsu_st_type2_bresp_resend;
+
+    assign lsu_st_type2_bresp_resend[lsu_axi_oram_addr[11:3]] = 1'b1;
+    //assign lsu_st_type2_bresp_resend[lsu_axi_oram_addr[11:3]] = (lsu_st_type2_bresp_qual | lsu_st_type2_bresp_qual_ff) & (|axi_lsu_bresp);
+    //cancel back the last cycle resend one
+    //assign lsu_st_type2_bresp_resend[ctrl_store_resp_oram_addr_ff] = 1'b0;
+    //assign lsu_st_type2_bresp_resend_have_error = (|lsu_st_type2_bresp_resend) & lsu_st_type2_axi_write_fsm[1];
+    //assign lsu_st_type2_bresp_resend_last = !(|lsu_st_type2_bresp_resend);
+    assign lsu_st_type2_bresp_resend_last = ~(|lsu_st_type2_bresp_resend);
+
+    //break into 8 bank 
+    //each bank 31 bit => total 256
+    wire[31:0] lsu_st_type2_bank0;
+    wire[31:0] lsu_st_type2_bank1;
+    wire[31:0] lsu_st_type2_bank2;
+    wire[31:0] lsu_st_type2_bank3;
+    wire[31:0] lsu_st_type2_bank4;
+    wire[31:0] lsu_st_type2_bank5;
+    wire[31:0] lsu_st_type2_bank6;
+    wire[31:0] lsu_st_type2_bank7;
+
+
+    assign lsu_st_type2_bank0 = lsu_st_type2_bresp_resend[31:0];
+    assign lsu_st_type2_bank1 = lsu_st_type2_bresp_resend[63:32];
+    assign lsu_st_type2_bank2 = lsu_st_type2_bresp_resend[95:64];
+    assign lsu_st_type2_bank3 = lsu_st_type2_bresp_resend[127:96];
+    assign lsu_st_type2_bank4 = lsu_st_type2_bresp_resend[159:128];
+    assign lsu_st_type2_bank5 = lsu_st_type2_bresp_resend[191:160];
+    assign lsu_st_type2_bank6 = lsu_st_type2_bresp_resend[223:192];
+    assign lsu_st_type2_bank7 = lsu_st_type2_bresp_resend[255:224];
+
+    wire [7:0] lsu_st_type2_bank_error;
+    //find out which bank have error
+    assign lsu_st_type2_bank_error = {(|lsu_st_type2_bank0), (|lsu_st_type2_bank1), (|lsu_st_type2_bank2), (|lsu_st_type2_bank3), (|lsu_st_type2_bank4), (|lsu_st_type2_bank5), (|lsu_st_type2_bank6), (|lsu_st_type2_bank7)};
+    
+    //8 bit 
+    // the upper 8 bit matter for the bank_hi
+    wire [2:0] lsu_st_type2_error_bank_addr_hi;
+    wire [31:0] lsu_st_type2_error_bank_addr_lo;
+    wire [4:0] lsu_st_type2_error_addr_lo;
+    dec8to3 dec_bank_hi(.in(lsu_st_type2_bank_error), .out(lsu_st_type2_error_bank_addr_hi));
+
+    //mux select
+    mux8 mux(   .in0(lsu_st_type2_bank0), 
+                .in1(lsu_st_type2_bank1), 
+                .in2(lsu_st_type2_bank2), 
+                .in3(lsu_st_type2_bank3), 
+                .in4(lsu_st_type2_bank4), 
+                .in5(lsu_st_type2_bank5), 
+                .in6(lsu_st_type2_bank6), 
+                .in7(lsu_st_type2_bank7), 
+                .sel(lsu_st_type2_error_bank_addr_hi), 
+                .out(lsu_st_type2_error_bank_addr_lo));
+
+    //
+    dec32to5 dec_bank_lo(.in(lsu_st_type2_error_bank_addr_lo), .out(lsu_st_type2_error_addr_lo));
+
+    // this will be the resend addr
+    assign lsu_st_type2_bresp_resend_sram_addr = {lsu_st_type2_error_bank_addr_hi,lsu_st_type2_error_bank_addr_lo};
+
+
     //type1 sram store
     //basic flow
     //1/check the incoming idu instr vld
@@ -649,7 +728,7 @@ module lsu(
     //end   = start Y + len
 
     //assign lsu_st_sram_done = lsu_st_sram_count_row == (lsu_st_mxu_start_y+lsu_st_sram_num);
-    wire lsu_st_type1_doing;
+    //wire lsu_st_type1_doing;
     wire [7:0] lsu_st_type1_cnt_row_nxt;
     wire [7:0] lsu_st_type1_cnt_row;
     wire lsu_st_type1_cnt_row_en;
@@ -859,6 +938,13 @@ module lsu(
     );
 
 endmodule   
+
+
+
+
+
+
+
 
 
 
