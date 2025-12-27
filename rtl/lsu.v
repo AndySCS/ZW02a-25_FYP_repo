@@ -623,6 +623,7 @@ module lsu(
     wire lsu_st_type2_bresp_qual_ff;
     wire lsu_st_type2_bresp_qual_en;
     wire [7:0] lsu_st_type2_bresp_end;
+
     assign lsu_axi_brdy = lsu_vld | lsu_st_type2_doing | lsu_st_type1_doing;
     assign lsu_st_type2_bresp_qual = lsu_axi_brdy & axi_lsu_bvld;
     assign lsu_st_type2_bresp_qual_en = lsu_st_type2_bresp_qual | lsu_st_type2_bresp_end;
@@ -634,9 +635,20 @@ module lsu(
         .en(lsu_st_type2_bresp_qual_en),
         .q(lsu_st_type2_bresp_qual_ff)
     );
-    wire [255:0] lsu_st_type2_bresp_resend;
 
-    assign lsu_st_type2_bresp_resend[lsu_axi_oram_addr[11:3]] = 1'b1;
+    wire [255:0] lsu_st_type2_bresp_resend;
+    wire [2:0] lsu_st_type2_bresp_resend_bank_num;
+    wire [31:0] lsu_st_type2_bresp_data_original;
+    wire [4:0] lsu_st_type2_bresp_resend_sub_data_num;
+    wire [31:0] lsu_st_type2_bresp_resend_sub_data;
+    wire [31:0] lsu_st_type2_bresp_resend_update;
+    assign lsu_st_type2_bresp_resend_bank_num = lsu_axi_oram_addr[11:9];
+    resp_data_get resp_data(.in_num(lsu_st_type2_bresp_resend_bank_num), .in(lsu_st_type2_bresp_resend), .out(lsu_st_type2_bresp_data_original));
+    assign lsu_st_type2_bresp_resend_sub_data_num = lsu_axi_oram_addr[8:4];
+    dec5to32 resp_data_pre(.in(lsu_st_type2_bresp_resend_sub_data_num), .out(lsu_st_type2_bresp_resend_sub_data));
+    assign lsu_st_type2_bresp_resend_update = ((lsu_st_type2_bresp_qual | lsu_st_type2_bresp_qual_ff) & (|axi_lsu_bresp)) ? lsu_st_type2_bresp_data_original | lsu_st_type2_bresp_resend_sub_data : lsu_st_type2_bresp_data_original; 
+    resp_assign resp_data_assign(.in_num(lsu_st_type2_bresp_resend_bank_num), .update_in(lsu_st_type2_bresp_resend_update), .out(lsu_st_type2_bresp_resend));
+    //assign lsu_st_type2_bresp_resend[lsu_axi_oram_addr[11:3]] = 1'b1;
     //assign lsu_st_type2_bresp_resend[lsu_axi_oram_addr[11:3]] = (lsu_st_type2_bresp_qual | lsu_st_type2_bresp_qual_ff) & (|axi_lsu_bresp);
     //cancel back the last cycle resend one
     //assign lsu_st_type2_bresp_resend[ctrl_store_resp_oram_addr_ff] = 1'b0;
@@ -938,15 +950,5 @@ module lsu(
     );
 
 endmodule   
-
-
-
-
-
-
-
-
-
-
 
 
