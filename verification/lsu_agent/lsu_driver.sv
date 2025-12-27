@@ -15,7 +15,7 @@ class lsu_driver extends uvm_driver #(lsu_tr);
     extern virtual task main_phase(uvm_phase phase);
     extern virtual task idu_signal_config_type1_store(lsu_tr tr);
     extern virtual task idu_signal_config_type2_store(lsu_tr tr);
-
+    extern virtual task idu_signal_config_load(lsu_tr tr);
 endclass //className extends superClass
 
 function void lsu_driver::build_phase(uvm_phase phase);
@@ -66,6 +66,7 @@ task lsu_driver::main_phase(uvm_phase phase);
         //seq_item_port.get_next_item(tr);
         //idu_signal_config_type1_store(tr);
         idu_signal_config_type2_store(tr);
+        idu_signal_config_load(tr);
         //seq_item_port.item_done();
     end
         
@@ -211,9 +212,40 @@ task lsu_driver::idu_signal_config_type2_store(lsu_tr tr);
             @(negedge lsu_if.clk);
             break;
 	    end
- 	if(lsu_if.lsu_axi_wlast & (lsu_if.lsu_axi_oram_addr == 4'b1111))begin
-		lsu_if.axi_lsu_bvld = 1;
-	end
+ 	//if(lsu_if.lsu_axi_wlast & (lsu_if.lsu_axi_oram_addr == 4'b1111))begin
+    //		lsu_if.axi_lsu_bvld = 1;
+	//end
+    end
+endtask
+
+task lsu_driver::idu_signal_config_load(lsu_tr tr);
+
+    /*int matrix_sent_row = 0;
+    int cur_row = 0;
+    int iter_cnt = 0;
+    bit[7:0] pop_data;
+    int cycle_cnt = 0;
+    bit send_matrix_needed = 0;
+    */
+    while(1)begin
+        @(negedge lsu_if.clk);
+        if(lsu_if.lsu_idu_rdy) begin
+            lsu_if.idu_lsu_vld = 1;
+            lsu_if.idu_lsu_ld_iram = 1;
+            //lsu_if.idu_lsu_ld_wram = 1;
+	        lsu_if.axi_lsu_arrdy = 1;
+            lsu_if.idu_lsu_num = 16;
+            lsu_if.idu_lsu_len = 4;
+	        lsu_if.idu_lsu_ld_st_addr = 'b00000;
+            @(negedge lsu_if.clk);
+            lsu_if.idu_lsu_vld = 0;
+	    //lsu_if.axi_lsu_awrdy = 0;
+            @(negedge lsu_if.clk);
+            break;
+	    end
+ 	//if(lsu_if.lsu_axi_wlast & (lsu_if.lsu_axi_oram_addr == 4'b1111))begin
+    //		lsu_if.axi_lsu_bvld = 1;
+	//end
     end
 endtask
     /*
