@@ -11,7 +11,8 @@ my %design_type = (
     6 => "ifu",
     7 => "idu", 
     8 => "lsu", 
-    9 => "others",
+    9 => "rf", 
+    10 => "others",
 );
 
 my %verification_type = (
@@ -52,7 +53,7 @@ sub show_options{
         my (%hash) = @_;
 
         print "\n=== MENU ===\n";
-        for (sort keys %hash) {
+        for (sort { $a <=> $b } keys %hash) {
             print "$_. $hash{$_}\n";
         }
 
