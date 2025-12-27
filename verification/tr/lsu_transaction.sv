@@ -11,15 +11,20 @@ class lsu_tr extends uvm_sequence_item;
     int matrix_L[15:0][15:0];
     int matrix_R[15:0][15:0];
     int matrix_result[15:0][15:0];
-
+    int oram_data[255:0][127:0];
+    int iram_data[255:0][127:0];
+    int wram_data[255:0][127:0];
+    
     function new(string name = "lsu_tr");
        super.new(name);
        this.init_matrix();
+       this.init_sram();
     endfunction //new()
 
     `uvm_object_utils(lsu_tr)
     
     extern function void init_matrix();
+    extern function void init_sram();
     extern function bit compare(lsu_tr tr);
     //extern function void clear_result();
 
@@ -41,6 +46,15 @@ function void lsu_tr::init_matrix();
         end
     end
 
+endfunction
+function void lsu_tr::init_sram();
+    for(int i = 0; i < 256; i++)begin
+        for(int j = 0; j < 128; j++)begin
+            this.oram_data[i][j] = 0;
+            this.iram_data[i][j] = 0;
+            this.wram_data[i][j] = 0;
+        end
+    end
 endfunction
 
 function bit lsu_tr::compare(lsu_tr tr);
