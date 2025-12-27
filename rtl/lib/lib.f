@@ -13,6 +13,10 @@ $MINITPU_RTL/lib/dec8to3.v
 $MINITPU_RTL/lib/dec32to5.v
 $MINITPU_RTL/lib/enc16to4.v
 
+$MINITPU_RTL/lib/dec5to32.v
+$MINITPU_RTL/lib/resp_assign.v
+$MINITPU_RTL/lib/resp_data_get.v
+
 $MINITPU_RTL/lib/data_byte_shifter.v
 
 $MINITPU_RTL/lib/mux8.v
