@@ -986,7 +986,7 @@ module lsu(
 
     wire lsu_ld_doing_ff;
     wire lsu_ld_ar_en;
-    assign lsu_ld_ar_en = lsu_ld_en & (&lsu_ld_type);
+    assign lsu_ld_ar_en = lsu_ld_en;
     
     DFFRE #(.WIDTH(8))
     ff_lsu_ld_arid(
@@ -1052,14 +1052,31 @@ module lsu(
     //adress read part
     //once we sense load instr give arvld and other ar signal
     //id and burst not support 
-    assign lsu_axi_arvld   = (lsu_ld_vld & (&lsu_ld_type)) | (lsu_ld_vld_ff & (&lsu_st_type_ff)) ; 
-    assign lsu_axi_arid    = (lsu_ld_vld & (&lsu_ld_type)) ? 'b0               : {8{(lsu_ld_vld_ff  & (&lsu_ld_type_ff))}} & lsu_ld_arid;
-    assign lsu_axi_araddr  = (lsu_ld_vld & (&lsu_ld_type)) ? idu_lsu_dram_addr : {10{(lsu_ld_vld_ff & (&lsu_ld_type_ff))}} & lsu_ld_araddr;
-    assign lsu_axi_arlen   = (lsu_ld_vld & (&lsu_ld_type)) ? idu_lsu_num       : {8{(lsu_ld_vld_ff  & (&lsu_ld_type_ff))}} & lsu_ld_arlen;
-    assign lsu_axi_arsize  = (lsu_ld_vld & (&lsu_ld_type)) ? idu_lsu_len       : {3{(lsu_ld_vld_ff  & (&lsu_ld_type_ff))}} & lsu_ld_arsize;
-    assign lsu_axi_arburst = (lsu_ld_vld & (&lsu_ld_type)) ? 2'b00             : {2{(lsu_ld_vld_ff  & (&lsu_ld_type_ff))}} & lsu_ld_arburst;
-    assign lsu_axi_arstr   = (lsu_ld_vld & (&lsu_ld_type)) ? idu_lsu_str       : {3{(lsu_ld_vld_ff  & (&lsu_ld_type_ff))}} & lsu_ld_arstr;
-    assign lsu_axi_arnum   = (lsu_ld_vld & (&lsu_ld_type)) ? lsu_arnum_raw     : {5{(lsu_ld_vld_ff  & (&lsu_ld_type_ff))}} & lsu_ld_arnum;
+    assign lsu_axi_arvld   = lsu_ld_vld | lsu_ld_vld_ff; 
+    assign lsu_axi_arid    = lsu_ld_vld ? 'b0               : {8{lsu_ld_vld_ff }} & lsu_ld_arid;
+    assign lsu_axi_araddr  = lsu_ld_vld ? idu_lsu_dram_addr : {10{lsu_ld_vld_ff}} & lsu_ld_araddr;
+    assign lsu_axi_arlen   = lsu_ld_vld ? idu_lsu_num       : {8{lsu_ld_vld_ff }} & lsu_ld_arlen;
+    assign lsu_axi_arsize  = lsu_ld_vld ? idu_lsu_len       : {3{lsu_ld_vld_ff }} & lsu_ld_arsize;
+    assign lsu_axi_arburst = lsu_ld_vld ? 2'b00             : {2{lsu_ld_vld_ff }} & lsu_ld_arburst;
+    assign lsu_axi_arstr   = lsu_ld_vld ? idu_lsu_str       : {3{lsu_ld_vld_ff }} & lsu_ld_arstr;
+    assign lsu_axi_arnum   = lsu_ld_vld ? lsu_arnum_raw     : {5{lsu_ld_vld_ff }} & lsu_ld_arnum;
+    
+    //read data part
+
+    //give out 
+    //lsu_axi_rrdy
+    //once we know the ld is qual (arrdy & arvld)
+    //we set high the rrdy
+    assign lsu_axi_rrdy = lsu_ld_qual_ff & ~axi_lsu_rvld; 
+
+
+    //recive back
+    //axi_lsu_rid
+    //axi_lsu_rdata
+    //axi_lsu_rresp
+    //axi_lsu_rlast
+    //axi_lsu_rvld
+
 
 
 

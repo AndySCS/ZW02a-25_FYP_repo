@@ -65,7 +65,7 @@ task lsu_driver::main_phase(uvm_phase phase);
     while(1) begin
         //seq_item_port.get_next_item(tr);
         //idu_signal_config_type1_store(tr);
-        idu_signal_config_type2_store(tr);
+        //idu_signal_config_type2_store(tr);
         idu_signal_config_load(tr);
         //seq_item_port.item_done();
     end
