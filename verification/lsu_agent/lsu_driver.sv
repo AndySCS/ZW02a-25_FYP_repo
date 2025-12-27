@@ -194,6 +194,8 @@ task lsu_driver::idu_signal_config_type2_store(lsu_tr tr);
     int cycle_cnt = 0;
     bit send_matrix_needed = 0;
     */
+    bit lsu_axi_wlast_ff;
+    bit lsu_axi_wlast_2ff;
     while(1)begin
         @(negedge lsu_if.clk);
         if(lsu_if.lsu_idu_rdy) begin
@@ -201,14 +203,17 @@ task lsu_driver::idu_signal_config_type2_store(lsu_tr tr);
             lsu_if.idu_lsu_st_dram = 1;
 	    lsu_if.axi_lsu_awrdy = 1;
             lsu_if.idu_lsu_num = 16;
-            lsu_if.idu_lsu_len = 3;
+            lsu_if.idu_lsu_len = 4;
 	    lsu_if.idu_lsu_ld_st_addr = 'b00000;
             @(negedge lsu_if.clk);
-            	lsu_if.idu_lsu_vld = 0;
-	    	//lsu_if.axi_lsu_awrdy = 0;
+            lsu_if.idu_lsu_vld = 0;
+	    //lsu_if.axi_lsu_awrdy = 0;
             @(negedge lsu_if.clk);
             break;
 	    end
+ 	if(lsu_if.lsu_axi_wlast & (lsu_if.lsu_axi_oram_addr == 4'b1111))begin
+		lsu_if.axi_lsu_bvld = 1;
+	end
     end
 endtask
     /*
