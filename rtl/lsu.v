@@ -1100,9 +1100,22 @@ module lsu(
     wire lsu_ld_rd_doing_ff;
     wire lsu_ld_rd_done;
     wire [63:0] lsu_ld_sram_din;
+    //if the size is 128
+    //need two cycle of load
+    //first cycle the cnt dun update
+    //1st cycle ce,we[63:0],addr,din[63:0]
+    //2nd cycle ce,we[127:64],addr, din[63:0]
+
+    wire lsu_ld_sram_chunk_last;
+    wire lsu_ld_sram_chunk_cnt; 
     //max 256 8 bit
     assign lsu_ld_sram_addr_cnt_end = (lsu_ld_sram_addr_cnt == idu_lsu_num) & ~lsu_ld_vld;
-    assign lsu_ld_sram_addr_cnt_nxt = (lsu_ld_vld) ? idu_lsu_ld_st_addr[11:4] : (lsu_ld_rd_qual | lsu_ld_rd_qual_ff) ? lsu_ld_sram_addr_cnt + 1 : lsu_ld_sram_addr_cnt;
+
+    assign lsu_ld_sram_addr_cnt_nxt = (lsu_ld_vld) ? 1'b0 : (lsu_ld_rd_qual | lsu_ld_rd_qual_ff & lsu_ld_sram_chunk_last) ? lsu_ld_sram_addr_cnt + 1 : lsu_ld_sram_addr_cnt;
+    //assign lsu_ld_sram_chunk_last = lsu_axi_arsize[2] ? (lsu_ld_sram_addr_cnt == (lsu_axi_arnum)) & (|lsu_axi_arnum) : (lsu_ld_sram_addr_cnt == (lsu_axi_arnum-1'b1)) & (|lsu_axi_arnum);
+    assign lsu_ld_sram_chunk_last = lsu_axi_arsize[2] ? (lsu_ld_sram_chunk_cnt == (lsu_axi_arnum)) & (|lsu_axi_arnum) : 1'b1;
+    assign lsu_ld_sram_chunk_cnt_nxt = (lsu_ld_vld|lsu_ld_sram_chunk_last) ? 1'b0 : (lsu_ld_rd_qual | lsu_ld_rd_qual_ff) ? lsu_ld_sram_chunk_cnt + 1 : lsu_ld_sram_chunk_cnt;
+    assign lsu_ld_sram_addr_cnt_nxt = (lsu_ld_vld) ? 1'b0 : (lsu_ld_rd_qual | lsu_ld_rd_qual_ff & lsu_ld_sram_chunk_last) ? lsu_ld_sram_addr_cnt + 1 : lsu_ld_sram_addr_cnt;
     
     assign lsu_ld_rd_done = lsu_ld_sram_addr_cnt_end;
     assign lsu_ld_rd_doing = (lsu_ld_rd_qual | lsu_ld_rd_qual_ff) & ~lsu_ld_rd_done;
@@ -1139,6 +1152,14 @@ module lsu(
         .d(lsu_ld_sram_addr_cnt_nxt),
         .en(lsu_ld_rd_doing),
         .q(lsu_ld_sram_addr_cnt)
+    );
+    DFFRE #(.WIDTH(1))
+    ff_lsu_ld_sram_chunk_cnt(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(lsu_ld_sram_chunk_cnt_nxt),
+        .en(lsu_ld_rd_doing),
+        .q(lsu_ld_sram_chunk_cnt)
     );
     DFFR #(.WIDTH(1))
     ff_lsu_ld_rd_doing(
