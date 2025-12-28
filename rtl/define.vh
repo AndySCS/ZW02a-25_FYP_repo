@@ -151,6 +151,8 @@
 `define S_TYPE_IMM_4_0_MSB          (`S_TYPE_IMM_4_0_LSB + `S_TYPE_IMM_4_0_SIZE -1)
 `define S_TYPE_IMM_4_0_RNG          `S_TYPE_IMM_4_0_MSB : `S_TYPE_IMM_4_0_LSB
 
+`define S_TYPE_IMM_SIZE             (`S_TYPE_IMM_11_5_LSB + `S_TYPE_IMM_4_0_SIZE)
+
 `define B_TYPE_IMM_11_SIZE          1
 `define B_TYPE_IMM_11_LSB           (`OP_MSB + 1)
 `define B_TYPE_IMM_11_MSB           (`B_TYPE_IMM_11_LSB + `B_TYPE_IMM_11_SIZE -1)
@@ -170,6 +172,8 @@
 `define B_TYPE_IMM_12_LSB           (`B_TYPE_IMM_10_5_MSB + 1)
 `define B_TYPE_IMM_12_MSB           (`B_TYPE_IMM_12_LSB + `B_TYPE_IMM_12_SIZE -1)
 `define B_TYPE_IMM_12_RNG           `B_TYPE_IMM_12_MSB : `B_TYPE_IMM_12_LSB
+
+`define B_TYPE_IMM_SIZE             (`B_TYPE_IMM_12_SIZE + `B_TYPE_IMM_11_SIZE + `B_TYPE_IMM_10_5_SIZE + `B_TYPE_IMM_4_1_SIZE)
 
 `define U_TYPE_IMM_31_12_SIZE       (31-12+1)
 `define U_TYPE_IMM_31_12_LSB        (`RD_MSB + 1)
@@ -195,6 +199,8 @@
 `define J_TYPE_IMM_20_LSB           (`J_TYPE_IMM_10_1_MSB + 1)
 `define J_TYPE_IMM_20_MSB           (`J_TYPE_IMM_20_LSB + `J_TYPE_IMM_20_SIZE -1)
 `define J_TYPE_IMM_20_RNG           `J_TYPE_IMM_20_MSB : `J_TYPE_IMM_20_LSB
+
+`define J_TYPE_IMM_SIZE             (`J_TYPE_IMM_20_SIZE + `J_TYPE_IMM_19_12_SIZE + `J_TYPE_IMM_11_SIZE + `J_TYPE_IMM_10_1_SIZE)
 
 `define LD_OP_CODE                  7'h00
 `define ST_OP_CODE                  7'h01
