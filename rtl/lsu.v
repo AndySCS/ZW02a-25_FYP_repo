@@ -1203,8 +1203,8 @@ module lsu(
 
     assign lsu_iram_we   = lsu_st_type1_iram_we | lsu_ld_iram_we;
     assign lsu_iram_ce   = lsu_st_type1_iram_ce | lsu_ld_iram_ce;
-    assign lsu_iram_addr = lsu_st_type1_iram_addr | lsu_ld_iram_addr;
-    assign lsu_iram_din  = lsu_st_type1_iram_din | lsu_ld_iram_din;
+    assign lsu_iram_addr = (lsu_st_type1_iram_addr & {8{lsu_st_type1_doing}}) | lsu_ld_iram_addr;
+    assign lsu_iram_din  = (lsu_st_type1_iram_din & {128{lsu_st_type1_doing}}) | lsu_ld_iram_din;
     assign lsu_iram_dout = 128'b0;
 
     mem_wrapper #(.DATA_WIDTH(128))
