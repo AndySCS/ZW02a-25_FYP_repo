@@ -1067,7 +1067,20 @@ module lsu(
     //lsu_axi_rrdy
     //once we know the ld is qual (arrdy & arvld)
     //we set high the rrdy
-    assign lsu_axi_rrdy = lsu_ld_qual_ff & ~axi_lsu_rvld; 
+    wire lsu_ld_rd_qual;
+    wire lsu_ld_rd_qual_ff;
+
+    assign lsu_axi_rrdy = lsu_ld_qual_ff & ~lsu_ld_rd_qual_ff; 
+    assign lsu_ld_rd_qual = lsu_axi_rrdy & axi_lsu_rvld;
+
+    DFFRE #(.WIDTH(1))
+    ff_lsu_ld_rd_qual(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(lsu_ld_rd_qual),
+        .en(lsu_ld_rd_qual),
+        .q(lsu_ld_rd_qual_ff)
+    );
 
 
     //recive back
@@ -1079,25 +1092,25 @@ module lsu(
 
     //deal with rresp
     //if recive rresp resend whole chunk
-    assign rresp_row_count_nxt = ctrl_load_arvld ? ctrl_load_dram_araddr : rresp_row_count+1;
-    assign rresp_row_count_en = ctrl_load_arvld | (ctrl_sram_rlast & ctrl_sram_rvld);
+    //assign rresp_row_count_nxt = ctrl_load_arvld ? ctrl_load_dram_araddr : rresp_row_count+1;
+    //assign rresp_row_count_en = ctrl_load_arvld | (ctrl_sram_rlast & ctrl_sram_rvld);
     //assign ld_buff_rresp[rresp_row_count] = |ld_buff_rresp_raw;
-    assign ld_buff_rresp = {ld_buff_rresp[255:rresp_row_count],(|ld_buff_rresp_raw),ld_buff_rresp[(rresp_row_count-1):0]};
+    //assign ld_buff_rresp = {ld_buff_rresp[255:rresp_row_count],(|ld_buff_rresp_raw),ld_buff_rresp[(rresp_row_count-1):0]};
 
-    assign ld_buff_rresp = ld_buff_rresp_out;
+    //assign ld_buff_rresp = ld_buff_rresp_out;
 
-    DFFRE #(.WDITH(256))
-    ff_ld_buff_rresp_row_count(
-        .clk(clk),
-        .rst_n(rst_n),
-        .en(rresp_row_count_en),
-        .d(rresp_row_count_nxt),
-        .q(rresp_row_count)
-    );
+    //DFFRE #(.WDITH(256))
+    //ff_ld_buff_rresp_row_count(
+        //.clk(clk),
+        //.rst_n(rst_n),
+        //.en(rresp_row_count_en),
+        //.d(rresp_row_count_nxt),
+        //.q(rresp_row_count)
+    //);
 
-    assign load_buffer_fsm = ctrl_load_arvld ? 2'b01
-                            : ((rresp_row_count == load_axi_arnum) ? 
-                            (rresp_end ? 2'b00 : 2'b10) : 2'b01);  
+    //assign load_buffer_fsm = ctrl_load_arvld ? 2'b01
+                            //: ((rresp_row_count == load_axi_arnum) ? 
+                            //(rresp_end ? 2'b00 : 2'b10) : 2'b01);  
 
     //wire axi_read_rlast;
     //wire [7:0] lsu_store_cur;
@@ -1187,6 +1200,7 @@ module lsu(
     );
 
 endmodule   
+
 
 
 
