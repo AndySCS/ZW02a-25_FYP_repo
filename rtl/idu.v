@@ -7,7 +7,6 @@ module idu (
     //alu input
     alu_idu_rdy,
     alu_idu_flush_vld,
-    alu_idu_cal_result,
     alu_idu_wb_addr,
     alu_idu_wb_data,
     alu_idu_wb_vld,
@@ -30,7 +29,11 @@ module idu (
     idu_alu_vld,
     idu_alu_src1,
     idu_alu_src2,
+    idu_alu_wb_vld,
     idu_alu_wb_addr,
+    idu_alu_op,
+    idu_alu_funct3,
+    idu_alu_funct7,
     idu_alu_ld_iram,
     idu_alu_ld_wram,
     idu_alu_st_iram,
@@ -74,7 +77,6 @@ module idu (
 
     input alu_idu_rdy;
     input alu_idu_flush_vld;
-    input [31:0] alu_idu_cal_result;
     input [4:0] alu_idu_wb_addr;
     input [31:0] alu_idu_wb_data;
     input alu_idu_wb_vld;
@@ -96,7 +98,11 @@ module idu (
     output idu_alu_vld;
     output [31:0] idu_alu_src1;
     output [31:0] idu_alu_src2;
+    output idu_alu_wb_vld;
     output [4:0] idu_alu_wb_addr;
+    output [6:0] idu_alu_op;
+    output [2:0] idu_alu_funct3;
+    output [6:0] idu_alu_funct7;
     output idu_alu_ld_iram;
     output idu_alu_ld_wram;
     output idu_alu_st_iram;
@@ -137,6 +143,8 @@ module idu (
     wire [63:0] idu_ins;
     wire [63:0] idu_ins_nxt;
 
+    wire idu_alu_wb_vld_nxt;
+
     wire [31:0] scr1_nxt;
     wire [31:0] scr2_nxt;
 
@@ -149,17 +157,12 @@ module idu (
     wire [31:0] u_imm;
     wire [31:0] j_imm;
 
+    wire riscv_r_type;
     wire riscv_i_type;
     wire riscv_s_type;
     wire riscv_b_type;
     wire riscv_u_type;
     wire riscv_j_type;
-
-    wire i_imm_sel;
-    wire s_imm_sel;
-    wire b_imm_sel;
-    wire u_imm_sel;
-    wire j_imm_sel;
 
     wire alu_idu_hazard_src1;
     wire lsu_idu_hazard_src1;
@@ -274,12 +277,15 @@ module idu (
                     : rf_idu_hazard_src2 ? lsu_rf_wb_data
                     : rf_idu_scr2_data;
 
+    assign src2_sel_imm = riscv_i_type | riscv_j_type | riscv_u_type;
+
     assign i_imm = {{32-`I_TYPE_IMM_SIZE{ifu_idu_ins[`I_TYPE_IMM_MSB]}}, ifu_idu_ins[`I_TYPE_IMM_RNG]};
     assign s_imm = {{32-`S_TYPE_IMM_SIZE{ifu_idu_ins[`S_TYPE_IMM_11_5_MSB]}}, ifu_idu_ins[`S_TYPE_IMM_11_5_RNG], ifu_idu_ins[`S_TYPE_IMM_4_0_RNG]};
     assign b_imm = {{32-`B_TYPE_IMM_SIZE-1{ifu_idu_ins[`B_TYPE_IMM_12_MSB]}}, ifu_idu_ins[`B_TYPE_IMM_12_RNG],ifu_idu_ins[`B_TYPE_IMM_11_RNG], ifu_idu_ins[`B_TYPE_IMM_10_5_RNG], ifu_idu_ins[`B_TYPE_IMM_4_1_RNG], 1'b0};
     assign u_imm = {ifu_idu_ins[`U_TYPE_IMM_31_12_RNG], {32-`U_TYPE_IMM_31_12_SIZE{1'b0}}};
     assign j_imm = {{32-`J_TYPE_IMM_SIZE-1{ifu_idu_ins[`J_TYPE_IMM_20_MSB]}} , ifu_idu_ins[`J_TYPE_IMM_20_RNG], ifu_idu_ins[`J_TYPE_IMM_19_12_RNG], ifu_idu_ins[`J_TYPE_IMM_11_RNG], ifu_idu_ins[`J_TYPE_IMM_10_1_RNG], 1'b0};
 
+    assign riscv_r_type = (ifu_idu_ins[`OP_RNG] == `OP);
     assign riscv_i_type = (ifu_idu_ins[`OP_RNG] == `OP_IMM) | (ifu_idu_ins[`OP_RNG] == `JALR) |  (ifu_idu_ins[`OP_RNG] == `LOAD);
     assign riscv_s_type = (ifu_idu_ins[`OP_RNG] == `STORE);
     assign riscv_b_type = (ifu_idu_ins[`OP_RNG] == `BRANCH);
@@ -316,6 +322,20 @@ module idu (
         .en(ifu_idu_vld),
         .d(scr2_nxt),
         .q(idu_alu_src2)
+    );
+
+    assign idu_alu_op = idu_ins[`OP_RNG];
+    assign idu_alu_funct3 = idu_ins[`FUNCT3_RNG];
+    assign idu_alu_funct7 = idu_ins[`FUNCT3_RNG];
+    assign idu_alu_wb_vld_nxt = riscv_r_type | riscv_i_type | riscv_j_type | riscv_u_type;
+    
+    DFFRE #(.WIDTH(1))
+    ff_idu_alu_wb_vld(
+        .clk(clk),
+        .rst_n(rst_n),
+        .en(ifu_idu_vld),
+        .d(idu_alu_wb_vld_nxt),
+        .q(idu_alu_wb_vld)
     );
 
 endmodule
