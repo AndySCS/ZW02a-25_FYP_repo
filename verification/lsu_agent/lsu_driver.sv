@@ -243,9 +243,9 @@ task lsu_driver::idu_signal_config_load(lsu_tr tr);
             @(negedge lsu_if.clk);
             break;
 	    end
- 	//if(lsu_if.lsu_axi_wlast & (lsu_if.lsu_axi_oram_addr == 4'b1111))begin
-    //		lsu_if.axi_lsu_bvld = 1;
-	//end
+ 	if(lsu_if.lsu_axi_arvld & lsu_if.axi_lsu_arrdy)begin
+    		lsu_if.axi_lsu_rvld = 1;
+	end
     end
 endtask
     /*
