@@ -253,7 +253,7 @@ task lsu_driver::idu_signal_config_load(lsu_tr tr);
 	        lsu_if.axi_lsu_arrdy = 1;
             lsu_if.idu_lsu_num = 16;
             lsu_if.idu_lsu_len = 4;
-	        lsu_if.idu_lsu_ld_st_addr = 'b00000;
+	    lsu_if.idu_lsu_ld_st_addr = 'b00000;
             @(negedge lsu_if.clk);
             lsu_if.idu_lsu_vld = 0;
 	    //lsu_if.axi_lsu_awrdy = 0;
@@ -262,6 +262,7 @@ task lsu_driver::idu_signal_config_load(lsu_tr tr);
 	    end
  	if(lsu_if.lsu_axi_arvld & lsu_if.axi_lsu_arrdy)begin
     		lsu_if.axi_lsu_rvld = 1;
+		lsu_if.axi_lsu_rdata = 64'h123456789;
 	end
     end
 endtask
