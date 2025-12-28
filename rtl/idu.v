@@ -4,6 +4,7 @@ module idu (
     //ifu input
     ifu_idu_vld,
     ifu_idu_ins,
+    ifu_idu_pc,
     //alu input
     alu_idu_rdy,
     alu_idu_flush_vld,
@@ -34,6 +35,8 @@ module idu (
     idu_alu_op,
     idu_alu_funct3,
     idu_alu_funct7,
+    idu_alu_br_imm,
+    idu_alu_pc,
     idu_alu_ld_iram,
     idu_alu_ld_wram,
     idu_alu_st_iram,
@@ -74,6 +77,7 @@ module idu (
 
     input ifu_idu_vld;
     input [63:0] ifu_idu_ins;
+    input [31:0] ifu_idu_pc;
 
     input alu_idu_rdy;
     input alu_idu_flush_vld;
@@ -103,6 +107,8 @@ module idu (
     output [6:0] idu_alu_op;
     output [2:0] idu_alu_funct3;
     output [6:0] idu_alu_funct7;
+    output [31:0] idu_alu_br_imm;
+    output [31:0] idu_alu_pc;
     output idu_alu_ld_iram;
     output idu_alu_ld_wram;
     output idu_alu_st_iram;
@@ -337,5 +343,16 @@ module idu (
         .d(idu_alu_wb_vld_nxt),
         .q(idu_alu_wb_vld)
     );
+    
+    DFFE #(.WIDTH(31))
+    ff_idu_alu_pc(
+        .clk(clk),
+        .rst_n(rst_n),
+        .en(ifu_idu_vld),
+        .d(ifu_idu_pc),
+        .q(idu_alu_pc)
+    );
+
+    assign idu_alu_br_imm = {{32-`B_TYPE_IMM_SIZE-1{idu_ins[`B_TYPE_IMM_12_MSB]}}, idu_ins[`B_TYPE_IMM_12_RNG],idu_ins[`B_TYPE_IMM_11_RNG], idu_ins[`B_TYPE_IMM_10_5_RNG], idu_ins[`B_TYPE_IMM_4_1_RNG], 1'b0};
 
 endmodule

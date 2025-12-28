@@ -8,7 +8,8 @@ module ifu (
     alu_ifu_br_vld,
     alu_ifu_br_addr,
     ifu_idu_vld,
-    ifu_idu_ins
+    ifu_idu_ins,
+    ifu_idu_pc
 );
     
     input clk;
@@ -21,6 +22,7 @@ module ifu (
     input alu_ifu_br_addr;
     output ifu_idu_vld;
     output [63:0] ifu_idu_ins;
+    output [31:0] ifu_idu_pc;
 
     wire ifu_idu_vld_nxt;
     wire [127:0] ifu_idu_ins_raw;
@@ -72,6 +74,8 @@ module ifu (
         .din(128'b0),
         .dout(ifu_idu_ins_raw)
     );
+
+    assign ifu_idu_ins = {20'b0, cur_ins_addr};
 
 
 endmodule
