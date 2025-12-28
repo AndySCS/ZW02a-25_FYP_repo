@@ -1077,6 +1077,46 @@ module lsu(
     //axi_lsu_rlast
     //axi_lsu_rvld
 
+    //deal with rresp
+    //if recive rresp resend whole chunk
+    assign rresp_row_count_nxt = ctrl_load_arvld ? ctrl_load_dram_araddr : rresp_row_count+1;
+    assign rresp_row_count_en = ctrl_load_arvld | (ctrl_sram_rlast & ctrl_sram_rvld);
+    //assign ld_buff_rresp[rresp_row_count] = |ld_buff_rresp_raw;
+    assign ld_buff_rresp = {ld_buff_rresp[255:rresp_row_count],(|ld_buff_rresp_raw),ld_buff_rresp[(rresp_row_count-1):0]};
+
+    assign ld_buff_rresp = ld_buff_rresp_out;
+
+    DFFRE #(.WDITH(256))
+    ff_ld_buff_rresp_row_count(
+        .clk(clk),
+        .rst_n(rst_n),
+        .en(rresp_row_count_en),
+        .d(rresp_row_count_nxt),
+        .q(rresp_row_count)
+    );
+
+    assign load_buffer_fsm = ctrl_load_arvld ? 2'b01
+                            : ((rresp_row_count == load_axi_arnum) ? 
+                            (rresp_end ? 2'b00 : 2'b10) : 2'b01);  
+
+    //wire axi_read_rlast;
+    //wire [7:0] lsu_store_cur;
+    //wire [7:0] lsu_store_len;
+    //wire load_buffer_vld;
+    //wire sram_data_store_done;
+    
+
+
+    //assign axi_read_rlast = ctrl_sram_rlast & ~(|sram_rresp);
+    ////dram_data_load_done
+    //assign dram_data_load_done = axi_read_rlast;
+
+    ////sram_data_store_done
+    //assign sram_data_store_done = lsu_store_cur == lsu_store_len;
+
+    //assign load_buffer_fsm_nxt = load_buffer_vld? 2'b00
+                                //: dram_data_load_done ? 2'b10
+                                //: sram_data_store_done ? 2'b00 : 2'b11;
 
 
 
