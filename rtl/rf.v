@@ -26,9 +26,11 @@ module rf(
 
     assign rf_data_nxt = lsu_rf_wb_data;
 
+    assign rf_data[0] = 32'b0;
+
     genvar i;
     generate;
-        for(i = 0; i < 32;i++)begin
+        for(i = 1; i < 32;i++)begin
 
             assign rf_data_en[i] = lsu_rf_wb_vld & (lsu_rf_wb_addr == i);
 
