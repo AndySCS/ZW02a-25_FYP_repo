@@ -1089,6 +1089,35 @@ module lsu(
     //axi_lsu_rresp
     //axi_lsu_rlast
     //axi_lsu_rvld
+    //assign the axi read data back to the sram
+    wire [63:0] lsu_ld_rdata_raw;
+    wire lsu_ld_sram_ce;
+    wire lsu_ld_sram_we;
+    wire lsu_ld_sram_addr_cnt_end;
+    wire[7:0] lsu_ld_sram_addr_cnt;
+    wire[7:0] lsu_ld_sram_addr_cnt_nxt;
+    wire lsu_ld_rd_doing;
+    wire lsu_ld_rd_doing_ff;
+    wire lsu_ld_rd_done;
+
+    assign lsu_ld_rd_done = 1'b0;
+    assign lsu_ld_rd_doing = (lsu_ld_rd_qual | lsu_ld_rd_qual_ff) & ~lsu_ld_rd_done;
+    //assume axi_lsu_rdata already done the data filtering
+    assign lsu_ld_sram_din = lsu_ld_rd_qual ? {64{lsu_ld_rd_qual}} & axi_lsu_rdata : {64{lsu_ld_rd_qual_ff}} & axi_lsu_rdata;
+    assign lsu_ld_sram_ce = lsu_ld_rd_doing;
+    assign lsu_ld_sram_we = lsu_ld_rd_doing;
+
+    //max 256 8 bit
+    assign lsu_ld_sram_addr_cnt_end = (lsu_ld_sram_cnt == idu_lsu_num) & ~lsu_ld_vld;
+    assign lsu_ld_sram_addr_cnt_nxt = (lsu_ld_vld) ? 8'b0 : (lsu_ld_rd_qual | lsu_ld_rd_qual_ff) ? lsu_ld_sram_addr_cnt + 1 : lsu_ld_sram_addr_cnt;
+
+    DFFR #(.WIDTH(1))
+    ff_lsu_ld_rd_doing(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(lsu_ld_rd_doing),
+        .q(lsu_ld_rd_doing_ff)
+    );
 
     //deal with rresp
     //if recive rresp resend whole chunk

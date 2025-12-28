@@ -60,6 +60,23 @@ task lsu_driver::main_phase(uvm_phase phase);
     lsu_if.idu_lsu_wram_row_len = 0;
     lsu_if.idu_lsu_act_type = 0;
     lsu_if.idu_lsu_pool_size = 0;
+
+    //from axi write 
+    lsu_if.axi_lsu_awrdy = 0;
+    lsu_if.axi_lsu_wrdy = 0;
+    lsu_if.axi_lsu_bid = 0;
+    lsu_if.axi_lsu_bresp = 0;
+    lsu_if.axi_lsu_bvld = 0;
+    lsu_if.axi_lsu_resp_oram_addr = 0;
+
+    //from axi read
+    lsu_if.axi_lsu_arrdy = 0;
+    lsu_if.axi_lsu_rid = 0;
+    lsu_if.axi_lsu_rdata = 0;
+    lsu_if.axi_lsu_rresp = 0;
+    lsu_if.axi_lsu_rlast = 0;
+    lsu_if.axi_lsu_rvld = 0;
+
     @(posedge lsu_if.rst_n); // wait till rstn is high
 
     while(1) begin
