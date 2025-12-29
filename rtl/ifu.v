@@ -19,7 +19,7 @@ module ifu (
     input idu_ifu_rdy;
     input idu_ifu_wfi;
     input alu_ifu_br_vld;
-    input alu_ifu_br_addr;
+    input [11:0] alu_ifu_br_addr;
     output ifu_idu_vld;
     output [63:0] ifu_idu_ins;
     output [31:0] ifu_idu_pc;
@@ -48,7 +48,7 @@ module ifu (
 
     assign cur_ins_addr_plus = cur_ins_addr + 15'h8;
     assign cur_ins_addr_en = idu_ifu_rdy & ifu_idu_vld | start_vld | alu_ifu_br_vld;
-    assign cur_ins_addr_nxt = start_vld ? {start_addr[11:3], 3'b000} : cur_ins_addr_plus;
+    assign cur_ins_addr_nxt = start_vld ? {start_addr[11:3], 3'b000} : alu_idu_wb_vld ? alu_ifu_br_addr[11:0] : cur_ins_addr_plus;
 
     DFFE #(.WIDTH(12))
     ff_cur_ins_addr(
