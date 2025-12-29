@@ -58,6 +58,8 @@ module idu (
     idu_alu_sw_op,
     idu_alu_lui_op,
     idu_alu_aui_op,
+    idu_alu_jal_op,
+    idu_alu_jalr_op,
     //data pass
     idu_alu_wb_addr,
     idu_alu_br_st_imm,
@@ -155,6 +157,8 @@ module idu (
     output idu_alu_sw_op;
     output idu_alu_lui_op;
     output idu_alu_aui_op;
+    output idu_alu_jal_op;
+    output idu_alu_jalr_op;
 
     output [4:0] idu_alu_wb_addr;
     output [31:0] idu_alu_br_st_imm;
@@ -195,7 +199,7 @@ module idu (
     output [4:0] rf_idu_scr2_addr;
 
     wire idu_vld;
-    wire idu_vld_nxt;
+    wire idu_alu_vld_nxt;
 
     wire [63:0] idu_ins;
     wire [63:0] idu_ins_nxt;
@@ -222,10 +226,13 @@ module idu (
     wire riscv_j_type;
 
     wire alu_idu_hazard_src1;
+    wire alu_idu_ld_hazard_src1;
     wire lsu_idu_hazard_src1;
     wire lsu_idu_ld_hazard_src1;
     wire rf_idu_hazard_src1;
+
     wire alu_idu_hazard_src2;
+    wire alu_idu_ld_hazard_src2;
     wire lsu_idu_hazard_src2;
     wire lsu_idu_ld_hazard_src2;
     wire rf_idu_hazard_src2;
@@ -251,7 +258,8 @@ module idu (
     wire op_st;
     wire op_u;
     wire op_aui;
-    wire op_j;
+    wire op_jal;
+    wire op_jalr;
     wire op_b;
 
     wire add_op;
@@ -282,26 +290,27 @@ module idu (
     wire sh_op;
     wire sw_op;
 
-    assign idu_vld_nxt = idu_ifu_rdy & ifu_idu_vld & ~alu_idu_flush_vld | idu_vld & ~alu_idu_rdy;
-    assign idu_ins_nxt = idu_vld_nxt ? ifu_idu_ins : idu_ins;
+    assign idu_vld = idu_ifu_rdy & ifu_idu_vld & ~alu_idu_flush_vld;
+    assign idu_alu_vld_nxt = idu_vld | idu_vld & ~alu_idu_rdy;
+    assign idu_ins_nxt = idu_vld ? ifu_idu_ins : idu_ins;
 
     DFFR #(.WIDTH(1))
     ff_idu_vld(
         .clk(clk),
         .rst_n(rst_n),
-        .d(idu_vld_nxt),
-        .q(idu_vld)
+        .d(idu_alu_vld_nxt),
+        .q(idu_alu_vld)
     );
 
     DFFE #(.WIDTH(64))
     ff_idu_ins(
         .clk(clk),
-        .en(ifu_idu_vld),
+        .en(idu_vld),
         .d(idu_ins_nxt),
         .q(idu_ins)
     );
 
-    assign idu_ifu_rdy = alu_idu_rdy & ~(lsu_idu_ld_hazard_src1 | lsu_idu_ld_hazard_src2);
+    assign idu_ifu_rdy = alu_idu_rdy & ~(lsu_idu_ld_hazard_src1 | lsu_idu_ld_hazard_src2 | alu_idu_ld_hazard_src1 | alu_idu_ld_hazard_src2);
 
     assign inst_type_is_ld = idu_ins[`OP_RNG] == `LD_OP_CODE;
     assign inst_type_is_st = idu_ins[`OP_RNG] == `ST_OP_CODE;
@@ -315,8 +324,7 @@ module idu (
     assign sram_type_wram = idu_ins[`SRAM_TYPE_RNG] == 2'b10;
     assign sram_type_oram = idu_ins[`SRAM_TYPE_RNG] == 2'b01;
 
-    assign idu_ifu_wfi = idu_vld & inst_type_is_wfi;
-    assign idu_alu_vld = idu_vld;
+    assign idu_ifu_wfi = idu_alu_vld & inst_type_is_wfi;
 
     assign idu_alu_ld_iram = inst_type_is_ld & sram_type_iram;
     assign idu_alu_ld_wram = inst_type_is_ld & sram_type_wram;
@@ -392,20 +400,22 @@ module idu (
                | {32{riscv_u_type}} & u_imm
                | {32{riscv_j_type}} & j_imm;
 
-    assign alu_idu_hazard_src1    = (alu_idu_wb_addr == idu_rf_src1_addr) & alu_idu_wb_vld & ~(riscv_u_type | riscv_j_type);
+    assign alu_idu_hazard_src1    = (alu_idu_wb_addr == idu_rf_src1_addr) & alu_idu_wb_vld & ~(riscv_u_type | riscv_j_type) & ~alu_idu_ld_vld;
+    assign alu_idu_ld_hazard_src1 = (alu_idu_wb_addr == idu_rf_src1_addr) & alu_idu_wb_vld & ~(riscv_u_type | riscv_j_type) &  alu_idu_ld_vld;
     assign lsu_idu_hazard_src1    = (lsu_idu_wb_addr == idu_rf_src1_addr) & lsu_idu_wb_vld & ~(riscv_u_type | riscv_j_type) & ~lsu_idu_ld_vld;
-    assign lsu_idu_ld_hazard_src1 = (lsu_idu_wb_addr == idu_rf_src1_addr) & lsu_idu_wb_vld & ~(riscv_u_type | riscv_j_type) & lsu_idu_ld_vld;
+    assign lsu_idu_ld_hazard_src1 = (lsu_idu_wb_addr == idu_rf_src1_addr) & lsu_idu_wb_vld & ~(riscv_u_type | riscv_j_type) &  lsu_idu_ld_vld;
     assign rf_idu_hazard_src1     = (lsu_rf_wb_addr  == idu_rf_src1_addr) & lsu_rf_wb_vld  & ~(riscv_u_type | riscv_j_type);
     
-    assign alu_idu_hazard_src2    = (alu_idu_wb_addr == idu_rf_src1_addr) & alu_idu_wb_vld & ~(riscv_u_type | riscv_j_type | riscv_i_type);
+    assign alu_idu_hazard_src2    = (alu_idu_wb_addr == idu_rf_src1_addr) & alu_idu_wb_vld & ~(riscv_u_type | riscv_j_type | riscv_i_type) & ~alu_idu_ld_vld;
+    assign alu_idu_ld_hazard_src2 = (alu_idu_wb_addr == idu_rf_src1_addr) & alu_idu_wb_vld & ~(riscv_u_type | riscv_j_type | riscv_i_type) &  alu_idu_ld_vld;
     assign lsu_idu_hazard_src2    = (lsu_idu_wb_addr == idu_rf_src1_addr) & lsu_idu_wb_vld & ~(riscv_u_type | riscv_j_type | riscv_i_type) & ~lsu_idu_ld_vld;
-    assign lsu_idu_ld_hazard_src2 = (lsu_idu_wb_addr == idu_rf_src1_addr) & lsu_idu_wb_vld & ~(riscv_u_type | riscv_j_type | riscv_i_type) & lsu_idu_ld_vld;
+    assign lsu_idu_ld_hazard_src2 = (lsu_idu_wb_addr == idu_rf_src1_addr) & lsu_idu_wb_vld & ~(riscv_u_type | riscv_j_type | riscv_i_type) &  lsu_idu_ld_vld;
     assign rf_idu_hazard_src2     = (lsu_rf_wb_addr  == idu_rf_src1_addr) & lsu_rf_wb_vld  & ~(riscv_u_type | riscv_j_type | riscv_i_type);
     
     DFFE #(.WIDTH(32))
     ff_idu_alu_src1(
         .clk(clk),
-        .en(ifu_idu_vld),
+        .en(idu_vld),
         .d(scr1_nxt),
         .q(idu_alu_src1)
     );
@@ -413,7 +423,7 @@ module idu (
     DFFE #(.WIDTH(32))
     ff_idu_alu_src2(
         .clk(clk),
-        .en(ifu_idu_vld),
+        .en(idu_vld),
         .d(scr2_nxt),
         .q(idu_alu_src2)
     );
@@ -427,7 +437,7 @@ module idu (
     ff_idu_alu_wb_vld(
         .clk(clk),
         .rst_n(rst_n),
-        .en(ifu_idu_vld),
+        .en(idu_vld),
         .d(idu_alu_wb_vld_nxt),
         .q(idu_alu_wb_vld)
     );
@@ -435,22 +445,22 @@ module idu (
     DFFE #(.WIDTH(31))
     ff_idu_alu_pc(
         .clk(clk),
-        .rst_n(rst_n),
-        .en(ifu_idu_vld),
+        .en(idu_vld),
         .d(ifu_idu_pc),
         .q(idu_alu_pc)
     );
 
     assign idu_alu_br_st_imm = {32{op_b}} & b_imm | {32{op_st}} & s_imm;
     
-    assign op_r   = (ifu_idu_ins[`OP_RNG] == `OP);
-    assign op_i   = (ifu_idu_ins[`OP_RNG] == `OP_IMM);
-    assign op_ld  = (ifu_idu_ins[`OP_RNG] == `LOAD);
-    assign op_st  = (ifu_idu_ins[`OP_RNG] == `STORE);
-    assign op_u   = (ifu_idu_ins[`OP_RNG] == `LUI);
-    assign op_aui = (ifu_idu_ins[`OP_RNG] == `AUIPC);
-    assign op_j   = (ifu_idu_ins[`OP_RNG] == `JAL) | (ifu_idu_ins[`OP_RNG] == `JALR);
-    assign op_b   = (ifu_idu_ins[`OP_RNG] == `BRANCH);
+    assign op_r    = (ifu_idu_ins[`OP_RNG] == `OP);
+    assign op_i    = (ifu_idu_ins[`OP_RNG] == `OP_IMM);
+    assign op_ld   = (ifu_idu_ins[`OP_RNG] == `LOAD);
+    assign op_st   = (ifu_idu_ins[`OP_RNG] == `STORE);
+    assign op_u    = (ifu_idu_ins[`OP_RNG] == `LUI);
+    assign op_aui  = (ifu_idu_ins[`OP_RNG] == `AUIPC);
+    assign op_jal  = (ifu_idu_ins[`OP_RNG] == `JAL);
+    assign op_jalr = (ifu_idu_ins[`OP_RNG] == `JALR);
+    assign op_b    = (ifu_idu_ins[`OP_RNG] == `BRANCH);
 
     assign add_op  = (ifu_idu_ins[`FUNCT3_RNG] == `FUNCT3_ADD ) & (op_i | (op_r & ifu_idu_ins[`FUNCT7_RNG] == `FUNCT7_NORM));
     assign sub_op  = (ifu_idu_ins[`FUNCT3_RNG] == `FUNCT3_ADD ) & (op_i | (op_r & ifu_idu_ins[`FUNCT7_RNG] == `FUNCT7_ALT ));
@@ -483,7 +493,7 @@ module idu (
     DFFE #(.WIDTH(1))
     ff_add_op(
         .clk(clk),
-        .en(ifu_idu_vld),
+        .en(idu_vld),
         .d(add_op),
         .q(idu_alu_add_op)
     );
@@ -491,7 +501,7 @@ module idu (
     DFFE #(.WIDTH(1))
     ff_sub_op(
         .clk(clk),
-        .en(ifu_idu_vld),
+        .en(idu_vld),
         .d(sub_op),
         .q(idu_alu_sub_op)
     );
@@ -499,7 +509,7 @@ module idu (
     DFFE #(.WIDTH(1))
     ff_slt_op(
         .clk(clk),
-        .en(ifu_idu_vld),
+        .en(idu_vld),
         .d(slt_op),
         .q(idu_alu_slt_op)
     );
@@ -507,7 +517,7 @@ module idu (
     DFFE #(.WIDTH(1))
     ff_sltu_op(
         .clk(clk),
-        .en(ifu_idu_vld),
+        .en(idu_vld),
         .d(sltu_op),
         .q(idu_alu_sltu_op)
     );
@@ -515,7 +525,7 @@ module idu (
     DFFE #(.WIDTH(1))
     ff_xor_op(
         .clk(clk),
-        .en(ifu_idu_vld),
+        .en(idu_vld),
         .d(xor_op),
         .q(idu_alu_xor_op)
     );
@@ -523,7 +533,7 @@ module idu (
     DFFE #(.WIDTH(1))
     ff_or_op(
         .clk(clk),
-        .en(ifu_idu_vld),
+        .en(idu_vld),
         .d(or_op),
         .q(idu_alu_or_op)
     );
@@ -531,7 +541,7 @@ module idu (
     DFFE #(.WIDTH(1))
     ff_and_op(
         .clk(clk),
-        .en(ifu_idu_vld),
+        .en(idu_vld),
         .d(and_op),
         .q(idu_alu_and_op)
     );
@@ -539,7 +549,7 @@ module idu (
     DFFE #(.WIDTH(1))
     ff_sll_op(
         .clk(clk),
-        .en(ifu_idu_vld),
+        .en(idu_vld),
         .d(sll_op),
         .q(idu_alu_sll_op)
     );
@@ -547,7 +557,7 @@ module idu (
     DFFE #(.WIDTH(1))
     ff_srl_op(
         .clk(clk),
-        .en(ifu_idu_vld),
+        .en(idu_vld),
         .d(srl_op),
         .q(idu_alu_srl_op)
     );
@@ -555,7 +565,7 @@ module idu (
     DFFE #(.WIDTH(1))
     ff_sra_op(
         .clk(clk),
-        .en(ifu_idu_vld),
+        .en(idu_vld),
         .d(sra_op),
         .q(idu_alu_sra_op)
     );
@@ -563,7 +573,7 @@ module idu (
     DFFE #(.WIDTH(1))
     ff_beq_op(
         .clk(clk),
-        .en(ifu_idu_vld),
+        .en(idu_vld),
         .d(beq_op),
         .q(idu_alu_beq_op)
     );
@@ -571,7 +581,7 @@ module idu (
     DFFE #(.WIDTH(1))
     ff_bne_op(
         .clk(clk),
-        .en(ifu_idu_vld),
+        .en(idu_vld),
         .d(bne_op),
         .q(idu_alu_bne_op)
     );
@@ -579,7 +589,7 @@ module idu (
     DFFE #(.WIDTH(1))
     ff_blt_op(
         .clk(clk),
-        .en(ifu_idu_vld),
+        .en(idu_vld),
         .d(blt_op),
         .q(idu_alu_blt_op)
     );
@@ -587,7 +597,7 @@ module idu (
     DFFE #(.WIDTH(1))
     ff_bge_op(
         .clk(clk),
-        .en(ifu_idu_vld),
+        .en(idu_vld),
         .d(bge_op),
         .q(idu_alu_bge_op)
     );
@@ -595,7 +605,7 @@ module idu (
     DFFE #(.WIDTH(1))
     ff_bltu_op(
         .clk(clk),
-        .en(ifu_idu_vld),
+        .en(idu_vld),
         .d(bltu_op),
         .q(idu_alu_bltu_op)
     );
@@ -603,7 +613,7 @@ module idu (
     DFFE #(.WIDTH(1))
     ff_bgeu_op(
         .clk(clk),
-        .en(ifu_idu_vld),
+        .en(idu_vld),
         .d(bgeu_op),
         .q(idu_alu_bgeu_op)
     );
@@ -611,7 +621,7 @@ module idu (
     DFFE #(.WIDTH(1))
     ff_lb_op(
         .clk(clk),
-        .en(ifu_idu_vld),
+        .en(idu_vld),
         .d(lb_op),
         .q(idu_alu_lb_op)
     );
@@ -619,7 +629,7 @@ module idu (
     DFFE #(.WIDTH(1))
     ff_lh_op(
         .clk(clk),
-        .en(ifu_idu_vld),
+        .en(idu_vld),
         .d(lh_op),
         .q(idu_alu_lh_op)
     );
@@ -627,7 +637,7 @@ module idu (
     DFFE #(.WIDTH(1))
     ff_lw_op(
         .clk(clk),
-        .en(ifu_idu_vld),
+        .en(idu_vld),
         .d(lw_op),
         .q(idu_alu_lw_op)
     );
@@ -635,7 +645,7 @@ module idu (
     DFFE #(.WIDTH(1))
     ff_lbu_op(
         .clk(clk),
-        .en(ifu_idu_vld),
+        .en(idu_vld),
         .d(lbu_op),
         .q(idu_alu_lbu_op)
     );
@@ -643,7 +653,7 @@ module idu (
     DFFE #(.WIDTH(1))
     ff_lhu_op(
         .clk(clk),
-        .en(ifu_idu_vld),
+        .en(idu_vld),
         .d(lhu_op),
         .q(idu_alu_lhu_op)
     );
@@ -651,7 +661,7 @@ module idu (
     DFFE #(.WIDTH(1))
     ff_sb_op(
         .clk(clk),
-        .en(ifu_idu_vld),
+        .en(idu_vld),
         .d(sb_op),
         .q(idu_alu_sb_op)
     );
@@ -659,7 +669,7 @@ module idu (
     DFFE #(.WIDTH(1))
     ff_sh_op(
         .clk(clk),
-        .en(ifu_idu_vld),
+        .en(idu_vld),
         .d(sh_op),
         .q(idu_alu_sh_op)
     );
@@ -667,7 +677,7 @@ module idu (
     DFFE #(.WIDTH(1))
     ff_sw_op(
         .clk(clk),
-        .en(ifu_idu_vld),
+        .en(idu_vld),
         .d(sw_op),
         .q(idu_alu_sw_op)
     );
@@ -675,7 +685,7 @@ module idu (
     DFFE #(.WIDTH(1))
     ff_lui_op(
         .clk(clk),
-        .en(ifu_idu_vld),
+        .en(idu_vld),
         .d(op_u),
         .q(idu_alu_lui_op)
     );
@@ -683,9 +693,25 @@ module idu (
     DFFE #(.WIDTH(1))
     ff_aui_op(
         .clk(clk),
-        .en(ifu_idu_vld),
+        .en(idu_vld),
         .d(op_aui),
         .q(idu_alu_aui_op)
+    );
+
+    DFFE #(.WIDTH(1))
+    ff_jal_op(
+        .clk(clk),
+        .en(idu_vld),
+        .d(op_jal),
+        .q(idu_alu_jal_op)
+    );
+
+    DFFE #(.WIDTH(1))
+    ff_jalr_op(
+        .clk(clk),
+        .en(idu_vld),
+        .d(op_jalr),
+        .q(idu_alu_jalr_op)
     );
 
 endmodule
