@@ -220,6 +220,18 @@
 `define STORE                       7'b0100011
 `define BRANCH                      7'b1100011
 
+`define FUNCT3_ADD                  3'b000
+`define FUNCT3_SLL                  3'b001
+`define FUNCT3_SLT                  3'b010
+`define FUNCT3_SLTU                 3'b011
+`define FUNCT3_XOR                  3'b100
+`define FUNCT3_SR                   3'b101
+`define FUNCT3_OR                   3'b110
+`define FUNCT3_AND                  3'b111
+
+`define FUNCT7_NORM                 7'b0000000
+`define FUNCT7_ALT                  7'b0100000
+
 //RAM buff fsm
 `define RAM_BUFF_FSM_IDLE           00
 `define RAM_BUFF_FSM_RECV           01
