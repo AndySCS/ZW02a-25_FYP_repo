@@ -84,17 +84,13 @@ module idu (
     idu_alu_ld_st_addr,
     idu_alu_st_low,
     idu_alu_iram_start_addr,
-    idu_alu_iram_col_dir,
-    idu_alu_iram_row_dir,
-    idu_alu_iram_col_len,
-    idu_alu_iram_row_len,
     idu_alu_wram_start_addr,
-    idu_alu_wram_col_dir,
-    idu_alu_wram_row_dir,
-    idu_alu_wram_col_len,
     idu_alu_wram_row_len,
+    idu_alu_iram_row_len,
+    idu_alu_col_len,
     idu_alu_act_type,
     idu_alu_pool_size,
+    idu_alu_mxu_clr,
     //rf output
     idu_rf_scr1_addr,
     idu_rf_scr2_addr 
@@ -104,7 +100,7 @@ module idu (
     input rst_n;
 
     input ifu_idu_vld;
-    input [63:0] ifu_idu_ins;
+    input [31:0] ifu_idu_ins;
     input [31:0] ifu_idu_pc;
 
     input alu_idu_rdy;
@@ -183,17 +179,13 @@ module idu (
     output [11:0] idu_alu_ld_st_addr;
     output idu_alu_st_low;
     output [11:0] idu_alu_iram_start_addr;
-    output idu_alu_iram_col_dir;
-    output idu_alu_iram_row_dir;
-    output [3:0] idu_alu_iram_col_len;
-    output [3:0] idu_alu_iram_row_len;
     output [11:0]idu_alu_wram_start_addr;
-    output idu_alu_wram_col_dir;
-    output idu_alu_wram_row_dir;
-    output [3:0] idu_alu_wram_col_len;
     output [3:0] idu_alu_wram_row_len;
+    output [3:0] idu_alu_iram_row_len;
+    output [3:0] idu_alu_col_len;
     output [1:0] idu_alu_act_type;
     output [1:0] idu_alu_pool_size;
+    output idu_alu_mxu_clr;
     
     output [4:0] rf_idu_scr1_addr;
     output [4:0] rf_idu_scr2_addr;
@@ -201,8 +193,8 @@ module idu (
     wire idu_vld;
     wire idu_alu_vld_nxt;
 
-    wire [63:0] idu_ins;
-    wire [63:0] idu_ins_nxt;
+    wire [31:0] idu_ins;
+    wire [31:0] idu_ins_nxt;
 
     wire idu_alu_wb_vld_nxt;
 
@@ -302,7 +294,7 @@ module idu (
         .q(idu_alu_vld)
     );
 
-    DFFE #(.WIDTH(64))
+    DFFE #(.WIDTH(32))
     ff_idu_ins(
         .clk(clk),
         .en(idu_vld),
@@ -310,21 +302,21 @@ module idu (
         .q(idu_ins)
     );
 
-    assign idu_ifu_rdy = alu_idu_rdy & ~(lsu_idu_ld_hazard_src1 | lsu_idu_ld_hazard_src2 | alu_idu_ld_hazard_src1 | alu_idu_ld_hazard_src2);
+    assign idu_ifu_rdy = (alu_idu_rdy | ~idu_alu_vld) & ~(lsu_idu_ld_hazard_src1 | lsu_idu_ld_hazard_src2 | alu_idu_ld_hazard_src1 | alu_idu_ld_hazard_src2);
 
-    assign inst_type_is_ld = idu_ins[`OP_RNG] == `LD_OP_CODE;
-    assign inst_type_is_st = idu_ins[`OP_RNG] == `ST_OP_CODE;
-    assign inst_type_is_stm = idu_ins[`OP_RNG] == `STM_OP_CODE;
-    assign inst_type_is_mm = idu_ins[`OP_RNG] == `MM_OP_CODE;
-    assign inst_type_is_act = idu_ins[`OP_RNG] == `ACT_OP_CODE;
-    assign inst_type_is_pool = idu_ins[`OP_RNG] == `POOL_OP_CODE;
-    assign inst_type_is_wfi = idu_ins[`OP_RNG] == `WFI_OP_CODE;
+    assign inst_type_is_ld      = (idu_ins[`OP_RNG] == `LD_OP_CODE     );
+    assign inst_type_is_st      = (idu_ins[`OP_RNG] == `ST_OP_CODE     );
+    assign inst_type_is_stm     = (idu_ins[`OP_RNG] == `STM_OP_CODE    );
+    assign inst_type_is_mm      = (idu_ins[`OP_RNG] == `MM_OP_CODE     );
+    assign inst_type_is_act     = (idu_ins[`OP_RNG] == `ACT_OP_CODE    );
+    assign inst_type_is_pool    = (idu_ins[`OP_RNG] == `POOL_OP_CODE   );
+    assign inst_type_is_wfi     = (idu_ins[`OP_RNG] == `WFI_OP_CODE    );
 
-    assign sram_type_iram = idu_ins[`SRAM_TYPE_RNG] == 2'b00;
-    assign sram_type_wram = idu_ins[`SRAM_TYPE_RNG] == 2'b10;
-    assign sram_type_oram = idu_ins[`SRAM_TYPE_RNG] == 2'b01;
+    assign sram_type_iram = (idu_alu_src1[`SRAM_TYPE_RNG] == 2'b00);
+    assign sram_type_wram = (idu_alu_src1[`SRAM_TYPE_RNG] == 2'b10);
+    assign sram_type_oram = (idu_alu_src1[`SRAM_TYPE_RNG] == 2'b01);
 
-    assign idu_ifu_wfi = idu_alu_vld & inst_type_is_wfi;
+    assign idu_ifu_wfi = inst_type_is_wfi;
 
     assign idu_alu_ld_iram = inst_type_is_ld & sram_type_iram;
     assign idu_alu_ld_wram = inst_type_is_ld & sram_type_wram;
@@ -334,35 +326,31 @@ module idu (
     assign idu_alu_st_oram = inst_type_is_st & sram_type_oram;
 
     assign idu_alu_conv = inst_type_is_mm;
-    assign idu_alu_act = inst_type_is_act;
+    assign idu_alu_act  = inst_type_is_act;
     assign idu_alu_pool = inst_type_is_pool;
-    assign idu_alu_wfi = inst_type_is_wfi;
+    assign idu_alu_wfi  = inst_type_is_wfi;
 
-    assign idu_alu_dram_addr = idu_ins[`DRAM_ADDR_RNG];
-    assign idu_alu_num = idu_ins[`NUM_RNG];
-    assign idu_alu_len = idu_ins[`LEN_RNG];
-    assign idu_alu_str = idu_ins[`STR_RNG];
-    assign idu_alu_start_x = idu_ins[`START_X_RNG];
-    assign idu_alu_start_y = idu_ins[`START_Y_RNG];
-    assign idu_alu_ld_st_addr = idu_ins[`SRAM_ADDR_RNG];
-    assign idu_alu_st_low = idu_ins[`ST_LOW_RNG];
+    assign idu_alu_dram_addr    = idu_alu_src2[`DRAM_ADDR_RNG];
+    assign idu_alu_num          = {idu_ins[`NUM_7_2_RNG], idu_ins[`NUM_1_0_RNG]};
+    assign idu_alu_len          = idu_ins[`LEN_RNG];
+    assign idu_alu_str          = idu_ins[`STR_RNG];
+    assign idu_alu_start_x      = idu_alu_src2[`REG_COL_RNG];
+    assign idu_alu_start_y      = idu_alu_src2[`REG_ROW_RNG];
+    assign idu_alu_ld_st_addr   = idu_alu_src1[`SRAM_ADDR_RNG];
+    assign idu_alu_st_low       = idu_ins[`ST_LOW_RNG];
     
-    assign mm_iram_dir = idu_ins[`IRAM_DIR_RNG];
-    assign idu_alu_iram_start_addr = idu_ins[`IRAM_ADDR_RNG]; 
-    assign idu_alu_iram_col_dir = mm_iram_dir[0];
-    assign idu_alu_iram_row_dir = mm_iram_dir[1];
-    assign idu_alu_iram_col_len = idu_ins[`IRAM_CLEN_RNG]; 
-    assign idu_alu_iram_row_len = idu_ins[`IRAM_RLEN_RNG]; 
+    assign idu_alu_iram_start_addr  = idu_alu_src2[`IRAM_ADDR_RNG]; 
+    assign idu_alu_iram_col_len     = idu_ins[`IRAM_CLEN_RNG]; 
+    assign idu_alu_iram_row_len     = idu_ins[`IRAM_RLEN_RNG]; 
 
-    assign mm_wram_dir = idu_ins[`WRAM_DIR_RNG];
-    assign idu_alu_wram_start_addr = idu_ins[`WRAM_ADDR_RNG]; 
-    assign idu_alu_wram_col_dir = mm_wram_dir[0];
-    assign idu_alu_wram_row_dir = mm_wram_dir[1];
-    assign idu_alu_wram_col_len = idu_ins[`WRAM_CLEN_RNG]; 
-    assign idu_alu_wram_row_len = idu_ins[`WRAM_RLEN_RNG];
+    assign idu_alu_wram_start_addr  = idu_alu_src1[`WRAM_ADDR_RNG]; 
+    assign idu_alu_wram_col_len     = idu_ins[`WRAM_CLEN_RNG]; 
+    assign idu_alu_wram_row_len     = idu_ins[`WRAM_RLEN_RNG];
     
-    assign idu_alu_act_type = idu_ins[`ACT_TYPE_RNG];
-    assign idu_alu_pool_size = idu_ins[`POOL_TYPE_RNG];
+    assign idu_alu_act_type     = idu_ins[`ACT_TYPE_RNG];
+    assign idu_alu_pool_size    = idu_ins[`POOL_TYPE_RNG];
+
+    assign idu_alu_mxu_clr = idu_ins[`CLR_RNG];
 
     assign idu_alu_wb_addr = idu_ins[`RD_RNG];
 

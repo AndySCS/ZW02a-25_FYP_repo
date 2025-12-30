@@ -148,11 +148,6 @@
 `define DRAM_ADDR_MSB               (`DRAM_ADDR_LSB + `DRAM_ADDR_SIZE -1)
 `define DRAM_ADDR_RNG               `DRAM_ADDR_MSB : `DRAM_ADDR_LSB 
 
-`define DRAM_TYPE_SIZE              2
-`define DRAM_TYPE_LSB               (`DRAM_ADDR_MSB + 1)
-`define DRAM_TYPE_MSB               (`DRAM_TYPE_LSB + `DRAM_TYPE_SIZE -1)
-`define DRAM_TYPE_RNG               `DRAM_TYPE_MSB : `DRAM_TYPE_LSB 
-
 `define REG_ROW_SIZE                4
 `define REG_ROW_LSB                 0
 `define REG_ROW_MSB                 (`REG_ROW_LSB + `REG_ROW_SIZE -1)
