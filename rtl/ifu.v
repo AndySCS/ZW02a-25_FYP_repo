@@ -21,7 +21,7 @@ module ifu (
     input alu_ifu_br_vld;
     input [11:0] alu_ifu_br_addr;
     output ifu_idu_vld;
-    output [63:0] ifu_idu_ins;
+    output [31:0] ifu_idu_ins;
     output [31:0] ifu_idu_pc;
 
     wire ifu_idu_vld_nxt;
@@ -36,7 +36,10 @@ module ifu (
     wire [11:0] cur_ins_addr_plus;
 
     assign ifu_idu_vld_nxt = start_vld | ifu_idu_vld & idu_ifu_wfi;
-    assign ifu_idu_ins = cur_ins_addr[3] ? ifu_idu_ins_raw[127:64] : ifu_idu_ins_raw[63:0];
+    assign ifu_idu_ins = {32{cur_ins_addr[3:2] == 2'b00}} & ifu_idu_ins_raw[31:0]
+                       | {32{cur_ins_addr[3:2] == 2'b01}} & ifu_idu_ins_raw[63:32]
+                       | {32{cur_ins_addr[3:2] == 2'b10}} & ifu_idu_ins_raw[95:64]
+                       | {32{cur_ins_addr[3:2] == 2'b11}} & ifu_idu_ins_raw[127:96];
 
     DFFR #(.WIDTH(1))
     ff_ifu_idu_vld(
@@ -46,9 +49,9 @@ module ifu (
         .q(ifu_idu_vld)
     );
 
-    assign cur_ins_addr_plus = cur_ins_addr + 15'h8;
+    assign cur_ins_addr_plus = cur_ins_addr + 15'h4;
     assign cur_ins_addr_en = idu_ifu_rdy & ifu_idu_vld | start_vld | alu_ifu_br_vld;
-    assign cur_ins_addr_nxt = start_vld ? {start_addr[11:3], 3'b000} : alu_idu_wb_vld ? alu_ifu_br_addr[11:0] : cur_ins_addr_plus;
+    assign cur_ins_addr_nxt = start_vld ? {start_addr[11:2], 2'b00} : alu_idu_wb_vld ? alu_ifu_br_addr[11:0] : cur_ins_addr_plus;
 
     DFFE #(.WIDTH(12))
     ff_cur_ins_addr(
@@ -58,7 +61,7 @@ module ifu (
         .q(cur_ins_addr)
     );
 
-    assign mem_ce = start_vld | ifu_idu_vld & idu_ifu_rdy & cur_ins_addr[3] | alu_ifu_br_vld;
+    assign mem_ce = start_vld | ifu_idu_vld & idu_ifu_rdy & (&cur_ins_addr[3:2]) | alu_ifu_br_vld;
     assign mem_addr = start_vld ? start_addr[11:4] : alu_idu_wb_vld ? alu_ifu_br_addr[11:4] : cur_ins_addr_plus[11:4];
 
     mem_wrapper #(
