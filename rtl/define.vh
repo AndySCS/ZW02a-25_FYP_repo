@@ -15,101 +15,11 @@
 `define AWBURST_MAX                 3'b010
 
 //inst range
-`define INST_MSB                    63
+`define INST_MSB                    31
 //opcode
 `define OP_SIZE                     7
 `define OP_MSB                      (`OP_SIZE-1)
 `define OP_RNG                      `OP_MSB : 0
-//load store
-`define SRAM_TYPE_SIZE              2
-`define SRAM_TYPE_LSB               (`OP_MSB + 1)
-`define SRAM_TYPE_MSB               (`SRAM_TYPE_LSB + `SRAM_TYPE_SIZE -1)
-`define SRAM_TYPE_RNG               `SRAM_TYPE_MSB : `SRAM_TYPE_LSB
-
-`define SRAM_ADDR_SIZE              12
-`define SRAM_ADDR_LSB               (`SRAM_TYPE_MSB + 1)
-`define SRAM_ADDR_MSB               (`SRAM_ADDR_LSB + `SRAM_ADDR_LSB -1)
-`define SRAM_ADDR_RNG               `SRAM_ADDR_MSB : `SRAM_ADDR_LSB
-
-`define STR_SIZE                    3
-`define STR_LSB                     (`SRAM_ADDR_MSB + 1)
-`define STR_MSB                     (`STR_LSB + `STR_SIZE -1)
-`define STR_RNG                     `STR_MSB : `STR_LSB
-
-`define LEN_SIZE                    3
-`define LEN_LSB                     (`STR_MSB + 1)
-`define LEN_MSB                     (`LEN_LSB + `LEN_SIZE -1)
-`define LEN_RNG                     `LEN_MSB : `LEN_LSB
-
-`define NUM_SIZE                    8
-`define NUM_LSB                     (`LEN_MSB + 1)
-`define NUM_MSB                     (`NUM_LSB + `NUM_SIZE -1)
-`define NUM_RNG                     `NUM_MSB : `NUM_LSB
-
-`define DRAM_ADDR_LSB               (`LEN_MSB + 1)
-`define DRAM_ADDR_RNG               `INST_MSB : `DRAM_ADDR_LSB
-
-`define ST_LOW_RNG                  `OP_MSB + 2
-
-`define START_X_SIZE                8
-`define START_X_LSB                 (`NUM_MSB + 1)
-`define START_X_MSB                 (`START_X_LSB + `START_X_SIZE -1)
-`define START_X_RNG                 `START_X_MSB : `START_X_LSB
-
-`define START_Y_SIZE                8
-`define START_Y_LSB                 (`START_X_MSB + 1)
-`define START_Y_MSB                 (`START_Y_LSB + `START_Y_SIZE -1)
-`define START_Y_RNG                 `START_Y_MSB : `START_Y_LSB
-
-`define WRAM_RLEN_SIZE              4
-`define WRAM_RLEN_LSB               (`OP_MSB + 1)
-`define WRAM_RLEN_MSB               (`WRAM_RLEN_LSB + `WRAM_RLEN_SIZE -1)
-`define WRAM_RLEN_RNG               `WRAM_RLEN_MSB : `WRAM_RLEN_LSB
-
-`define WRAM_CLEN_SIZE              8
-`define WRAM_CLEN_LSB               (`WRAM_RLEN_MSB + 1)
-`define WRAM_CLEN_MSB               (`WRAM_CLEN_LSB + `WRAM_CLEN_SIZE -1)
-`define WRAM_CLEN_RNG               `WRAM_CLEN_MSB : `WRAM_CLEN_LSB
-
-`define WRAM_DIR_SIZE               2
-`define WRAM_DIR_LSB                (`WRAM_CLEN_MSB + 1)
-`define WRAM_DIR_MSB                (`WRAM_DIR_LSB + `WRAM_DIR_SIZE -1)
-`define WRAM_DIR_RNG                `WRAM_DIR_MSB : `WRAM_DIR_LSB
-
-`define WRAM_ADDR_SIZE              12
-`define WRAM_ADDR_LSB               (`WRAM_DIR_MSB + 1)
-`define WRAM_ADDR_MSB               (`WRAM_ADDR_LSB + `WRAM_ADDR_SIZE -1)
-`define WRAM_ADDR_RNG               `WRAM_ADDR_MSB : `WRAM_ADDR_LSB
-
-`define IRAM_RLEN_SIZE              4
-`define IRAM_RLEN_LSB               (`WRAM_ADDR_MSB + 1)
-`define IRAM_RLEN_MSB               (`IRAM_RLEN_LSB + `IRAM_RLEN_SIZE -1)
-`define IRAM_RLEN_RNG               `IRAM_RLEN_MSB : `IRAM_RLEN_LSB
-
-`define IRAM_CLEN_SIZE              8
-`define IRAM_CLEN_LSB               (`IRAM_RLEN_MSB + 1)
-`define IRAM_CLEN_MSB               (`IRAM_CLEN_LSB + `IRAM_CLEN_SIZE -1)
-`define IRAM_CLEN_RNG               `IRAM_CLEN_MSB : `IRAM_CLEN_LSB
-
-`define IRAM_DIR_SIZE               2
-`define IRAM_DIR_LSB                (`IRAM_CLEN_MSB + 1)
-`define IRAM_DIR_MSB                (`IRAM_DIR_LSB + `IRAM_DIR_SIZE -1)
-`define IRAM_DIR_RNG                `IRAM_DIR_MSB : `IRAM_DIR_LSB
-
-`define IRAM_ADDR_SIZE              12
-`define IRAM_ADDR_LSB               (`IRAM_DIR_MSB + 1)
-`define IRAM_ADDR_MSB               (`IRAM_ADDR_LSB + `IRAM_ADDR_SIZE -1)
-`define IRAM_ADDR_RNG               `IRAM_ADDR_MSB : `IRAM_ADDR_LSB
-
-`define ACT_TYPE_SIZE               2
-`define ACT_TYPE_LSB                (`OP_MSB + 1)
-`define ACT_TYPE_MSB                (`ACT_TYPE_LSB + `ACT_TYPE_SIZE -1)
-`define ACT_TYPE_RNG                `ACT_TYPE_MSB : `ACT_TYPE_LSB
-
-`define POOL_TYPE_SIZE              2
-`define POOL_TYPE_LSB               (`OP_MSB + 1)
-`define POOL_TYPE_MSB               (`POOL_TYPE_LSB + `POOL_TYPE_SIZE -1)
-`define POOL_TYPE_RNG               `POOL_TYPE_MSB : `POOL_TYPE_LSB
 
 `define RD_SIZE                     5
 `define RD_LSB                      (`OP_MSB + 1)
@@ -202,13 +112,121 @@
 
 `define J_TYPE_IMM_SIZE             (`J_TYPE_IMM_20_SIZE + `J_TYPE_IMM_19_12_SIZE + `J_TYPE_IMM_11_SIZE + `J_TYPE_IMM_10_1_SIZE)
 
-`define LD_OP_CODE                  7'h00
-`define ST_OP_CODE                  7'h01
-`define STM_OP_CODE                 7'h02
-`define MM_OP_CODE                  7'h03
-`define ACT_OP_CODE                 7'h04
-`define POOL_OP_CODE                7'h05
-`define WFI_OP_CODE                 7'h1f
+//load store
+`define SRAM_ADDR_SIZE              12
+`define SRAM_ADDR_LSB               0
+`define SRAM_ADDR_MSB               (`SRAM_ADDR_LSB + `SRAM_ADDR_LSB -1)
+`define SRAM_ADDR_RNG               `SRAM_ADDR_MSB : `SRAM_ADDR_LSB
+
+`define SRAM_TYPE_SIZE              2
+`define SRAM_TYPE_LSB               (`SRAM_ADDR_LSB + 1)
+`define SRAM_TYPE_MSB               (`SRAM_TYPE_LSB + `SRAM_TYPE_SIZE -1)
+`define SRAM_TYPE_RNG               `SRAM_TYPE_MSB : `SRAM_TYPE_LSB
+
+`define STR_SIZE                    3
+`define STR_LSB                     (`OP_MSB + 1)
+`define STR_MSB                     (`STR_LSB + `STR_SIZE -1)
+`define STR_RNG                     `STR_MSB : `STR_LSB
+
+`define LEN_SIZE                    3
+`define LEN_LSB                     (`STR_MSB + 1)
+`define LEN_MSB                     (`LEN_LSB + `LEN_SIZE -1)
+`define LEN_RNG                     `LEN_MSB : `LEN_LSB
+
+`define NUM_1_0_SIZE                2
+`define NUM_1_0_LSB                 (`LEN_MSB + 1)
+`define NUM_1_0_MSB                 (`NUM_1_0_LSB + `NUM_1_0_SIZE -1)
+`define NUM_1_0_RNG                 `NUM_1_0_MSB : `NUM_1_0_LSB
+
+`define NUM_7_2_SIZE                6
+`define NUM_7_2_LSB                 (`RS2_MSB + 1)
+`define NUM_7_2_MSB                 (`NUM_7_2_LSB + `NUM_7_2_SIZE -1)
+`define NUM_7_2_RNG                 `NUM_7_2_MSB : `NUM_7_2_LSB
+
+`define DRAM_ADDR_SIZE              12
+`define DRAM_ADDR_LSB               0
+`define DRAM_ADDR_MSB               (`DRAM_ADDR_LSB + `DRAM_ADDR_SIZE -1)
+`define DRAM_ADDR_RNG               `DRAM_ADDR_MSB : `DRAM_ADDR_LSB 
+
+`define DRAM_TYPE_SIZE              2
+`define DRAM_TYPE_LSB               (`DRAM_ADDR_MSB + 1)
+`define DRAM_TYPE_MSB               (`DRAM_TYPE_LSB + `DRAM_TYPE_SIZE -1)
+`define DRAM_TYPE_RNG               `DRAM_TYPE_MSB : `DRAM_TYPE_LSB 
+
+`define REG_ROW_SIZE                4
+`define REG_ROW_LSB                 0
+`define REG_ROW_MSB                 (`REG_ROW_LSB + `REG_ROW_SIZE -1)
+`define REG_ROW_RNG                 `REG_ROW_MSB : `REG_ROW_LSB 
+
+`define REG_COL_SIZE                4
+`define REG_COL_LSB                 0
+`define REG_COL_MSB                 (`REG_COL_LSB + `REG_COL_SIZE -1)
+`define REG_COL_RNG                 `REG_COL_MSB : `REG_COL_LSB 
+
+`define ST_LOW_RNG                  31
+
+`define CLEN_SIZE                   4
+`define CLEN_LSB                    (`OP_MSB + 1)
+`define CLEN_MSB                    (`CLEN_LSB + `CLEN_SIZE -1)
+`define CLEN_RNG                    `CLEN_MSB : `CLEN_LSB
+
+`define RLEN_SIZE                   4
+`define RLEN_LSB                    (`CLEN_MSB + 1)
+`define RLEN_MSB                    (`RLEN_LSB + `RLEN_SIZE -1)
+`define RLEN_RNG                    `RLEN_MSB : `RLEN_LSB
+
+`define WRAM_RLEN_SIZE              4
+`define WRAM_RLEN_LSB               (`CLEN_MSB + 1)
+`define WRAM_RLEN_MSB               (`WRAM_RLEN_LSB + `WRAM_RLEN_SIZE -1)
+`define WRAM_RLEN_RNG               `WRAM_RLEN_MSB : `WRAM_RLEN_LSB
+
+`define IRAM_RLEN_SIZE              4
+`define IRAM_RLEN_LSB               (`RS2_MSB + 1)
+`define IRAM_RLEN_MSB               (`IRAM_RLEN_LSB + `IRAM_RLEN_SIZE -1)
+`define IRAM_RLEN_RNG               `IRAM_RLEN_MSB : `IRAM_RLEN_LSB
+
+`define WRAM_DIR_SIZE               1
+`define WRAM_DIR_LSB                (`IRAM_RLEN_MSB + 1)
+`define WRAM_DIR_MSB                (`WRAM_DIR_LSB + `WRAM_DIR_SIZE -1)
+`define WRAM_DIR_RNG                `WRAM_DIR_MSB : `WRAM_DIR_LSB
+
+`define IRAM_DIR_SIZE               1
+`define IRAM_DIR_LSB                (`WRAM_DIR_MSB + 1)
+`define IRAM_DIR_MSB                (`IRAM_DIR_LSB + `IRAM_DIR_SIZE -1)
+`define IRAM_DIR_RNG                `IRAM_DIR_MSB : `IRAM_DIR_LSB
+
+`define CLR_SIZE                    1
+`define CLR_LSB                     (`IRAM_DIR_MSB + 1)
+`define CLR_MSB                     (`CLR_LSB + `CLR_SIZE -1)
+`define CLR_RNG                     `CLR_MSB : `CLR_LSB
+
+`define WRAM_ADDR_SIZE              12
+`define WRAM_ADDR_LSB               0
+`define WRAM_ADDR_MSB               (`WRAM_ADDR_LSB + `WRAM_ADDR_SIZE -1)
+`define WRAM_ADDR_RNG               `WRAM_ADDR_MSB : `WRAM_ADDR_LSB
+
+`define IRAM_ADDR_SIZE              12
+`define IRAM_ADDR_LSB               0
+`define IRAM_ADDR_MSB               (`IRAM_ADDR_LSB + `IRAM_ADDR_SIZE -1)
+`define IRAM_ADDR_RNG               `IRAM_ADDR_MSB : `IRAM_ADDR_LSB
+
+`define ACT_TYPE_SIZE               2
+`define ACT_TYPE_LSB                (`OP_MSB + 1)
+`define ACT_TYPE_MSB                (`ACT_TYPE_LSB + `ACT_TYPE_SIZE -1)
+`define ACT_TYPE_RNG                `ACT_TYPE_MSB : `ACT_TYPE_LSB
+
+`define POOL_TYPE_SIZE              2
+`define POOL_TYPE_LSB               (`OP_MSB + 1)
+`define POOL_TYPE_MSB               (`POOL_TYPE_LSB + `POOL_TYPE_SIZE -1)
+`define POOL_TYPE_RNG               `POOL_TYPE_MSB : `POOL_TYPE_LSB
+
+`define LD_OP_CODE                  7'b0000000
+`define ST_OP_CODE                  7'b0000001
+`define STM_OP_CODE                 7'b0000010
+`define MM_OP_CODE                  7'b0000011
+`define ACT_OP_CODE                 7'b0000100
+`define POOL_OP_CODE                7'b0000101
+`define WFI_OP_CODE                 7'b1111111
 
 `define AUIPC                       7'b0010111
 `define LUI                         7'b0110111
