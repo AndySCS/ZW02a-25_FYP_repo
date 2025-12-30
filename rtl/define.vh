@@ -143,7 +143,7 @@
 `define NUM_7_2_MSB                 (`NUM_7_2_LSB + `NUM_7_2_SIZE -1)
 `define NUM_7_2_RNG                 `NUM_7_2_MSB : `NUM_7_2_LSB
 
-`define DRAM_ADDR_SIZE              12
+`define DRAM_ADDR_SIZE              32
 `define DRAM_ADDR_LSB               0
 `define DRAM_ADDR_MSB               (`DRAM_ADDR_LSB + `DRAM_ADDR_SIZE -1)
 `define DRAM_ADDR_RNG               `DRAM_ADDR_MSB : `DRAM_ADDR_LSB 

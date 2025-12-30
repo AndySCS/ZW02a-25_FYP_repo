@@ -12,7 +12,8 @@ my %design_type = (
     7 => "idu", 
     8 => "lsu", 
     9 => "rf", 
-    10 => "others",
+    10 => "alu", 
+    11 => "others",
 );
 
 my %verification_type = (

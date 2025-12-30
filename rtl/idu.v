@@ -65,16 +65,19 @@ module idu (
     idu_alu_br_st_imm,
     idu_alu_pc,
     //matrix multiplication
+    //ld/st
     idu_alu_ld_iram,
     idu_alu_ld_wram,
     idu_alu_st_iram,
     idu_alu_st_wram,
     idu_alu_st_oram,
     idu_alu_st_dram,
+    //mxu related
     idu_alu_conv,
     idu_alu_act,
     idu_alu_pool,
     idu_alu_wfi,
+    //ld/st
     idu_alu_dram_addr,
     idu_alu_num,
     idu_alu_len,
@@ -88,6 +91,9 @@ module idu (
     idu_alu_wram_row_len,
     idu_alu_iram_row_len,
     idu_alu_col_len,
+    idu_alu_st_row,
+    idu_alu_st_col,
+    //mxu related
     idu_alu_act_type,
     idu_alu_pool_size,
     idu_alu_mxu_clr,
@@ -166,11 +172,13 @@ module idu (
     output idu_alu_st_wram;
     output idu_alu_st_oram;
     output idu_alu_st_dram;
+
     output idu_alu_conv;
     output idu_alu_act;
     output idu_alu_pool;
     output idu_alu_wfi;
-    output [30:0] idu_alu_dram_addr;
+
+    output [31:0] idu_alu_dram_addr;
     output [7:0] idu_alu_num;
     output [2:0] idu_alu_len;
     output [2:0] idu_alu_str;
@@ -183,6 +191,9 @@ module idu (
     output [3:0] idu_alu_wram_row_len;
     output [3:0] idu_alu_iram_row_len;
     output [3:0] idu_alu_col_len;
+    output [3:0] idu_alu_st_row;
+    output [3:0] idu_alu_st_col;
+
     output [1:0] idu_alu_act_type;
     output [1:0] idu_alu_pool_size;
     output idu_alu_mxu_clr;
@@ -340,12 +351,12 @@ module idu (
     assign idu_alu_st_low       = idu_ins[`ST_LOW_RNG];
     
     assign idu_alu_iram_start_addr  = idu_alu_src2[`IRAM_ADDR_RNG]; 
-    assign idu_alu_iram_col_len     = idu_ins[`IRAM_CLEN_RNG]; 
-    assign idu_alu_iram_row_len     = idu_ins[`IRAM_RLEN_RNG]; 
-
     assign idu_alu_wram_start_addr  = idu_alu_src1[`WRAM_ADDR_RNG]; 
-    assign idu_alu_wram_col_len     = idu_ins[`WRAM_CLEN_RNG]; 
+    assign idu_alu_iram_row_len     = idu_ins[`IRAM_RLEN_RNG]; 
     assign idu_alu_wram_row_len     = idu_ins[`WRAM_RLEN_RNG];
+    assign idu_alu_col_len          = idu_ins[`CLEN_RNG]; 
+    assign idu_alu_st_row           = idu_ins[`RLEN_RNG];
+    assign idu_alu_st_col           = idu_ins[`CLEN_RNG]; 
     
     assign idu_alu_act_type     = idu_ins[`ACT_TYPE_RNG];
     assign idu_alu_pool_size    = idu_ins[`POOL_TYPE_RNG];
