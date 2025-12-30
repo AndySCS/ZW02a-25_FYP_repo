@@ -305,6 +305,7 @@ module alu(
     assign alu_vld = idu_alu_vld & alu_idu_rdy & ~alu_ifu_br_vld;
     assign alu_lsu_wb_vld_nxt = alu_vld & idu_alu_wb_vld;
     assign alu_idu_rdy = lsu_alu_rdy;
+    assign alu_idu_flush_vld = alu_ifu_br_vld;
 
     assign sum                  = idu_alu_src1 + idu_alu_src2;
     assign less_than_signed     = (idu_alu_src1 < idu_alu_src2) & ~(idu_alu_src1[31] ^ idu_alu_src2[31]);

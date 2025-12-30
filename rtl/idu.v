@@ -1,6 +1,7 @@
 module idu (
     clk,
     rst_n,
+    start_vld,
     //ifu input
     ifu_idu_vld,
     ifu_idu_ins,
@@ -104,6 +105,7 @@ module idu (
     
     input clk;
     input rst_n;
+    input start_vld;
 
     input ifu_idu_vld;
     input [31:0] ifu_idu_ins;
@@ -293,6 +295,10 @@ module idu (
     wire sh_op;
     wire sw_op;
 
+    wire core_wfi;
+    wire core_wfi_nxt;
+    wire core_wfi_en;
+
     assign idu_vld = idu_ifu_rdy & ifu_idu_vld & ~alu_idu_flush_vld;
     assign idu_alu_vld_nxt = idu_vld | idu_vld & ~alu_idu_rdy;
     assign idu_ins_nxt = idu_vld ? ifu_idu_ins : idu_ins;
@@ -321,13 +327,24 @@ module idu (
     assign inst_type_is_mm      = (idu_ins[`OP_RNG] == `MM_OP_CODE     );
     assign inst_type_is_act     = (idu_ins[`OP_RNG] == `ACT_OP_CODE    );
     assign inst_type_is_pool    = (idu_ins[`OP_RNG] == `POOL_OP_CODE   );
-    assign inst_type_is_wfi     = (idu_ins[`OP_RNG] == `WFI_OP_CODE    );
+    
+    assign inst_type_is_wfi     = (ifu_idu_ins[`OP_RNG] == `WFI_OP_CODE);
+
+    assign core_wfi_nxt = inst_type_is_wfi & idu_vld | core_wfi & ~start_vld;
+
+    DFFR #(.WIDTH(1))
+    ff_core_wfi(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(core_wfi_nxt),
+        .q(core_wfi)
+    );
 
     assign sram_type_iram = (idu_alu_src1[`SRAM_TYPE_RNG] == 2'b00);
     assign sram_type_wram = (idu_alu_src1[`SRAM_TYPE_RNG] == 2'b10);
     assign sram_type_oram = (idu_alu_src1[`SRAM_TYPE_RNG] == 2'b01);
 
-    assign idu_ifu_wfi = inst_type_is_wfi;
+    assign idu_ifu_wfi = core_wfi;
 
     assign idu_alu_ld_iram = inst_type_is_ld & sram_type_iram;
     assign idu_alu_ld_wram = inst_type_is_ld & sram_type_wram;
@@ -339,7 +356,7 @@ module idu (
     assign idu_alu_conv = inst_type_is_mm;
     assign idu_alu_act  = inst_type_is_act;
     assign idu_alu_pool = inst_type_is_pool;
-    assign idu_alu_wfi  = inst_type_is_wfi;
+    assign idu_alu_wfi  = core_wfi;
 
     assign idu_alu_dram_addr    = idu_alu_src2[`DRAM_ADDR_RNG];
     assign idu_alu_num          = {idu_ins[`NUM_7_2_RNG], idu_ins[`NUM_1_0_RNG]};
