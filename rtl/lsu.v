@@ -787,13 +787,13 @@ module lsu(
     wire [7:0] lsu_st_type1_cnt_row;
     wire lsu_st_type1_cnt_row_en;
 
-    assign lsu_st_type1_done = lsu_st_type1_cnt_row == (idu_lsu_start_y + idu_lsu_num) & ~lsu_st_vld;
+    assign lsu_st_type1_done = lsu_st_type1_cnt_row == (idu_lsu_start_y + idu_lsu_num+1) & ~lsu_st_vld & ~idu_lsu_vld;
     assign lsu_st_type1_doing = (lsu_st_type1_qual | lsu_st_type1_qual_ff) & ~lsu_st_type1_done;
     //if is start, then assign startY as first row
     //else if not yet end assign startY+1;
     //else assign currentY
-    assign lsu_st_type1_cnt_row_nxt = lsu_st_vld & lsu_st_type1_doing ? idu_lsu_start_y + 1'b1 : lsu_st_type1_cnt_row + 1;
-    assign lsu_st_type1_cnt_row_en = lsu_st_type1_doing ;
+    assign lsu_st_type1_cnt_row_nxt = lsu_st_vld & lsu_st_type1_doing ? idu_lsu_start_y + 1'b1 : lsu_st_vld|idu_lsu_vld ? idu_lsu_start_y :  lsu_st_type1_cnt_row + 1;
+    assign lsu_st_type1_cnt_row_en = lsu_st_type1_doing | lsu_st_vld | idu_lsu_vld;
     
     DFFRE #(.WIDTH(8))
     ff_lsu_type1_cnt_row (
