@@ -82,6 +82,23 @@ task lsu_driver::main_phase(uvm_phase phase);
       	  harness.u_lsu.wram.mem[i] = 128'h0 ;
    end	
 
+    lsu_if.mxu_lsu_int8_row0_data = 'hf0e0d0c0b0a09080;
+    lsu_if.mxu_lsu_int8_row1_data = 'hf0e0d0c0b0a09080;
+    lsu_if.mxu_lsu_int8_row2_data = 'hf0e0d0c0b0a09080;
+    lsu_if.mxu_lsu_int8_row3_data = 'hf0e0d0c0b0a09080;
+    lsu_if.mxu_lsu_int8_row4_data = 'hf0e0d0c0b0a09080;
+    lsu_if.mxu_lsu_int8_row5_data = 'hf0e0d0c0b0a09080;
+    lsu_if.mxu_lsu_int8_row6_data = 'hf0e0d0c0b0a09080;
+    lsu_if.mxu_lsu_int8_row7_data = 'hf0e0d0c0b0a09080;
+    lsu_if.mxu_lsu_int8_row8_data = 'hf0e0d0c0b0a09080;
+    lsu_if.mxu_lsu_int8_row9_data = 'hf0e0d0c0b0a09080;
+    lsu_if.mxu_lsu_int8_row10_data = 'hf0e0d0c0b0a09080;
+    lsu_if.mxu_lsu_int8_row11_data = 'hf0e0d0c0b0a09080;
+    lsu_if.mxu_lsu_int8_row12_data = 'hf0e0d0c0b0a09080;
+    lsu_if.mxu_lsu_int8_row13_data = 'hf0e0d0c0b0a09080;
+    lsu_if.mxu_lsu_int8_row14_data = 'hf0e0d0c0b0a09080;
+    lsu_if.mxu_lsu_int8_row15_data = 'hf0e0d0c0b0a09080;
+
     @(posedge lsu_if.rst_n); // wait till rstn is high
     
     while(1) begin
@@ -113,22 +130,22 @@ task lsu_driver::idu_signal_config_type1_store(lsu_tr tr);
             lsu_if.idu_lsu_st_oram = 0;
             lsu_if.idu_lsu_st_dram = 0;
 	    	lsu_if.mxu_lsu_data_rdy = 1;
-            lsu_if.mxu_lsu_int8_row0_data = 'b1111;
-            lsu_if.mxu_lsu_int8_row1_data = 'b11101111;
-            lsu_if.mxu_lsu_int8_row2_data = 'b110011101111;
-            lsu_if.mxu_lsu_int8_row3_data = 40;
-           	lsu_if.mxu_lsu_int8_row4_data = 50;
-           	lsu_if.mxu_lsu_int8_row5_data = 60;
-           	lsu_if.mxu_lsu_int8_row6_data = 70;
-            lsu_if.mxu_lsu_int8_row7_data = 80;
-            lsu_if.mxu_lsu_int8_row8_data = 90;
-            lsu_if.mxu_lsu_int8_row9_data = 100;
-            lsu_if.mxu_lsu_int8_row10_data = 110;
-            lsu_if.mxu_lsu_int8_row11_data = 120;
-            lsu_if.mxu_lsu_int8_row12_data = 130;
-            lsu_if.mxu_lsu_int8_row13_data = 140;
-            lsu_if.mxu_lsu_int8_row14_data = 150;
-            lsu_if.mxu_lsu_int8_row15_data = 160;
+            //lsu_if.mxu_lsu_int8_row0_data = 'b1111;
+            //lsu_if.mxu_lsu_int8_row1_data = 'b11101111;
+            //lsu_if.mxu_lsu_int8_row2_data = 'b110011101111;
+            //lsu_if.mxu_lsu_int8_row3_data = 40;
+           	//lsu_if.mxu_lsu_int8_row4_data = 50;
+           	//lsu_if.mxu_lsu_int8_row5_data = 60;
+           	//lsu_if.mxu_lsu_int8_row6_data = 70;
+            //lsu_if.mxu_lsu_int8_row7_data = 80;
+            //lsu_if.mxu_lsu_int8_row8_data = 90;
+            //lsu_if.mxu_lsu_int8_row9_data = 100;
+            //lsu_if.mxu_lsu_int8_row10_data = 110;
+            //lsu_if.mxu_lsu_int8_row11_data = 120;
+            //lsu_if.mxu_lsu_int8_row12_data = 130;
+            //lsu_if.mxu_lsu_int8_row13_data = 140;
+            //lsu_if.mxu_lsu_int8_row14_data = 150;
+            //lsu_if.mxu_lsu_int8_row15_data = 160;
             
             lsu_if.idu_lsu_num = 0; //number of chunk
             lsu_if.idu_lsu_len = 0; //element size

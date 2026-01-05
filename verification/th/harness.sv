@@ -249,21 +249,10 @@ module harness;
 	forever #10 clk <= ~clk;
     end
 
-    //for (genvar i=0;i<256;i++) begin 
-    	initial begin
+    initial begin
 		rst_n <= 0;
 		#100;
 		rst_n <= 1;
-   	  //for (int i = 0; i < 256; i++) begin
-     // 	  force u_lsu.oram.mem[i] = 128'h0 ;
-     // 	  force u_lsu.wram.mem[i] = 128'h0 ;
-      //	  force u_lsu.iram.mem[i] = 128'h0 ;
-   	  //end
-      //	  #100 ;
-      //    release u_lsu.oram.mem[i] ;
-       //   release u_lsu.wram.mem[i] ;	
-       //   release u_lsu.iram.mem[i] ;	
-    //	  end
     end
 
     lsu u_lsu(
