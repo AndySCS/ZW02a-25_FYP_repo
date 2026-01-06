@@ -59,7 +59,7 @@ task lsu_driver::main_phase(uvm_phase phase);
     lsu_if.idu_lsu_wram_row_len = 0;
     lsu_if.idu_lsu_act_type = 0;
     lsu_if.idu_lsu_pool_size = 0;
-
+    lsu_if.mxu_lsu_data_rdy = 0;
     //from axi write 
     lsu_if.axi_lsu_awrdy = 0;
     lsu_if.axi_lsu_wrdy = 0;
@@ -103,9 +103,9 @@ task lsu_driver::main_phase(uvm_phase phase);
     
     while(1) begin
         //seq_item_port.get_next_item(tr);
-        //idu_signal_config_type1_store(tr);
+        idu_signal_config_type1_store(tr);
         //idu_signal_config_type2_store(tr);
-        idu_signal_config_load(tr);
+        //idu_signal_config_load(tr);
         //seq_item_port.item_done();
     end
     	   
@@ -121,43 +121,35 @@ task lsu_driver::idu_signal_config_type1_store(lsu_tr tr);
     bit send_matrix_needed = 0;
 */
     int count = 0;
-    while(1)begin
         @(negedge lsu_if.clk);
         if(lsu_if.lsu_idu_rdy) begin 
+    	//while(1)begin
+        //@(negedge lsu_if.clk);
+        //if(lsu_if.lsu_idu_rdy) begin 
+            //@(negedge lsu_if.clk);
+            //@(negedge lsu_if.clk);
             lsu_if.idu_lsu_vld = 1;
             lsu_if.idu_lsu_st_iram = 1;
             lsu_if.idu_lsu_st_wram = 0;
             lsu_if.idu_lsu_st_oram = 0;
             lsu_if.idu_lsu_st_dram = 0;
-	    	lsu_if.mxu_lsu_data_rdy = 1;
-            //lsu_if.mxu_lsu_int8_row0_data = 'b1111;
-            //lsu_if.mxu_lsu_int8_row1_data = 'b11101111;
-            //lsu_if.mxu_lsu_int8_row2_data = 'b110011101111;
-            //lsu_if.mxu_lsu_int8_row3_data = 40;
-           	//lsu_if.mxu_lsu_int8_row4_data = 50;
-           	//lsu_if.mxu_lsu_int8_row5_data = 60;
-           	//lsu_if.mxu_lsu_int8_row6_data = 70;
-            //lsu_if.mxu_lsu_int8_row7_data = 80;
-            //lsu_if.mxu_lsu_int8_row8_data = 90;
-            //lsu_if.mxu_lsu_int8_row9_data = 100;
-            //lsu_if.mxu_lsu_int8_row10_data = 110;
-            //lsu_if.mxu_lsu_int8_row11_data = 120;
-            //lsu_if.mxu_lsu_int8_row12_data = 130;
-            //lsu_if.mxu_lsu_int8_row13_data = 140;
-            //lsu_if.mxu_lsu_int8_row14_data = 150;
-            //lsu_if.mxu_lsu_int8_row15_data = 160;
-            
+	        lsu_if.mxu_lsu_data_rdy = 0;
+	        //case1
+	        //lsu_if.idu_lsu_low = 0; //8/16int 
             lsu_if.idu_lsu_num = 0; //number of chunk
-            lsu_if.idu_lsu_len = 0; //element size
+            lsu_if.idu_lsu_len = 4; //element size
             lsu_if.idu_lsu_start_x = 0;
             lsu_if.idu_lsu_start_y = 0;
-            lsu_if.idu_lsu_ld_st_addr = 'b00000;
+            lsu_if.idu_lsu_ld_st_addr = 0;
 	        @(negedge lsu_if.clk);
             lsu_if.idu_lsu_vld = 0;
             //lsu_if.idu_lsu_st_iram = 0;
+            @(negedge lsu_if.clk); 
             @(negedge lsu_if.clk);
-            break;
-        end
+            @(negedge lsu_if.clk);
+	        lsu_if.mxu_lsu_data_rdy = 1;
+            //break;
+        //end
     end
 
     `uvm_info("lsu_driver", "begin sending idu data config", UVM_NONE)
@@ -282,6 +274,10 @@ endtask
         end
     end
     */
+
+
+
+
 
 
 

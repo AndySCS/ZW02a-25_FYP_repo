@@ -315,20 +315,33 @@ module lsu(
 
     wire [7:0] lsu_oram_addr_ff;
 
-    assign lsu_instr_vld = idu_lsu_vld & lsu_idu_rdy;
-    assign lsu_vld_nxt = lsu_instr_vld | lsu_vld & ~lsu_instr_finish;
+    wire lsu_vld_ff;
+    //assign lsu_instr_vld = idu_lsu_vld & lsu_idu_rdy;
+    //assign lsu_vld_nxt = lsu_instr_vld | lsu_vld & ~lsu_instr_finish;
+
+    //assign lsu_idu_rdy =  ~lsu_vld|lsu_instr_finish; 
+
+    //DFFR #(.WIDTH(1))
+    //ff_lsu_vld(
+        //.clk(clk),
+        //.rst_n(rst_n),
+        //.d(lsu_vld_nxt),
+        //.q(lsu_vld)
+    //);
 
     assign lsu_instr_finish = lsu_st_finish | lsu_ld_finish | lsu_mm_finish;
-    assign lsu_idu_rdy =  ~lsu_vld|lsu_instr_finish; 
-
+    assign lsu_vld = idu_lsu_vld | lsu_vld_ff;
+    assign lsu_vld_nxt = idu_lsu_vld | (lsu_vld_ff & ~lsu_instr_finish);
 
     DFFR #(.WIDTH(1))
     ff_lsu_vld(
         .clk(clk),
         .rst_n(rst_n),
         .d(lsu_vld_nxt),
-        .q(lsu_vld)
+        .q(lsu_vld_ff)
     );
+
+    assign lsu_idu_rdy = ~lsu_vld | lsu_instr_finish;    
     wire lsu_st_iram_ff;
     wire lsu_st_wram_ff;
     wire lsu_st_oram_ff;
@@ -343,12 +356,12 @@ module lsu(
     wire lsu_ld_iram_pulse;
     wire lsu_ld_wram_pulse;
 
-    assign lsu_st_iram_pulse = idu_lsu_st_iram & lsu_instr_vld;
-    assign lsu_st_wram_pulse = idu_lsu_st_wram & lsu_instr_vld;
-    assign lsu_st_oram_pulse = idu_lsu_st_oram & lsu_instr_vld;
-    assign lsu_st_dram_pulse = idu_lsu_st_dram & lsu_instr_vld;
-    assign lsu_ld_iram_pulse = idu_lsu_ld_iram & lsu_instr_vld;
-    assign lsu_ld_wram_pulse = idu_lsu_ld_wram & lsu_instr_vld;
+    assign lsu_st_iram_pulse = idu_lsu_st_iram & idu_lsu_vld;
+    assign lsu_st_wram_pulse = idu_lsu_st_wram & idu_lsu_vld;
+    assign lsu_st_oram_pulse = idu_lsu_st_oram & idu_lsu_vld;
+    assign lsu_st_dram_pulse = idu_lsu_st_dram & idu_lsu_vld;
+    assign lsu_ld_iram_pulse = idu_lsu_ld_iram & idu_lsu_vld;
+    assign lsu_ld_wram_pulse = idu_lsu_ld_wram & idu_lsu_vld;
 
     DFFR #(.WIDTH(1))
     ff_lsu_st_iram(
@@ -792,8 +805,8 @@ module lsu(
     //if is start, then assign startY as first row
     //else if not yet end assign startY+1;
     //else assign currentY
-    assign lsu_st_type1_cnt_row_nxt = lsu_st_vld & lsu_st_type1_doing ? idu_lsu_start_y + 1'b1 : lsu_st_vld|idu_lsu_vld ? idu_lsu_start_y :  lsu_st_type1_cnt_row + 1;
-    assign lsu_st_type1_cnt_row_en = lsu_st_type1_doing | lsu_st_vld | idu_lsu_vld;
+    assign lsu_st_type1_cnt_row_nxt = lsu_st_vld & lsu_st_type1_doing ? idu_lsu_start_y + 1'b1 : lsu_st_vld ? idu_lsu_start_y :  lsu_st_type1_cnt_row + 1;
+    assign lsu_st_type1_cnt_row_en = lsu_st_type1_doing | lsu_st_vld ;
     
     DFFRE #(.WIDTH(8))
     ff_lsu_type1_cnt_row (
@@ -879,8 +892,10 @@ module lsu(
     assign lsu_st_type1_wen_raw = {127{1'b1}};
     assign lsu_st_type1_wen = lsu_st_type1_wen_raw >> lsu_st_type1_shift_start << lsu_st_type1_shift_end >> lsu_st_type1_shift_end << lsu_st_type1_shift_start;
     
-    assign lsu_st_type1_addr = (lsu_st_type1_qual&lsu_st_vld) ? idu_lsu_ld_st_addr[11:4] : lsu_st_type1_addr_ff;
-    assign lsu_st_type1_addr_nxt = lsu_st_type1_addr + 1;
+    //assign lsu_st_type1_addr = (lsu_st_type1_qual&lsu_st_vld) ? idu_lsu_ld_st_addr[11:4] : lsu_st_type1_addr_ff;
+    assign lsu_st_type1_addr = (lsu_st_type1_qual&lsu_st_vld) ? idu_lsu_ld_st_addr[11:4] : idu_lsu_ld_st_addr[11:4]+lsu_st_type1_cnt_row;
+    //assign lsu_st_type1_addr_nxt = ~lsu_st_type1_done & lsu_st_type1_doing ? lsu_st_type1_addr + 1 :lsu_st_type1_addr;
+    assign lsu_st_type1_addr_nxt = lsu_st_type1_cnt_row_nxt;
 
     DFFRE #(.WIDTH(8))
     ff_lsu_type1_store_addr (
