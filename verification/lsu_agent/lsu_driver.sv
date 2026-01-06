@@ -134,20 +134,22 @@ task lsu_driver::idu_signal_config_type1_store(lsu_tr tr);
             lsu_if.idu_lsu_st_oram = 0;
             lsu_if.idu_lsu_st_dram = 0;
 	        lsu_if.mxu_lsu_data_rdy = 0;
+
+	        //lsu_if.mxu_lsu_data_rdy = 1;
 	        //case1
 	        //lsu_if.idu_lsu_low = 0; //8/16int 
             lsu_if.idu_lsu_num = 0; //number of chunk
-            lsu_if.idu_lsu_len = 4; //element size
-            lsu_if.idu_lsu_start_x = 0;
+            lsu_if.idu_lsu_len = 1; //element size
+            lsu_if.idu_lsu_start_x = 1;
             lsu_if.idu_lsu_start_y = 0;
             lsu_if.idu_lsu_ld_st_addr = 0;
 	        @(negedge lsu_if.clk);
             lsu_if.idu_lsu_vld = 0;
             //lsu_if.idu_lsu_st_iram = 0;
             @(negedge lsu_if.clk); 
-            @(negedge lsu_if.clk);
-            @(negedge lsu_if.clk);
-	        lsu_if.mxu_lsu_data_rdy = 1;
+           /// @(negedge lsu_if.clk);
+            //@(negedge lsu_if.clk);
+	    lsu_if.mxu_lsu_data_rdy = 1;
             //break;
         //end
     end
