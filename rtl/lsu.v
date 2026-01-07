@@ -911,12 +911,18 @@ module lsu(
     wire [7:0] lsu_st_type1_addr_nxt;
 
     wire [7:0] lsu_st_type1_addr_ff;
+    wire [3:0] lsu_st_type1_shift_sram_addr_pre;
     //since our target is start_x*8
     //so we need shift 3 bit to get *8
     dec_len dec_data_len(.in(idu_lsu_len), .out(lsu_st_type1_shift_len));
     assign lsu_st_type1_shift_start = idu_lsu_start_x << 2'd3;
     assign lsu_st_type1_shift_end = 8'd128-lsu_st_type1_shift_len;
-    assign lsu_st_type1_shift_sram_addr = (idu_lsu_ld_st_addr[3:0]*4'd8);
+    assign lsu_st_type1_shift_sram_addr_pre = ~(|idu_lsu_len) ? idu_lsu_ld_st_addr[3:0] 
+                                                              : idu_lsu_len[0]^idu_lsu_len[1] ? (idu_lsu_len[0] ? {idu_lsu_ld_st_addr[3:1],1'b0} 
+                                                                                                                : {idu_lsu_ld_st_addr[3:2],{2{1'b0}}})
+                                                                                              : (idu_lsu_len[0] ? {idu_lsu_ld_st_addr[3],{3{1'b0}}}
+                                                                                                                : {4{1'b0}});
+    assign lsu_st_type1_shift_sram_addr = lsu_st_type1_shift_sram_addr_pre*4'd8;
     //assign lsu_st_type1_din_int8_qual = lsu_st_type1_din_int8_raw >> lsu_st_type1_shift_start << lsu_st_type1_shift_end >> lsu_st_type1_shift_end << lsu_st_type1_shift_start;
     assign lsu_st_type1_din_int8_qual = lsu_st_type1_din_int8_raw >> lsu_st_type1_shift_start << lsu_st_type1_shift_end >> lsu_st_type1_shift_end << lsu_st_type1_shift_sram_addr;
     // if the st_type1_store is qual then we and ce pull high
@@ -1327,5 +1333,8 @@ module lsu(
     );
 
 endmodule   
+
+
+
 
 
