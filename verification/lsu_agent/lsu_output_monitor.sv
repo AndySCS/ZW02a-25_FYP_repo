@@ -11,7 +11,7 @@ class lsu_output_monitor extends uvm_monitor;
     extern function void build_phase(uvm_phase phase);
     extern virtual task main_phase(uvm_phase phase);
     
-    extern virtual task collect_matrix_out(lsu_tr tr);
+    extern virtual task collect_ram_data_out(lsu_tr tr);
 
 endclass //lsu_output_monitor extends superClass
 
@@ -29,19 +29,23 @@ task lsu_output_monitor::main_phase(uvm_phase phase);
     tr = new("tr");
 
     while (1) begin 
-        this.collect_matrix_out(tr);
+        this.collect_ram_data_out(tr);
         ap.write(tr);
     end
 
 endtask
 
-task lsu_output_monitor::collect_matrix_out(lsu_tr tr);
+task lsu_output_monitor::collect_ram_data_out(lsu_tr tr);
 
     while(1)begin
         @(posedge lsu_if.clk);
-        if(lsu_if.lsu_mxu_vld) break;
+        if(lsu_if.idu_lsu_vld) break;
     end
+    @(posedge mxu_if.clk);
+    wait(lsu_if.lsu_idu_rdy) 
 
+    //harness.u_lsu.oram.mem[i] = 128'h0 ;
+    tr.oram_data = harness.u_lsu.oram_mem;
     //tr.clear_result();
     //@(posedge lsu_if.clk);
     //wait(lsu_if.lsu_lsu_data_rdy) 
