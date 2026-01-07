@@ -28,6 +28,7 @@ function void lsu_driver::build_phase(uvm_phase phase);
 endfunction
 
 task lsu_driver::main_phase(uvm_phase phase);
+    int count;
     lsu_tr tr;
     //tr = new("tr");
     lsu_if.idu_lsu_vld = 0;
@@ -102,12 +103,12 @@ task lsu_driver::main_phase(uvm_phase phase);
     lsu_if.mxu_lsu_int8_row15_data = 'hf0e0d0c0b0a0908f;
 
     @(posedge lsu_if.rst_n); // wait till rstn is high
-    
+    count = 0;
     while(1) begin
         //seq_item_port.get_next_item(tr);
         //idu_signal_config_type1_store(tr);
-        //idu_signal_config_type1_store_mxualwaysrdy(tr);
-        idu_signal_config_type1_store_mxuwaitrdy(tr);
+        idu_signal_config_type1_store_mxualwaysrdy(tr);
+        //idu_signal_config_type1_store_mxuwaitrdy(tr);
         //idu_signal_config_type2_store(tr);
         //idu_signal_config_load(tr);
         //seq_item_port.item_done();
@@ -117,14 +118,6 @@ endtask
 
 task lsu_driver::idu_signal_config_type1_store_mxualwaysrdy(lsu_tr tr);
 
-    /*int matrix_sent_row = 0;
-    int cur_row = 0;
-    int iter_cnt = 0;
-    bit[7:0] pop_data;
-    int cycle_cnt = 0;
-    bit send_matrix_needed = 0;
-*/
-    int count = 0;
         @(negedge lsu_if.clk);
         if(lsu_if.lsu_idu_rdy) begin 
     	//while(1)begin
@@ -140,11 +133,21 @@ task lsu_driver::idu_signal_config_type1_store_mxualwaysrdy(lsu_tr tr);
 	        lsu_if.mxu_lsu_data_rdy = 1; //always ready
 	        //case1
 	        //lsu_if.idu_lsu_low = 0; //8/16int 
-            lsu_if.idu_lsu_num = 0; //number of chunk
-            lsu_if.idu_lsu_len = 1; //element size
+            lsu_if.idu_lsu_num = 15; //number of chunk
+            lsu_if.idu_lsu_len = 0; //element size
+
+	    //if(count == 3)begin
+	    //	lsu_if.idu_lsu_len = 4;
+	    //end
             lsu_if.idu_lsu_start_x = 0;
-            lsu_if.idu_lsu_start_y = 0;
+            lsu_if.idu_lsu_start_y = 3;
             lsu_if.idu_lsu_ld_st_addr = 0;
+            //when num more than 1
+	    if(lsu_if.idu_lsu_num != 0)begin
+	    	@(negedge lsu_if.clk);
+	    	lsu_if.idu_lsu_vld = 0;
+	    end
+	    
     end
 
     `uvm_info("lsu_driver", "begin sending idu data config", UVM_NONE)

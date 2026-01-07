@@ -804,7 +804,7 @@ module lsu(
         .d(lsu_st_type1_store_qual),
         .q(lsu_st_type1_store_qual_ff)
     );
-    assign lsu_st_type1_store_qual_pulse = (lsu_st_type1_store_qual & ~lsu_st_type1_store_qual_ff) | lsu_st_type1_store_qual & idu_lsu_vld;
+    assign lsu_st_type1_store_qual_pulse = (lsu_st_type1_store_qual & ~lsu_st_type1_store_qual_ff) | (lsu_st_type1_store_qual) & idu_lsu_vld;
     //MXU count
     //choose the row by Y
     //total 16 row
@@ -847,7 +847,7 @@ module lsu(
     //get the mxu row
     wire [3:0]lsu_st_type1_row_sel;
     wire [127:0] lsu_st_type1_din_int8_raw;
-    assign lsu_st_type1_row_sel = lsu_st_type1_store_qual ? lsu_st_type1_cnt_row : idu_lsu_start_y ;
+    assign lsu_st_type1_row_sel = lsu_st_type1_store_qual ? lsu_st_type1_cnt_row+idu_lsu_start_y : idu_lsu_start_y ;
 
     mux16 #(.WIDTH(128)) mux16rowdata_int8(.in0(mxu_lsu_int8_row0_data),
                                          .in1(mxu_lsu_int8_row1_data),
