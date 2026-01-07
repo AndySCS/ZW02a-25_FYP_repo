@@ -9,7 +9,7 @@ module lsu(
     alu_lsu_lb_op,
     alu_lsu_lh_op,
     alu_lsu_lw_op,
-    alu_lsu_lbu_op
+    alu_lsu_lbu_op,
     alu_lsu_lhu_op,
     alu_lsu_sb_op,
     alu_lsu_sh_op,
@@ -124,7 +124,7 @@ module lsu(
     lsu_axi_awsize,
     lsu_axi_awburst,
     lsu_axi_awstr,
-    lsu_axi_awnum,
+    //lsu_axi_awnum,
     lsu_axi_awvld,
     lsu_axi_oram_addr,
     lsu_axi_wdata,
@@ -164,7 +164,7 @@ module lsu(
     input alu_lsu_lb_op;
     input alu_lsu_lh_op;
     input alu_lsu_lw_op;
-    input alu_lsu_lbu_o;
+    input alu_lsu_lbu_op;
     input alu_lsu_lhu_op;
     input alu_lsu_sb_op;
     input alu_lsu_sh_op;
@@ -288,7 +288,6 @@ module lsu(
     output [2:0] lsu_axi_awsize;
     output [1:0] lsu_axi_awburst;
     output [2:0] lsu_axi_awstr;
-    output [4:0] lsu_axi_awnum;
     output lsu_axi_awvld;
     output [11:0] lsu_axi_oram_addr;
     output [63:0] lsu_axi_wdata;
@@ -583,6 +582,7 @@ module lsu(
         .en(lsu_st_type2_aw_en),
         .q(lsu_st_type2_st_low_ff)
     );
+    wire [4:0]lsu_axi_awnum;
     //adress write part
     //once we sense store instr give awvld and other aw signal
     //id and burst not support 
