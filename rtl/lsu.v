@@ -794,7 +794,17 @@ module lsu(
         .q(lsu_st_type1_qual_ff)
     );
     wire lsu_st_type1_store_qual;
+    wire lsu_st_type1_store_qual_ff;
+    wire lsu_st_type1_store_qual_pulse;
     assign lsu_st_type1_store_qual = (lsu_st_type1_qual|lsu_st_type1_qual_ff) & mxu_lsu_data_rdy;
+    DFFR #(.WIDTH(1))
+    ff_lsu_st_type1_store_qual(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(lsu_st_type1_store_qual),
+        .q(lsu_st_type1_store_qual_ff)
+    );
+    assign lsu_st_type1_store_qual_pulse = (lsu_st_type1_store_qual & ~lsu_st_type1_store_qual_ff) | lsu_st_type1_store_qual & idu_lsu_vld;
     //MXU count
     //choose the row by Y
     //total 16 row
@@ -814,7 +824,7 @@ module lsu(
     //else if not yet end assign startY+1;
     //else assign currentY
     //assign lsu_st_type1_cnt_row_nxt = lsu_st_vld & lsu_st_type1_doing ? idu_lsu_start_y + 1'b1 : lsu_st_vld ? idu_lsu_start_y :  lsu_st_type1_cnt_row + 1;
-    assign lsu_st_type1_cnt_row_nxt = lsu_st_type1_store_qual ? lsu_st_type1_cnt_row + 1'b1 : lsu_st_type1_cnt_row;
+    assign lsu_st_type1_cnt_row_nxt = lsu_st_type1_store_qual_pulse ? idu_lsu_start_y : lsu_st_type1_store_qual ? lsu_st_type1_cnt_row + 1'b1 : lsu_st_type1_cnt_row;
     assign lsu_st_type1_cnt_row_en = lsu_st_type1_store_qual & ~lsu_st_type1_done;
     
     DFFR #(.WIDTH(1))
