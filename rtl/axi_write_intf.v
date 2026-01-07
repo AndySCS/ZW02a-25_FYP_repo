@@ -30,7 +30,7 @@ module AXI_WRITE_INFT(
     lsu_axi_awsize,
     lsu_axi_awburst,
     lsu_axi_awstr,
-    lsu_axi_awnum,
+    //lsu_axi_awnum,
     lsu_axi_awvld,
     lsu_axi_oram_addr,
     lsu_axi_wdata,
@@ -82,7 +82,7 @@ module AXI_WRITE_INFT(
     input [2:0] lsu_axi_awsize;
     input [1:0] lsu_axi_awburst;
     input [2:0] lsu_axi_awstr;
-    input [3:0] lsu_axi_awnum;
+    //input [3:0] lsu_axi_awnum;
     input lsu_axi_awvld;
     input [11:0] lsu_axi_oram_addr;
     input [63:0] lsu_axi_wdata;
@@ -368,7 +368,7 @@ module AXI_WRITE_INFT(
     assign AWBURST_nxt = lsu_axi_awvld_qual? lsu_axi_awburst : AWBURST;
     assign AWREGION_nxt = 4'b0;//lsu_axi_awvld_qual? lsu_axi_awid : AWID;
     assign awstr_nxt = lsu_axi_awvld_qual? lsu_axi_awstr : awstr;
-    assign awnum_nxt = lsu_axi_awvld_qual? lsu_axi_awnum : awnum;
+    //assign awnum_nxt = lsu_axi_awvld_qual? lsu_axi_awnum : awnum;
     assign awcnt_nxt = lsu_axi_awvld_qual? 4'b0 : awcnt + 4'b1;
     assign awcnt_en = |axi_alloc_en;
     assign axi_doing_st = awcnt < awnum;
@@ -449,7 +449,7 @@ module AXI_WRITE_INFT(
     assign lsu_axi_wvld_qual = lsu_axi_wvld & axi_lsu_wrdy;
     assign WVALID_nxt = lsu_axi_wvld_qual | WVALID & ~WREADY;
     assign WDATA_nxt = lsu_axi_wvld_qual ? lsu_axi_wdata : WDATA;
-    assign WSTRB_nxt = lsu_axi_wvld_qual ? lsu_axi_wdata : WSTRB;
+    assign WSTRB_nxt = lsu_axi_wvld_qual ? lsu_axi_wstrb : WSTRB;
     assign wcnt_full = wcnt == AWLEN;
     assign WLAST_nxt = wcnt_full;
     assign wcnt_nxt = (lsu_axi_awvld_qual | wcnt_full) ? 8'b0 : wcnt_nxt + 7'b1;
