@@ -8,6 +8,9 @@ class lsu_tr extends uvm_sequence_item;
     int matrix_Rx;
     int matrix_Ry;
 
+    int matrix_L[15:0][15:0];
+    int matrix_R[15:0][15:0];
+    int matrix_result[15:0][15:0];
     int oram_data[255:0][127:0];
     int iram_data[255:0][127:0];
     int wram_data[255:0][127:0];
@@ -23,7 +26,7 @@ class lsu_tr extends uvm_sequence_item;
     extern function void init_matrix();
     extern function void init_sram();
     extern function bit compare(lsu_tr tr);
-    extern function void clear_result();
+    //extern function void clear_result();
 
 endclass //lsu_tr extends superClass
 
@@ -47,9 +50,9 @@ endfunction
 function void lsu_tr::init_sram();
     for(int i = 0; i < 256; i++)begin
         for(int j = 0; j < 128; j++)begin
-            this.oram_data[i][j] = i;
-            this.iram_data[i][j] = i;
-            this.wram_data[i][j] = i;
+            this.oram_data[i][j] = 0;
+            this.iram_data[i][j] = 0;
+            this.wram_data[i][j] = 0;
         end
     end
 endfunction
@@ -58,9 +61,9 @@ function bit lsu_tr::compare(lsu_tr tr);
     
     bit match = 1;
 
-    for(int i = 0; i < 256; i++)begin
-        for(int j = 0; j < 128; j++)begin
-            if(this.oram_data[i][j] != tr.oram_data[i][j]) begin
+    for(int i = 0; i < 16; i++)begin
+        for(int j = 0; j < 16; j++)begin
+            if(this.matrix_result[i][j] != tr.matrix_result[i][j]) begin
                 match = 0;
                 break;
             end
@@ -72,17 +75,6 @@ function bit lsu_tr::compare(lsu_tr tr);
 
 endfunction
 
-function void lsu_tr::print_result();
-    
-
-    for(int i = 0; i < 256; i++)begin
-        for(int j = 0; j < 128; j++)begin
-		$write("[%d]", oram_data[i][j]);
-		if(j==15) $write("\n");
-        end
-    end
-
-endfunction
 /*
 function void lsu_tr::clear_result();
     
