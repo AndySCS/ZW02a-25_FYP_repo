@@ -85,28 +85,28 @@ task lsu_driver::main_phase(uvm_phase phase);
    end	
 
     lsu_if.mxu_lsu_int8_row0_data = 'hf0e0d0c0b0a09080;
-    lsu_if.mxu_lsu_int8_row1_data = 'hf0e0d0c0b0a09080;
-    lsu_if.mxu_lsu_int8_row2_data = 'hf0e0d0c0b0a09080;
-    lsu_if.mxu_lsu_int8_row3_data = 'hf0e0d0c0b0a09080;
-    lsu_if.mxu_lsu_int8_row4_data = 'hf0e0d0c0b0a09080;
-    lsu_if.mxu_lsu_int8_row5_data = 'hf0e0d0c0b0a09080;
-    lsu_if.mxu_lsu_int8_row6_data = 'hf0e0d0c0b0a09080;
-    lsu_if.mxu_lsu_int8_row7_data = 'hf0e0d0c0b0a09080;
-    lsu_if.mxu_lsu_int8_row8_data = 'hf0e0d0c0b0a09080;
-    lsu_if.mxu_lsu_int8_row9_data = 'hf0e0d0c0b0a09080;
-    lsu_if.mxu_lsu_int8_row10_data = 'hf0e0d0c0b0a09080;
-    lsu_if.mxu_lsu_int8_row11_data = 'hf0e0d0c0b0a09080;
-    lsu_if.mxu_lsu_int8_row12_data = 'hf0e0d0c0b0a09080;
-    lsu_if.mxu_lsu_int8_row13_data = 'hf0e0d0c0b0a09080;
-    lsu_if.mxu_lsu_int8_row14_data = 'hf0e0d0c0b0a09080;
-    lsu_if.mxu_lsu_int8_row15_data = 'hf0e0d0c0b0a09080;
+    lsu_if.mxu_lsu_int8_row1_data = 'hf0e0d0c0b0a09081;
+    lsu_if.mxu_lsu_int8_row2_data = 'hf0e0d0c0b0a09082;
+    lsu_if.mxu_lsu_int8_row3_data = 'hf0e0d0c0b0a09083;
+    lsu_if.mxu_lsu_int8_row4_data = 'hf0e0d0c0b0a09084;
+    lsu_if.mxu_lsu_int8_row5_data = 'hf0e0d0c0b0a09085;
+    lsu_if.mxu_lsu_int8_row6_data = 'hf0e0d0c0b0a09086;
+    lsu_if.mxu_lsu_int8_row7_data = 'hf0e0d0c0b0a09087;
+    lsu_if.mxu_lsu_int8_row8_data = 'hf0e0d0c0b0a09088;
+    lsu_if.mxu_lsu_int8_row9_data = 'hf0e0d0c0b0a09089;
+    lsu_if.mxu_lsu_int8_row10_data = 'hf0e0d0c0b0a0908a;
+    lsu_if.mxu_lsu_int8_row11_data = 'hf0e0d0c0b0a0908b;
+    lsu_if.mxu_lsu_int8_row12_data = 'hf0e0d0c0b0a0908c;
+    lsu_if.mxu_lsu_int8_row13_data = 'hf0e0d0c0b0a0908d;
+    lsu_if.mxu_lsu_int8_row14_data = 'hf0e0d0c0b0a0908e;
+    lsu_if.mxu_lsu_int8_row15_data = 'hf0e0d0c0b0a0908f;
 
     @(posedge lsu_if.rst_n); // wait till rstn is high
     
     while(1) begin
         //seq_item_port.get_next_item(tr);
-        idu_signal_config_type1_store(tr);
-        idu_signal_config_type1_store_mxualwaysrdy(tr);
+        //idu_signal_config_type1_store(tr);
+        //idu_signal_config_type1_store_mxualwaysrdy(tr);
         idu_signal_config_type1_store_mxuwaitrdy(tr);
         //idu_signal_config_type2_store(tr);
         //idu_signal_config_load(tr);
@@ -163,8 +163,8 @@ task lsu_driver::idu_signal_config_type1_store_mxuwaitrdy(lsu_tr tr);
 	    lsu_if.mxu_lsu_data_rdy = 0;//not always ready	
 	    //case1
 	    //lsu_if.idu_lsu_low = 0; //8/16int 
-        lsu_if.idu_lsu_num = 0; //number of chunk
-        lsu_if.idu_lsu_len = 1; //element size
+        lsu_if.idu_lsu_num = 3; //number of chunk
+        lsu_if.idu_lsu_len = 0; //element size
         lsu_if.idu_lsu_start_x = 0;
         lsu_if.idu_lsu_start_y = 0;
         lsu_if.idu_lsu_ld_st_addr = 0;
@@ -172,7 +172,7 @@ task lsu_driver::idu_signal_config_type1_store_mxuwaitrdy(lsu_tr tr);
         lsu_if.idu_lsu_vld = 0;
         @(negedge lsu_if.clk);
         @(negedge lsu_if.clk);
-	    lsu_if.mxu_lsu_data_rdy = 1; //wait two cycle then pull high ready
+	lsu_if.mxu_lsu_data_rdy = 1; //wait two cycle then pull high ready
     end
     `uvm_info("lsu_driver", "begin sending idu data config", UVM_NONE)
 endtask
