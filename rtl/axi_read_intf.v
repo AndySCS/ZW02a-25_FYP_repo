@@ -1,5 +1,3 @@
-`include "define.vh"
-
 module AXI_READ_INFT(
     clk,
     rst_n,
@@ -119,7 +117,14 @@ module AXI_READ_INFT(
     wire [3:0] arcnt;
     wire [3:0] arcnt_nxt;
     wire [3:0] arcnt_en;
-    
+     
+    wire RVALID_qual;
+    wire lsu_resp_recv;
+    wire [ARID_WIDTH-1:0] axi_lsu_rid_nxt;
+    wire [RDATA_WIDTH-1:0]axi_lsu_rdata_nxt;
+    wire [1:0] axi_lsu_rresp_nxt;
+    wire axi_lsu_rlast_nxt;
+    wire axi_lsu_rvld_nxt;
     assign axi_invld = ~axi_vld;
     assign axi_alloc_en = {16{axi_alloc_vld}} & axi_alloc_ptr & axi_invld;
     assign axi_alloc_vld = lsu_axi_arvld_qual | axi_doing_ld;
@@ -279,13 +284,6 @@ module AXI_READ_INFT(
     //3/ rresp
     //4/ rlast
     //5/ rvld
-    wire RVALID_qual;
-    wire lsu_resp_recv;
-    wire [ARID_WIDTH-1:0] axi_lsu_rid_nxt;
-    wire [RDATA_WIDTH-1:0]axi_lsu_rdata_nxt;
-    wire [1:0] axi_lsu_rresp_nxt;
-    wire axi_lsu_rlast_nxt;
-    wire axi_lsu_rvld_nxt;
 
     //qual if can send read data to LSU
     assign RVALID_qual = RVALID & RREADY;
