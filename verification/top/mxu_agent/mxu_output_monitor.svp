@@ -1,0 +1,69 @@
+class mxu_output_monitor extends uvm_monitor;
+
+    virtual mxu_intf mxu_if;
+    int send_cnt;
+    uvm_analysis_port #(mxu_tr) ap;
+
+    `uvm_component_utils(mxu_output_monitor)
+    function new(string name = "mxu_output_monitor", uvm_component parent = null);
+       super.new(name, parent);
+    endfunction //new()
+    
+    extern function void build_phase(uvm_phase phase);
+    extern virtual task main_phase(uvm_phase phase);
+    
+    extern virtual task collect_matrix_out(mxu_tr tr);
+    extern virtual function void final_phase(uvm_phase phase);
+
+endclass //mxu_output_monitor extends superClass
+
+function void mxu_output_monitor::build_phase(uvm_phase phase);
+    super.build_phase(phase);
+    if(!uvm_config_db#(virtual mxu_intf)::get(this, "", "mxu_if", mxu_if))begin
+        `uvm_fatal("mxu_output_monitor", "mxu output_monitor fail to get mxu if")
+    end
+    ap = new("ap", this);
+endfunction
+
+task mxu_output_monitor::main_phase(uvm_phase phase);
+    mxu_tr tr;
+
+    tr = new("tr");
+
+    while (1) begin 
+        this.collect_matrix_out(tr);
+        ap.write(tr);
+    end
+
+endtask
+
+task mxu_output_monitor::collect_matrix_out(mxu_tr tr);
+
+    while(1)begin
+        @(posedge mxu_if.clk);
+        if(mxu_if.lsu_mxu_vld & mxu_if.mxu_lsu_rdy) break;
+    end
+
+    //tr.clear_result();
+    while(1) begin
+    @(negedge mxu_if.clk);
+    //wait(mxu_if.mxu_lsu_data_rdy & mxu_if.mxu_lsu_rdy) 
+        if(mxu_if.mxu_lsu_data_rdy & mxu_if.mxu_lsu_rdy & ~(|{mxu_if.lsu_mxu_iram_vld, mxu_if.lsu_mxu_wram_vld})) begin
+            `uvm_info("mxu_output_monitor", "begin collect result", UVM_MEDIUM)
+            send_cnt++;
+            //:for($row=0;$row<16;$row++){
+            //:for($col=0;$col<16;$col++){
+            tr.matrix_result_int16[{$row}][{$col}] = {{{{16{{mxu_if.mxu_lsu_int16_row{$row}_data[{15+16*$col}]}}}},mxu_if.mxu_lsu_int16_row{$row}_data[{15+16*$col}:{0+16*$col}]}};
+            tr.matrix_result_int8[{$row}][{$col}] = {{{{24{{mxu_if.mxu_lsu_int8_row{$row}_data[{7+8*$col}]}}}},mxu_if.mxu_lsu_int8_row{$row}_data[{7+8*$col}:{0+8*$col}]}};
+            //:}
+            //:}
+            break;
+        end
+    end
+
+endtask
+
+function void mxu_output_monitor::final_phase(uvm_phase phase);
+    super.final_phase(phase);
+    `uvm_info("mxu_omon", $sformatf("enter fianl phase, mxu_omon send cnt is %d", send_cnt), UVM_LOW);
+endfunction

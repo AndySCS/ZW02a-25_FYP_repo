@@ -1,0 +1,1 @@
+$MINITPU_VER/ut/mxu/sequence/mxu_sequence.sv
