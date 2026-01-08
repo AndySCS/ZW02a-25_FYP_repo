@@ -51,7 +51,6 @@ module alu(
     idu_alu_dram_addr,
     idu_alu_num,
     idu_alu_len,
-    idu_alu_size,
     idu_alu_str,
     idu_alu_start_x,
     idu_alu_start_y,
@@ -180,8 +179,7 @@ module alu(
     //paylaod related for load store
     input [31:0] idu_alu_dram_addr;
     input [7:0]  idu_alu_num;
-    input [7:0]  idu_alu_len;
-    input [2:0]  idu_alu_size;
+    input [2:0]  idu_alu_len;
     input [2:0]  idu_alu_str;
     input [3:0]  idu_alu_start_x;
     input [3:0]  idu_alu_start_y;
@@ -410,7 +408,7 @@ module alu(
         .q(alu_lsu_wb_vld)
     );
     
-    DFFE #(.WIDTH(4))
+    DFFE #(.WIDTH(5))
     ff_alu_lsu_wb_addr(
         .clk(clk),
         .en(alu_vld),
@@ -418,7 +416,7 @@ module alu(
         .q(alu_lsu_wb_addr)
     );
     
-    DFFE #(.WIDTH(31))
+    DFFE #(.WIDTH(32))
     ff_alu_lsu_wb_data(
         .clk(clk),
         .en(alu_vld),
@@ -578,7 +576,7 @@ module alu(
         .q(alu_lsu_wfi)
     );
 
-    DFFE #(.WIDTH(31))
+    DFFE #(.WIDTH(32))
     ff_alu_lsu_dram_addr(
         .clk(clk),
         .en(alu_vld),

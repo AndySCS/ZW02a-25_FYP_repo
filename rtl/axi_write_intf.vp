@@ -185,7 +185,7 @@ module AXI_WRITE_INFT(
     ff_axi_alloc_ptr_lo(
         .clk(clk),
         .rst_n(rst_n),
-        .en(AWVALID_alloc),
+        .en(lsu_axi_awvld_qual),
         .d(axi_alloc_ptr_nxt[0]),
         .q(axi_alloc_ptr[0])
     );
@@ -193,7 +193,7 @@ module AXI_WRITE_INFT(
     ff_axi_alloc_ptr_hi(
         .clk(clk),
         .rst_n(rst_n),
-        .en(AWVALID_alloc),
+        .en(lsu_axi_awvld_qual),
         .d(axi_alloc_ptr_nxt[15:1]),
         .q(axi_alloc_ptr[15:1])
     );
@@ -231,7 +231,7 @@ module AXI_WRITE_INFT(
     DFFE #(.WIDTH(12))
     ff_oram_addr_{$i}(
         .clk(clk),
-        .en(axi_alloc_en),
+        .en(lsu_axi_awvld_qual),
         .d(oram_addr_nxt),
         .q(oram_addr_{$i})
     );
@@ -376,7 +376,7 @@ module AXI_WRITE_INFT(
         .q(WLAST)
     );
     
-    DFFE #(.WIDTH(1))
+    DFFE #(.WIDTH(8))
     ff_wcnt(
         .clk(clk),
         .en(wcnt_en),
@@ -396,7 +396,7 @@ module AXI_WRITE_INFT(
     mux16 #(.WIDTH(12))
     reso_oram_addr_mux(
         //:for($i=0;$i<16;$i++){
-        .in0(oram_addr_{$i}),
+        .in{$i}(oram_addr_{$i}),
         //:}
         .sel(axi_lsu_resp_bid),
         .out(axi_lsu_resp_oram_addr)
@@ -413,7 +413,7 @@ module AXI_WRITE_INFT(
         .q(axi_lsu_bvld)
     );
 
-    DFFE #(.WIDTH(1))
+    DFFE #(.WIDTH(4))
     ff_axi_lsu_resp_bid(
         .clk(clk),
         .en(BVALID),
