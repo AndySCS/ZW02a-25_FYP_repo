@@ -79,8 +79,13 @@ task lsu_driver::main_phase(uvm_phase phase);
     lsu_if.axi_lsu_rlast = 0;
     lsu_if.axi_lsu_rvld = 0;
 
-    for (int i=0;i<256;i++) begin 
-     	  harness.u_lsu.oram.mem[i] = 128'h0 ;
+    for (int i=0;i<256;i++) begin
+	  if(i==3)begin
+     	  	harness.u_lsu.oram.mem[0] = 128'hf0e0d0c0b0a09080;
+     	  	harness.u_lsu.oram.mem[1] = 128'hf0e0d0c0b0a09081;
+     	  	harness.u_lsu.oram.mem[2] = 128'hf0e0d0c0b0a09082;
+	  end 
+     	  harness.u_lsu.oram.mem[i] = 128'hf0e0d0c0b0a09080;
      	  harness.u_lsu.iram.mem[i] = 128'h0 ;
       	  harness.u_lsu.wram.mem[i] = 128'h0 ;
    end	
@@ -107,9 +112,9 @@ task lsu_driver::main_phase(uvm_phase phase);
     while(1) begin
         //seq_item_port.get_next_item(tr);
         //alu_signal_config_type1_store(tr);
-        alu_signal_config_type1_store_mxualwaysrdy(tr);
+        //alu_signal_config_type1_store_mxualwaysrdy(tr);
         //alu_signal_config_type1_store_mxuwaitrdy(tr);
-        //alu_signal_config_type2_store(tr);
+        alu_signal_config_type2_store(tr);
         //alu_signal_config_load(tr);
         //seq_item_port.item_done();
     end
@@ -241,11 +246,11 @@ task lsu_driver::alu_signal_config_type2_store(lsu_tr tr);
         @(negedge lsu_if.clk);
         if(lsu_if.lsu_alu_rdy) begin
             lsu_if.alu_lsu_vld = 1;
-            lsu_if.alu_lsu_st_dram = 1;
-	        lsu_if.axi_lsu_awrdy = 1;
-            lsu_if.alu_lsu_num = 16;
-            lsu_if.alu_lsu_len = 4;
-	        lsu_if.alu_lsu_ld_st_addr = 'b00000;
+            lsu_if.alu_lsu_st_dram = 1;//dram addr
+	    lsu_if.axi_lsu_awrdy = 1;
+            lsu_if.alu_lsu_num = 255;//num of chunk
+            lsu_if.alu_lsu_len = 0;//element size
+	    lsu_if.alu_lsu_ld_st_addr = 'b00000;//sram addr
             @(negedge lsu_if.clk);
             lsu_if.alu_lsu_vld = 0;
 	    //lsu_if.axi_lsu_awrdy = 0;
