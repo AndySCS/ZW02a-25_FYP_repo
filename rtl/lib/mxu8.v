@@ -21,7 +21,7 @@ module mux8 (
     input [WIDTH-1:0] in5;
     input [WIDTH-1:0] in6;
     input [WIDTH-1:0] in7;
-    input [3:0] sel;
+    input [2:0] sel;
     output [WIDTH-1:0] out;
 
     assign out = (sel == 4'd0) ? in0 :
