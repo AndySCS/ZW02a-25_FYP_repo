@@ -110,7 +110,6 @@ module lsu(
     lsu_axi_awsize,
     lsu_axi_awburst,
     lsu_axi_awstr,
-    lsu_axi_awnum,
     lsu_axi_awvld,
     lsu_axi_oram_addr,
     lsu_axi_wdata,
@@ -251,7 +250,6 @@ module lsu(
     output [2:0] lsu_axi_awsize;
     output [1:0] lsu_axi_awburst;
     output [2:0] lsu_axi_awstr;
-    output [4:0] lsu_axi_awnum;
     output lsu_axi_awvld;
     output [11:0] lsu_axi_oram_addr;
     output [63:0] lsu_axi_wdata;
@@ -464,7 +462,6 @@ module lsu(
     wire [2:0] lsu_st_type2_awsize;
     wire [1:0] lsu_st_type2_awburst;
     wire [2:0] lsu_st_type2_awstr;
-    wire [4:0] lsu_st_type2_awnum;
 
     wire lsu_st_type2_doing_ff;
     wire lsu_st_type2_aw_en;
@@ -519,16 +516,6 @@ module lsu(
         .en(lsu_st_type2_aw_en),
         .q(lsu_st_type2_awstr)
     );
-    wire [4:0] lsu_awnum_raw;
-    assign lsu_awnum_raw = 5'b10000 >> idu_lsu_len; 
-    DFFRE #(.WIDTH(5))
-    ff_lsu_st_type2_awnum(
-        .clk(clk),
-        .rst_n(rst_n),
-        .d(lsu_awnum_raw),
-        .en(lsu_st_type2_aw_en),
-        .q(lsu_st_type2_awnum)
-    );
     wire lsu_st_type2_st_low_ff;
     DFFRE #(.WIDTH(1))
     ff_lsu_st_type2_st_low(
@@ -548,7 +535,6 @@ module lsu(
     assign lsu_axi_awsize  = (lsu_st_vld & (&lsu_st_type)) ? idu_lsu_len       : {3{(lsu_st_vld_ff  &(&lsu_st_type_ff))}} & lsu_st_type2_awsize;
     assign lsu_axi_awburst = (lsu_st_vld & (&lsu_st_type)) ? 2'b00             : {2{(lsu_st_vld_ff  &(&lsu_st_type_ff))}} & lsu_st_type2_awburst;
     assign lsu_axi_awstr   = (lsu_st_vld & (&lsu_st_type)) ? idu_lsu_str       : {3{(lsu_st_vld_ff  &(&lsu_st_type_ff))}} & lsu_st_type2_awstr;
-    assign lsu_axi_awnum   = (lsu_st_vld & (&lsu_st_type)) ? lsu_awnum_raw     : {5{(lsu_st_vld_ff  &(&lsu_st_type_ff))}} & lsu_st_type2_awnum;
     //write data part
     //once we know lsu_st_type2_qual => axi_awrdy & vld
     wire lsu_st_type2_oram_ce;
@@ -576,7 +562,7 @@ module lsu(
     //if element size 128 => need wait 2 cycle sin update 
     //assign lsu_st_type2_chunk_last = lsu_axi_awsize[2] ? (lsu_st_type2_chunk_count == (lsu_axi_awnum)) & (|lsu_axi_awnum) & ~lsu_st_type2_wr_done : (lsu_st_type2_chunk_count == (lsu_axi_awnum-1'b1)) & (|lsu_axi_awnum) & ~lsu_st_type2_wr_done;
     
-    assign lsu_st_type2_chunk_last = lsu_axi_awsize[2] ? (lsu_st_type2_chunk_count == (lsu_axi_awnum)) & (|lsu_axi_awnum) : (lsu_st_type2_chunk_count == (lsu_axi_awnum-1'b1)) & (|lsu_axi_awnum);
+    assign lsu_st_type2_chunk_last = (lsu_st_type2_qual & lsu_st_vld) ? (lsu_axi_awsize[2] ? (lsu_st_type2_chunk_count == 8'b1) : 1'b1) : 1'b0;
     assign lsu_st_type2_new_chunk = (lsu_st_type2_qual & lsu_st_vld) | lsu_st_type2_chunk_last;
 	//type2_qual may not same as st_vld
 

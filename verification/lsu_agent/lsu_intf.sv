@@ -110,7 +110,6 @@ interface lsu_intf(
     lsu_axi_awsize,
     lsu_axi_awburst,
     lsu_axi_awstr,
-    lsu_axi_awnum,
     lsu_axi_awvld,
     lsu_axi_oram_addr,
     lsu_axi_wdata,
@@ -251,7 +250,6 @@ interface lsu_intf(
     output [2:0] lsu_axi_awsize;
     output [1:0] lsu_axi_awburst;
     output [2:0] lsu_axi_awstr;
-    output [4:0] lsu_axi_awnum;
     output lsu_axi_awvld;
     output [11:0] lsu_axi_oram_addr;
     output [63:0] lsu_axi_wdata;

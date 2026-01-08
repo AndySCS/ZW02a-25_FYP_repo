@@ -97,7 +97,6 @@ module harness;
     wire  [2:0] lsu_axi_awsize;
     wire  [1:0] lsu_axi_awburst;
     wire  [2:0] lsu_axi_awstr;
-    wire  [4:0] lsu_axi_awnum;
     wire  lsu_axi_awvld;
     wire  [11:0] lsu_axi_oram_addr;
     wire  [63:0] lsu_axi_wdata;
@@ -217,7 +216,6 @@ module harness;
         .lsu_axi_awsize(lsu_axi_awsize),
         .lsu_axi_awburst(lsu_axi_awburst),
         .lsu_axi_awstr(lsu_axi_awstr),
-        .lsu_axi_awnum(lsu_axi_awnum),
         .lsu_axi_awvld(lsu_axi_awvld),
         .lsu_axi_oram_addr(lsu_axi_oram_addr),
         .lsu_axi_wdata(lsu_axi_wdata),
@@ -353,7 +351,6 @@ module harness;
         .lsu_axi_awsize(lsu_axi_awsize),
         .lsu_axi_awburst(lsu_axi_awburst),
         .lsu_axi_awstr(lsu_axi_awstr),
-        .lsu_axi_awnum(lsu_axi_awnum),
         .lsu_axi_awvld(lsu_axi_awvld),
         .lsu_axi_oram_addr(lsu_axi_oram_addr),
         .lsu_axi_wdata(lsu_axi_wdata),
