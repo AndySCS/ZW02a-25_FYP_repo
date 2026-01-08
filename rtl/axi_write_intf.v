@@ -1,5 +1,3 @@
-`include "define.vh"
-
 module AXI_WRITE_INFT(
     clk,
     rst_n,
@@ -157,7 +155,16 @@ module AXI_WRITE_INFT(
     wire [3:0] awcnt;
     wire [3:0] awcnt_nxt;
     wire [3:0] awcnt_en;
+    //W RESP
+    wire BVALID_qual;
+    wire lsu_resp_recv;
+    wire axi_lsu_bvld_nxt;
+    wire [AWID_WIDTH-1:0] axi_lsu_resp_bid;
+    wire [AWID_WIDTH-1:0] axi_lsu_resp_bid_nxt;
+    wire [1:0] axi_lsu_bresp_nxt;
 
+    dec4to16 resp_BID_dec(.in(axi_lsu_resp_bid), .out(axi_recv_ptr));
+    dec4to16 out_BID_dec(.in(BID), .out(BID_16));
     assign axi_invld = ~axi_vld;
     assign axi_alloc_en = {16{axi_alloc_vld}} & axi_alloc_ptr & axi_invld;
     assign axi_alloc_vld = lsu_axi_awvld_qual | axi_doing_st;
@@ -495,15 +502,6 @@ module AXI_WRITE_INFT(
         .q(wcnt)
     );
     //
-
-    //W RESP
-    wire BVALID_qual;
-    wire lsu_resp_recv;
-    wire axi_lsu_bvld_nxt;
-    wire [AWID_WIDTH-1:0] axi_lsu_resp_bid;
-    wire [AWID_WIDTH-1:0] axi_lsu_resp_bid_nxt;
-    wire [1:0] axi_lsu_bresp_nxt;
-
     assign BVALID_qual = BVALID & BREADY;
     assign lsu_resp_recv = lsu_axi_brdy & axi_lsu_bvld;
     assign axi_lsu_bvld_nxt = BVALID_qual | axi_lsu_bvld & ~lsu_resp_recv;
@@ -533,8 +531,6 @@ module AXI_WRITE_INFT(
         .out(axi_lsu_resp_oram_addr)
     );
 
-    dec4to16 resp_BID_dec(.in(axi_lsu_resp_bid), .out(axi_recv_ptr));
-    dec4to16 out_BID_dec(.in(BID), .out(BID_16));
     
     DFFR #(.WIDTH(1))
     ff_axi_lsu_bvld(
