@@ -49,7 +49,7 @@ task lsu_input_monitor::collect_matrix_in(lsu_tr tr);
 
     while(1)begin
         @(posedge lsu_if.clk);
-        if(lsu_if.idu_lsu_vld & lsu_if.lsu_idu_rdy) break;
+        if(lsu_if.alu_lsu_vld & lsu_if.lsu_alu_rdy) break;
     end
     
     `uvm_info("lsu_input_monitor", "leave collect matrix", UVM_NONE)

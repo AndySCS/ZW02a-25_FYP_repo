@@ -16,6 +16,7 @@ interface lsu_intf(
     .alu_lsu_src2                         (alu_lsu_src2),
     .alu_lsu_ld_iram                      (alu_lsu_ld_iram),
     .alu_lsu_ld_wram                      (alu_lsu_ld_wram),
+    .alu_lsu_ld_oram			  (alu_lsu_ld_oram),
     .alu_lsu_st_iram                      (alu_lsu_st_iram),
     .alu_lsu_st_wram                      (alu_lsu_st_wram),
     .alu_lsu_st_oram                      (alu_lsu_st_oram),
@@ -36,12 +37,12 @@ interface lsu_intf(
     .alu_lsu_iram_start_addr              (alu_lsu_iram_start_addr),
     .alu_lsu_iram_col_dir                 (alu_lsu_iram_col_dir),
     .alu_lsu_iram_row_dir                 (alu_lsu_iram_row_dir),
-    .alu_lsu_iram_col_len                 (alu_lsu_col_len),
+    .alu_lsu_iram_col_len                 (alu_lsu_iram_col_len),
     .alu_lsu_iram_row_len                 (alu_lsu_iram_row_len),
     .alu_lsu_wram_start_addr              (alu_lsu_wram_start_addr),
     .alu_lsu_wram_col_dir                 (alu_lsu_wram_col_dir),
     .alu_lsu_wram_row_dir                 (alu_lsu_wram_row_dir),
-    .alu_lsu_wram_col_len                 (alu_lsu_col_len),
+    .alu_lsu_wram_col_len                 (alu_lsu_wram_col_len),
     .alu_lsu_wram_row_len                 (alu_lsu_wram_row_len),
     
     .alu_lsu_act_type                     (alu_lsu_act_type),
@@ -207,7 +208,7 @@ interface lsu_intf(
     input axi_lsu_rlast;
     input axi_lsu_rvld;
 
-    output lsu_alu_rdy
+    output lsu_alu_rdy;
 
     output lsu_mxu_vld;
     output lsu_mxu_clr;

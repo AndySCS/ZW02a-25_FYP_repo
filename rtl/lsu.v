@@ -180,6 +180,7 @@ module lsu(
     //TPU
     input alu_lsu_ld_iram;
     input alu_lsu_ld_wram;
+    input alu_lsu_ld_oram;
     input alu_lsu_st_iram;
     input alu_lsu_st_wram;
     input alu_lsu_st_oram;

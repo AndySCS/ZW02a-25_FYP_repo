@@ -1,7 +1,7 @@
 module harness;
 
-    wire clk;
-    wire rst_n;
+    reg clk;
+    reg rst_n;
     wire alu_lsu_vld;
     wire alu_lsu_wb_vld;
     wire alu_lsu_lb_op;
@@ -59,7 +59,7 @@ module harness;
     wire axi_lsu_bvld;
     wire [11:0] axi_lsu_resp_oram_addr;
 
-    wire axi_lsu_arrdy,
+    wire axi_lsu_arrdy;
     wire [7:0] axi_lsu_rid;
     wire [63:0] axi_lsu_rdata;
     wire [1:0] axi_lsu_rresp;
@@ -164,6 +164,7 @@ module harness;
     .alu_lsu_src2                         (alu_lsu_src2),
     .alu_lsu_ld_iram                      (alu_lsu_ld_iram),
     .alu_lsu_ld_wram                      (alu_lsu_ld_wram),
+    .alu_lsu_ld_oram			          (alu_lsu_ld_oram),
     .alu_lsu_st_iram                      (alu_lsu_st_iram),
     .alu_lsu_st_wram                      (alu_lsu_st_wram),
     .alu_lsu_st_oram                      (alu_lsu_st_oram),
@@ -184,12 +185,12 @@ module harness;
     .alu_lsu_iram_start_addr              (alu_lsu_iram_start_addr),
     .alu_lsu_iram_col_dir                 (alu_lsu_iram_col_dir),
     .alu_lsu_iram_row_dir                 (alu_lsu_iram_row_dir),
-    .alu_lsu_iram_col_len                 (alu_lsu_col_len),
+    .alu_lsu_iram_col_len                 (alu_lsu_iram_col_len),
     .alu_lsu_iram_row_len                 (alu_lsu_iram_row_len),
     .alu_lsu_wram_start_addr              (alu_lsu_wram_start_addr),
     .alu_lsu_wram_col_dir                 (alu_lsu_wram_col_dir),
     .alu_lsu_wram_row_dir                 (alu_lsu_wram_row_dir),
-    .alu_lsu_wram_col_len                 (alu_lsu_col_len),
+    .alu_lsu_wram_col_len                 (alu_lsu_wram_col_len),
     .alu_lsu_wram_row_len                 (alu_lsu_wram_row_len),
     
     .alu_lsu_act_type                     (alu_lsu_act_type),
@@ -326,6 +327,7 @@ module harness;
         .alu_lsu_src2                         (alu_lsu_src2),
         .alu_lsu_ld_iram                      (alu_lsu_ld_iram),
         .alu_lsu_ld_wram                      (alu_lsu_ld_wram),
+        .alu_lsu_ld_oram			          (alu_lsu_ld_oram),
         .alu_lsu_st_iram                      (alu_lsu_st_iram),
         .alu_lsu_st_wram                      (alu_lsu_st_wram),
         .alu_lsu_st_oram                      (alu_lsu_st_oram),
@@ -346,12 +348,12 @@ module harness;
         .alu_lsu_iram_start_addr              (alu_lsu_iram_start_addr),
         .alu_lsu_iram_col_dir                 (alu_lsu_iram_col_dir),
         .alu_lsu_iram_row_dir                 (alu_lsu_iram_row_dir),
-        .alu_lsu_iram_col_len                 (alu_lsu_col_len),
+        .alu_lsu_iram_col_len                 (alu_lsu_iram_col_len),
         .alu_lsu_iram_row_len                 (alu_lsu_iram_row_len),
         .alu_lsu_wram_start_addr              (alu_lsu_wram_start_addr),
         .alu_lsu_wram_col_dir                 (alu_lsu_wram_col_dir),
         .alu_lsu_wram_row_dir                 (alu_lsu_wram_row_dir),
-        .alu_lsu_wram_col_len                 (alu_lsu_col_len),
+        .alu_lsu_wram_col_len                 (alu_lsu_wram_col_len),
         .alu_lsu_wram_row_len                 (alu_lsu_wram_row_len),
     
         .alu_lsu_act_type                     (alu_lsu_act_type),
@@ -455,5 +457,6 @@ module harness;
     end
     
 endmodule
+
 
 
