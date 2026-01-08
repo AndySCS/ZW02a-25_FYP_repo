@@ -22,8 +22,8 @@ module idu (
     lsu_rf_wb_addr,
     lsu_rf_wb_data,
     //rf input 
-    rf_idu_scr1_data,
-    rf_idu_scr2_data,
+    rf_idu_src1_data,
+    rf_idu_src2_data,
     //ifu output
     idu_ifu_rdy,
     idu_ifu_wfi,
@@ -99,8 +99,8 @@ module idu (
     idu_alu_pool_size,
     idu_alu_mxu_clr,
     //rf output
-    idu_rf_scr1_addr,
-    idu_rf_scr2_addr 
+    idu_rf_src1_addr,
+    idu_rf_src2_addr 
 );
     
     input clk;
@@ -116,6 +116,7 @@ module idu (
     input [4:0] alu_idu_wb_addr;
     input [31:0] alu_idu_wb_data;
     input alu_idu_wb_vld;
+    input alu_idu_ld_vld;
     
     input lsu_idu_wb_vld;
     input lsu_idu_ld_vld;
@@ -125,8 +126,8 @@ module idu (
     input [4:0] lsu_rf_wb_addr;
     input [31:0] lsu_rf_wb_data;
 
-    input [31:0] rf_idu_scr1_data;
-    input [31:0] rf_idu_scr2_data;
+    input [31:0] rf_idu_src1_data;
+    input [31:0] rf_idu_src2_data;
     
     output idu_ifu_rdy;
     output idu_ifu_wfi;
@@ -200,8 +201,8 @@ module idu (
     output [1:0] idu_alu_pool_size;
     output idu_alu_mxu_clr;
     
-    output [4:0] rf_idu_scr1_addr;
-    output [4:0] rf_idu_scr2_addr;
+    output [4:0] idu_rf_src1_addr;
+    output [4:0] idu_rf_src2_addr;
 
     wire idu_vld;
     wire idu_alu_vld_nxt;
@@ -211,8 +212,8 @@ module idu (
 
     wire idu_alu_wb_vld_nxt;
 
-    wire [31:0] scr1_nxt;
-    wire [31:0] scr2_nxt;
+    wire [31:0] src1_nxt;
+    wire [31:0] src2_nxt;
 
     wire src2_sel_imm;
 
@@ -382,18 +383,18 @@ module idu (
 
     assign idu_alu_wb_addr = idu_ins[`RD_RNG];
 
-    assign idu_rf_scr1_addr = ifu_idu_ins[`RS1_RNG];
-    assign idu_rf_scr2_addr = ifu_idu_ins[`RS2_RNG];
+    assign idu_rf_src1_addr = ifu_idu_ins[`RS1_RNG];
+    assign idu_rf_src2_addr = ifu_idu_ins[`RS2_RNG];
 
-    assign scr1_nxt = alu_idu_hazard_src1 ? alu_idu_wb_data 
+    assign src1_nxt = alu_idu_hazard_src1 ? alu_idu_wb_data 
                     : lsu_idu_hazard_src1 ? lsu_idu_wb_data
                     : rf_idu_hazard_src1 ? lsu_rf_wb_data
-                    : rf_idu_scr1_data;
-    assign scr2_nxt = src2_sel_imm ? imm 
+                    : rf_idu_src1_data;
+    assign src2_nxt = src2_sel_imm ? imm 
                     : alu_idu_hazard_src2 ? alu_idu_wb_data 
                     : lsu_idu_hazard_src2 ? lsu_idu_wb_data
                     : rf_idu_hazard_src2 ? lsu_rf_wb_data
-                    : rf_idu_scr2_data;
+                    : rf_idu_src2_data;
 
     assign src2_sel_imm = riscv_i_type | riscv_j_type | riscv_u_type;
 
@@ -422,17 +423,17 @@ module idu (
     assign lsu_idu_ld_hazard_src1 = (lsu_idu_wb_addr == idu_rf_src1_addr) & lsu_idu_wb_vld & ~(riscv_u_type | riscv_j_type) &  lsu_idu_ld_vld;
     assign rf_idu_hazard_src1     = (lsu_rf_wb_addr  == idu_rf_src1_addr) & lsu_rf_wb_vld  & ~(riscv_u_type | riscv_j_type);
     
-    assign alu_idu_hazard_src2    = (alu_idu_wb_addr == idu_rf_src1_addr) & alu_idu_wb_vld & ~(riscv_u_type | riscv_j_type | riscv_i_type) & ~alu_idu_ld_vld;
-    assign alu_idu_ld_hazard_src2 = (alu_idu_wb_addr == idu_rf_src1_addr) & alu_idu_wb_vld & ~(riscv_u_type | riscv_j_type | riscv_i_type) &  alu_idu_ld_vld;
-    assign lsu_idu_hazard_src2    = (lsu_idu_wb_addr == idu_rf_src1_addr) & lsu_idu_wb_vld & ~(riscv_u_type | riscv_j_type | riscv_i_type) & ~lsu_idu_ld_vld;
-    assign lsu_idu_ld_hazard_src2 = (lsu_idu_wb_addr == idu_rf_src1_addr) & lsu_idu_wb_vld & ~(riscv_u_type | riscv_j_type | riscv_i_type) &  lsu_idu_ld_vld;
-    assign rf_idu_hazard_src2     = (lsu_rf_wb_addr  == idu_rf_src1_addr) & lsu_rf_wb_vld  & ~(riscv_u_type | riscv_j_type | riscv_i_type);
+    assign alu_idu_hazard_src2    = (alu_idu_wb_addr == idu_rf_src2_addr) & alu_idu_wb_vld & ~(riscv_u_type | riscv_j_type | riscv_i_type) & ~alu_idu_ld_vld;
+    assign alu_idu_ld_hazard_src2 = (alu_idu_wb_addr == idu_rf_src2_addr) & alu_idu_wb_vld & ~(riscv_u_type | riscv_j_type | riscv_i_type) &  alu_idu_ld_vld;
+    assign lsu_idu_hazard_src2    = (lsu_idu_wb_addr == idu_rf_src2_addr) & lsu_idu_wb_vld & ~(riscv_u_type | riscv_j_type | riscv_i_type) & ~lsu_idu_ld_vld;
+    assign lsu_idu_ld_hazard_src2 = (lsu_idu_wb_addr == idu_rf_src2_addr) & lsu_idu_wb_vld & ~(riscv_u_type | riscv_j_type | riscv_i_type) &  lsu_idu_ld_vld;
+    assign rf_idu_hazard_src2     = (lsu_rf_wb_addr  == idu_rf_src2_addr) & lsu_rf_wb_vld  & ~(riscv_u_type | riscv_j_type | riscv_i_type);
     
     DFFE #(.WIDTH(32))
     ff_idu_alu_src1(
         .clk(clk),
         .en(idu_vld),
-        .d(scr1_nxt),
+        .d(src1_nxt),
         .q(idu_alu_src1)
     );
     
@@ -440,7 +441,7 @@ module idu (
     ff_idu_alu_src2(
         .clk(clk),
         .en(idu_vld),
-        .d(scr2_nxt),
+        .d(src2_nxt),
         .q(idu_alu_src2)
     );
 

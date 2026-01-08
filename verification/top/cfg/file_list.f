@@ -1,3 +1,3 @@
--f ../../../../rtl/rtl.f
+-f ../../../rtl/rtl.f
 -f ../verification.f
 

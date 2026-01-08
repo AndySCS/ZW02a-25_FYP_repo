@@ -4,8 +4,8 @@ module rf(
     idu_rf_src1_addr,
     idu_rf_src2_addr,
     lsu_rf_wb_vld,
-    lsu_idu_wb_addr,
-    lsu_idu_wb_data,
+    lsu_rf_wb_addr,
+    lsu_rf_wb_data,
     rf_idu_src1_data,
     rf_idu_src2_data
 );
@@ -17,6 +17,7 @@ module rf(
     input lsu_rf_wb_vld;
     input [4:0] lsu_rf_wb_addr;
     input [31:0] lsu_rf_wb_data;
+
     output [31:0] rf_idu_src1_data;
     output [31:0] rf_idu_src2_data;
 
@@ -37,10 +38,10 @@ module rf(
             DFFRE #(.WIDTH(32)) ff_rf_data(
                 .clk(clk),
                 .rst_n(rst_n),
-                .en(rf_data_en[i])
+                .en(rf_data_en[i]),
                 .d(rf_data_nxt),
                 .q(rf_data[i])
-            )
+            );
 
         end
     endgenerate

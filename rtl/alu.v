@@ -113,16 +113,21 @@ module alu(
     alu_lsu_start_y,
     alu_lsu_ld_st_addr,
     alu_lsu_st_low,
+    alu_lsu_st_row,
+    alu_lsu_st_col,
     alu_lsu_iram_start_addr,
     alu_lsu_wram_start_addr,
     alu_lsu_wram_row_len,
     alu_lsu_iram_row_len,
     alu_lsu_col_len,
     alu_lsu_act_type,
-    alu_lsu_pool_size
+    alu_lsu_pool_size,
+    alu_lsu_mxu_clr
 );
     
     //from idu
+    input clk;
+    input rst_n;
     //instruction related
     input idu_alu_vld;
     input [31:0] idu_alu_src1;

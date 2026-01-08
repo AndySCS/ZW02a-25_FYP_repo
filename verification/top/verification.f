@@ -5,4 +5,4 @@ $MINITPU_VER/ut/mxu/inc/inc.sv
 -f $MINITPU_VER/ut/mxu/env/env.f
 -f $MINITPU_VER/ut/mxu/tc/tc.f
 
-$MINITPU_VER/ut/mxu/th/harness.sv
+$MINITPU_VER/top/th/harness.sv

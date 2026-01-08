@@ -115,7 +115,7 @@
 //load store
 `define SRAM_ADDR_SIZE              12
 `define SRAM_ADDR_LSB               0
-`define SRAM_ADDR_MSB               (`SRAM_ADDR_LSB + `SRAM_ADDR_LSB -1)
+`define SRAM_ADDR_MSB               (`SRAM_ADDR_LSB + `SRAM_ADDR_SIZE -1)
 `define SRAM_ADDR_RNG               `SRAM_ADDR_MSB : `SRAM_ADDR_LSB
 
 `define SRAM_TYPE_SIZE              2

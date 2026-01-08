@@ -28,7 +28,6 @@ module AXI_WRITE_INFT(
     lsu_axi_awsize,
     lsu_axi_awburst,
     lsu_axi_awstr,
-    lsu_axi_awnum,
     lsu_axi_awvld,
     lsu_axi_oram_addr,
     lsu_axi_wdata,
@@ -80,7 +79,6 @@ module AXI_WRITE_INFT(
     input [2:0] lsu_axi_awsize;
     input [1:0] lsu_axi_awburst;
     input [2:0] lsu_axi_awstr;
-    input [3:0] lsu_axi_awnum;
     input lsu_axi_awvld;
     input [11:0] lsu_axi_oram_addr;
     input [63:0] lsu_axi_wdata;
@@ -155,7 +153,7 @@ module AXI_WRITE_INFT(
     wire [3:0] awcnt;
     wire [3:0] awcnt_nxt;
     wire [3:0] awcnt_en;
-    //W RESP
+    
     wire BVALID_qual;
     wire lsu_resp_recv;
     wire axi_lsu_bvld_nxt;
@@ -163,8 +161,9 @@ module AXI_WRITE_INFT(
     wire [AWID_WIDTH-1:0] axi_lsu_resp_bid_nxt;
     wire [1:0] axi_lsu_bresp_nxt;
 
-    dec4to16 resp_BID_dec(.in(axi_lsu_resp_bid), .out(axi_recv_ptr));
-    dec4to16 out_BID_dec(.in(BID), .out(BID_16));
+    wire [15:0] BID_16;
+
+
     assign axi_invld = ~axi_vld;
     assign axi_alloc_en = {16{axi_alloc_vld}} & axi_alloc_ptr & axi_invld;
     assign axi_alloc_vld = lsu_axi_awvld_qual | axi_doing_st;
@@ -375,7 +374,6 @@ module AXI_WRITE_INFT(
     assign AWBURST_nxt = lsu_axi_awvld_qual? lsu_axi_awburst : AWBURST;
     assign AWREGION_nxt = 4'b0;//lsu_axi_awvld_qual? lsu_axi_awid : AWID;
     assign awstr_nxt = lsu_axi_awvld_qual? lsu_axi_awstr : awstr;
-    assign awnum_nxt = lsu_axi_awvld_qual? lsu_axi_awnum : awnum;
     assign awcnt_nxt = lsu_axi_awvld_qual? 4'b0 : awcnt + 4'b1;
     assign awcnt_en = |axi_alloc_en;
     assign axi_doing_st = awcnt < awnum;
@@ -456,7 +454,7 @@ module AXI_WRITE_INFT(
     assign lsu_axi_wvld_qual = lsu_axi_wvld & axi_lsu_wrdy;
     assign WVALID_nxt = lsu_axi_wvld_qual | WVALID & ~WREADY;
     assign WDATA_nxt = lsu_axi_wvld_qual ? lsu_axi_wdata : WDATA;
-    assign WSTRB_nxt = lsu_axi_wvld_qual ? lsu_axi_wdata : WSTRB;
+    assign WSTRB_nxt = lsu_axi_wvld_qual ? lsu_axi_wstrb : WSTRB;
     assign wcnt_full = wcnt == AWLEN;
     assign WLAST_nxt = wcnt_full;
     assign wcnt_nxt = (lsu_axi_awvld_qual | wcnt_full) ? 8'b0 : wcnt_nxt + 7'b1;
@@ -502,6 +500,8 @@ module AXI_WRITE_INFT(
         .q(wcnt)
     );
     //
+
+    //W RESP
     assign BVALID_qual = BVALID & BREADY;
     assign lsu_resp_recv = lsu_axi_brdy & axi_lsu_bvld;
     assign axi_lsu_bvld_nxt = BVALID_qual | axi_lsu_bvld & ~lsu_resp_recv;
@@ -531,6 +531,8 @@ module AXI_WRITE_INFT(
         .out(axi_lsu_resp_oram_addr)
     );
 
+    dec4to16 resp_BID_dec(.in(axi_lsu_resp_bid), .out(axi_recv_ptr));
+    dec4to16 out_BID_dec(.in(BID), .out(BID_16));
     
     DFFR #(.WIDTH(1))
     ff_axi_lsu_bvld(
