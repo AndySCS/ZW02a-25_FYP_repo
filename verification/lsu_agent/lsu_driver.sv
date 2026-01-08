@@ -13,11 +13,11 @@ class lsu_driver extends uvm_driver #(lsu_tr);
     
     extern function void build_phase(uvm_phase phase);
     extern virtual task main_phase(uvm_phase phase);
-    extern virtual task idu_signal_config_type1_store(lsu_tr tr);
-    extern virtual task idu_signal_config_type1_store_mxualwaysrdy(lsu_tr tr);
-    extern virtual task idu_signal_config_type1_store_mxuwaitrdy(lsu_tr tr);
-    extern virtual task idu_signal_config_type2_store(lsu_tr tr);
-    extern virtual task idu_signal_config_load(lsu_tr tr);
+    extern virtual task alu_signal_config_type1_store(lsu_tr tr);
+    extern virtual task alu_signal_config_type1_store_mxualwaysrdy(lsu_tr tr);
+    extern virtual task alu_signal_config_type1_store_mxuwaitrdy(lsu_tr tr);
+    extern virtual task alu_signal_config_type2_store(lsu_tr tr);
+    extern virtual task alu_signal_config_load(lsu_tr tr);
 endclass //className extends superClass
 
 function void lsu_driver::build_phase(uvm_phase phase);
@@ -31,37 +31,37 @@ task lsu_driver::main_phase(uvm_phase phase);
     int count;
     lsu_tr tr;
     //tr = new("tr");
-    lsu_if.idu_lsu_vld = 0;
-    lsu_if.idu_lsu_ld_iram = 0;
-    lsu_if.idu_lsu_ld_wram = 0;
-    lsu_if.idu_lsu_st_iram = 0;
-    lsu_if.idu_lsu_st_wram = 0;
-    lsu_if.idu_lsu_st_oram = 0;
-    lsu_if.idu_lsu_st_dram = 0;
-    lsu_if.idu_lsu_conv = 0;
-    lsu_if.idu_lsu_act = 0;
-    lsu_if.idu_lsu_pool = 0;
-    lsu_if.idu_lsu_wfi = 0;
-    lsu_if.idu_lsu_dram_addr = 0;
-    lsu_if.idu_lsu_num = 0;
-    lsu_if.idu_lsu_len = 0;
-    lsu_if.idu_lsu_str = 0;
-    lsu_if.idu_lsu_start_x = 0;
-    lsu_if.idu_lsu_start_y = 0;
-    lsu_if.idu_lsu_ld_st_addr = 0;
-    lsu_if.idu_lsu_st_low = 0;
-    lsu_if.idu_lsu_iram_start_addr = 0;
-    lsu_if.idu_lsu_iram_col_dir = 0;
-    lsu_if.idu_lsu_iram_row_dir = 0;
-    lsu_if.idu_lsu_iram_col_len = 0;
-    lsu_if.idu_lsu_iram_row_len = 0;
-    lsu_if.idu_lsu_wram_start_addr = 0;
-    lsu_if.idu_lsu_wram_col_dir = 0;
-    lsu_if.idu_lsu_wram_row_dir = 0;
-    lsu_if.idu_lsu_wram_col_len = 0;
-    lsu_if.idu_lsu_wram_row_len = 0;
-    lsu_if.idu_lsu_act_type = 0;
-    lsu_if.idu_lsu_pool_size = 0;
+    lsu_if.alu_lsu_vld = 0;
+    lsu_if.alu_lsu_ld_iram = 0;
+    lsu_if.alu_lsu_ld_wram = 0;
+    lsu_if.alu_lsu_st_iram = 0;
+    lsu_if.alu_lsu_st_wram = 0;
+    lsu_if.alu_lsu_st_oram = 0;
+    lsu_if.alu_lsu_st_dram = 0;
+    lsu_if.alu_lsu_conv = 0;
+    lsu_if.alu_lsu_act = 0;
+    lsu_if.alu_lsu_pool = 0;
+    lsu_if.alu_lsu_wfi = 0;
+    lsu_if.alu_lsu_dram_addr = 0;
+    lsu_if.alu_lsu_num = 0;
+    lsu_if.alu_lsu_len = 0;
+    lsu_if.alu_lsu_str = 0;
+    lsu_if.alu_lsu_start_x = 0;
+    lsu_if.alu_lsu_start_y = 0;
+    lsu_if.alu_lsu_ld_st_addr = 0;
+    lsu_if.alu_lsu_st_low = 0;
+    lsu_if.alu_lsu_iram_start_addr = 0;
+    lsu_if.alu_lsu_iram_col_dir = 0;
+    lsu_if.alu_lsu_iram_row_dir = 0;
+    lsu_if.alu_lsu_iram_col_len = 0;
+    lsu_if.alu_lsu_iram_row_len = 0;
+    lsu_if.alu_lsu_wram_start_addr = 0;
+    lsu_if.alu_lsu_wram_col_dir = 0;
+    lsu_if.alu_lsu_wram_row_dir = 0;
+    lsu_if.alu_lsu_wram_col_len = 0;
+    lsu_if.alu_lsu_wram_row_len = 0;
+    lsu_if.alu_lsu_act_type = 0;
+    lsu_if.alu_lsu_pool_size = 0;
     lsu_if.mxu_lsu_data_rdy = 0;
     //from axi write 
     lsu_if.axi_lsu_awrdy = 0;
@@ -106,81 +106,81 @@ task lsu_driver::main_phase(uvm_phase phase);
     count = 0;
     while(1) begin
         //seq_item_port.get_next_item(tr);
-        //idu_signal_config_type1_store(tr);
-        idu_signal_config_type1_store_mxualwaysrdy(tr);
-        //idu_signal_config_type1_store_mxuwaitrdy(tr);
-        //idu_signal_config_type2_store(tr);
-        //idu_signal_config_load(tr);
+        //alu_signal_config_type1_store(tr);
+        alu_signal_config_type1_store_mxualwaysrdy(tr);
+        //alu_signal_config_type1_store_mxuwaitrdy(tr);
+        //alu_signal_config_type2_store(tr);
+        //alu_signal_config_load(tr);
         //seq_item_port.item_done();
     end
     	   
 endtask
 
-task lsu_driver::idu_signal_config_type1_store_mxualwaysrdy(lsu_tr tr);
+task lsu_driver::alu_signal_config_type1_store_mxualwaysrdy(lsu_tr tr);
 
         @(negedge lsu_if.clk);
-        if(lsu_if.lsu_idu_rdy) begin 
+        if(lsu_if.lsu_alu_rdy) begin 
     	//while(1)begin
         //@(negedge lsu_if.clk);
-        //if(lsu_if.lsu_idu_rdy) begin 
+        //if(lsu_if.lsu_alu_rdy) begin 
             //@(negedge lsu_if.clk);
             @(negedge lsu_if.clk);
-            lsu_if.idu_lsu_vld = 1;
-            lsu_if.idu_lsu_st_iram = 1;
-            lsu_if.idu_lsu_st_wram = 0;
-            lsu_if.idu_lsu_st_oram = 0;
-            lsu_if.idu_lsu_st_dram = 0;	
+            lsu_if.alu_lsu_vld = 1;
+            lsu_if.alu_lsu_st_iram = 1;
+            lsu_if.alu_lsu_st_wram = 0;
+            lsu_if.alu_lsu_st_oram = 0;
+            lsu_if.alu_lsu_st_dram = 0;	
 	        lsu_if.mxu_lsu_data_rdy = 1; //always ready
 	        //case1
-	        //lsu_if.idu_lsu_low = 0; //8/16int 
-            lsu_if.idu_lsu_num = 15; //number of chunk
-            lsu_if.idu_lsu_len = 0; //element size
+	        //lsu_if.alu_lsu_low = 0; //8/16int 
+            lsu_if.alu_lsu_num = 15; //number of chunk
+            lsu_if.alu_lsu_len = 0; //element size
 
 	    //if(count == 3)begin
-	    //	lsu_if.idu_lsu_len = 4;
+	    //	lsu_if.alu_lsu_len = 4;
 	    //end
-            lsu_if.idu_lsu_start_x = 0;
-            lsu_if.idu_lsu_start_y = 3;
-            lsu_if.idu_lsu_ld_st_addr = 0;
+            lsu_if.alu_lsu_start_x = 0;
+            lsu_if.alu_lsu_start_y = 3;
+            lsu_if.alu_lsu_ld_st_addr = 0;
             //when num more than 1
-	    if(lsu_if.idu_lsu_num != 0)begin
+	    if(lsu_if.alu_lsu_num != 0)begin
 	    	@(negedge lsu_if.clk);
-	    	lsu_if.idu_lsu_vld = 0;
+	    	lsu_if.alu_lsu_vld = 0;
 	    end
 	    
     end
 
-    `uvm_info("lsu_driver", "begin sending idu data config", UVM_NONE)
+    `uvm_info("lsu_driver", "begin sending alu data config", UVM_NONE)
 endtask
 
-task lsu_driver::idu_signal_config_type1_store_mxuwaitrdy(lsu_tr tr);
+task lsu_driver::alu_signal_config_type1_store_mxuwaitrdy(lsu_tr tr);
     int count = 0;
 	@(negedge lsu_if.clk);
-    if(lsu_if.lsu_idu_rdy) begin 
+    if(lsu_if.lsu_alu_rdy) begin 
         @(negedge lsu_if.clk);
-        lsu_if.idu_lsu_vld = 1;
-        lsu_if.idu_lsu_st_iram = 1;
-        lsu_if.idu_lsu_st_wram = 0;
-        lsu_if.idu_lsu_st_oram = 0;
-        lsu_if.idu_lsu_st_dram = 0;
+        lsu_if.alu_lsu_vld = 1;
+        lsu_if.alu_lsu_st_iram = 1;
+        lsu_if.alu_lsu_st_wram = 0;
+        lsu_if.alu_lsu_st_oram = 0;
+        lsu_if.alu_lsu_st_dram = 0;
 	    lsu_if.mxu_lsu_data_rdy = 0;//not always ready	
 	    //case1
-	    //lsu_if.idu_lsu_low = 0; //8/16int 
-        lsu_if.idu_lsu_num = 3; //number of chunk
-        lsu_if.idu_lsu_len = 0; //element size
-        lsu_if.idu_lsu_start_x = 0;
-        lsu_if.idu_lsu_start_y = 0;
-        lsu_if.idu_lsu_ld_st_addr = 0;
+	    //lsu_if.alu_lsu_low = 0; //8/16int 
+        lsu_if.alu_lsu_num = 3; //number of chunk
+        lsu_if.alu_lsu_len = 0; //element size
+        lsu_if.alu_lsu_start_x = 0;
+        lsu_if.alu_lsu_start_y = 0;
+        lsu_if.alu_lsu_ld_st_addr = 0;
 	    @(negedge lsu_if.clk);
-        lsu_if.idu_lsu_vld = 0;
+        lsu_if.alu_lsu_vld = 0;
         @(negedge lsu_if.clk);
         @(negedge lsu_if.clk);
 	lsu_if.mxu_lsu_data_rdy = 1; //wait two cycle then pull high ready
     end
-    `uvm_info("lsu_driver", "begin sending idu data config", UVM_NONE)
+    `uvm_info("lsu_driver", "begin sending alu data config", UVM_NONE)
 endtask
 
-task lsu_driver::idu_signal_config_type1_store(lsu_tr tr);
+task lsu_driver::alu_signal_config_type1_store(lsu_tr tr);
 
     /*int matrix_sent_row = 0;
     int cur_row = 0;
@@ -191,30 +191,30 @@ task lsu_driver::idu_signal_config_type1_store(lsu_tr tr);
 */
     int count = 0;
         @(negedge lsu_if.clk);
-        if(lsu_if.lsu_idu_rdy) begin 
+        if(lsu_if.lsu_alu_rdy) begin 
     	//while(1)begin
         //@(negedge lsu_if.clk);
-        //if(lsu_if.lsu_idu_rdy) begin 
+        //if(lsu_if.lsu_alu_rdy) begin 
             //@(negedge lsu_if.clk);
             @(negedge lsu_if.clk);
-            lsu_if.idu_lsu_vld = 1;
-            lsu_if.idu_lsu_st_iram = 1;
-            lsu_if.idu_lsu_st_wram = 0;
-            lsu_if.idu_lsu_st_oram = 0;
-            lsu_if.idu_lsu_st_dram = 0;
+            lsu_if.alu_lsu_vld = 1;
+            lsu_if.alu_lsu_st_iram = 1;
+            lsu_if.alu_lsu_st_wram = 0;
+            lsu_if.alu_lsu_st_oram = 0;
+            lsu_if.alu_lsu_st_dram = 0;
 	    lsu_if.mxu_lsu_data_rdy = 0;
 	
 	        //lsu_if.mxu_lsu_data_rdy = 1;
 	        //case1
-	        //lsu_if.idu_lsu_low = 0; //8/16int 
-            lsu_if.idu_lsu_num = 0; //number of chunk
-            lsu_if.idu_lsu_len = 1; //element size
-            lsu_if.idu_lsu_start_x = 0;
-            lsu_if.idu_lsu_start_y = 0;
-            lsu_if.idu_lsu_ld_st_addr = 0;
+	        //lsu_if.alu_lsu_low = 0; //8/16int 
+            lsu_if.alu_lsu_num = 0; //number of chunk
+            lsu_if.alu_lsu_len = 1; //element size
+            lsu_if.alu_lsu_start_x = 0;
+            lsu_if.alu_lsu_start_y = 0;
+            lsu_if.alu_lsu_ld_st_addr = 0;
 	    @(negedge lsu_if.clk);
-            lsu_if.idu_lsu_vld = 0;
-            //lsu_if.idu_lsu_st_iram = 0;
+            lsu_if.alu_lsu_vld = 0;
+            //lsu_if.alu_lsu_st_iram = 0;
             //@(negedge lsu_if.clk); 
            /// @(negedge lsu_if.clk);
             @(negedge lsu_if.clk);
@@ -223,10 +223,10 @@ task lsu_driver::idu_signal_config_type1_store(lsu_tr tr);
         //end
     end
 
-    `uvm_info("lsu_driver", "begin sending idu data config", UVM_NONE)
+    `uvm_info("lsu_driver", "begin sending alu data config", UVM_NONE)
 endtask
 
-task lsu_driver::idu_signal_config_type2_store(lsu_tr tr);
+task lsu_driver::alu_signal_config_type2_store(lsu_tr tr);
 
     /*int matrix_sent_row = 0;
     int cur_row = 0;
@@ -239,15 +239,15 @@ task lsu_driver::idu_signal_config_type2_store(lsu_tr tr);
     bit lsu_axi_wlast_2ff;
     while(1)begin
         @(negedge lsu_if.clk);
-        if(lsu_if.lsu_idu_rdy) begin
-            lsu_if.idu_lsu_vld = 1;
-            lsu_if.idu_lsu_st_dram = 1;
+        if(lsu_if.lsu_alu_rdy) begin
+            lsu_if.alu_lsu_vld = 1;
+            lsu_if.alu_lsu_st_dram = 1;
 	        lsu_if.axi_lsu_awrdy = 1;
-            lsu_if.idu_lsu_num = 16;
-            lsu_if.idu_lsu_len = 4;
-	        lsu_if.idu_lsu_ld_st_addr = 'b00000;
+            lsu_if.alu_lsu_num = 16;
+            lsu_if.alu_lsu_len = 4;
+	        lsu_if.alu_lsu_ld_st_addr = 'b00000;
             @(negedge lsu_if.clk);
-            lsu_if.idu_lsu_vld = 0;
+            lsu_if.alu_lsu_vld = 0;
 	    //lsu_if.axi_lsu_awrdy = 0;
             @(negedge lsu_if.clk);
             break;
@@ -258,7 +258,7 @@ task lsu_driver::idu_signal_config_type2_store(lsu_tr tr);
     end
 endtask
 
-task lsu_driver::idu_signal_config_load(lsu_tr tr);
+task lsu_driver::alu_signal_config_load(lsu_tr tr);
 
     /*int matrix_sent_row = 0;
     int cur_row = 0;
@@ -269,16 +269,16 @@ task lsu_driver::idu_signal_config_load(lsu_tr tr);
     */
     while(1)begin
         @(negedge lsu_if.clk);
-        if(lsu_if.lsu_idu_rdy) begin
-            lsu_if.idu_lsu_vld = 1;
-            lsu_if.idu_lsu_ld_iram = 1;
-            //lsu_if.idu_lsu_ld_wram = 1;
+        if(lsu_if.lsu_alu_rdy) begin
+            lsu_if.alu_lsu_vld = 1;
+            lsu_if.alu_lsu_ld_iram = 1;
+            //lsu_if.alu_lsu_ld_wram = 1;
 	        lsu_if.axi_lsu_arrdy = 1;
-            lsu_if.idu_lsu_num = 16;
-            lsu_if.idu_lsu_len = 4;
-	    lsu_if.idu_lsu_ld_st_addr = 'b00000;
+            lsu_if.alu_lsu_num = 16;
+            lsu_if.alu_lsu_len = 4;
+	    lsu_if.alu_lsu_ld_st_addr = 'b00000;
             @(negedge lsu_if.clk);
-            lsu_if.idu_lsu_vld = 0;
+            lsu_if.alu_lsu_vld = 0;
 	    //lsu_if.axi_lsu_awrdy = 0;
             @(negedge lsu_if.clk);
             break;
