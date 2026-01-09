@@ -714,16 +714,17 @@ module lsu(
         //.q(lsu_st_type2_wr_chunk_size_cnt)
     //);
 
-    assign lsu_st_type2_wr_done = lsu_st_type2_wr_cnt_end_ff & ~lsu_st_vld & lsu_st_type2_chunk_last;
-    assign lsu_st_type2_doing = (lsu_st_type2_wr_qual | lsu_st_type2_wr_qual_ff) & ~lsu_st_type2_wr_done; 
-    assign lsu_st_type2_oram_addr = ((&lsu_st_type)&lsu_st_vld) ? alu_lsu_ld_st_addr[11:4] : lsu_st_type2_oram_addr_ff;
-    assign lsu_st_type2_oram_addr_nxt = lsu_st_type2_oram_addr + 1;
-    assign lsu_st_type2_oram_ce = lsu_st_type2_doing & lsu_st_type2_new_chunk & ~lsu_st_type2_wr_cnt_end;
+    //assign lsu_st_type2_wr_done = lsu_st_type2_wr_cnt_end_ff & ~lsu_st_vld & lsu_st_type2_chunk_last;
+    //assign lsu_st_type2_doing = (lsu_st_type2_wr_qual | lsu_st_type2_wr_qual_ff) & ~lsu_st_type2_wr_done;
+    assign lsu_st_type2_oram_ce = lsu_st_type2_wr_qual;
     assign lsu_st_type2_oram_we = 1'b0;
     assign lsu_st_type2_oram_din = {127{1'b0}};
+    assign lsu_st_type2_oram_addr = lsu_st_type2_wr_chunk_len_cnt_nxt;
+    //assign lsu_st_type2_oram_addr = ((&lsu_st_type)&lsu_st_vld) ? alu_lsu_ld_st_addr[11:4] : lsu_st_type2_oram_addr_ff;
+    //assign lsu_st_type2_oram_addr_nxt = lsu_st_type2_oram_addr + 1;
     assign lsu_st_type2_oram_dout = lsu_st_type2_oram_ce_ff ? lsu_oram_dout : {127{1'b0}};
-    assign lsu_st_type2_cnt_row_nxt = lsu_st_vld & lsu_st_type2_doing ? 1'b1 : lsu_st_type2_cnt_row + 1;
-    assign lsu_st_type2_cnt_row_en = lsu_st_type2_doing;
+    //assign lsu_st_type2_cnt_row_nxt = lsu_st_vld & lsu_st_type2_doing ? 1'b1 : lsu_st_type2_cnt_row + 1;
+    //assign lsu_st_type2_cnt_row_en = lsu_st_type2_doing;
     DFFR #(.WIDTH(1))
     ff_lsu_st_type2_wr_cnt_end(
         .clk(clk),
@@ -756,13 +757,15 @@ module lsu(
         .d(lsu_st_type2_doing),
         .q(lsu_st_type2_doing_ff)
     );
-    assign lsu_axi_wvld = (lsu_st_type2_doing_ff&lsu_st_type2_doing) & ~lsu_st_vld;
+    //assign lsu_axi_wvld = (lsu_st_type2_doing_ff&lsu_st_type2_doing) & ~lsu_st_vld;
+    assign lsu_axi_wvld = lsu_st_type2_start_wr;
+
     //update strb according the awsize
     wire [7:0] lsu_axi_wstrb_raw;
     assign lsu_axi_wstrb_raw = {8{1'b1}};
     assign lsu_axi_wstrb = ~(|lsu_axi_awsize) ? lsu_axi_wstrb_raw >> 3'd7 : (lsu_axi_awsize[0]^lsu_axi_awsize[1] ? (lsu_axi_wstrb_raw>>(lsu_axi_awsize<<1'b1)) : lsu_axi_wstrb_raw);
     //assign lsu_axi_wstrb = ~(|lsu_axi_awsize) ? 8'b00000001 : lsu_axi_awsize[0]^lsu_axi_awsize[1] ? (lsu_axi_awsize[0] ? 8'b00000011 : 8'b00001111) : {8{1'b1}};
-    assign lsu_axi_wlast = lsu_st_type2_chunk_last & lsu_st_type2_doing_ff;
+    assign lsu_axi_wlast = lsu_st_type2_start_wr & lsu_st_type2_wr_chunk_size_cnt_end;
     //assign lsu_axi_wlast = lsu_st_type2_wr_done & lsu_st_type2_doing_ff;
     wire [11:0] lsu_axi_oram_addr_nxt; 
     assign lsu_axi_oram_addr_nxt = lsu_st_type2_oram_ce ? lsu_oram_addr : lsu_oram_addr_ff;
@@ -784,23 +787,23 @@ module lsu(
     );
  
  
-    DFFRE #(.WIDTH(8))
-    ff_lsu_type2_chunk_count (
-        .clk(clk),
-        .rst_n(rst_n),
-        .d(lsu_st_type2_chunk_count_nxt),
-        .en(lsu_st_type2_doing),
-        .q(lsu_st_type2_chunk_count)
-    );
-    DFFRE #(.WIDTH(8))
-    ff_lsu_type2_cnt_row (
-        .clk(clk),
-        .rst_n(rst_n),
-        .d(lsu_st_type2_cnt_row_nxt),
-        //.en(lsu_st_type2_cnt_row_en),
-        .en(lsu_st_type2_oram_ce),
-	    .q(lsu_st_type2_cnt_row)
-    );
+    //DFFRE #(.WIDTH(8))
+    //ff_lsu_type2_chunk_count (
+        //.clk(clk),
+        //.rst_n(rst_n),
+        //.d(lsu_st_type2_chunk_count_nxt),
+        //.en(lsu_st_type2_doing),
+        //.q(lsu_st_type2_chunk_count)
+    //);
+    //DFFRE #(.WIDTH(8))
+    //ff_lsu_type2_cnt_row (
+        //.clk(clk),
+        //.rst_n(rst_n),
+        //.d(lsu_st_type2_cnt_row_nxt),
+        ////.en(lsu_st_type2_cnt_row_en),
+        //.en(lsu_st_type2_oram_ce),
+	    //.q(lsu_st_type2_cnt_row)
+    //);
     DFFRE #(.WIDTH(8))
     ff_lsu_type2_store_addr (
         .clk(clk),
@@ -1473,6 +1476,18 @@ module lsu(
     );
 
 endmodule   
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
