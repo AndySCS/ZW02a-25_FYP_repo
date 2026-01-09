@@ -597,8 +597,8 @@ module lsu(
     wire lsu_st_type2_wr_qual_ff;
     wire lsu_st_type2_wr_qual_2ff;
     wire lsu_st_type2_start_wr_pulse;
-
-    assign lsu_st_type2_wr_cnt_end = lsu_st_type2_wr_chunk_len_cnt_end;
+    //assign lsu_st_type2_wr_cnt_end = lsu_st_type2_wr_chunk_len_cnt_end; 
+    assign lsu_st_type2_wr_cnt_end = lsu_st_type2_wr_chunk_len_cnt_end & lsu_st_type2_wr_chunk_size_cnt_end;
     assign lsu_st_type2_wr_qual = lsu_st_vld ? (lsu_st_vld & (&lsu_st_type) & axi_lsu_awrdy) : (lsu_st_type2_wr_cnt_end ? 1'b0 :(lsu_st_vld_ff & (&lsu_st_type_ff)) & axi_lsu_awrdy);
 
     //assign lsu_st_type2_wr_qual = lsu_st_vld ? (lsu_st_vld & (&lsu_st_type) & axi_lsu_awrdy) : (lsu_st_vld_ff & (&lsu_st_type_ff) & axi_lsu_awrdy);
@@ -647,7 +647,7 @@ module lsu(
     wire [1:0] lsu_st_type2_wr_chunk_size_cnt;
 
     assign lsu_st_type2_wr_chunk_len_cnt_end = lsu_st_type2_start_wr_pulse ? 1'b0 : (lsu_st_type2_wr_chunk_len_cnt == alu_lsu_num);
-    assign lsu_st_type2_wr_chunk_len_cnt_nxt = lsu_st_type2_wr_qual&~lsu_st_type2_wr_qual_ff ? 1'b0 : lsu_st_type2_start_wr ? (lsu_st_type2_wr_chunk_len_cnt_end ? lsu_st_type2_wr_chunk_len_cnt : lsu_st_type2_wr_chunk_len_cnt+1'b1) : 1'b0;
+    assign lsu_st_type2_wr_chunk_len_cnt_nxt = lsu_st_type2_wr_qual&~lsu_st_type2_wr_qual_ff ? 1'b0 : lsu_st_type2_start_wr ? (lsu_st_type2_wr_chunk_size_cnt_end ? (lsu_st_type2_wr_chunk_len_cnt_end ? lsu_st_type2_wr_chunk_len_cnt : lsu_st_type2_wr_chunk_len_cnt+1'b1) : lsu_st_type2_wr_chunk_len_cnt) : 1'b0;
     DFFRE #(.WIDTH(8))
     ff_lsu_st_type2_wr_chunk_len_cnt(
         .clk(clk),
@@ -1471,3 +1471,8 @@ module lsu(
     );
 
 endmodule   
+
+
+
+
+
