@@ -170,15 +170,15 @@
 `define RLEN_MSB                    (`RLEN_LSB + `RLEN_SIZE -1)
 `define RLEN_RNG                    `RLEN_MSB : `RLEN_LSB
 
-`define WRAM_RLEN_SIZE              4
-`define WRAM_RLEN_LSB               (`CLEN_MSB + 1)
-`define WRAM_RLEN_MSB               (`WRAM_RLEN_LSB + `WRAM_RLEN_SIZE -1)
-`define WRAM_RLEN_RNG               `WRAM_RLEN_MSB : `WRAM_RLEN_LSB
-
 `define IRAM_RLEN_SIZE              4
-`define IRAM_RLEN_LSB               (`RS2_MSB + 1)
+`define IRAM_RLEN_LSB               (`CLEN_MSB + 1)
 `define IRAM_RLEN_MSB               (`IRAM_RLEN_LSB + `IRAM_RLEN_SIZE -1)
 `define IRAM_RLEN_RNG               `IRAM_RLEN_MSB : `IRAM_RLEN_LSB
+
+`define WRAM_RLEN_SIZE              4
+`define WRAM_RLEN_LSB               (`RS2_MSB + 1)
+`define WRAM_RLEN_MSB               (`WRAM_RLEN_LSB + `WRAM_RLEN_SIZE -1)
+`define WRAM_RLEN_RNG               `WRAM_RLEN_MSB : `WRAM_RLEN_LSB
 
 `define WRAM_DIR_SIZE               1
 `define WRAM_DIR_LSB                (`IRAM_RLEN_MSB + 1)

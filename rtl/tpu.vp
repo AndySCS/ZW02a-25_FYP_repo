@@ -593,7 +593,7 @@ module tpu(
         .alu_lsu_wram_start_addr              (alu_lsu_wram_start_addr),
         .alu_lsu_wram_col_dir                 (alu_lsu_wram_col_dir),
         .alu_lsu_wram_row_dir                 (alu_lsu_wram_row_dir),
-        .alu_lsu_wram_col_len                 (alu_lsu_col_len),
+        .alu_lsu_wram_col_len                 (alu_lsu_iram_row_len),
         .alu_lsu_wram_row_len                 (alu_lsu_wram_row_len),
         .alu_lsu_act_type                     (alu_lsu_act_type),
         .alu_lsu_pool_size                    (alu_lsu_pool_size),
