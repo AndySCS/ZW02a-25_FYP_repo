@@ -657,7 +657,9 @@ module lsu(
         .q(lsu_st_type2_wr_chunk_len_cnt)
     );
 
-    assign lsu_st_type2_wr_chunk_size_cnt_end = lsu_st_type2_start_wr_pulse ? 1'b0 : (alu_lsu_len[2] ? (alu_lsu_len[0] ? (lsu_st_type2_wr_chunk_size_cnt == 2'b11) : (lsu_st_type2_wr_chunk_size_cnt == 2'b01)) : 1'b1);
+    assign lsu_st_type2_wr_chunk_size_cnt_end = (lsu_st_type2_wr_qual&~lsu_st_type2_wr_qual_ff) ? 1'b0 : (alu_lsu_len[2] ? (alu_lsu_len[0] ? (lsu_st_type2_wr_chunk_size_cnt == 2'b11) : (lsu_st_type2_wr_chunk_size_cnt == 2'b01)) : 1'b1);
+
+    //assign lsu_st_type2_wr_chunk_size_cnt_end = lsu_st_type2_start_wr_pulse ? 1'b0 : (alu_lsu_len[2] ? (alu_lsu_len[0] ? (lsu_st_type2_wr_chunk_size_cnt == 2'b11) : (lsu_st_type2_wr_chunk_size_cnt == 2'b01)) : 1'b1);
 
     assign lsu_st_type2_wr_chunk_size_cnt_nxt =  lsu_st_type2_wr_qual&~lsu_st_type2_wr_qual_ff ? 1'b0 : lsu_st_type2_start_wr ? lsu_st_type2_wr_chunk_size_cnt_end ? 1'b0 : (lsu_st_type2_wr_chunk_size_cnt_end ? lsu_st_type2_wr_chunk_size_cnt : lsu_st_type2_wr_chunk_size_cnt+1'b1) : 1'b0;
     
