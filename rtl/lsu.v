@@ -713,16 +713,30 @@ module lsu(
         //.d(lsu_st_type2_wr_chunk_size_cnt_nxt),
         //.q(lsu_st_type2_wr_chunk_size_cnt)
     //);
-
+    wire[127:0] lsu_oram_dout_hi;
+    wire[127:0] lsu_st_type2_oram_dout_raw;
     //assign lsu_st_type2_wr_done = lsu_st_type2_wr_cnt_end_ff & ~lsu_st_vld & lsu_st_type2_chunk_last;
     //assign lsu_st_type2_doing = (lsu_st_type2_wr_qual | lsu_st_type2_wr_qual_ff) & ~lsu_st_type2_wr_done;
     assign lsu_st_type2_oram_ce = lsu_st_type2_wr_qual;
     assign lsu_st_type2_oram_we = 1'b0;
     assign lsu_st_type2_oram_din = {127{1'b0}};
-    assign lsu_st_type2_oram_addr = lsu_st_type2_wr_chunk_len_cnt_nxt;
+    assign lsu_st_type2_oram_addr = lsu_st_type2_wr_chunk_len_cnt_nxt + alu_lsu_ld_st_addr[11:4];
     //assign lsu_st_type2_oram_addr = ((&lsu_st_type)&lsu_st_vld) ? alu_lsu_ld_st_addr[11:4] : lsu_st_type2_oram_addr_ff;
     //assign lsu_st_type2_oram_addr_nxt = lsu_st_type2_oram_addr + 1;
-    assign lsu_st_type2_oram_dout = lsu_st_type2_oram_ce_ff ? lsu_oram_dout : {127{1'b0}};
+    
+    assign lsu_st_type2_oram_dout_raw = lsu_st_type2_oram_ce_ff ? alu_lsu_st_low ? lsu_oram_dout : lsu_oram_dout_hi : {127{1'b0}};
+    wire [7:0] lsu_st_type2_oram_addr_shift;
+    // 8 bit => [3:0]
+    // 16 bit => [3:1] 
+    // 32 bit => [3:2]]
+    // 64 bit => [3]
+    // 128 256 no need care
+    assign lsu_st_type2_oram_addr_shift = ~(|alu_lsu_len) ? alu_lsu_ld_st_addr[3:0] 
+                                                          : alu_lsu_len[0]^alu_lsu_len[1] ? (alu_lsu_len[0] ? {alu_lsu_ld_st_addr[3:1],1'b0} 
+                                                                                                            : {alu_lsu_ld_st_addr[3:2],{2{1'b0}}})
+                                                                                          : (alu_lsu_len[0] ? {alu_lsu_ld_st_addr[3],{3{1'b0}}}
+                                                                                                            : {4{1'b0}});  
+    assign lsu_st_type2_oram_dout = lsu_st_type2_oram_dout_raw >> (lsu_st_type2_oram_addr_shift* 4'd8);   
     //assign lsu_st_type2_cnt_row_nxt = lsu_st_vld & lsu_st_type2_doing ? 1'b1 : lsu_st_type2_cnt_row + 1;
     //assign lsu_st_type2_cnt_row_en = lsu_st_type2_doing;
     DFFR #(.WIDTH(1))
@@ -747,8 +761,11 @@ module lsu(
     //assign lsu_st_type2_target_shift = ~(|lsu_axi_awsize) ? 8'd120 : ((8'd128)-(lsu_st_type2_shift_len));
     assign lsu_st_type2_target_shift = lsu_st_type2_st_low_ff ? 8'd120 : ~(|lsu_axi_awsize) ? 8'd112 : ((8'd128)-(lsu_st_type2_shift_len));
     //assign lsu_st_type2_wdata_raw = lsu_st_type2_oram_ce_ff ? lsu_st_type2_oram_dout & (lsu_st_type2_oram_dout << lsu_st_type2_target_shift >> lsu_st_type2_target_shift) : lsu_st_type2_wdata_mdf & (lsu_st_type2_oram_dout << lsu_st_type2_target_shift >> lsu_st_type2_target_shift) ; 
-    assign lsu_st_type2_wdata_raw = lsu_st_type2_oram_ce_ff ? lsu_st_type2_oram_dout : lsu_st_type2_wdata_mdf;
-    assign lsu_st_type2_wdata_mdf_nxt = lsu_st_type2_oram_dout >> (lsu_st_type2_shift_len); 
+    //do the shifting here
+    wire [6:0] lsu_st_type2_wdata_shift;
+    assign lsu_st_type2_wdata_shift = lsu_st_type2_wr_chunk_size_cnt << 3'd6;
+    
+    assign lsu_st_type2_wdata_raw = lsu_st_type2_oram_ce_ff ? (alu_lsu_len[2] ? lsu_st_type2_oram_dout >> lsu_st_type2_wdata_shift : lsu_st_type2_oram_dout) : lsu_st_type2_oram_dout;
     assign lsu_axi_wdata = lsu_st_type2_wdata_raw[63:0];
     DFFR #(.WIDTH(1))
     ff_lsu_st_type2_doing(
