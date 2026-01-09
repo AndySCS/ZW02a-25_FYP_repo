@@ -187,7 +187,7 @@ module idu (
     output [2:0] idu_alu_str;
     output [3:0] idu_alu_start_x;
     output [3:0] idu_alu_start_y;
-    output [11:0] idu_alu_ld_st_addr;
+    output [`SRAM_ADDR_SIZE-1:0] idu_alu_ld_st_addr;
     output idu_alu_st_low;
     output [11:0] idu_alu_iram_start_addr;
     output [11:0]idu_alu_wram_start_addr;

@@ -185,7 +185,7 @@ module alu(
     input [2:0]  idu_alu_str;
     input [3:0]  idu_alu_start_x;
     input [3:0]  idu_alu_start_y;
-    input [11:0] idu_alu_ld_st_addr;
+    input [`SRAM_ADDR_SIZE-1:0] idu_alu_ld_st_addr;
     input        idu_alu_st_low;
     input [3:0]  idu_alu_st_row;
     input [3:0]  idu_alu_st_col;
@@ -247,7 +247,7 @@ module alu(
     output [2:0]  alu_lsu_str;
     output [3:0]  alu_lsu_start_x;
     output [3:0]  alu_lsu_start_y;
-    output [11:0] alu_lsu_ld_st_addr;
+    output [`SRAM_ADDR_SIZE-1:0] alu_lsu_ld_st_addr;
     output        alu_lsu_st_low;
     output [3:0]  alu_lsu_st_row;
     output [3:0]  alu_lsu_st_col;

@@ -154,7 +154,7 @@ module tpu(
     wire [2:0] idu_alu_str;
     wire [3:0] idu_alu_start_x;
     wire [3:0] idu_alu_start_y;
-    wire [11:0] idu_alu_ld_st_addr;
+    wire [`SRAM_ADDR_SIZE-1:0] idu_alu_ld_st_addr;
     wire idu_alu_st_low;
     wire [11:0] idu_alu_iram_start_addr;
     wire [11:0]idu_alu_wram_start_addr;

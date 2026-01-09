@@ -113,7 +113,7 @@
 `define J_TYPE_IMM_SIZE             (`J_TYPE_IMM_20_SIZE + `J_TYPE_IMM_19_12_SIZE + `J_TYPE_IMM_11_SIZE + `J_TYPE_IMM_10_1_SIZE)
 
 //load store
-`define SRAM_ADDR_SIZE              12
+`define SRAM_ADDR_SIZE              13
 `define SRAM_ADDR_LSB               0
 `define SRAM_ADDR_MSB               (`SRAM_ADDR_LSB + `SRAM_ADDR_SIZE -1)
 `define SRAM_ADDR_RNG               `SRAM_ADDR_MSB : `SRAM_ADDR_LSB
