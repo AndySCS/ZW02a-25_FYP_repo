@@ -589,13 +589,19 @@ module lsu(
     
     wire lsu_st_type2_wr_cnt_end;
    
+    wire lsu_st_type2_wr_chunk_len_cnt_end;
+    wire lsu_st_type2_wr_chunk_size_cnt_end;
     //write data part
     //once we know lsu_st_type2_wr_qual => axi_awrdy & vld
     wire lsu_st_type2_wr_qual;
     wire lsu_st_type2_wr_qual_ff;
     wire lsu_st_type2_wr_qual_2ff;
     wire lsu_st_type2_start_wr_pulse;
-    assign lsu_st_type2_wr_qual = lsu_st_vld ? (lsu_st_vld & (&lsu_st_type) & axi_lsu_awrdy) : (lsu_st_vld_ff & (&lsu_st_type_ff)) & axi_lsu_awrdy;
+
+    assign lsu_st_type2_wr_cnt_end = lsu_st_type2_wr_chunk_len_cnt_end;
+    assign lsu_st_type2_wr_qual = lsu_st_vld ? (lsu_st_vld & (&lsu_st_type) & axi_lsu_awrdy) : (lsu_st_type2_wr_cnt_end ? 1'b0 :(lsu_st_vld_ff & (&lsu_st_type_ff)) & axi_lsu_awrdy);
+
+    //assign lsu_st_type2_wr_qual = lsu_st_vld ? (lsu_st_vld & (&lsu_st_type) & axi_lsu_awrdy) : (lsu_st_vld_ff & (&lsu_st_type_ff) & axi_lsu_awrdy);
     DFFR #(.WIDTH(1))
     ff_lsu_st_type2_wr_qual(
         .clk(clk),
@@ -637,20 +643,33 @@ module lsu(
 
     wire [7:0] lsu_st_type2_wr_chunk_len_cnt;
     wire [7:0] lsu_st_type2_wr_chunk_len_cnt_nxt;
-    wire lsu_st_type2_wr_chunk_len_cnt_end;
-    wire lsu_st_type2_wr_chunk_size_cnt_end;
     wire [1:0] lsu_st_type2_wr_chunk_size_cnt_nxt;
     wire [1:0] lsu_st_type2_wr_chunk_size_cnt;
 
     assign lsu_st_type2_wr_chunk_len_cnt_end = lsu_st_type2_start_wr_pulse ? 1'b0 : (lsu_st_type2_wr_chunk_len_cnt == alu_lsu_num);
     assign lsu_st_type2_wr_chunk_len_cnt_nxt = lsu_st_type2_wr_qual&~lsu_st_type2_wr_qual_ff ? 1'b0 : lsu_st_type2_start_wr ? (lsu_st_type2_wr_chunk_len_cnt_end ? lsu_st_type2_wr_chunk_len_cnt : lsu_st_type2_wr_chunk_len_cnt+1'b1) : 1'b0;
-    DFFR #(.WIDTH(8))
+    DFFRE #(.WIDTH(8))
     ff_lsu_st_type2_wr_chunk_len_cnt(
         .clk(clk),
         .rst_n(rst_n),
         .d(lsu_st_type2_wr_chunk_len_cnt_nxt),
+	.en(lsu_st_type2_wr_qual),
         .q(lsu_st_type2_wr_chunk_len_cnt)
     );
+
+    assign lsu_st_type2_wr_chunk_size_cnt_end = lsu_st_type2_start_wr_pulse ? 1'b0 : (alu_lsu_len[2] ? (alu_lsu_len[0] ? (lsu_st_type2_wr_chunk_size_cnt == 2'b11) : (lsu_st_type2_wr_chunk_size_cnt == 2'b01)) : 1'b1);
+
+    assign lsu_st_type2_wr_chunk_size_cnt_nxt =  lsu_st_type2_wr_qual&~lsu_st_type2_wr_qual_ff ? 1'b0 : lsu_st_type2_start_wr ? lsu_st_type2_wr_chunk_size_cnt_end ? 1'b0 : (lsu_st_type2_wr_chunk_size_cnt_end ? lsu_st_type2_wr_chunk_size_cnt : lsu_st_type2_wr_chunk_size_cnt+1'b1) : 1'b0;
+    
+    DFFRE #(.WIDTH(2))
+    ff_lsu_st_type2_wr_chunk_size_cnt(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(lsu_st_type2_wr_chunk_size_cnt_nxt),
+	.en(lsu_st_type2_wr_qual),
+        .q(lsu_st_type2_wr_chunk_size_cnt)
+    );
+
     //when update the wrdata
     // if the aw qual amd axi_lsu_wrdy
     // update the data send if it is not end 
@@ -1452,8 +1471,3 @@ module lsu(
     );
 
 endmodule   
-
-
-
-
-
