@@ -459,7 +459,7 @@ module idu (
         .q(idu_alu_wb_vld)
     );
     
-    DFFE #(.WIDTH(31))
+    DFFE #(.WIDTH(32))
     ff_idu_alu_pc(
         .clk(clk),
         .en(idu_vld),

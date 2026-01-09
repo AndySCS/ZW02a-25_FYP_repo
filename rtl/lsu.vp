@@ -186,7 +186,7 @@ module lsu(
     input alu_lsu_wfi;
 
     //paylaod related for load store
-    input [30:0] alu_lsu_dram_addr;
+    input [31:0] alu_lsu_dram_addr;
     input [7:0] alu_lsu_num;
     input [2:0] alu_lsu_len;
     input [2:0] alu_lsu_str;

@@ -198,7 +198,7 @@ module AXI_WRITE_INFT(
     ff_axi_alloc_ptr_lo(
         .clk(clk),
         .rst_n(rst_n),
-        .en(AWVALID_alloc),
+        .en(lsu_axi_awvld_qual),
         .d(axi_alloc_ptr_nxt[0]),
         .q(axi_alloc_ptr[0])
     );
@@ -206,7 +206,7 @@ module AXI_WRITE_INFT(
     ff_axi_alloc_ptr_hi(
         .clk(clk),
         .rst_n(rst_n),
-        .en(AWVALID_alloc),
+        .en(lsu_axi_awvld_qual),
         .d(axi_alloc_ptr_nxt[15:1]),
         .q(axi_alloc_ptr[15:1])
     );
@@ -243,112 +243,112 @@ module AXI_WRITE_INFT(
     DFFE #(.WIDTH(12))
     ff_oram_addr_0(
         .clk(clk),
-        .en(axi_alloc_en),
+        .en(lsu_axi_awvld_qual),
         .d(oram_addr_nxt),
         .q(oram_addr_0)
     );
     DFFE #(.WIDTH(12))
     ff_oram_addr_1(
         .clk(clk),
-        .en(axi_alloc_en),
+        .en(lsu_axi_awvld_qual),
         .d(oram_addr_nxt),
         .q(oram_addr_1)
     );
     DFFE #(.WIDTH(12))
     ff_oram_addr_2(
         .clk(clk),
-        .en(axi_alloc_en),
+        .en(lsu_axi_awvld_qual),
         .d(oram_addr_nxt),
         .q(oram_addr_2)
     );
     DFFE #(.WIDTH(12))
     ff_oram_addr_3(
         .clk(clk),
-        .en(axi_alloc_en),
+        .en(lsu_axi_awvld_qual),
         .d(oram_addr_nxt),
         .q(oram_addr_3)
     );
     DFFE #(.WIDTH(12))
     ff_oram_addr_4(
         .clk(clk),
-        .en(axi_alloc_en),
+        .en(lsu_axi_awvld_qual),
         .d(oram_addr_nxt),
         .q(oram_addr_4)
     );
     DFFE #(.WIDTH(12))
     ff_oram_addr_5(
         .clk(clk),
-        .en(axi_alloc_en),
+        .en(lsu_axi_awvld_qual),
         .d(oram_addr_nxt),
         .q(oram_addr_5)
     );
     DFFE #(.WIDTH(12))
     ff_oram_addr_6(
         .clk(clk),
-        .en(axi_alloc_en),
+        .en(lsu_axi_awvld_qual),
         .d(oram_addr_nxt),
         .q(oram_addr_6)
     );
     DFFE #(.WIDTH(12))
     ff_oram_addr_7(
         .clk(clk),
-        .en(axi_alloc_en),
+        .en(lsu_axi_awvld_qual),
         .d(oram_addr_nxt),
         .q(oram_addr_7)
     );
     DFFE #(.WIDTH(12))
     ff_oram_addr_8(
         .clk(clk),
-        .en(axi_alloc_en),
+        .en(lsu_axi_awvld_qual),
         .d(oram_addr_nxt),
         .q(oram_addr_8)
     );
     DFFE #(.WIDTH(12))
     ff_oram_addr_9(
         .clk(clk),
-        .en(axi_alloc_en),
+        .en(lsu_axi_awvld_qual),
         .d(oram_addr_nxt),
         .q(oram_addr_9)
     );
     DFFE #(.WIDTH(12))
     ff_oram_addr_10(
         .clk(clk),
-        .en(axi_alloc_en),
+        .en(lsu_axi_awvld_qual),
         .d(oram_addr_nxt),
         .q(oram_addr_10)
     );
     DFFE #(.WIDTH(12))
     ff_oram_addr_11(
         .clk(clk),
-        .en(axi_alloc_en),
+        .en(lsu_axi_awvld_qual),
         .d(oram_addr_nxt),
         .q(oram_addr_11)
     );
     DFFE #(.WIDTH(12))
     ff_oram_addr_12(
         .clk(clk),
-        .en(axi_alloc_en),
+        .en(lsu_axi_awvld_qual),
         .d(oram_addr_nxt),
         .q(oram_addr_12)
     );
     DFFE #(.WIDTH(12))
     ff_oram_addr_13(
         .clk(clk),
-        .en(axi_alloc_en),
+        .en(lsu_axi_awvld_qual),
         .d(oram_addr_nxt),
         .q(oram_addr_13)
     );
     DFFE #(.WIDTH(12))
     ff_oram_addr_14(
         .clk(clk),
-        .en(axi_alloc_en),
+        .en(lsu_axi_awvld_qual),
         .d(oram_addr_nxt),
         .q(oram_addr_14)
     );
     DFFE #(.WIDTH(12))
     ff_oram_addr_15(
         .clk(clk),
-        .en(axi_alloc_en),
+        .en(lsu_axi_awvld_qual),
         .d(oram_addr_nxt),
         .q(oram_addr_15)
     );
@@ -492,7 +492,7 @@ module AXI_WRITE_INFT(
         .q(WLAST)
     );
     
-    DFFE #(.WIDTH(1))
+    DFFE #(.WIDTH(8))
     ff_wcnt(
         .clk(clk),
         .en(wcnt_en),
@@ -512,21 +512,21 @@ module AXI_WRITE_INFT(
     mux16 #(.WIDTH(12))
     reso_oram_addr_mux(
         .in0(oram_addr_0),
-        .in0(oram_addr_1),
-        .in0(oram_addr_2),
-        .in0(oram_addr_3),
-        .in0(oram_addr_4),
-        .in0(oram_addr_5),
-        .in0(oram_addr_6),
-        .in0(oram_addr_7),
-        .in0(oram_addr_8),
-        .in0(oram_addr_9),
-        .in0(oram_addr_10),
-        .in0(oram_addr_11),
-        .in0(oram_addr_12),
-        .in0(oram_addr_13),
-        .in0(oram_addr_14),
-        .in0(oram_addr_15),
+        .in1(oram_addr_1),
+        .in2(oram_addr_2),
+        .in3(oram_addr_3),
+        .in4(oram_addr_4),
+        .in5(oram_addr_5),
+        .in6(oram_addr_6),
+        .in7(oram_addr_7),
+        .in8(oram_addr_8),
+        .in9(oram_addr_9),
+        .in10(oram_addr_10),
+        .in11(oram_addr_11),
+        .in12(oram_addr_12),
+        .in13(oram_addr_13),
+        .in14(oram_addr_14),
+        .in15(oram_addr_15),
         .sel(axi_lsu_resp_bid),
         .out(axi_lsu_resp_oram_addr)
     );
@@ -542,7 +542,7 @@ module AXI_WRITE_INFT(
         .q(axi_lsu_bvld)
     );
 
-    DFFE #(.WIDTH(1))
+    DFFE #(.WIDTH(4))
     ff_axi_lsu_resp_bid(
         .clk(clk),
         .en(BVALID),
