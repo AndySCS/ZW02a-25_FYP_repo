@@ -249,7 +249,7 @@ task lsu_driver::alu_signal_config_type2_store(lsu_tr tr);
             lsu_if.alu_lsu_st_dram = 1;//dram addr
 	    lsu_if.axi_lsu_awrdy = 1;
             lsu_if.alu_lsu_num = 10;//num of chunk
-            lsu_if.alu_lsu_len = 4;//element size
+            lsu_if.alu_lsu_len = 0;//element size
 	    lsu_if.alu_lsu_ld_st_addr = 'b00000;//sram addr
             @(negedge lsu_if.clk);
             lsu_if.alu_lsu_vld = 0;
