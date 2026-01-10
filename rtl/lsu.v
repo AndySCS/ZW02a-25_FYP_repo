@@ -357,12 +357,20 @@ module lsu(
     wire [127:0] lsu_oram_din;
     wire [127:0] lsu_oram_dout;
 
+
+    wire lsu_oram_hi_we;
+    wire lsu_oram_hi_ce;
+    wire [7:0] lsu_oram_hi_addr;
+    wire [127:0] lsu_oram_hi_din;
+    wire [127:0] lsu_oram_hi_dout;
+
     wire lsu_vld_nxt;
     wire lsu_vld;
 
     wire lsu_st_type1_doing;
 
     wire [7:0] lsu_oram_addr_ff;
+    wire [7:0] lsu_oram_hi_addr_ff;
 
     wire lsu_vld_ff;
     //assign lsu_instr_vld = alu_lsu_vld & lsu_alu_rdy;
@@ -1516,20 +1524,4 @@ module lsu(
     );
 
 endmodule   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
