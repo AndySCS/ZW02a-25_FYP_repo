@@ -250,7 +250,7 @@ task lsu_driver::alu_signal_config_type1_store(lsu_tr tr);
 endtask
 
 task lsu_driver::alu_signal_config_type2_store(lsu_tr tr);
-
+    int count = 0;
     /*int matrix_sent_row = 0;
     int cur_row = 0;
     int iter_cnt = 0;
@@ -276,9 +276,28 @@ task lsu_driver::alu_signal_config_type2_store(lsu_tr tr);
             @(negedge lsu_if.clk);
             break;
 	    end
- 	//if(lsu_if.lsu_axi_wlast & (lsu_if.lsu_axi_oram_addr == 4'b1111))begin
-    //		lsu_if.axi_lsu_bvld = 1;
-	//end
+ 	if(lsu_if.lsu_axi_wlast)begin
+		count = count+1;
+	end
+	if(lsu_if.lsu_axi_brdy)begin
+	    //assume wait 10 cycle after the wriet data send	
+	    if(count >= (lsu_if.alu_lsu_num+1) & (count <= (lsu_if.alu_lsu_num+1)*2))begin
+		if(count == (lsu_if.alu_lsu_num+1))begin
+            		@(negedge lsu_if.clk);
+            		@(negedge lsu_if.clk);
+            		@(negedge lsu_if.clk);
+            		@(negedge lsu_if.clk);
+            		@(negedge lsu_if.clk);
+		end
+	    	lsu_if.axi_lsu_bvld = 1;
+	    	lsu_if.axi_lsu_bresp = 0;
+		lsu_if.axi_lsu_bid = count;
+		count = count+1;
+	    end
+	    if(count > (lsu_if.alu_lsu_num+1)*2)begin
+	    	lsu_if.axi_lsu_bvld = 0;
+	    end
+        end
     end
 endtask
 
