@@ -270,6 +270,10 @@ task lsu_driver::alu_signal_config_type2_store(lsu_tr tr);
             lsu_if.alu_lsu_num = 10;//num of chunk
             lsu_if.alu_lsu_len = 5;//element size
 	    lsu_if.alu_lsu_ld_st_addr = 'b00000;//sram addr
+	
+	    lsu_if.axi_lsu_bvld = 0;
+	    lsu_if.axi_lsu_bresp = 0;
+	    lsu_if.axi_lsu_bid = 0;
             @(negedge lsu_if.clk);
             lsu_if.alu_lsu_vld = 0;
 	    //lsu_if.axi_lsu_awrdy = 0;
@@ -281,7 +285,7 @@ task lsu_driver::alu_signal_config_type2_store(lsu_tr tr);
 	end
 	if(lsu_if.lsu_axi_brdy)begin
 	    //assume wait 10 cycle after the wriet data send	
-	    if(count >= (lsu_if.alu_lsu_num+1) & (count <= (lsu_if.alu_lsu_num+1)*2))begin
+	    if(count >= (lsu_if.alu_lsu_num+1) & (count < (lsu_if.alu_lsu_num+1)*2))begin
 		if(count == (lsu_if.alu_lsu_num+1))begin
             		@(negedge lsu_if.clk);
             		@(negedge lsu_if.clk);
@@ -294,7 +298,7 @@ task lsu_driver::alu_signal_config_type2_store(lsu_tr tr);
 		lsu_if.axi_lsu_bid = count;
 		count = count+1;
 	    end
-	    if(count > (lsu_if.alu_lsu_num+1)*2)begin
+	    if(count >= (lsu_if.alu_lsu_num+1)*2)begin
 	    	lsu_if.axi_lsu_bvld = 0;
 	    end
         end

@@ -852,10 +852,16 @@ module lsu(
     wire lsu_st_type2_bresp_qual;
     wire lsu_st_type2_bresp_qual_ff;
     wire lsu_st_type2_bresp_qual_en;
-    wire [7:0] lsu_st_type2_bresp_end;
+    wire lsu_st_type2_bresp_end;
+    wire [7:0] lsu_st_type2_brep_chunk_len_cnt;
+    wire [7:0] lsu_st_type2_brep_chunk_len_cnt_ff;
 
-    assign lsu_axi_brdy = lsu_vld | lsu_st_type2_doing | lsu_st_type1_doing;
+    assign lsu_axi_brdy = lsu_vld;
     assign lsu_st_type2_bresp_qual = lsu_axi_brdy & axi_lsu_bvld;
+
+    assign lsu_st_type2_brep_chunk_len_cnt = lsu_st_type2_start_wr_pulse ? 1'b0 : (lsu_st_type2_bresp_qual ?  lsu_st_type2_brep_chunk_len_cnt_ff + 1 : lsu_st_type2_brep_chunk_len_cnt_ff);
+
+    assign lsu_st_type2_bresp_end = lsu_st_type2_brep_chunk_len_cnt == lsu_axi_awlen+1;
     assign lsu_st_type2_bresp_qual_en = lsu_st_type2_bresp_qual | lsu_st_type2_bresp_end;
     DFFRE #(.WIDTH(1))
     ff_lsu_st_type2_bresp_qual(
@@ -864,6 +870,14 @@ module lsu(
         .d(lsu_st_type2_bresp_qual),
         .en(lsu_st_type2_bresp_qual_en),
         .q(lsu_st_type2_bresp_qual_ff)
+    );
+
+    DFFR #(.WIDTH(8))
+    ff_lsu_st_type2_bresp_chunk_len_cnt(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(lsu_st_type2_brep_chunk_len_cnt),
+        .q(lsu_st_type2_brep_chunk_len_cnt_ff)
     );
 
     wire [255:0] lsu_st_type2_bresp_resend;
@@ -1439,8 +1453,9 @@ module lsu(
                                 //: sram_data_store_done ? 2'b00 : 2'b11;
 
 
-
-    assign lsu_st_finish = lsu_st_type1_done & (lsu_st_type1_qual | lsu_st_type1_qual_ff);
+    wire lsu_st_type2_done;
+    assign lsu_st_type2_done = lsu_st_type2_bresp_end;
+    assign lsu_st_finish = lsu_st_type1_done & (lsu_st_type1_qual | lsu_st_type1_qual_ff) | lsu_st_type2_done;
     //FOR load instr
     assign lsu_ld_finish = 1'b0;
     
