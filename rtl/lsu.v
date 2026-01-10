@@ -144,7 +144,6 @@ module lsu(
     lsu_axi_arsize,
     lsu_axi_arburst,
     lsu_axi_arstr,
-    lsu_axi_arnum,
     lsu_axi_arvld,
     lsu_axi_rrdy,
 
@@ -305,7 +304,6 @@ module lsu(
     output [9:0] lsu_axi_araddr;
     output [7:0] lsu_axi_arlen;
     output [2:0] lsu_axi_arsize;
-    output [7:0] lsu_axi_arnum;
     output [1:0] lsu_axi_arburst;
     output [2:0] lsu_axi_arstr;
     output lsu_axi_arvld;
@@ -1224,7 +1222,6 @@ module lsu(
     wire [2:0] lsu_ld_arsize;
     wire [1:0] lsu_ld_arburst;
     wire [2:0] lsu_ld_arstr;
-    wire [4:0] lsu_ld_arnum;
 
     wire lsu_ld_doing_ff;
     wire lsu_ld_ar_en;
@@ -1279,18 +1276,7 @@ module lsu(
         .en(lsu_ld_ar_en),
         .q(lsu_ld_arstr)
     );
-    
-    wire [4:0] lsu_arnum_raw;
-    assign lsu_arnum_raw = 5'b10000 >> alu_lsu_len; 
-    DFFRE #(.WIDTH(5))
-    ff_lsu_ld_arnum(
-        .clk(clk),
-        .rst_n(rst_n),
-        .d(lsu_arnum_raw),
-        .en(lsu_ld_ar_en),
-        .q(lsu_ld_arnum)
-    );
-
+     
     //adress read part
     //once we sense load instr give arvld and other ar signal
     //id and burst not support 
@@ -1301,7 +1287,6 @@ module lsu(
     assign lsu_axi_arsize  = lsu_ld_vld ? alu_lsu_len       : {3{lsu_ld_vld_ff }} & lsu_ld_arsize;
     assign lsu_axi_arburst = lsu_ld_vld ? 2'b00             : {2{lsu_ld_vld_ff }} & lsu_ld_arburst;
     assign lsu_axi_arstr   = lsu_ld_vld ? alu_lsu_str       : {3{lsu_ld_vld_ff }} & lsu_ld_arstr;
-    assign lsu_axi_arnum   = lsu_ld_vld ? lsu_arnum_raw     : {5{lsu_ld_vld_ff }} & lsu_ld_arnum;
     
     //read data part
 
@@ -1354,8 +1339,7 @@ module lsu(
     assign lsu_ld_sram_addr_cnt_end = (lsu_ld_sram_addr_cnt == alu_lsu_num) & ~lsu_ld_vld;
 
     assign lsu_ld_sram_addr_cnt_nxt = (lsu_ld_vld) ? 1'b0 : (lsu_ld_rd_qual | lsu_ld_rd_qual_ff & lsu_ld_sram_chunk_last) ? lsu_ld_sram_addr_cnt + 1 : lsu_ld_sram_addr_cnt;
-    //assign lsu_ld_sram_chunk_last = lsu_axi_arsize[2] ? (lsu_ld_sram_addr_cnt == (lsu_axi_arnum)) & (|lsu_axi_arnum) : (lsu_ld_sram_addr_cnt == (lsu_axi_arnum-1'b1)) & (|lsu_axi_arnum);
-    assign lsu_ld_sram_chunk_last = lsu_axi_arsize[2] ? (lsu_ld_sram_chunk_cnt == (lsu_axi_arnum)) & (|lsu_axi_arnum) : 1'b1;
+    assign lsu_ld_sram_chunk_last = 1'b1;
     assign lsu_ld_sram_chunk_cnt_nxt = (lsu_ld_vld|lsu_ld_sram_chunk_last) ? 1'b0 : (lsu_ld_rd_qual | lsu_ld_rd_qual_ff) ? lsu_ld_sram_chunk_cnt + 1 : lsu_ld_sram_chunk_cnt;
     assign lsu_ld_sram_addr_cnt_nxt = (lsu_ld_vld) ? 1'b0 : (lsu_ld_rd_qual | lsu_ld_rd_qual_ff & lsu_ld_sram_chunk_last) ? lsu_ld_sram_addr_cnt + 1 : lsu_ld_sram_addr_cnt;
     
