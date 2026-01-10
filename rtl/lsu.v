@@ -1491,6 +1491,29 @@ module lsu(
         .din (lsu_oram_din),
         .dout(lsu_oram_dout)
     );
+    
+    assign lsu_oram_hi_we   = lsu_st_type1_oram_we | lsu_st_type2_oram_we;
+    assign lsu_oram_hi_ce   = lsu_st_type1_oram_ce | lsu_st_type2_oram_ce;
+    assign lsu_oram_hi_addr = (lsu_st_type1_oram_addr & {8{lsu_st_type1_oram_ce}}) | lsu_st_type2_oram_addr;
+    assign lsu_oram_hi_din  = (lsu_st_type1_oram_din & {128{lsu_st_type1_oram_ce}}) | lsu_st_type2_oram_din;
+
+    DFFRE #(.WIDTH(8))
+    ff_lsu_oram_hi_addr (
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(lsu_oram_hi_addr),
+        .en(lsu_oram_hi_ce),
+        .q(lsu_oram_hi_addr_ff)
+    );
+    mem_wrapper #(.DATA_WIDTH(128))
+    oram_hi(
+        .clk (clk),
+        .we  (lsu_oram_hi_we), 
+        .ce  (lsu_oram_hi_ce),
+        .addr(lsu_oram_hi_addr),
+        .din (lsu_oram_hi_din),
+        .dout(lsu_oram_hi_dout)
+    );
 
 endmodule   
 
