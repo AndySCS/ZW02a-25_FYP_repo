@@ -312,27 +312,71 @@ endtask
 
 task lsu_driver::alu_signal_config_load(lsu_tr tr);
     int load_cnt;
+    int load_last_cnt;
+    int read_end;
 
     while(1)begin
         @(negedge lsu_if.clk);
         if(lsu_if.lsu_alu_rdy) begin
+	    read_end = 0;
             lsu_if.alu_lsu_vld = 1;
             lsu_if.alu_lsu_ld_iram = 1;
             //lsu_if.alu_lsu_ld_wram = 1;
 	        lsu_if.axi_lsu_arrdy = 1;
-            lsu_if.alu_lsu_num = 0;
-            lsu_if.alu_lsu_len = 0;
+            lsu_if.alu_lsu_num = 4; //num of chunk
+            lsu_if.alu_lsu_len = 4; //element size
 	    lsu_if.alu_lsu_ld_st_addr = 'b00000;
             @(negedge lsu_if.clk);
             lsu_if.alu_lsu_vld = 0;
-	    //lsu_if.axi_lsu_awrdy = 0;
             @(negedge lsu_if.clk);
             break;
 	    end
  	if(lsu_if.lsu_axi_arvld & lsu_if.axi_lsu_arrdy & (load_cnt == 0))begin
     		lsu_if.axi_lsu_rvld = 1;
-		lsu_if.axi_lsu_rdata = 64'h123456789;
-		load_cnt = load_cnt+1;
+		lsu_if.axi_lsu_rdata = 64'h12345678;
+    		lsu_if.axi_lsu_rid = load_cnt;
+    		lsu_if.axi_lsu_rresp = 0;
+    		lsu_if.axi_lsu_rlast = 0;
+		lsu_if.axi_lsu_rvld = 1;
+	end
+	else if (load_cnt == lsu_if.alu_lsu_num+1) begin
+		if(lsu_if.alu_lsu_len[2])begin
+			if (lsu_if.axi_lsu_rlast)begin
+    				lsu_if.axi_lsu_rvld = 0;
+				lsu_if.axi_lsu_rlast = 0;
+				read_end = 1;
+			end
+			else begin
+    				lsu_if.axi_lsu_rvld = 1;
+			end
+		end
+		else begin
+    			lsu_if.axi_lsu_rvld = 0;
+			lsu_if.axi_lsu_rlast = 0;
+			read_end = 1;
+		end
+	end
+
+	if (lsu_if.axi_lsu_rvld & lsu_if.lsu_axi_rrdy)begin
+		load_last_cnt = load_last_cnt+1;
+		if(lsu_if.alu_lsu_len[2])begin
+			if (load_last_cnt==2)begin
+				lsu_if.axi_lsu_rlast = 1'b1;
+				load_last_cnt = 0;
+				load_cnt = load_cnt + 1;
+			end
+			else begin
+				lsu_if.axi_lsu_rlast = 1'b0;
+			end
+		end
+		else begin
+			lsu_if.axi_lsu_rlast = 1'b1;
+			load_cnt = load_cnt + 1;
+		end
+	end
+	if (read_end)begin
+    		lsu_if.axi_lsu_rvld = 0;
+		lsu_if.axi_lsu_rlast = 0;
 	end
     end
 endtask
@@ -360,3 +404,11 @@ endtask
         end
     end
     */
+
+
+
+
+
+
+
+

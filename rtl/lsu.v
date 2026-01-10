@@ -1297,7 +1297,8 @@ module lsu(
     wire lsu_ld_rd_qual;
     wire lsu_ld_rd_qual_ff;
 
-    assign lsu_axi_rrdy = lsu_ld_qual_ff & ~lsu_ld_rd_qual_ff; 
+    //once the arready and arvld both pull high can start rrdy can pull high
+    assign lsu_axi_rrdy = lsu_ld_qual_ff; 
     assign lsu_ld_rd_qual = lsu_axi_rrdy & axi_lsu_rvld;
 
     DFFRE #(.WIDTH(1))
@@ -1326,7 +1327,9 @@ module lsu(
     wire lsu_ld_rd_doing;
     wire lsu_ld_rd_doing_ff;
     wire lsu_ld_rd_done;
-    wire [63:0] lsu_ld_sram_din;
+    wire [127:0] lsu_ld_sram_din;
+    wire [127:0] lsu_ld_sram_din_ff;
+    wire [7:0] lsu_ld_sram_din_shift;
     //if the size is 128
     //need two cycle of load
     //first cycle the cnt dun update
@@ -1335,20 +1338,52 @@ module lsu(
 
     wire lsu_ld_sram_chunk_last;
     wire lsu_ld_sram_chunk_cnt; 
+    wire [7:0] lsu_ld_sram_addr_cnt_ff;
+    wire lsu_rlast_ff;
     //max 256 8 bit
-    assign lsu_ld_sram_addr_cnt_end = (lsu_ld_sram_addr_cnt == alu_lsu_num) & ~lsu_ld_vld;
+    assign lsu_ld_sram_addr_cnt_end = (lsu_ld_sram_addr_cnt == alu_lsu_num+1) & ~lsu_ld_vld;
 
-    assign lsu_ld_sram_addr_cnt_nxt = (lsu_ld_vld) ? 1'b0 : (lsu_ld_rd_qual | lsu_ld_rd_qual_ff & lsu_ld_sram_chunk_last) ? lsu_ld_sram_addr_cnt + 1 : lsu_ld_sram_addr_cnt;
+    //assign lsu_ld_sram_addr_cnt_nxt = (lsu_ld_vld) ? 1'b0 : (lsu_ld_rd_qual | lsu_ld_rd_qual_ff & lsu_ld_sram_chunk_last) ? lsu_ld_sram_addr_cnt + 1 : lsu_ld_sram_addr_cnt;
     assign lsu_ld_sram_chunk_last = 1'b1;
     assign lsu_ld_sram_chunk_cnt_nxt = (lsu_ld_vld|lsu_ld_sram_chunk_last) ? 1'b0 : (lsu_ld_rd_qual | lsu_ld_rd_qual_ff) ? lsu_ld_sram_chunk_cnt + 1 : lsu_ld_sram_chunk_cnt;
-    assign lsu_ld_sram_addr_cnt_nxt = (lsu_ld_vld) ? 1'b0 : (lsu_ld_rd_qual | lsu_ld_rd_qual_ff & lsu_ld_sram_chunk_last) ? lsu_ld_sram_addr_cnt + 1 : lsu_ld_sram_addr_cnt;
+    
+    assign lsu_ld_sram_addr_cnt = lsu_ld_rd_qual ? (lsu_rlast_ff ? lsu_ld_sram_addr_cnt_ff+1'b1 : lsu_ld_sram_addr_cnt_ff) : lsu_ld_sram_addr_cnt_ff;
     
     assign lsu_ld_rd_done = lsu_ld_sram_addr_cnt_end;
-    assign lsu_ld_rd_doing = (lsu_ld_rd_qual | lsu_ld_rd_qual_ff) & ~lsu_ld_rd_done;
-    //assume axi_lsu_rdata already done the data filtering
-    assign lsu_ld_sram_din = lsu_ld_rd_qual ? {64{lsu_ld_rd_qual}} & axi_lsu_rdata : {64{lsu_ld_rd_qual_ff}} & axi_lsu_rdata;
-    assign lsu_ld_sram_ce = lsu_ld_rd_doing;
-    assign lsu_ld_sram_we = lsu_ld_rd_doing;
+    
+    //assign lsu_ld_rd_doing = (lsu_ld_rd_qual | lsu_ld_rd_qual_ff) & ~lsu_ld_rd_done;
+    //only extract the rdata when it is qual
+    wire[127:0] lsu_ld_rd_data_raw;
+    assign lsu_ld_rd_data_raw = {{64{1'b0}}, axi_lsu_rdata} & {128{1'b1}}; 
+    assign lsu_ld_sram_din_shift = ~(|alu_lsu_len) ? alu_lsu_ld_st_addr[3:0] 
+                                                          : alu_lsu_len[0]^alu_lsu_len[1] ? (alu_lsu_len[0] ? {alu_lsu_ld_st_addr[3:1],1'b0} 
+                                                                                                            : {alu_lsu_ld_st_addr[3:2],{2{1'b0}}})
+                                                                                          : (alu_lsu_len[0] ? {alu_lsu_ld_st_addr[3],{3{1'b0}}}
+                                                                                                            : {4{1'b0}}); 
+ 
+    assign lsu_ld_sram_din = lsu_axi_arsize[2] ? (axi_lsu_rlast ? ((lsu_ld_sram_din_ff<<7'd64) | lsu_ld_rd_data_raw) : lsu_ld_rd_data_raw) : lsu_ld_rd_data_raw >> (lsu_ld_sram_din_shift*4'd8); 
+    
+    DFFR #(.WIDTH(128))
+    ff_lsu_ld_sram_din(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(lsu_ld_sram_din),
+        .q(lsu_ld_sram_din_ff)
+    );
+
+    DFFR #(.WIDTH(1))
+    ff_lsu_rlast(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(axi_lsu_rlast),
+        .q(lsu_rlast_ff)
+    );
+
+    //assign lsu_ld_sram_din = lsu_ld_rd_qual ? {64{lsu_ld_rd_qual}} & axi_lsu_rdata : {64{lsu_ld_rd_qual_ff}} & axi_lsu_rdata;
+    //assign lsu_ld_sram_ce = lsu_ld_rd_doing;
+    //assign lsu_ld_sram_we = lsu_ld_rd_doing;
+    assign lsu_ld_sram_we = lsu_ld_rd_qual & axi_lsu_rlast;
+    assign lsu_ld_sram_ce = lsu_ld_rd_qual & axi_lsu_rlast;
 
     //filter back iram / wram
     wire lsu_ld_iram_ce;
@@ -1361,23 +1396,22 @@ module lsu(
     wire [127:0] lsu_ld_wram_din;
     wire [7:0] lsu_ld_wram_addr;
 
-    assign lsu_ld_iram_ce = ~lsu_ld_type & lsu_ld_sram_ce & lsu_ld_rd_doing; 
-    assign lsu_ld_iram_we = ~lsu_ld_type & lsu_ld_sram_we & lsu_ld_rd_doing;
-    assign lsu_ld_iram_din = {128{~lsu_ld_type}} & {{64{1'b0}}, lsu_ld_sram_din} & {128{lsu_ld_rd_doing}};
-    assign lsu_ld_iram_addr = {8{~lsu_ld_type}} & lsu_ld_sram_addr_cnt & {8{lsu_ld_rd_doing}};
+    assign lsu_ld_iram_ce = ~lsu_ld_type & lsu_ld_sram_ce & lsu_ld_rd_qual; 
+    assign lsu_ld_iram_we = ~lsu_ld_type & lsu_ld_sram_we & lsu_ld_rd_qual;
+    assign lsu_ld_iram_din = {128{~lsu_ld_type}} & lsu_ld_sram_din & {128{lsu_ld_rd_qual}};
+    assign lsu_ld_iram_addr = {8{~lsu_ld_type}} & lsu_ld_sram_addr_cnt & {8{lsu_ld_rd_qual}};
     
-    assign lsu_ld_wram_ce = lsu_ld_type & lsu_ld_sram_ce & lsu_ld_rd_doing;
-    assign lsu_ld_wram_we = lsu_ld_type & lsu_ld_sram_we & lsu_ld_rd_doing;;
-    assign lsu_ld_wram_din = {128{lsu_ld_type}} & {{64{1'b0}}, lsu_ld_sram_din} & {128{lsu_ld_rd_doing}};
-    assign lsu_ld_wram_addr = {8{lsu_ld_type}} & lsu_ld_sram_addr_cnt & {8{lsu_ld_rd_doing}};
+    assign lsu_ld_wram_ce = lsu_ld_type & lsu_ld_sram_ce & lsu_ld_rd_qual;
+    assign lsu_ld_wram_we = lsu_ld_type & lsu_ld_sram_we & lsu_ld_rd_qual;;
+    assign lsu_ld_wram_din = {128{lsu_ld_type}} & lsu_ld_sram_din & {128{lsu_ld_rd_qual}};
+    assign lsu_ld_wram_addr = {8{lsu_ld_type}} & lsu_ld_sram_addr_cnt & {8{lsu_ld_rd_qual}};
 
-    DFFRE #(.WIDTH(8))
+    DFFR #(.WIDTH(8))
     ff_lsu_ld_sram_addr_cnt(
         .clk(clk),
         .rst_n(rst_n),
-        .d(lsu_ld_sram_addr_cnt_nxt),
-        .en(lsu_ld_rd_doing),
-        .q(lsu_ld_sram_addr_cnt)
+        .d(lsu_ld_sram_addr_cnt),
+        .q(lsu_ld_sram_addr_cnt_ff)
     );
     DFFRE #(.WIDTH(1))
     ff_lsu_ld_sram_chunk_cnt(
