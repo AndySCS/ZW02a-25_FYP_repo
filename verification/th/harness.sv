@@ -132,7 +132,6 @@ module harness;
     wire [9:0] lsu_axi_araddr;
     wire [7:0] lsu_axi_arlen;
     wire [2:0] lsu_axi_arsize;
-    wire [7:0] lsu_axi_arnum;
     wire [1:0] lsu_axi_arburst;
     wire [2:0] lsu_axi_arstr;
     wire lsu_axi_arvld;
@@ -277,7 +276,6 @@ module harness;
     .lsu_axi_arsize                       (lsu_axi_arsize),
     .lsu_axi_arburst                      (lsu_axi_arburst),
     .lsu_axi_arstr                        (lsu_axi_arstr),
-    .lsu_axi_arnum                        (lsu_axi_arnum),
     .lsu_axi_arvld                        (lsu_axi_arvld),
     .lsu_axi_rrdy                         (lsu_axi_rrdy),
 
@@ -440,7 +438,6 @@ module harness;
         .lsu_axi_arsize                       (lsu_axi_arsize),
         .lsu_axi_arburst                      (lsu_axi_arburst),
         .lsu_axi_arstr                        (lsu_axi_arstr),
-        .lsu_axi_arnum                        (lsu_axi_arnum),
         .lsu_axi_arvld                        (lsu_axi_arvld),
         .lsu_axi_rrdy                         (lsu_axi_rrdy),
 
@@ -457,6 +454,3 @@ module harness;
     end
     
 endmodule
-
-
-

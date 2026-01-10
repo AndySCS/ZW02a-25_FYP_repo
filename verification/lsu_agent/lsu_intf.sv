@@ -129,7 +129,6 @@ interface lsu_intf(
     .lsu_axi_arsize                       (lsu_axi_arsize),
     .lsu_axi_arburst                      (lsu_axi_arburst),
     .lsu_axi_arstr                        (lsu_axi_arstr),
-    .lsu_axi_arnum                        (lsu_axi_arnum),
     .lsu_axi_arvld                        (lsu_axi_arvld),
     .lsu_axi_rrdy                         (lsu_axi_rrdy),
 
@@ -276,7 +275,6 @@ interface lsu_intf(
     output [9:0] lsu_axi_araddr;
     output [7:0] lsu_axi_arlen;
     output [2:0] lsu_axi_arsize;
-    output [7:0] lsu_axi_arnum;
     output [1:0] lsu_axi_arburst;
     output [2:0] lsu_axi_arstr;
     output lsu_axi_arvld;
