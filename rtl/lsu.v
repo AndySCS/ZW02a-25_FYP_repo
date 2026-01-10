@@ -796,7 +796,7 @@ module lsu(
     assign lsu_axi_wlast = lsu_st_type2_start_wr & lsu_st_type2_wr_chunk_size_cnt_end;
     //assign lsu_axi_wlast = lsu_st_type2_wr_done & lsu_st_type2_doing_ff;
     wire [11:0] lsu_axi_oram_addr_nxt; 
-    assign lsu_axi_oram_addr_nxt = lsu_st_type2_oram_ce ? lsu_st_type2_wr_chunk_size_cnt[1] ? lsu_oram_hi_addr : lsu_oram_addr : lsu_oram_addr_ff;
+    assign lsu_axi_oram_addr_nxt = lsu_st_type2_oram_ce ? ((lsu_axi_awsize[2] & lsu_axi_awsize[0]) ? (lsu_st_type2_wr_chunk_size_cnt[1] ? lsu_oram_hi_addr : lsu_oram_addr) : (alu_lsu_st_low ? lsu_oram_addr : lsu_oram_hi_addr)) : lsu_oram_addr_ff;
 
     DFFR #(.WIDTH(12))
     ff_lsu_axi_oram_addr (
