@@ -91,8 +91,20 @@ task lsu_driver::main_phase(uvm_phase phase);
      	  	harness.u_lsu.oram.mem[7] = 128'h8123456789abcdeff0e0d0c0b0a79787;
      	  	harness.u_lsu.oram.mem[8] = 128'h9123456789abcdeff0e0d0c0b0a89888;
      	  	harness.u_lsu.oram.mem[9] = 128'ha123456789abcdeff0e0d0c0b0a99989;
+
+     	  	harness.u_lsu.oram_hi.mem[0] = {16{8'd1}};
+     	  	harness.u_lsu.oram_hi.mem[1] = {16{8'd2}};
+     	  	harness.u_lsu.oram_hi.mem[2] = {16{8'd3}};
+     	  	harness.u_lsu.oram_hi.mem[3] = {16{8'd4}};
+     	  	harness.u_lsu.oram_hi.mem[4] = {16{8'd5}};
+     	  	harness.u_lsu.oram_hi.mem[5] = {16{8'd6}};
+     	  	harness.u_lsu.oram_hi.mem[6] = {16{8'd7}};
+     	  	harness.u_lsu.oram_hi.mem[7] = {16{8'd8}};
+     	  	harness.u_lsu.oram_hi.mem[8] = {16{8'd9}};
+     	  	harness.u_lsu.oram_hi.mem[9] = {16{8'd10}};
 	  end 
      	  harness.u_lsu.oram.mem[i] = 128'hf0e0d0c0b0a09080;
+     	  harness.u_lsu.oram_hi.mem[i] = 128'hf0e0d0c0b0a09080;
      	  harness.u_lsu.iram.mem[i] = 128'h0 ;
       	  harness.u_lsu.wram.mem[i] = 128'h0 ;
    end	
@@ -144,7 +156,6 @@ task lsu_driver::alu_signal_config_type1_store_mxualwaysrdy(lsu_tr tr);
             lsu_if.alu_lsu_st_dram = 0;	
 	        lsu_if.mxu_lsu_data_rdy = 1; //always ready
 	        //case1
-	        //lsu_if.alu_lsu_low = 0; //8/16int 
             lsu_if.alu_lsu_num = 15; //number of chunk
             lsu_if.alu_lsu_len = 0; //element size
 
@@ -252,13 +263,13 @@ task lsu_driver::alu_signal_config_type2_store(lsu_tr tr);
     while(1)begin
         @(negedge lsu_if.clk);
         if(lsu_if.lsu_alu_rdy) begin
-	    lsu_if.alu_lsu_st_low = 1;
+	    //lsu_if.alu_lsu_st_low = 1;
             lsu_if.alu_lsu_vld = 1;
             lsu_if.alu_lsu_st_dram = 1;//dram addr
 	    lsu_if.axi_lsu_awrdy = 1;
             lsu_if.alu_lsu_num = 10;//num of chunk
-            lsu_if.alu_lsu_len = 1;//element size
-	    lsu_if.alu_lsu_ld_st_addr = 'b10010;//sram addr
+            lsu_if.alu_lsu_len = 5;//element size
+	    lsu_if.alu_lsu_ld_st_addr = 'b00000;//sram addr
             @(negedge lsu_if.clk);
             lsu_if.alu_lsu_vld = 0;
 	    //lsu_if.axi_lsu_awrdy = 0;
@@ -326,6 +337,7 @@ endtask
         end
     end
     */
+
 
 
 
