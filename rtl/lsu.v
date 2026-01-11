@@ -371,6 +371,7 @@ module lsu(
     wire [7:0] lsu_oram_hi_addr_ff;
 
     wire lsu_vld_ff;
+    wire lsu_riscv_finish;
     //assign lsu_instr_vld = alu_lsu_vld & lsu_alu_rdy;
     //assign lsu_vld_nxt = lsu_instr_vld | lsu_vld & ~lsu_instr_finish;
 
@@ -384,10 +385,10 @@ module lsu(
         //.q(lsu_vld)
     //);
 
-    assign lsu_instr_finish = lsu_st_finish | lsu_ld_finish | lsu_mm_finish;
+    assign lsu_instr_finish = lsu_st_finish | lsu_ld_finish | lsu_mm_finish | lsu_riscv_finish;
     assign lsu_vld = alu_lsu_vld | lsu_vld_ff;
-    assign lsu_vld_nxt = alu_lsu_vld | (lsu_vld_ff & ~lsu_instr_finish);
-
+    assign lsu_vld_nxt = (alu_lsu_vld | lsu_vld_ff) & ~lsu_instr_finish;
+    //assign lsu_vld_nxt = alu_lsu_vld | (lsu_vld_ff & ~lsu_instr_finish);
     DFFR #(.WIDTH(1))
     ff_lsu_vld(
         .clk(clk),
@@ -880,6 +881,7 @@ module lsu(
         .clk(clk),
         .rst_n(rst_n),
         .d(lsu_st_type2_brep_chunk_len_cnt),
+        //.en(lsu_st_type2_bresp_qual_en),
         .q(lsu_st_type2_brep_chunk_len_cnt_ff)
     );
 
@@ -1495,21 +1497,22 @@ module lsu(
     assign lsu_riscv_wb_vld = lsu_vld & alu_lsu_wb_vld; 
     
 
-    assign lsu_riscv_ce = lsu_riscv_st_vld;
-    assign lsu_riscv_we = lsu_riscv_ld_vld | lsu_riscv_st_vld;
+    assign lsu_riscv_ce = lsu_riscv_st_vld | lsu_riscv_ld_vld;
+    assign lsu_riscv_we = lsu_riscv_st_vld;
     assign lsu_riscv_addr = alu_lsu_ld_st_addr[11:4];
     assign lsu_riscv_st_data_in_raw = alu_lsu_sb_op ? {{7'd120{alu_lsu_src2[7]}},alu_lsu_src2[7:0]} 
                                                     : (alu_lsu_sh_op ? {{7'd112{alu_lsu_src2[15]}},alu_lsu_src2[15:0]} 
-                                                                     : (alu_lsu_sw_op ? {{7'd96{alu_lsu_src2[31]}},alu_lsu_src2[31:0]} 
-    
-                                                                     : {128{1'b0}})); 
+                                                                     : (alu_lsu_sw_op ? {{7'd96{alu_lsu_src2[31]}},alu_lsu_src2[31:0]}  
+                                                                     : {128{1'b0}}));
+ 
     assign lsu_riscv_st_data_shift = alu_lsu_sb_op ? alu_lsu_ld_st_addr[3:0] 
                                                    : alu_lsu_sh_op ? alu_lsu_ld_st_addr[3:1]
                                                    : alu_lsu_sw_op ? alu_lsu_ld_st_addr[3:2]
                                                    : {7{1'b0}};
-
+    wire [127:0] lsu_riscv_st_data;
     assign lsu_riscv_st_data = lsu_riscv_st_data_in_raw << (lsu_riscv_st_data_shift * 4'd8);
 
+    assign lsu_riscv_finish = lsu_riscv_ce;
 
     wire lsu_st_type2_done;
     assign lsu_st_type2_done = lsu_st_type2_bresp_end;

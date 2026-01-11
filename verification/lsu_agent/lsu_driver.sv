@@ -19,6 +19,7 @@ class lsu_driver extends uvm_driver #(lsu_tr);
     extern virtual task alu_signal_config_type2_store(lsu_tr tr);
     extern virtual task alu_signal_config_load(lsu_tr tr);
     extern virtual task alu_siganl_config_riscv(lsu_tr tr);
+    extern virtual task alu_siganl_config_riscv_alwaysrdy(lsu_tr tr);
 endclass //className extends superClass
 
 function void lsu_driver::build_phase(uvm_phase phase);
@@ -35,6 +36,7 @@ task lsu_driver::main_phase(uvm_phase phase);
     lsu_if.alu_lsu_vld = 0;
     lsu_if.alu_lsu_ld_iram = 0;
     lsu_if.alu_lsu_ld_wram = 0;
+    lsu_if.alu_lsu_ld_oram = 0;
     lsu_if.alu_lsu_st_iram = 0;
     lsu_if.alu_lsu_st_wram = 0;
     lsu_if.alu_lsu_st_oram = 0;
@@ -79,6 +81,7 @@ task lsu_driver::main_phase(uvm_phase phase);
     lsu_if.axi_lsu_bresp = 0;
     lsu_if.axi_lsu_bvld = 0;
     lsu_if.axi_lsu_resp_oram_addr = 0;
+    lsu_if.alu_lsu_src2 = 0;
 
     //from axi read
     lsu_if.axi_lsu_arrdy = 0;
@@ -144,24 +147,42 @@ task lsu_driver::main_phase(uvm_phase phase);
         //alu_signal_config_type1_store_mxuwaitrdy(tr);
         //alu_signal_config_type2_store(tr);
         //alu_signal_config_load(tr);
-        alu_siganl_config_riscv(tr);
+        //alu_siganl_config_riscv(tr);
+	alu_siganl_config_riscv_alwaysrdy(tr);
         //seq_item_port.item_done();
     end
     	   
 endtask
-task lsu_driver::alu_siganl_config_riscv(lsu_tr tr);	
+task lsu_driver::alu_siganl_config_riscv(lsu_tr tr);
+    int count;	
     while(1)begin
         @(negedge lsu_if.clk);
         if(lsu_if.lsu_alu_rdy) begin
             lsu_if.alu_lsu_vld = 1;
             lsu_if.alu_lsu_st_iram = 1;
             lsu_if.alu_lsu_sb_op = 1;
-	        lsu_if.alu_lsu_ld_st_addr = 'b00000;
+	    lsu_if.alu_lsu_ld_st_addr = 'b00000;
+	    count = count+1;
             @(negedge lsu_if.clk);
             lsu_if.alu_lsu_vld = 0;
-            @(negedge lsu_if.clk);
+	    count = count+1;
             break;
-	    end
+	end
+    end
+	
+endtask
+ 
+task lsu_driver::alu_siganl_config_riscv_alwaysrdy(lsu_tr tr);
+    int count;	
+    while(1)begin
+            @(negedge lsu_if.clk);
+            lsu_if.alu_lsu_vld = 1;
+            lsu_if.alu_lsu_st_iram = 1;
+            lsu_if.alu_lsu_sb_op = 1;
+	    lsu_if.alu_lsu_ld_st_addr = 'b00000;
+    	    lsu_if.alu_lsu_src2 = count;
+	    count = count+1;
+            //break;
     end
 	
 endtask 
@@ -328,6 +349,7 @@ task lsu_driver::alu_signal_config_type2_store(lsu_tr tr);
 		count = count+1;
 	    end
 	    if(count >= (lsu_if.alu_lsu_num+1)*2)begin
+            	@(negedge lsu_if.clk);
 	    	lsu_if.axi_lsu_bvld = 0;
 		lsu_if.axi_lsu_bid = 1;
 	    end
