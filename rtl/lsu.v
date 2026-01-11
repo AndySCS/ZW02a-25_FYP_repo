@@ -1470,6 +1470,40 @@ module lsu(
                                 //: dram_data_load_done ? 2'b10
                                 //: sram_data_store_done ? 2'b00 : 2'b11;
 
+    //RISCV part
+    wire lsu_riscv_ld_vld;
+    wire lsu_riscv_st_vld;
+    wire lsu_riscv_wb_vld;
+    wire lsu_riscv_ce;
+    wire lsu_riscv_we;
+    wire [7:0] lsu_riscv_addr;
+    wire [127:0] lsu_riscv_st_data_in_raw;
+    wire [6:0] lsu_riscv_st_data_shift;
+
+    assign lsu_riscv_ld_vld = lsu_vld & (alu_lsu_lb_op|
+                                         alu_lsu_lh_op|
+                                         alu_lsu_lw_op|
+                                         alu_lsu_l:lsu_wram_addrbu_op|
+                                         alu_lsu_lhu_op);
+
+    assign lsu_riscv_st_vld = lsu_vld & alu_lsu_sb_op | alu_lsu_sh_op | alu_lsu_sw_op;
+    assign lsu_riscv_wb_vld = lsu_vld & alu_lsu_wb_vld; 
+    
+
+    assign lsu_riscv_ce = lsu_riscv_st_vld;
+    assign lsu_riscv_we = lsu_riscv_ld_vld | lsu_risc_st_vld;
+    assign lsu_riscv_addr = alu_lsu_ld_st_addr[11:4];
+    assign lsu_riscv_st_data_in_raw = alu_lsu_sb_op ? {{7'd120{alu_lsu_src2[7]}},alu_lsu_src2[7:0]} 
+                                                    : (alu_lsu_sh_op ? {{7'd112{alu_lsu_src2[15]}},alu_lsu_src2[15:0]} 
+                                                                     : (alu_lsu_sw_op ? {{7'd96{alu_lsu_src2[31]}},alu_lsu_src2[31:0]} 
+    
+                                                                     : {128{1'b0}})); 
+    assign lsu_riscv_st_data_shift = alu_lsu_sb_op ? alu_lsu_ld_st_addr[3:0] 
+                                                   : alu_lsu_sh_op ? alu_lsu_ld_st_addr[3:1]
+                                                   : alu_lsu_sw_op ? alu_lsu_ld_st_addr[3:2]
+                                                   : {7{1'b0}};
+
+    assign lsu_riscv_st_data = lsu_riscv_st_data_in_raw << (lsu_riscv_st_data_shift * 4'd8);
 
     wire lsu_st_type2_done;
     assign lsu_st_type2_done = lsu_st_type2_bresp_end;
