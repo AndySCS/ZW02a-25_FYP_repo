@@ -18,6 +18,7 @@ class lsu_driver extends uvm_driver #(lsu_tr);
     extern virtual task alu_signal_config_type1_store_mxuwaitrdy(lsu_tr tr);
     extern virtual task alu_signal_config_type2_store(lsu_tr tr);
     extern virtual task alu_signal_config_load(lsu_tr tr);
+    extern virtual task alu_siganl_config_riscv(lsu_tr tr);
 endclass //className extends superClass
 
 function void lsu_driver::build_phase(uvm_phase phase);
@@ -38,6 +39,14 @@ task lsu_driver::main_phase(uvm_phase phase);
     lsu_if.alu_lsu_st_wram = 0;
     lsu_if.alu_lsu_st_oram = 0;
     lsu_if.alu_lsu_st_dram = 0;
+    lsu_if.alu_lsu_lb_op = 0;
+    lsu_if.alu_lsu_lh_op = 0;
+    lsu_if.alu_lsu_lw_op = 0;
+    lsu_if.alu_lsu_lbu_op = 0;
+    lsu_if.alu_lsu_lhu_op = 0;
+    lsu_if.alu_lsu_sb_op = 0;
+    lsu_if.alu_lsu_sh_op = 0;
+    lsu_if.alu_lsu_sw_op = 0;
     lsu_if.alu_lsu_conv = 0;
     lsu_if.alu_lsu_act = 0;
     lsu_if.alu_lsu_pool = 0;
@@ -134,12 +143,28 @@ task lsu_driver::main_phase(uvm_phase phase);
         //alu_signal_config_type1_store_mxualwaysrdy(tr);
         //alu_signal_config_type1_store_mxuwaitrdy(tr);
         //alu_signal_config_type2_store(tr);
-        alu_signal_config_load(tr);
+        //alu_signal_config_load(tr);
+        alu_siganl_config_riscv(tr);
         //seq_item_port.item_done();
     end
     	   
 endtask
-
+task lsu_driver::alu_siganl_config_riscv(lsu_tr tr);	
+    while(1)begin
+        @(negedge lsu_if.clk);
+        if(lsu_if.lsu_alu_rdy) begin
+            lsu_if.alu_lsu_vld = 1;
+            lsu_if.alu_lsu_st_iram = 1;
+            lsu_if.alu_lsu_sb_op = 1;
+	        lsu_if.alu_lsu_ld_st_addr = 'b00000;
+            @(negedge lsu_if.clk);
+            lsu_if.alu_lsu_vld = 0;
+            @(negedge lsu_if.clk);
+            break;
+	    end
+    end
+	
+endtask 
 task lsu_driver::alu_signal_config_type1_store_mxualwaysrdy(lsu_tr tr);
 
         @(negedge lsu_if.clk);
@@ -404,11 +429,3 @@ endtask
         end
     end
     */
-
-
-
-
-
-
-
-
