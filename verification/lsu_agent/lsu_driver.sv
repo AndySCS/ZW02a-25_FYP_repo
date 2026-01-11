@@ -19,7 +19,8 @@ class lsu_driver extends uvm_driver #(lsu_tr);
     extern virtual task alu_signal_config_type2_store(lsu_tr tr);
     extern virtual task alu_signal_config_load(lsu_tr tr);
     extern virtual task alu_siganl_config_riscv(lsu_tr tr);
-    extern virtual task alu_siganl_config_riscv_alwaysrdy(lsu_tr tr);
+    extern virtual task alu_siganl_config_riscv_st_alwaysrdy(lsu_tr tr);
+    extern virtual task alu_siganl_config_riscv_ld_alwaysrdy(lsu_tr tr);
 endclass //className extends superClass
 
 function void lsu_driver::build_phase(uvm_phase phase);
@@ -148,7 +149,8 @@ task lsu_driver::main_phase(uvm_phase phase);
         //alu_signal_config_type2_store(tr);
         //alu_signal_config_load(tr);
         //alu_siganl_config_riscv(tr);
-	alu_siganl_config_riscv_alwaysrdy(tr);
+	alu_siganl_config_riscv_st_alwaysrdy(tr);
+	alu_siganl_config_riscv_ld_alwaysrdy(tr);
         //seq_item_port.item_done();
     end
     	   
@@ -172,20 +174,46 @@ task lsu_driver::alu_siganl_config_riscv(lsu_tr tr);
 	
 endtask
  
-task lsu_driver::alu_siganl_config_riscv_alwaysrdy(lsu_tr tr);
+task lsu_driver::alu_siganl_config_riscv_st_alwaysrdy(lsu_tr tr);
     int count;	
     while(1)begin
             @(negedge lsu_if.clk);
             lsu_if.alu_lsu_vld = 1;
             lsu_if.alu_lsu_st_iram = 1;
-            lsu_if.alu_lsu_sb_op = 1;
-	    lsu_if.alu_lsu_ld_st_addr = 'b00000;
-    	    lsu_if.alu_lsu_src2 = count;
+            lsu_if.alu_lsu_lb_op = 1;
+            //lsu_if.alu_lsu_lh_op = 1;
+            //lsu_if.alu_lsu_lw_op = 1;
+            //lsu_if.alu_lsu_lbu_op = 1;
+            //lsu_if.alu_lsu_lhu_op = 1;
+            //lsu_if.alu_lsu_lwu_op = 1;
+	    lsu_if.alu_lsu_ld_st_addr = 0;
+	    //lsu_if.alu_lsu_ld_st_addr[11:4] = count; // check row change
+	    //lsu_if.alu_lsu_ld_st_addr[3:0] = count; // check col change
+    	    lsu_if.alu_lsu_src2 = 32'h12345678;
+	    count = count+1;
+            //break;
+    end	
+endtask
+
+task lsu_driver::alu_siganl_config_riscv_ld_alwaysrdy(lsu_tr tr);
+    int count;	
+    while(1)begin
+            @(negedge lsu_if.clk);
+            lsu_if.alu_lsu_vld = 1;
+            lsu_if.alu_lsu_st_iram = 1;
+            //lsu_if.alu_lsu_sb_op = 1;
+            //lsu_if.alu_lsu_sh_op = 1;
+            lsu_if.alu_lsu_sw_op = 1;
+	    //lsu_if.alu_lsu_ld_st_addr = 0;
+	    lsu_if.alu_lsu_ld_st_addr[11:4] = count; // check row change
+	    //lsu_if.alu_lsu_ld_st_addr[3:0] = count; // check col change
+    	    lsu_if.alu_lsu_src2 = 32'h12345678;
 	    count = count+1;
             //break;
     end
 	
 endtask 
+ 
 task lsu_driver::alu_signal_config_type1_store_mxualwaysrdy(lsu_tr tr);
 
         @(negedge lsu_if.clk);
