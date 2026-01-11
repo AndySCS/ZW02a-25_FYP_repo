@@ -1511,15 +1511,15 @@ module lsu(
                                                                      : {128{1'b0}}));
 
     assign lsu_riscv_st_data_shift = alu_lsu_sb_op ? alu_lsu_ld_st_addr[3:0] 
-                                                   : alu_lsu_sh_op ? alu_lsu_ld_st_addr[3:1]
-                                                   : alu_lsu_sw_op ? alu_lsu_ld_st_addr[3:2]
+                                                   : alu_lsu_sh_op ? {alu_lsu_ld_st_addr[3:1],1'b0}
+                                                   : alu_lsu_sw_op ? {alu_lsu_ld_st_addr[3:2],2'b00}
                                                    : {7{1'b0}};
     
     wire [16:0] lsu_riscv_wen_raw;
     wire [16:0] lsu_riscv_wen;
     assign lsu_riscv_wen_raw = alu_lsu_sb_op ? {{15{1'b0}},1'b1} : alu_lsu_sh_op ? {{14{1'b0}},{2{1'b1}}} : alu_lsu_sw_op ? {{12{1'b0}},{4{1'b1}}} : {16{1'b0}};
     assign lsu_riscv_wen = lsu_riscv_wen_raw << lsu_riscv_st_data_shift;
-    wire [16:0] lsu_riscv_st_data;
+    wire [128:0] lsu_riscv_st_data;
     assign lsu_riscv_st_data = lsu_riscv_st_data_in_raw << (lsu_riscv_st_data_shift * 4'd8);
 
     assign lsu_riscv_finish = lsu_riscv_ce;
