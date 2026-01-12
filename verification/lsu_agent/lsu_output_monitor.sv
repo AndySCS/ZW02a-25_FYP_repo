@@ -9,9 +9,9 @@ class lsu_output_monitor extends uvm_monitor;
     endfunction //new()
     
     extern function void build_phase(uvm_phase phase);
-    extern virtual task main_phase(uvm_phase phase);
-    
+    extern virtual task main_phase(uvm_phase phase); 
     extern virtual task collect_matrix_out(lsu_tr tr);
+    extern virtual task check_riscv_out(lsu_tr tr);
 
 endclass //lsu_output_monitor extends superClass
 
@@ -46,3 +46,16 @@ task lsu_output_monitor::collect_matrix_out(lsu_tr tr);
     //@(posedge lsu_if.clk);
     //wait(lsu_if.lsu_lsu_data_rdy) 
 endtask
+
+task lsu_output_monitor::check_riscv_out(lsu_tr tr);
+    while(1)begin
+        @(posedge lsu_if.clk);
+        if(lsu_if.alu_lsu_vld) break;
+    end
+        //@(posedge lsu_if.clk);
+        //if(lsu_if.lsu_rf_wb_vld) 
+        //tr.lsu_rf_wb_vld = lsu_if.lsu_rf_wb_vld;
+        //tr.lsu_rf_wb_addr = lsu_if.lsu_rf_wb_addr;
+        //tr.lsu_rf_wb_data = lsu_if.lsu_rf_wb_data;
+endtask
+
