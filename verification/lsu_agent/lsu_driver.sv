@@ -35,13 +35,7 @@ task lsu_driver::main_phase(uvm_phase phase);
     lsu_tr tr;
     //tr = new("tr");
     lsu_if.alu_lsu_vld = 0;
-    lsu_if.alu_lsu_ld_iram = 0;
-    lsu_if.alu_lsu_ld_wram = 0;
-    lsu_if.alu_lsu_ld_oram = 0;
-    lsu_if.alu_lsu_st_iram = 0;
-    lsu_if.alu_lsu_st_wram = 0;
-    lsu_if.alu_lsu_st_oram = 0;
-    lsu_if.alu_lsu_st_dram = 0;
+    lsu_if.alu_lsu_wb_vld = 0;
     lsu_if.alu_lsu_lb_op = 0;
     lsu_if.alu_lsu_lh_op = 0;
     lsu_if.alu_lsu_lw_op = 0;
@@ -50,6 +44,16 @@ task lsu_driver::main_phase(uvm_phase phase);
     lsu_if.alu_lsu_sb_op = 0;
     lsu_if.alu_lsu_sh_op = 0;
     lsu_if.alu_lsu_sw_op = 0;
+    lsu_if.alu_lsu_wb_addr = 0;
+    lsu_if.alu_lsu_wb_data = 0;
+    lsu_if.alu_lsu_src2 = 0;
+    lsu_if.alu_lsu_ld_iram = 0;
+    lsu_if.alu_lsu_ld_wram = 0;
+    lsu_if.alu_lsu_ld_oram = 0;
+    lsu_if.alu_lsu_st_iram = 0;
+    lsu_if.alu_lsu_st_wram = 0;
+    lsu_if.alu_lsu_st_oram = 0;
+    lsu_if.alu_lsu_st_dram = 0;
     lsu_if.alu_lsu_conv = 0;
     lsu_if.alu_lsu_act = 0;
     lsu_if.alu_lsu_pool = 0;
@@ -73,24 +77,53 @@ task lsu_driver::main_phase(uvm_phase phase);
     lsu_if.alu_lsu_wram_col_len = 0;
     lsu_if.alu_lsu_wram_row_len = 0;
     lsu_if.alu_lsu_act_type = 0;
-    lsu_if.alu_lsu_pool_size = 0;
-    lsu_if.mxu_lsu_data_rdy = 0;
-    //from axi write 
+    lsu_if.alu_lsu_pool_size = 0 ;
     lsu_if.axi_lsu_awrdy = 0;
     lsu_if.axi_lsu_wrdy = 0;
     lsu_if.axi_lsu_bid = 0;
     lsu_if.axi_lsu_bresp = 0;
     lsu_if.axi_lsu_bvld = 0;
     lsu_if.axi_lsu_resp_oram_addr = 0;
-    lsu_if.alu_lsu_src2 = 0;
-
-    //from axi read
     lsu_if.axi_lsu_arrdy = 0;
     lsu_if.axi_lsu_rid = 0;
     lsu_if.axi_lsu_rdata = 0;
     lsu_if.axi_lsu_rresp = 0;
     lsu_if.axi_lsu_rlast = 0;
     lsu_if.axi_lsu_rvld = 0;
+    lsu_if.mxu_lsu_int8_row0_data = 0;
+    lsu_if.mxu_lsu_int16_row0_data = 0;
+    lsu_if.mxu_lsu_int8_row1_data = 0;
+    lsu_if.mxu_lsu_int16_row1_data = 0;
+    lsu_if.mxu_lsu_int8_row2_data = 0;
+    lsu_if.mxu_lsu_int16_row2_data = 0;
+    lsu_if.mxu_lsu_int8_row3_data = 0;
+    lsu_if.mxu_lsu_int16_row3_data = 0;
+    lsu_if.mxu_lsu_int8_row4_data = 0;
+    lsu_if.mxu_lsu_int16_row4_data = 0;
+    lsu_if.mxu_lsu_int8_row5_data = 0;
+    lsu_if.mxu_lsu_int16_row5_data = 0;
+    lsu_if.mxu_lsu_int8_row6_data = 0;
+    lsu_if.mxu_lsu_int16_row6_data = 0;
+    lsu_if.mxu_lsu_int8_row7_data = 0;
+    lsu_if.mxu_lsu_int16_row7_data = 0;
+    lsu_if.mxu_lsu_int8_row8_data = 0;
+    lsu_if.mxu_lsu_int16_row8_data = 0;
+    lsu_if.mxu_lsu_int8_row9_data = 0;
+    lsu_if.mxu_lsu_int16_row9_data = 0;
+    lsu_if.mxu_lsu_int8_row10_data = 0;
+    lsu_if.mxu_lsu_int16_row10_data = 0;
+    lsu_if.mxu_lsu_int8_row11_data = 0;
+    lsu_if.mxu_lsu_int16_row11_data = 0;
+    lsu_if.mxu_lsu_int8_row12_data = 0;
+    lsu_if.mxu_lsu_int16_row12_data = 0;
+    lsu_if.mxu_lsu_int8_row13_data = 0;
+    lsu_if.mxu_lsu_int16_row13_data = 0;
+    lsu_if.mxu_lsu_int8_row14_data = 0;
+    lsu_if.mxu_lsu_int16_row14_data = 0;
+    lsu_if.mxu_lsu_int8_row15_data = 0;
+    lsu_if.mxu_lsu_int16_row15_data = 0;
+    lsu_if.mxu_lsu_data_rdy = 0;
+    lsu_if.mxu_lsu_rdy = 0;
 
     for (int i=0;i<256;i++) begin
 	  if(i==10)begin
@@ -490,3 +523,4 @@ endtask
         end
     end
     */
+

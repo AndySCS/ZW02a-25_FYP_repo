@@ -1680,12 +1680,43 @@ module lsu(
         .d(alu_lsu_ld_st_addr[3:0]),
         .q(lsu_ld_st_addr_ff)
     );
+
+    //pass the input alu_lsu_wb data to next cycle
+    wire lsu_wb_vld_ff;
+    wire [4:0] lsu_wb_addr_ff;
+    wire [31:0] lsu_wb_data_ff;
+
+    DFFR #(.WIDTH(1))
+    ff_lsu_wb_vld (
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(alu_lsu_wb_vld),
+        .q(lsu_wb_vld_ff)
+    );
+
+    DFFR #(.WIDTH(5))
+    ff_lsu_wb_addr (
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(alu_lsu_wb_addr),
+        .q(lsu_wb_addr_ff)
+    );
+
+    DFFR #(.WIDTH(32))
+    ff_lsu_wb_data (
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(alu_lsu_wb_data),
+        .q(lsu_wb_data_ff)
+    );
+
     //1/ qual the sram data load
     //2/ do the size shift
     //3/ out with size extend
     wire [6:0] lsu_riscv_ld_data_shift;
     wire [127:0] lsu_riscv_dout_shift_raw;
     wire [31:0] lsu_riscv_dout;
+    wire [127:0] lsu_riscv_dout_raw;
     assign lsu_riscv_dout_raw = {128{lsu_riscv_ld_vld_ff}} & (({128{lsu_ld_iram_ff}} & lsu_iram_dout) | 
                                                           ({128{lsu_ld_wram_ff}} & lsu_wram_dout) | 
                                                           ({128{lsu_ld_oram_ff}} & lsu_oram_dout));
@@ -1701,7 +1732,17 @@ module lsu(
                                          : lsu_lw_op_ff ? {{16{lsu_riscv_dout_shift_raw[7]}},lsu_riscv_dout_shift_raw[31:0]} 
                                          : {32{1'b0}};
 
+    assign lsu_idu_wb_vld = lsu_riscv_ld_vld_ff | lsu_wb_vld_ff;
+    assign lsu_idu_ld_vld = lsu_riscv_ld_vld_ff;
+    assign lsu_idu_wb_addr = lsu_wb_addr_ff;
+    assign lsu_idu_wb_data = lsu_riscv_ld_vld_ff ? lsu_riscv_dout : lsu_wb_data_ff;
+
+    assign lsu_rf_wb_vld = lsu_riscv_ld_vld_ff | lsu_wb_vld_ff;
+    assign lsu_rf_wb_addr = lsu_wb_addr_ff;
+    assign lsu_rf_wb_data = lsu_riscv_ld_vld_ff ? lsu_riscv_dout : lsu_wb_data_ff;
+     
 endmodule   
+
 
 
 
