@@ -1724,7 +1724,7 @@ module lsu(
                                                    : (lsu_lh_op_ff | lsu_lhu_op_ff) ? {lsu_ld_st_addr_ff[3:1],1'b0}
                                                    : lsu_lw_op_ff ? {lsu_ld_st_addr_ff[3:2],2'b00}
                                                    : {7{1'b0}};
-    assign lsu_riscv_dout_shift_raw = lsu_riscv_dout_raw << lsu_riscv_ld_data_shift;
+    assign lsu_riscv_dout_shift_raw = lsu_riscv_dout_raw >> (lsu_riscv_ld_data_shift*4'd8);
     assign lsu_riscv_dout = lsu_lb_op_ff ? {{24{lsu_riscv_dout_shift_raw[7]}},lsu_riscv_dout_shift_raw[7:0]}
                                          : lsu_lbu_op_ff ? {{24{1'b0}},lsu_riscv_dout_shift_raw[7:0]}
                                          : lsu_lh_op_ff ? {{16{lsu_riscv_dout_shift_raw[7]}},lsu_riscv_dout_shift_raw[15:0]}
@@ -1732,10 +1732,10 @@ module lsu(
                                          : lsu_lw_op_ff ? {{16{lsu_riscv_dout_shift_raw[7]}},lsu_riscv_dout_shift_raw[31:0]} 
                                          : {32{1'b0}};
 
-    assign lsu_idu_wb_vld = lsu_riscv_ld_vld_ff | lsu_wb_vld_ff;
-    assign lsu_idu_ld_vld = lsu_riscv_ld_vld_ff;
-    assign lsu_idu_wb_addr = lsu_wb_addr_ff;
-    assign lsu_idu_wb_data = lsu_riscv_ld_vld_ff ? lsu_riscv_dout : lsu_wb_data_ff;
+    assign lsu_idu_wb_vld = ~lsu_riscv_ld_vld & alu_lsu_wb_vld;
+    assign lsu_idu_ld_vld = lsu_riscv_ld_vld;
+    assign lsu_idu_wb_addr = alu_lsu_wb_addr;
+    assign lsu_idu_wb_data = alu_lsu_wb_data;
 
     assign lsu_rf_wb_vld = lsu_riscv_ld_vld_ff | lsu_wb_vld_ff;
     assign lsu_rf_wb_addr = lsu_wb_addr_ff;

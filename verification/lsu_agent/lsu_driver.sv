@@ -142,12 +142,12 @@ task lsu_driver::main_phase(uvm_phase phase);
      	  	harness.u_lsu.iram.mem[1] = 128'h2123456789abcdeff0e0d0c0b0a19181;
      	  	harness.u_lsu.iram.mem[2] = 128'h3123456789abcdeff0e0d0c0b0a29282;
      	  	harness.u_lsu.iram.mem[3] = 128'h4123456789abcdeff0e0d0c0b0a39383;
-     	  	harness.u_lsu.iram.mem[4] = 128'h5123456789abcdeff0e0d0c0b0a49484;
+     	  	harness.u_lsu.iram.mem[4] = 128'h5123456789abcdeff0e0d0c0b0a49474;
      	  	harness.u_lsu.iram.mem[5] = 128'h6123456789abcdeff0e0d0c0b0a59585;
      	  	harness.u_lsu.iram.mem[6] = 128'h7123456789abcdeff0e0d0c0b0a69686;
      	  	harness.u_lsu.iram.mem[7] = 128'h8123456789abcdeff0e0d0c0b0a79787;
-     	  	harness.u_lsu.iram.mem[8] = 128'h9123456789abcdeff0e0d0c0b0a89888;
-     	  	harness.u_lsu.iram.mem[9] = 128'ha123456789abcdeff0e0d0c0b0a99989;
+     	  	harness.u_lsu.iram.mem[8] = 128'h9123456789abcdeff0e0d0c0b0a89878;
+     	  	harness.u_lsu.iram.mem[9] = 128'ha123456789abcdeff0e0d0c0b0a99979;
 
      	  	harness.u_lsu.oram_hi.mem[0] = {16{8'd1}};
      	  	harness.u_lsu.oram_hi.mem[1] = {16{8'd2}};
@@ -221,21 +221,43 @@ endtask
 task lsu_driver::alu_siganl_config_riscv_ld_alwaysrdy(lsu_tr tr);
     int count;	
     while(1)begin
+	if(count%2)begin
             @(negedge lsu_if.clk);
             lsu_if.alu_lsu_vld = 1;
             lsu_if.alu_lsu_ld_iram = 1;
-            lsu_if.alu_lsu_lb_op = 1;
+            //lsu_if.alu_lsu_lb_op = 1;
             //lsu_if.alu_lsu_lh_op = 1;
-            //lsu_if.alu_lsu_lw_op = 1;
+            lsu_if.alu_lsu_lw_op = 1;
             //lsu_if.alu_lsu_lbu_op = 1;
             //lsu_if.alu_lsu_lhu_op = 1;
             //lsu_if.alu_lsu_lwu_op = 1;
 	    lsu_if.alu_lsu_ld_st_addr = 0;
-	    //lsu_if.alu_lsu_ld_st_addr[11:4] = count; // check row change
-	    //lsu_if.alu_lsu_ld_st_addr[3:0] = count; // check col change
+	    lsu_if.alu_lsu_wb_addr = count;
+	    lsu_if.alu_lsu_ld_st_addr[11:4] = count; // check row change
+	    lsu_if.alu_lsu_ld_st_addr[3:0] = count; // check col change
     	    lsu_if.alu_lsu_src2 = 32'h12345678;
 	    count = count+1;
             //break;
+	end
+	else begin	
+            @(negedge lsu_if.clk);
+            lsu_if.alu_lsu_vld = 1;
+            lsu_if.alu_lsu_ld_iram = 0;
+            lsu_if.alu_lsu_lb_op = 0;
+            lsu_if.alu_lsu_lh_op = 0;
+            lsu_if.alu_lsu_lw_op = 0;
+            lsu_if.alu_lsu_lbu_op = 0;
+            lsu_if.alu_lsu_lhu_op = 0;
+	    lsu_if.alu_lsu_wb_vld = 1;
+	    lsu_if.alu_lsu_wb_addr = 'hffff;
+	    lsu_if.alu_lsu_wb_data = 'h172395141;
+	    lsu_if.alu_lsu_ld_st_addr = 0;
+	    //lsu_if.alu_lsu_ld_st_addr[11:4] = count; // check row change
+	    lsu_if.alu_lsu_ld_st_addr[3:0] = count; // check col change
+    	    lsu_if.alu_lsu_src2 = 32'h12345678;
+	    count = count+1;
+            //break;
+	end
     end	
 endtask
 
