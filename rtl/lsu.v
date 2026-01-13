@@ -156,6 +156,18 @@ module lsu(
     lsu_rf_wb_addr,
     lsu_rf_wb_data
 );
+
+    //parameter
+    parameter AWID_WIDTH = 8;
+    parameter AWARRD_WIDTH = 11;
+    parameter WDATA_WIDTH = 32;
+    parameter WSTRB_WIDTH = 4; // should be WDATA_WIDTH/4
+    parameter RAM_WIDTH = 128;
+    parameter RAM_DEPTH = 256;
+    parameter RAM_TYPE  = `AXI_WRAM_REGION;
+    parameter ENT_NUM = 16;
+
+    //input/output signal
     input clk;
     input rst_n;
 
@@ -1531,6 +1543,209 @@ module lsu(
     wire [128:0] lsu_riscv_st_data;
     assign lsu_riscv_st_data = lsu_riscv_st_data_in_raw << (lsu_riscv_st_data_shift * 4'd8);
 
+    //matrix multiplcation preprocess
+    //ram alloc data
+    wire ram_buff_alloc_vld;
+    wire [7:0] ram_buff_alloc_addr;
+    wire [127:0] ram_buff_alloc_data;
+    //control signals
+    wire ctrl_ram_buff_vld;
+    wire [3:0] ctrl_ram_buff_start_byte;
+    wire [3:0] ctrl_ram_buff_end_byte;
+    wire [3:0] ctrl_ram_buff_ent_num;
+    wire [7:0] ctrl_ram_buff_start_addr;
+    wire [4:0] ctrl_ram_buff_ent_rng;
+    //output to RAM
+    wire ram_read_vld;
+    wire [7:0] ram_read_addr;
+    //output to MXU
+    wire [15:0] ram_buff_mxu_vld;
+    wire [127:0] ram_buff_mxu_data;
+
+    //buff ent input
+    //alloc logic
+    wire [ENT_NUM-1:0] ent_alloc;
+    wire [ENT_NUM-1:0] ent_alloc_ptr;
+    wire [ENT_NUM-1:0] ent_alloc_ptr_nxt;
+    wire [ENT_NUM-1:0] ent_alloc_ptr_en;
+
+    wire [ENT_NUM-1:0] ent_invld_oh;
+    wire [ENT_NUM-1:0] ent_free_oh;
+
+    wire [7:0] ent_alloc_addr;
+    wire [127:0] ent_alloc_data;
+    //
+    wire [7:0] buf_rd_addr;
+    //buff ent output
+    wire [ENT_NUM-1:0] ent_vld;
+    wire [15:0] ent_vld_1_in_16 [ENT_NUM-1:0];
+    wire [127:0] ent_data[15:0];
+    wire [7:0] ent_addr[15:0];
+    wire [ENT_NUM-1:0] ent_cur;
+    wire [ENT_NUM-1:0] ent_free;
+    wire [ENT_NUM-1:0] ent_match;
+    //RAM buffer status
+    wire [1:0] ram_buff_stat_fsm;
+    wire [1:0] ram_buff_stat_fsm_nxt;
+    wire [1:0] ram_buff_stat_fsm_en;
+    wire [3:0] ram_buff_ent_cnt;
+    wire [3:0] ram_buff_ent_cnt_nxt;
+    wire [3:0] ram_buff_ent_cnt_en;
+    wire ram_buff_done_recv;
+    wire ram_buff_done_send;
+    //ctrl input store
+    wire [3:0] ctrl_ram_buff_start_byte_ff;
+    wire [3:0] ctrl_ram_buff_end_byte_ff;
+    wire [3:0] ctrl_ram_buff_ent_num_ff;
+    wire [7:0] ctrl_ram_buff_start_addr_ff;
+    wire [4:0] ctrl_ram_buff_ent_rng_ff;
+    wire [4:0] ram_buff_read_addr_offset;
+    wire [4:0] ram_buff_read_addr_offset_nxt;
+    wire ram_buff_read_addr_offset_en;
+    wire ram_read_dir;
+    //ram rd request logic
+    wire all_ent_has_fetched;
+    wire read_offset_exceed_ctrl_rng;
+
+    //alloc ent
+    assign ent_invld = ~ent_vld;
+
+    DFFRE #(.WIDTH(ENT_NUM-1)) 
+    ff_alloc_ptr_hi( 
+        .clk(clk), 
+        .rst_n(rst_n), 
+        .en(ent_alloc_ptr_en), 
+        .d(ent_alloc_ptr_nxt[ENT_NUM-1:1]), 
+        .q(ent_alloc_ptr[ENT_NUM-1:1])
+    );
+
+    DFFSE #(.WIDTH(1)) 
+    ff_alloc_ptr_lo( 
+        .clk(clk), 
+        .rst_n(rst_n), 
+        .en(ent_alloc_ptr_en), 
+        .d(ent_alloc_ptr_nxt[0]), 
+        .q(ent_alloc_ptr[0])
+    );
+    
+    assign ent_alloc_ptr_en = ram_buff_alloc_vld | ctrl_ram_buff_vld;
+
+    assign ent_alloc_ptr_nxt = ctrl_ram_buff_vld ? {{ENT_NUM-1{1'b0}} ,1'b1} 
+                             : {ent_alloc_ptr[ENT_NUM-2:0], ent_alloc_ptr[ENT_NUM-1]};
+
+    assign ent_alloc_ptr = (|ent_invld) ? ent_invld_oh : ent_free_oh;
+    assign ent_alloc = {ENT_NUM{ram_buff_alloc_vld}} & ent_alloc_ptr;
+
+    assign ent_alloc_addr = ram_buff_alloc_addr;
+    assign ent_alloc_data = ram_buff_alloc_data;
+    //done alloc ent
+
+    //ctrl input store
+    DFFRE #(.WIDTH(4)) 
+    ff_ctrl_ram_buff_start_byte(
+        .clk(clk),
+        .rst_n(rst_n),
+        .en(ctrl_ram_buff_vld),
+        .d(ctrl_ram_buff_start_byte),
+        .q(ctrl_ram_buff_start_byte_ff)
+    );
+
+    DFFRE #(.WIDTH(4)) 
+    ff_ctrl_ram_buff_end_byte(
+        .clk(clk),
+        .rst_n(rst_n),
+        .en(ctrl_ram_buff_vld),
+        .d(ctrl_ram_buff_end_byte),
+        .q(ctrl_ram_buff_end_byte_ff)
+    );
+    
+    DFFRE #(.WIDTH(4)) 
+    ff_ctrl_ram_buff_ent_num(
+        .clk(clk),
+        .rst_n(rst_n),
+        .en(ctrl_ram_buff_vld),
+        .d(ctrl_ram_buff_ent_num),
+        .q(ctrl_ram_buff_ent_num_ff)
+    );
+    
+    DFFRE #(.WIDTH(8)) 
+    ff_ctrl_ram_buff_start_addr(
+        .clk(clk),
+        .rst_n(rst_n),
+        .en(ctrl_ram_buff_vld),
+        .d(ctrl_ram_buff_start_addr),
+        .q(ctrl_ram_buff_start_addr_ff)
+    );
+    
+    DFFRE #(.WIDTH(5)) 
+    ff_ctrl_ram_buff_ent_rng(
+        .clk(clk),
+        .rst_n(rst_n),
+        .en(ctrl_ram_buff_vld),
+        .d(ctrl_ram_buff_ent_rng),
+        .q(ctrl_ram_buff_ent_rng_ff)
+    );
+    //done ctrl input store
+    
+    //ram buff offset
+    assign ram_read_dir = ~ctrl_ram_buff_ent_rng_ff[4]; //rng uses 2's complement
+    assign ram_buff_read_addr_offset_en = ctrl_ram_buff_vld | ram_read_vld;
+    assign ram_buff_read_addr_offset_nxt = ctrl_ram_buff_vld ? 5'b0 //read from start ent
+                                         : ram_read_dir ? ram_buff_read_addr_offset + 5'b1
+                                         : ram_buff_read_addr_offset - 5'b1;
+
+    DFFRE #(.WIDTH(5)) 
+    ff_ram_buff_read_addr_offset(
+        .clk(clk),
+        .rst_n(rst_n),
+        .en(ram_buff_read_addr_offset_en),
+        .d(ram_buff_read_addr_offset_nxt),
+        .q(ram_buff_read_addr_offset)
+    );
+    //
+
+    //ram read logic
+    //ram_buff_read_addr_offset == 0: first fetch request, must send to RAM
+    //~read_offset_exceed_ctrl_rng: has not read out all ent
+    assign read_offset_exceed_ctrl_rng = ram_read_dir & (ram_buff_read_addr_offset[3:0] > ctrl_ram_buff_ent_rng_ff[3:0])
+                                       | ~ram_read_dir & (ram_buff_read_addr_offset[3:0] < ctrl_ram_buff_ent_rng_ff[3:0]);
+    assign all_ent_has_fetched = (|ram_buff_read_addr_offset) & read_offset_exceed_ctrl_rng;
+    assign ram_read_vld = ~ram_buff_stat_fsm[1] & ram_buff_stat_fsm[0] //2'b01
+                        & ~all_ent_has_fetched;
+    assign ram_read_addr = ctrl_ram_buff_start_addr_ff + {{3{ram_buff_read_addr_offset[4]}}, ram_buff_read_addr_offset};
+    //TODO what if the start_addr is row1 and it laod with backward dir?
+    //
+
+    //ram buff ent cnt
+    assign ram_buff_ent_cnt_en = ctrl_ram_buff_vld | ram_buff_alloc_vld;
+    assign ram_buff_ent_cnt_nxt = ctrl_ram_buff_vld ? 1'b0 : ram_buff_ent_cnt + 1;
+    //ram buff fsm
+    assign ram_buff_done_recv = (ram_buff_ent_cnt == ctrl_ram_buff_ent_num_ff) & ram_buff_alloc_vld;
+    assign ram_buff_done_send = (ram_buff_stat_fsm == `RAM_BUFF_FSM_SND) & ~(|ent_vld);
+    assign ram_buff_stat_fsm_en = ctrl_ram_buff_vld | ram_buff_alloc_vld | (ram_buff_stat_fsm == `RAM_BUFF_FSM_SND);
+    assign ram_buff_stat_fsm_nxt = ctrl_ram_buff_vld ? `RAM_BUFF_FSM_RECV
+                                 : ram_buff_done_recv ? `RAM_BUFF_FSM_SND
+                                 : ram_buff_done_send ? `RAM_BUFF_FSM_IDLE : `RAM_BUFF_FSM_REV; 
+
+    DFFRE #(.WIDTH(2))
+    ff_ram_buff_stat_fsm(
+        .clk(clk),
+        .rst_n(rst_n),
+        .en(ram_buff_stat_fsm_en),
+        .d(ram_buff_stat_fsm_nxt),
+        .q(ram_buff_stat_fsm)
+    );
+    DFFRE #(.WIDTH(3))
+    ff_ram_buff_ent_cnt(
+        .clk(clk),
+        .rst_n(rst_n),
+        .en(ram_buff_ent_cnt_en),
+        .d(ram_buff_ent_cnt_nxt),
+        .q(ram_buff_ent_cnt)
+    );
+
+
+    // instruction finihs declear
     assign lsu_riscv_finish = lsu_riscv_ce;
 
     wire lsu_st_type2_done;
