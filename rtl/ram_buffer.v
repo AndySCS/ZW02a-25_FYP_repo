@@ -55,7 +55,7 @@ module ram_buffer(
     wire [ENT_NUM-1:0] ent_alloc;
     wire [ENT_NUM-1:0] ent_alloc_ptr;
     wire [ENT_NUM-1:0] ent_alloc_ptr_nxt;
-    wire [ENT_NUM-1:0] ent_alloc_ptr_en;
+    wire ent_alloc_ptr_en;
 
     wire [ENT_NUM-1:0] ent_invld_oh;
     wire [ENT_NUM-1:0] ent_free_oh;
@@ -75,10 +75,10 @@ module ram_buffer(
     //RAM buffer status
     wire [1:0] ram_buff_stat_fsm;
     wire [1:0] ram_buff_stat_fsm_nxt;
-    wire [1:0] ram_buff_stat_fsm_en;
+    wire ram_buff_stat_fsm_en;
     wire [3:0] ram_buff_ent_cnt;
     wire [3:0] ram_buff_ent_cnt_nxt;
-    wire [3:0] ram_buff_ent_cnt_en;
+    wire ram_buff_ent_cnt_en;
     wire ram_buff_done_recv;
     wire ram_buff_done_send;
     //ctrl input store
@@ -223,7 +223,7 @@ module ram_buffer(
         .d(ram_buff_stat_fsm_nxt),
         .q(ram_buff_stat_fsm)
     );
-    DFFRE #(.WIDTH(3))
+    DFFRE #(.WIDTH(4))
     ff_ram_buff_ent_cnt(
         .clk(clk),
         .rst_n(rst_n),
@@ -233,67 +233,68 @@ module ram_buffer(
     );
     //done ram buff fsm
 
-    genvar i;
-    generate
-        for (i = 0; i < ENT_NUM ; i=i+1) begin
-            ram_buffer_ent ram_buffer_ent(
-                .clk(clk),
-                .rst_n(rst_n),
-                .alloc_en(ent_alloc[i]),
-                .alloc_data(ent_alloc_data),
-                .alloc_addr(ent_alloc_addr),
-                .alloc_byte(ctrl_ram_buff_start_byte_ff),
-                .axi_rd_addr(buf_rd_addr),
-                .ram_update(update_ent_cur[i]),
-                .ent_cnt_dec(ent_cnt_inc[i]),
-                .ent_cnt_inc(ent_pick[i]),
-                .buff_start_byte(ctrl_ram_buff_start_byte_ff),
-                .buff_end_byte(ctrl_ram_buff_end_byte_ff),
-                .addr_match(ent_match[i]),
-                .ent_vld(ent_vld[i]),
-                .ent_data(ent_data[i]),
-                .ent_addr(ent_addr[i]),
-                .ent_age(ent_cur[i]),
-                .ent_free(ent_free[i]),
-                .ent_vld_1_in_16(ent_vld_1_in_16[i])
-            );
-        end
-    endgenerate 
+    //genvar i;
+    //generate
+        //for (i = 0; i < ENT_NUM ; i=i+1) begin
+            //ram_buffer_ent ram_buffer_ent(
+                //.clk(clk),
+                //.rst_n(rst_n),
+                //.alloc_en(ent_alloc[i]),
+                //.alloc_data(ent_alloc_data),
+                //.alloc_addr(ent_alloc_addr),
+                //.alloc_byte(ctrl_ram_buff_start_byte_ff),
+                //.axi_rd_addr(buf_rd_addr),
+                //.ram_update(update_ent_cur[i]),
+                //.ent_cnt_dec(ent_cnt_inc[i]),
+                //.ent_cnt_inc(ent_pick[i]),
+                //.buff_start_byte(ctrl_ram_buff_start_byte_ff),
+                //.buff_end_byte(ctrl_ram_buff_end_byte_ff),
+                //.addr_match(ent_match[i]),
+                //.ent_vld(ent_vld[i]),
+                //.ent_data(ent_data[i]),
+                //.ent_addr(ent_addr[i]),
+                //.ent_age(ent_cur[i]),
+                //.ent_free(ent_free[i]),
+                //.ent_vld_1_in_16(ent_vld_1_in_16[i])
+            //);
+        //end
+    //endgenerate 
 
-    //output to MXU
-    assign ram_buff_mxu_vld = ent_vld_1_in_16[0]
-                            | ent_vld_1_in_16[1] 
-                            | ent_vld_1_in_16[2] 
-                            | ent_vld_1_in_16[3] 
-                            | ent_vld_1_in_16[4] 
-                            | ent_vld_1_in_16[5] 
-                            | ent_vld_1_in_16[6] 
-                            | ent_vld_1_in_16[7] 
-                            | ent_vld_1_in_16[8] 
-                            | ent_vld_1_in_16[9] 
-                            | ent_vld_1_in_16[10] 
-                            | ent_vld_1_in_16[11] 
-                            | ent_vld_1_in_16[12] 
-                            | ent_vld_1_in_16[13] 
-                            | ent_vld_1_in_16[14] 
-                            | ent_vld_1_in_16[15]; 
+    ////output to MXU
+    //assign ram_buff_mxu_vld = ent_vld_1_in_16[0]
+                            //| ent_vld_1_in_16[1] 
+                            //| ent_vld_1_in_16[2] 
+                            //| ent_vld_1_in_16[3] 
+                            //| ent_vld_1_in_16[4] 
+                            //| ent_vld_1_in_16[5] 
+                            //| ent_vld_1_in_16[6] 
+                            //| ent_vld_1_in_16[7] 
+                            //| ent_vld_1_in_16[8] 
+                            //| ent_vld_1_in_16[9] 
+                            //| ent_vld_1_in_16[10] 
+                            //| ent_vld_1_in_16[11] 
+                            //| ent_vld_1_in_16[12] 
+                            //| ent_vld_1_in_16[13] 
+                            //| ent_vld_1_in_16[14] 
+                            //| ent_vld_1_in_16[15]; 
     
-    assign ram_buff_mxu_data = ent_data[0]
-                             | ent_data[1] 
-                             | ent_data[2] 
-                             | ent_data[3] 
-                             | ent_data[4] 
-                             | ent_data[5] 
-                             | ent_data[6] 
-                             | ent_data[7] 
-                             | ent_data[8] 
-                             | ent_data[9] 
-                             | ent_data[10] 
-                             | ent_data[11] 
-                             | ent_data[12] 
-                             | ent_data[13] 
-                             | ent_data[14] 
-                             | ent_data[15]; 
-    //
+    //assign ram_buff_mxu_data = ent_data[0]
+                             //| ent_data[1] 
+                             //| ent_data[2] 
+                             //| ent_data[3] 
+                             //| ent_data[4] 
+                             //| ent_data[5] 
+                             //| ent_data[6] 
+                             //| ent_data[7] 
+                             //| ent_data[8] 
+                             //| ent_data[9] 
+                             //| ent_data[10] 
+                             //| ent_data[11] 
+                             //| ent_data[12] 
+                             //| ent_data[13] 
+                             //| ent_data[14] 
+                             //| ent_data[15]; 
+    ////
 
 endmodule
+
