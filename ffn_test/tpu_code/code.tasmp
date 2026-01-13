@@ -1,0 +1,217 @@
+//x1: loop iterator, x2: loop target, x3: iram addr, x4: wram addr, x5: oram addr, x6: dram addr
+addi x2, x0, 4  //addi rd, rs1, simm12
+addi x4, x0, 1
+slli x4, x4, 13//slli/srli/srai rd, rs1, uimm5
+
+load_input: //
+    //load image input, 28*28 = 784
+    //rs1: register for the dest, [11:0] dest addr, [13:12] dest type
+    //rs2: register for storing the dram addr
+    addi x1, x0, 1  //add iterator
+    beq x1, x2, load_input_if
+    load_input_if:
+        LDT x3, x6, 16, 000, 000  //LDT rs1, rs2, <num>, <len>, <stride>
+        jal x0, load_input_end//jal rd, simm21
+    load_input_else:
+        LDT x3, x6, 256, 000, 000  //LDT rs1, rs2, <num>, <len>, <stride>
+    load_input_end:
+        addi x3, x0, 1  //add dest addr
+        addi x6, x0, 256  //addi dram addr
+        //for loop: for i=0; i < 4;i++
+        blt x1, x2, load_input //beq/bne/blt/bltu/bge/bgeu rs1, rs2, simm13
+    addi x31, x0, 1
+    sb x31, x0, 243//store 1 for bias to iram
+
+// clr dram addr
+addi x6, x0, 0  
+//
+
+lui x4, 4 //set wram addr
+addi x3, x0, 15 //reset iram addr for store
+
+addi x30, x0, 56 //number of perceptrons
+addi x27, x0, 0 //wram mm addr
+addi x24, x0, 50 //iters thd
+
+addi x10, x0, 1000 // dram init addr
+//dram update const
+lui x11, 3
+addi x11, x11, 272
+
+addi x23, x0, 4 //iter thd for layer
+addi x22, x0, 0 // number of iter for layer
+addi x21, x0, 3 //last iter for layer
+
+// set iram update thd
+addi x19, x0, 3840
+lui x19, 0
+
+layer_network_loop:
+
+    //first layer neuron num = 56, number of weight = 784, num of iter = 784/16*4 = 49
+    //for loop
+    addi x31, x0, 785 //nummber of weight + bias
+    addi x28, x0, 16 //number of iters
+    addi x26, x0, 0 //iram mm addr
+    addi x25, x0, 0 //number of iters
+    addi x20, x0, 0 //current iram col
+
+
+    load_and_mult_loop: //loop for matrix multiplication for 16 perceptrons
+
+        add x6, x10, x0 //init dram addr
+        addi x10, x10, 16 //update dram init addr
+
+        addi x25, x25, 1 //update iter
+        blt x25, x24, load_weight_else
+        addi x4, x4, 0
+
+        load_weight_if: // iter == 50
+            addi x29, x0, 0 // init loop iter
+            load_weight_else_for_loop: // load weight loop
+                addi x29, x29, 1 // update iter
+                LDT x4, x6, 0, 0, 0  //load weight to wram
+                addi x6, x6, 785 //update next load dram addr
+                addi x4, x4, 16 //update next load wram addr
+                blt x29, x28, load_weight_else_for_loop
+            // set dram addr to next line
+            jal x0, load_weight_end
+
+        load_weight_else: //iter is < 50, load bias only
+            addi x29, x0, 0 // init loop iter
+            load_weight_else_for_loop: // load weight loop
+                addi x29, x29, 1 // update iter
+                LDT x4, x6, 15, 0, 0  //load weight to wram
+                addi x6, x6, 785 //update next load dram addr
+                addi x4, x4, 16 //update next load wram addr
+                blt x29, x28, load_weight_else_for_loop
+
+        load_weight_end:
+
+        beq x22, x21, matrix_multi_branch_else
+        matrix_multi_branch_if:
+            beq x25, x0, matrix_multi_case_first
+            blt x25, x24, matrix_multi_case_bias
+            jal x0, matrix_multi_case_norm
+        matrix_multi_branch_else:
+            beq x25, x0, matrix_multi_case_last_perceptron_first
+            blt x25, x24, matrix_multi_case_last_perceptron_bias
+            jal x0, matrix_multi_case_last_perceptron_norm
+        matrix_multi_branch_end:
+
+        //16 perceptron
+        matrix_multi_case_first:
+            MM x26, x27, 15, 0, 15, 0
+            jal x0, matrix_multi_end
+        matrix_multi_case_norm: //iter == 50, only load bias
+            MM x26, x27, 0, 0, 15, 0
+            jal x0, matrix_multi_end
+        matrix_multi_case_bias:
+            MM x26, x27, 15, 0, 15, 0
+            jal matrix_multi_end
+        //8 perceptron case
+        matrix_multi_case_last_perceptron_first:
+            MM x26, x27, 15, 0, 7, 0
+            jal x0, matrix_multi_end
+        matrix_multi_case_last_perceptron_norm: //iter == 50, only load bias
+            MM x26, x27, 0, 0, 7, 0
+            jal x0, matrix_multi_end
+        matrix_multi_case_last_perceptron_bias:
+            MM x26, x27, 15, 0, 7, 0
+        matrix_multi_end:
+
+        bge x27, x19, matirx_iram_update_else
+        matirx_iram_update_if:
+            addi x27, x27, 16 //update iram addr
+            jal x0, matirx_iram_update_end
+        matirx_iram_update_else:
+            addi x27, x20, 1 //update iram addr
+            addi x20, x20, 1 //update iram col
+        matirx_iram_update_end:
+
+        blt x25, x24, load_and_mult_loop
+    
+    //finish 16 perceptrons, next iter
+
+    STMT x3, x0, 0, 15, 1 //store result back to iram
+    addi x3, x0, 256 // update store addr 
+    
+    add x10, x10, x11 //update dram addr
+    addi x22, x22, 1 //update iter
+
+    bge x22, x21, update_wram_load_iter_if
+    jal x0, update_wram_load_iter_end
+    update_wram_load_iter_if:
+        addi x28, x0, 8 // 56-16*3=8 
+    update_wram_load_iter_end:
+
+    blt x22, x23, layer_network_loop //go back to begin if loop not done
+
+    addi x31, x0, 1
+    sb x31, x0, 855//store 1 for bias to iram
+
+//second layer network
+addi x10, x0, 4 //iter thd
+addi x11, x0, 0 //number of iter
+addi x12, x0, 3 //last iter
+//init dram addr
+addi x6, x0, 0
+addi x6, x0, 175
+slli x6, x6, 8
+addi x6, x6, 200
+//init number of perceptrons
+addi x28, x0, 0
+addi x28, x0, 10
+second_layer_loop:
+    //56 input in this layer, 10 output
+
+    addi x11, x11, 1 //update iter
+    addi x4, x0, 0
+    blt x10, x11, load_weight_else
+
+    sl_load_weight_if: // iter == 50
+        addi x29, x0, 0 // init loop iter
+        sl_load_weight_else_for_loop: // load weight loop
+            addi x29, x29, 1 // update iter
+            LDT x4, x6, 8, 0, 0  //load weight to wram
+            addi x6, x6, 57 //update next load dram addr
+            addi x4, x4, 16 //update next load wram addr
+            blt x29, x28, sl_load_weight_else_for_loop
+        // set dram addr to next line
+        jal x0, sl_load_weight_end
+
+    sl_load_weight_else: //iter is < 50, load bias only
+        addi x29, x0, 0 // init loop iter
+        sl_load_weight_else_for_loop: // load weight loop
+            addi x29, x29, 1 // update iter
+            LDT x4, x6, 15, 0, 0  //load weight to wram
+            addi x6, x6, 57 //update next load dram addr
+            addi x4, x4, 16 //update next load wram addr
+            blt x29, x28, sl_load_weight_else_for_loop
+
+    sl_load_weight_end:
+
+    addi x6, x6, 16
+    beq x10, x0, sl_matrix_multi_case_first
+    blt x10, x11, sl_matrix_multi_case_norm
+
+    sl_matrix_multi_case_bias:
+        MM x26, x27, 8, 0, 9, 0
+        jal x0, sl_matrix_multi_end
+    sl_matrix_multi_case_first:
+        MM x26, x27, 15, 0, 9, 0
+        jal x0, sl_matrix_multi_end
+    sl_matrix_multi_case_norm: //iter == 50, only load bias
+        MM x26, x27, 15, 0, 9, 0
+    sl_matrix_multi_end:
+    
+    bge x11, x12, sl_update_wram_load_iter_if
+    jal x0, sl_update_wram_load_iter_end
+
+    blt x11, x10, second_layer_loop
+
+//set oram addr
+addi x3, x0, 0
+lui x3, 2
+STMT x3, x0, 0, 9, 1 //store result oram
+STT x3, rs2,  0, 0, 5, 1 // store result to dram
