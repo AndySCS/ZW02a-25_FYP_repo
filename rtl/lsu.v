@@ -1543,6 +1543,7 @@ module lsu(
     wire [128:0] lsu_riscv_st_data;
     assign lsu_riscv_st_data = lsu_riscv_st_data_in_raw << (lsu_riscv_st_data_shift * 4'd8);
 
+    //mm calculation
     //ram buffer signal
     wire         lsu_ram_buff_alloc_vld;
     wire [7:0]   lsu_ram_buff_alloc_addr;
@@ -1557,6 +1558,30 @@ module lsu(
     wire [7:0] lsu_ram_read_addr;
     wire [15:0]  lsu_ram_buff_mxu_vld;
     wire [127:0] lsu_ram_buff_mxu_data;
+
+    //ctrl_input
+    wire [3:0] lsu_iram_start_byte;
+    wire [3:0] lsu_iram_end_byte; 
+    wire [3:0] lsu_iram_ent_num;
+    wire [4:0] lsu_iram_ent_rng;
+
+    //set the start_byte and end byte for the iram
+    assign lsu_iram_start_byte = {4{alu_lsu_conv}} & alu_lsu_iram_start_addr[3:0];
+    assign lsu_iram_end_byte = alu_lsu_iram_col_dir ? alu_lsu_iram_start_addr[3:0] + alu_lsu_iram_col_len 
+                                                    : alu_lsu_iram_start_addr[3:0] - alu_lsu_iram_col_len;
+    assign lsu_iram_ent_num  = alu_lsu_iram_row_len;
+    assign lsu_iram_ent_rng  = {alu_lsu_iram_row_dir,alu_lsu_iram_row_len};
+
+    assign lsu_ram_buff_alloc_vld = lsu_iram_ce_ff & idu_lsu_conv;
+    assign lsu_ram_buff_alloc_addr = lsu_iram_addr_ff & {8{idu_lsu_conv}};
+    assign lsu_ram_buff_alloc_data = lsu_iram_dout & {128{idu_lsu_conv}};
+
+    assign lsu_ctrl_ram_buff_vld = idu_lsu_conv;
+    assign lsu_ctrl_ram_buff_start_byte = lsu_iram_start_byte;
+    assign lsu_ctrl_ram_buff_end_byte = lsu_iram_end_byte;
+    assign lsu_ctrl_ram_buff_ent_num = lsu_iram_ent_num;
+    assign lsu_ctrl_ram_buff_start_addr = alu_lsu_iram_start_addr;
+    assign lsu_ctrl_ram_buff_ent_rng = lsu_iram_ent_rng;
 
     ram_buffer matrix_iram_load_buffer (
         .clk(clk),
@@ -1596,7 +1621,8 @@ module lsu(
 
     //FOR sram memory wrapper
 
-
+    wire lsu_iram_ce_ff;
+    wire lsu_wram_ce_ff;
     assign lsu_iram_we   = lsu_st_type1_iram_we | lsu_ld_iram_we | (lsu_riscv_we & alu_lsu_st_iram);
     assign lsu_iram_ce   = lsu_st_type1_iram_ce | lsu_ld_iram_ce | (lsu_riscv_ce & (alu_lsu_st_iram | alu_lsu_ld_iram));
     assign lsu_iram_addr = (lsu_st_type1_iram_addr & {8{lsu_st_type1_iram_ce}}) | lsu_ld_iram_addr | (lsu_riscv_addr & ({8{alu_lsu_st_iram}} | {8{alu_lsu_ld_iram}}));
@@ -1612,6 +1638,22 @@ module lsu(
         .dout(lsu_iram_dout)
     );
 
+    DFFR #(.WIDTH(1))
+    ff_lsu_iram_ce_ff (
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(lsu_iram_ce),
+        .q(lsu_iram_ce_ff)
+    );
+
+    DFFR #(.WIDTH(8))
+    ff_lsu_iram_addr_ff (
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(lsu_iram_addr),
+        .q(lsu_iram_addr_ff)
+    );
+
     assign lsu_wram_we   = lsu_st_type1_wram_we | lsu_ld_wram_we | (lsu_riscv_we & alu_lsu_st_wram);
     assign lsu_wram_ce   = lsu_st_type1_wram_ce | lsu_ld_wram_ce | (lsu_riscv_ce & (alu_lsu_st_wram | alu_lsu_ld_wram));
     assign lsu_wram_addr = (lsu_st_type1_wram_addr & {8{lsu_st_type1_wram_ce}}) | lsu_ld_wram_addr | (lsu_riscv_addr & ({8{alu_lsu_st_wram}} | {8{alu_lsu_ld_wram}}));
@@ -1625,6 +1667,22 @@ module lsu(
         .addr(lsu_wram_addr),
         .din (lsu_wram_din),
         .dout(lsu_wram_dout)
+    );
+
+    DFFR #(.WIDTH(1))
+    ff_lsu_wram_ce_ff (
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(lsu_wram_ce),
+        .q(lsu_wram_ce_ff)
+    );
+
+    DFFR #(.WIDTH(8))
+    ff_lsu_wram_addr_ff (
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(lsu_wram_addr),
+        .q(lsu_wram_addr_ff)
     );
 
     assign lsu_oram_we   = (lsu_st_type1_oram_we & alu_lsu_st_low) | (lsu_st_type2_oram_we & (alu_lsu_st_low | lsu_st_full_low_en)) | (alu_lsu_st_low & lsu_riscv_we & alu_lsu_st_oram);
