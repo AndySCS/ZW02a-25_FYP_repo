@@ -18,9 +18,10 @@ class lsu_driver extends uvm_driver #(lsu_tr);
     extern virtual task alu_signal_config_type1_store_mxuwaitrdy(lsu_tr tr);
     extern virtual task alu_signal_config_type2_store(lsu_tr tr);
     extern virtual task alu_signal_config_load(lsu_tr tr);
-    extern virtual task alu_siganl_config_riscv(lsu_tr tr);
-    extern virtual task alu_siganl_config_riscv_st_alwaysrdy(lsu_tr tr);
-    extern virtual task alu_siganl_config_riscv_ld_alwaysrdy(lsu_tr tr);
+    extern virtual task alu_signal_config_riscv(lsu_tr tr);
+    extern virtual task alu_signal_config_riscv_st_alwaysrdy(lsu_tr tr);
+    extern virtual task alu_signal_config_riscv_ld_alwaysrdy(lsu_tr tr);
+    extern virtual task alu_signal_config_mm(lsu_tr tr);
 endclass //className extends superClass
 
 function void lsu_driver::build_phase(uvm_phase phase);
@@ -192,14 +193,15 @@ task lsu_driver::main_phase(uvm_phase phase);
         //alu_signal_config_type1_store_mxuwaitrdy(tr);
         //alu_signal_config_type2_store(tr);
         //alu_signal_config_load(tr);
-        //alu_siganl_config_riscv(tr);
-	//alu_siganl_config_riscv_st_alwaysrdy(tr);
-	alu_siganl_config_riscv_ld_alwaysrdy(tr);
+        //alu_signal_config_riscv(tr);
+	    //alu_siganl_config_riscv_st_alwaysrdy(tr);
+	    //alu_signal_config_riscv_ld_alwaysrdy(tr);
+        alu_signal_config_mm(tr);
         //seq_item_port.item_done();
     end
     	   
 endtask
-task lsu_driver::alu_siganl_config_riscv(lsu_tr tr);
+task lsu_driver::alu_signal_config_riscv(lsu_tr tr);
     int count;	
     while(1)begin
         @(negedge lsu_if.clk);
@@ -459,14 +461,14 @@ task lsu_driver::alu_signal_config_load(lsu_tr tr);
     while(1)begin
         @(negedge lsu_if.clk);
         if(lsu_if.lsu_alu_rdy) begin
-	    read_end = 0;
+	        read_end = 0;
             lsu_if.alu_lsu_vld = 1;
             lsu_if.alu_lsu_ld_iram = 1;
             //lsu_if.alu_lsu_ld_wram = 1;
 	        lsu_if.axi_lsu_arrdy = 1;
             lsu_if.alu_lsu_num = 4; //num of chunk
             lsu_if.alu_lsu_len = 4; //element size
-	    lsu_if.alu_lsu_ld_st_addr = 'b00000;
+	        lsu_if.alu_lsu_ld_st_addr = 'b00000;
             @(negedge lsu_if.clk);
             lsu_if.alu_lsu_vld = 0;
             @(negedge lsu_if.clk);
@@ -519,6 +521,22 @@ task lsu_driver::alu_signal_config_load(lsu_tr tr);
     		lsu_if.axi_lsu_rvld = 0;
 		lsu_if.axi_lsu_rlast = 0;
 	end
+    end
+endtask
+
+
+task lsu_driver::alu_signal_config_mm(lsu_tr tr);
+
+    while(1)begin
+        @(negedge lsu_if.clk);
+        if(lsu_if.lsu_alu_rdy) begin
+            lsu_if.alu_lsu_conv = 1;
+            lsu_if.alu_lsu_iram_start_addr = 0;
+            lsu_if.alu_lsu_iram_col_dir = 
+            lsu_if.alu_lsu_iram_row_dir = 
+            lsu_if.alu_lsu_iram_col_len = 
+            lsu_if.alu_lsu_iram_row_len = 
+        end
     end
 endtask
     /*
