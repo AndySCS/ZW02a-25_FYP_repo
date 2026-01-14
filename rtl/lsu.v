@@ -1566,8 +1566,8 @@ module lsu(
     assign lsu_iram_start_byte = {4{alu_lsu_conv}} & alu_lsu_iram_start_addr[3:0];
     assign lsu_iram_end_byte = alu_lsu_iram_start_addr[3:0] + alu_lsu_col_len; 
                                                     
-    assign lsu_iram_ent_num  = alu_lsu_iram_row_len;
-    assign lsu_iram_ent_rng  = alu_lsu_iram_row_len;
+    assign lsu_iram_ent_num  = alu_lsu_iram_row_len+1;
+    assign lsu_iram_ent_rng  = alu_lsu_iram_row_len+1;
 
     assign lsu_ram_buff_alloc_vld = lsu_iram_ce_ff & alu_lsu_conv;
     assign lsu_ram_buff_alloc_addr = lsu_iram_addr_ff & {8{alu_lsu_conv}};

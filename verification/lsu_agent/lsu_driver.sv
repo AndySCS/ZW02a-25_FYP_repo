@@ -68,17 +68,13 @@ task lsu_driver::main_phase(uvm_phase phase);
     lsu_if.alu_lsu_ld_st_addr = 0;
     lsu_if.alu_lsu_st_low = 0;
     lsu_if.alu_lsu_iram_start_addr = 0;
-    lsu_if.alu_lsu_iram_col_dir = 0;
-    lsu_if.alu_lsu_iram_row_dir = 0;
-    lsu_if.alu_lsu_iram_col_len = 0;
     lsu_if.alu_lsu_iram_row_len = 0;
     lsu_if.alu_lsu_wram_start_addr = 0;
-    lsu_if.alu_lsu_wram_col_dir = 0;
-    lsu_if.alu_lsu_wram_row_dir = 0;
-    lsu_if.alu_lsu_wram_col_len = 0;
     lsu_if.alu_lsu_wram_row_len = 0;
+    lsu_if.alu_lsu_col_len = 0;
     lsu_if.alu_lsu_act_type = 0;
-    lsu_if.alu_lsu_pool_size = 0 ;
+    lsu_if.alu_lsu_clr = 0;
+    //lsu_if.alu_lsu_pool_size = 0 ;
     lsu_if.axi_lsu_awrdy = 0;
     lsu_if.axi_lsu_wrdy = 0;
     lsu_if.axi_lsu_bid = 0;
@@ -194,7 +190,7 @@ task lsu_driver::main_phase(uvm_phase phase);
         //alu_signal_config_type2_store(tr);
         //alu_signal_config_load(tr);
         //alu_signal_config_riscv(tr);
-	    //alu_siganl_config_riscv_st_alwaysrdy(tr);
+	    //alu_signal_config_riscv_st_alwaysrdy(tr);
 	    //alu_signal_config_riscv_ld_alwaysrdy(tr);
         alu_signal_config_mm(tr);
         //seq_item_port.item_done();
@@ -220,7 +216,7 @@ task lsu_driver::alu_signal_config_riscv(lsu_tr tr);
 	
 endtask
  
-task lsu_driver::alu_siganl_config_riscv_ld_alwaysrdy(lsu_tr tr);
+task lsu_driver::alu_signal_config_riscv_ld_alwaysrdy(lsu_tr tr);
     int count;	
     while(1)begin
 	if(count%2)begin
@@ -263,7 +259,7 @@ task lsu_driver::alu_siganl_config_riscv_ld_alwaysrdy(lsu_tr tr);
     end	
 endtask
 
-task lsu_driver::alu_siganl_config_riscv_st_alwaysrdy(lsu_tr tr);
+task lsu_driver::alu_signal_config_riscv_st_alwaysrdy(lsu_tr tr);
     int count;	
     while(1)begin
             @(negedge lsu_if.clk);
@@ -532,11 +528,8 @@ task lsu_driver::alu_signal_config_mm(lsu_tr tr);
         if(lsu_if.lsu_alu_rdy) begin
             lsu_if.alu_lsu_conv = 1;
             lsu_if.alu_lsu_iram_start_addr = 0;
-            lsu_if.alu_lsu_iram_col_dir = 
-            lsu_if.alu_lsu_iram_row_dir = 
-            lsu_if.alu_lsu_iram_col_len = 
-            lsu_if.alu_lsu_iram_row_len = 
         end
+	break;
     end
 endtask
     /*
