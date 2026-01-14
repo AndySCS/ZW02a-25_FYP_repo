@@ -10,10 +10,10 @@ load_input: //
     addi x1, x0, 1  //add iterator
     beq x1, x2, load_input_if
     load_input_if:
-        LDT x3, x6, 16, 000, 000  //LDT rs1, rs2, <num>, <len>, <stride>
+        LDT x3, x6, 15, 000, 000  //LDT rs1, rs2, <num>, <len>, <stride>
         jal x0, load_input_end//jal rd, simm21
     load_input_else:
-        LDT x3, x6, 256, 000, 000  //LDT rs1, rs2, <num>, <len>, <stride>
+        LDT x3, x6, 255, 000, 000  //LDT rs1, rs2, <num>, <len>, <stride>
     load_input_end:
         addi x3, x0, 1  //add dest addr
         addi x6, x0, 256  //addi dram addr
@@ -108,7 +108,7 @@ layer_network_loop:
             jal x0, matrix_multi_end
         matrix_multi_case_bias:
             MM x26, x27, 15, 0, 15, 0
-            jal matrix_multi_end
+            jal x0, matrix_multi_end
         //8 perceptron case
         matrix_multi_case_last_perceptron_first:
             MM x26, x27, 15, 0, 7, 0
@@ -132,6 +132,8 @@ layer_network_loop:
         blt x25, x24, load_and_mult_loop
     
     //finish 16 perceptrons, next iter
+
+    ACT, 0
 
     STMT x3, x0, 0, 15, 1 //store result back to iram
     addi x3, x0, 256 // update store addr 
@@ -204,9 +206,6 @@ second_layer_loop:
     sl_matrix_multi_case_norm: //iter == 50, only load bias
         MM x26, x27, 15, 0, 9, 0
     sl_matrix_multi_end:
-    
-    bge x11, x12, sl_update_wram_load_iter_if
-    jal x0, sl_update_wram_load_iter_end
 
     blt x11, x10, second_layer_loop
 
@@ -214,4 +213,10 @@ second_layer_loop:
 addi x3, x0, 0
 lui x3, 2
 STMT x3, x0, 0, 9, 1 //store result oram
-STT x3, rs2,  0, 0, 5, 1 // store result to dram
+//set dram addr
+addi x5, x0, 0
+lui x5, 12
+addi x5, x5, 1520
+STT x3, x5,  0, 0, 5, 1 // store result to dram
+
+WFI
