@@ -529,8 +529,8 @@ task lsu_driver::alu_signal_config_mm(lsu_tr tr);
             lsu_if.alu_lsu_conv = 1;
             lsu_if.alu_lsu_iram_start_addr = 1;
             lsu_if.alu_lsu_vld = 1;
-	    lsu_if.alu_lsu_iram_row_len = 15;
-	    lsu_if.alu_lsu_col_len = 15;
+	    lsu_if.alu_lsu_iram_row_len = 0;
+	    lsu_if.alu_lsu_col_len = 1;
             @(negedge lsu_if.clk);
             lsu_if.alu_lsu_vld = 0;
         end
