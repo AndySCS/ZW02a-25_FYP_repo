@@ -195,14 +195,14 @@ module ram_buffer(
     //ram read logic
     //ram_buff_read_addr_offset == 0: first fetch request, must send to RAM
     //~read_offset_exceed_ctrl_rng: has not read out all ent
-    assign read_offset_exceed_ctrl_rng = ram_read_dir & (ram_buff_read_addr_offset[3:0] > ctrl_ram_buff_ent_rng_ff[3:0])
-                                       | ~ram_read_dir & (ram_buff_read_addr_offset[3:0] < ctrl_ram_buff_ent_rng_ff[3:0]);
+    assign read_offset_exceed_ctrl_rng = ram_read_dir & (ram_buff_read_addr_offset[4:0] > ctrl_ram_buff_ent_rng_ff[3:0])
+                                       | ~ram_read_dir & (ram_buff_read_addr_offset[4:0] < ctrl_ram_buff_ent_rng_ff[3:0]); 
+
     assign all_ent_has_fetched = (|ram_buff_read_addr_offset) & read_offset_exceed_ctrl_rng;
     assign ram_read_vld = ~ram_buff_stat_fsm[1] & ram_buff_stat_fsm[0] //2'b01
                         & ~all_ent_has_fetched;
     assign ram_read_addr = ctrl_ram_buff_start_addr_ff + {{3{ram_buff_read_addr_offset[4]}}, ram_buff_read_addr_offset};
-    //TODO what if the start_addr is row1 and it laod with backward dir?
-    //
+    //TODO what if the start_addr is row1 and it load with backward dir?
 
     //ram buff ent cnt
     assign ram_buff_ent_cnt_en = ctrl_ram_buff_vld | ram_buff_alloc_vld;
