@@ -33,6 +33,7 @@ fsdb_file_name = $(tc)
 #Command
 $(shell $(MINITPU_SCRIPT)/linux/file_extend -dir $(MINITPU_VER))
 $(shell $(MINITPU_SCRIPT)/linux/file_extend -dir $(MINITPU_RTL))
+$(shell $(MINITPU_FOLDER)/ffn_test/tpu_code/cmp_linux -srcDir $(MINITPU_FOLDER)/ffn_test/tpu_code/code.tasmp -binDir code.txt)
 
 GEN_MODE = mkdir -p $(mode) $(mode)/log $(mode)/wave $(mode)/cov
 VCS = vcs -sverilog 	 		          \
