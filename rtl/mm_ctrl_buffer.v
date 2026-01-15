@@ -18,7 +18,8 @@
 
         //to mxu
         lsu_mm_buff_mxu_vld,
-        lsu_mm_buff_mxu_data 
+        lsu_mm_buff_mxu_data,
+        lsu_mm_buff_mxu_end
     ); 
 
     input clk;
@@ -38,6 +39,7 @@
 
     output [15:0]  lsu_mm_buff_mxu_vld;
     output [127:0] lsu_mm_buff_mxu_data;
+    output lsu_mm_buff_mxu_end;
 
     wire [3:0] lsu_mm_buff_addr_cnt;
     wire [3:0] lsu_mm_buff_addr_cnt_ff;
@@ -89,10 +91,12 @@
     wire [15:0] lsu_mm_buff_ent_vld [15:0];
     wire [5:0] lsu_mm_buff_offset;
     wire [15:0] lsu_mm_buff_mxu_vld_ff;
+    wire lsu_mm_buff_cycle_cnt_end;
+    wire lsu_mm_buff_mxu_end_ff;
 
     assign lsu_mm_buff_cycle_need = (lsu_mm_buff_ctrl_col_len + lsu_mm_buff_ctrl_row_len);
-
-    assign lsu_mm_buff_cycle_cnt = lsu_mm_buff_start_pulse_ff ? 1'b0 : lsu_mm_buff_ctrl_vld_ff & ~(lsu_mm_buff_cycle_cnt_ff==lsu_mm_buff_cycle_need) ? lsu_mm_buff_cycle_cnt_ff+1 : lsu_mm_buff_cycle_cnt_ff;	
+    assign lsu_mm_buff_cycle_cnt = (lsu_mm_buff_start_pulse_ff | lsu_mm_buff_start_pulse) ? 1'b0 : lsu_mm_buff_ctrl_vld_ff & ~(lsu_mm_buff_cycle_cnt_ff==lsu_mm_buff_cycle_need) ? lsu_mm_buff_cycle_cnt_ff+1 : lsu_mm_buff_cycle_cnt_ff;	
+    assign lsu_mm_buff_mxu_end = lsu_mm_buff_cycle_cnt == lsu_mm_buff_cycle_need & lsu_mm_buff_ctrl_vld_ff;
     
     DFFR #(.WIDTH(6))
     ff_lsu_mm_buff_cycle_cnt(
@@ -101,8 +105,7 @@
         .d(lsu_mm_buff_cycle_cnt),
         .q(lsu_mm_buff_cycle_cnt_ff)
     );
-    //assign lsu_mm_buff_mxu_vld = lsu_mm_buff_ctrl_vld_ff ? (lsu_mm_buff_ram_alloc_vld ? {16{1'b1}} >> 5'd15-lsu_mm_buff_addr_cnt_ff : ((lsu_mm_buff_ctrl_col_len<lsu_mm_buff_cycle_cnt) ? lsu_mm_buff_mxu_vld_ff >> (lsu_mm_buff_cycle_cnt-lsu_mm_buff_addr_cnt_ff) << (lsu_mm_buff_cycle_cnt-lsu_mm_buff_addr_cnt_ff) : {16{1'b1}} >> 5'd15-lsu_mm_buff_addr_cnt_ff)) : 16'b0;
-     
+    //assign lsu_mm_buff_mxu_vld = lsu_mm_buff_ctrl_vld_ff ? (lsu_mm_buff_ram_alloc_vld ? {16{1'b1}} >> 5'd15-lsu_mm_buff_addr_cnt_ff : ((lsu_mm_buff_ctrl_col_len<lsu_mm_buff_cycle_cnt) ? lsu_mm_buff_mxu_vld_ff >> (lsu_mm_buff_cycle_cnt-lsu_mm_buff_addr_cnt_ff) << (lsu_mm_buff_cycle_cnt-lsu_mm_buff_addr_cnt_ff) : {16{1'b1}} >> 5'd15-lsu_mm_buff_addr_cnt_ff)) : 16'b0; 
     DFFRE #(.WIDTH(16))
     ff_lsu_mm_buff_mxu_vld(
         .clk(clk),
@@ -125,7 +128,7 @@
         		.q(lsu_mm_buff_ent_data_raw_ff[i])
    		    );
     		data_byte_shift data_shifter0(.in(lsu_mm_buff_ent_data_raw[i]), .offset(lsu_mm_buff_cycle_cnt-i), .out(lsu_mm_buff_ent_data[i]));
-		
+		assign lsu_mm_buff_mxu_vld[i] = (lsu_mm_buff_ctrl_vld_ff & lsu_mm_buff_cycle_cnt >= i & i<=lsu_mm_buff_ctrl_row_len) ? (lsu_mm_buff_cycle_cnt<=(i+lsu_mm_buff_ctrl_col_len)) : 1'b0;	
     		assign lsu_mm_buff_mxu_data[i*8+7:i*8] = {lsu_mm_buff_ent_data[i][7:0]};
 	end
     endgenerate
