@@ -1,1 +1,1 @@
-$MINITPU_VER/ut/mxu/sequence/mxu_sequence.sv
+$MINITPU_VER/top/sequence/top_sequence.sv
