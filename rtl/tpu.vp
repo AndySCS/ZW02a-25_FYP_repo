@@ -215,7 +215,7 @@ module tpu(
     wire [2:0]  alu_lsu_str;
     wire [3:0]  alu_lsu_start_x;
     wire [3:0]  alu_lsu_start_y;
-    wire [11:0] alu_lsu_ld_st_addr;
+    wire [`SRAM_ADDR_SIZE-1:0] alu_lsu_ld_st_addr;
     wire        alu_lsu_st_low;
     wire [3:0]  alu_lsu_st_row;
     wire [3:0]  alu_lsu_st_col;

@@ -300,7 +300,7 @@ module alu(
     wire alu_lsu_st_iram_nxt;
     wire alu_lsu_st_wram_nxt;
     wire alu_lsu_st_oram_nxt;
-    wire [11:0] alu_lsu_ld_st_addr_nxt;
+    wire [`SRAM_ADDR_SIZE-1:0] alu_lsu_ld_st_addr_nxt;
 
     wire [31:0] st_addr_sum;
 
@@ -365,9 +365,9 @@ module alu(
 
     assign st_addr_sum = idu_alu_src1 + idu_alu_br_st_imm;
 
-    assign alu_lsu_ld_st_addr_nxt = {12{ld_op}}       & sum[`SRAM_ADDR_RNG]
-                                  | {12{st_op}}       & st_addr_sum[`SRAM_ADDR_RNG]
-                                  | {12{mm_ld_st_op}} & sum[`SRAM_ADDR_RNG];
+    assign alu_lsu_ld_st_addr_nxt = {`SRAM_ADDR_SIZE{ld_op}}       & sum[`SRAM_ADDR_RNG]
+                                  | {`SRAM_ADDR_SIZE{st_op}}       & st_addr_sum[`SRAM_ADDR_RNG]
+                                  | {`SRAM_ADDR_SIZE{mm_ld_st_op}} & sum[`SRAM_ADDR_RNG];
 
     assign alu_lsu_ld_iram_nxt = ((sum[`SRAM_TYPE_RNG]         == 2'b00) & ld_op) | idu_alu_ld_iram;
     assign alu_lsu_ld_wram_nxt = ((sum[`SRAM_TYPE_RNG]         == 2'b10) & ld_op) | idu_alu_ld_wram;
@@ -624,7 +624,7 @@ module alu(
         .q(alu_lsu_start_y)
     );
 
-    DFFE #(.WIDTH(12))
+    DFFE #(.WIDTH(13))
     ff_alu_lsu_ld_st_addr(
         .clk(clk),
         .en(alu_vld),
