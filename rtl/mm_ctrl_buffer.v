@@ -44,6 +44,7 @@
     wire lsu_mm_buff_addr_cnt_end;
     wire lsu_mm_buff_ctrl_vld_ff;
     wire lsu_mm_buff_start_pulse;
+    wire lsu_mm_buff_start_pulse_ff;
    
 
     assign lsu_mm_buff_ram_read_vld = lsu_mm_buff_ctrl_vld & ~lsu_mm_buff_addr_cnt_end;
@@ -61,6 +62,14 @@
     );
 
     DFFR #(.WIDTH(1))
+    ff_lsu_mm_buff_start_pulse(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(lsu_mm_buff_start_pulse),
+        .q(lsu_mm_buff_start_pulse_ff)
+    );
+
+    DFFR #(.WIDTH(1))
     ff_lsu_mm_buff_ctrl_vld(
         .clk(clk),
         .rst_n(rst_n),
@@ -71,15 +80,28 @@
     assign lsu_mm_buff_ram_read_addr = lsu_mm_buff_ctrl_vld ? lsu_mm_buff_ctrl_start_addr[11:4] + lsu_mm_buff_addr_cnt : lsu_mm_buff_ctrl_start_addr[11:4] + lsu_mm_buff_addr_cnt_ff;
    
     wire [5:0]lsu_mm_buff_cycle_need;
+    wire [5:0]lsu_mm_buff_cycle_cnt;
+    wire [5:0]lsu_mm_buff_cycle_cnt_ff;
     wire lsu_mm_buff_ent_cnt;
     wire [127:0] lsu_mm_buff_ent_data_raw [15:0];
     wire [127:0] lsu_mm_buff_ent_data_raw_ff [15:0];
     wire [127:0] lsu_mm_buff_ent_data [15:0];
     wire [15:0] lsu_mm_buff_ent_vld [15:0];
+    wire [5:0] lsu_mm_buff_offset;
 
     assign lsu_mm_buff_cycle_need = (lsu_mm_buff_ctrl_col_len + (lsu_mm_buff_ctrl_row_len - 1));
+    assign lsu_mm_buff_cycle_cnt = lsu_mm_buff_start_pulse_ff ? 1'b0 : lsu_mm_buff_ctrl_vld_ff & ~(lsu_mm_buff_cycle_cnt_ff==lsu_mm_buff_cycle_need) ? lsu_mm_buff_cycle_cnt_ff+1 : lsu_mm_buff_cycle_cnt_ff;	
+
+    DFFR #(.WIDTH(6))
+    ff_lsu_mm_buff_cycle_cnt(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(lsu_mm_buff_cycle_cnt),
+        .q(lsu_mm_buff_cycle_cnt_ff)
+    );
+
     assign lsu_mm_buff_ent_data_raw[0] = lsu_mm_buff_ram_alloc_vld & (lsu_mm_buff_addr_cnt_ff == 1'b0) ? lsu_mm_buff_ram_alloc_data : lsu_mm_buff_ent_data_raw_ff[0];
-    
+     
     genvar i;
     generate
         for (i = 0; i < 16 ; i=i+1) begin
@@ -92,12 +114,18 @@
 			.en(lsu_mm_buff_ram_alloc_vld & (lsu_mm_buff_addr_cnt_ff == i)),
         		.q(lsu_mm_buff_ent_data_raw_ff[i])
    		 );
+    		data_byte_shift data_shifter0(.in(lsu_mm_buff_ent_data_raw[i]), .offset(lsu_mm_buff_cycle_cnt-i), .out(lsu_mm_buff_ent_data[i]));
+		
+    		assign lsu_mm_buff_mxu_data[i*8+7:i*8] = {lsu_mm_buff_ent_data[i][7:0]};
 	end
     endgenerate
 
-    data_byte_shifter data_shifter0(.in(lsu_mm_buff_ent_data_raw[0]), .offset(lsu_mm_buff_addr_cnt_ff), .out(lsu_mm_buff_ent_data[0]));
+    //data_byte_shifter data_shifter0(.in(lsu_mm_buff_ent_data_raw[0]), .offset(lsu_mm_buff_addr_cnt_ff), .out(lsu_mm_buff_ent_data[0]));
+
+    //data_byte_shift data_shifter0(.in(lsu_mm_buff_ent_data_raw[0]), .offset(lsu_mm_buff_addr_cnt_ff), .out(lsu_mm_buff_ent_data[0]));
     //extract the data start from start_addr[3:0] => col_len;
     //assign lsu_mm_buff_ent_data[0] = {8{lsu_mm_buff_ram_alloc_vld}} & lsu_mm_buff_ent_data[0][7:0];
+    
 
 endmodule
 

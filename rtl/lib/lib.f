@@ -18,6 +18,7 @@ $MINITPU_RTL/lib/resp_assign.v
 $MINITPU_RTL/lib/resp_data_get.v
 
 $MINITPU_RTL/lib/data_byte_shifter.v
+$MINITPU_RTL/lib/data_byte_shift.v
 
 $MINITPU_RTL/lib/mux8.v
 $MINITPU_RTL/lib/mux16.v

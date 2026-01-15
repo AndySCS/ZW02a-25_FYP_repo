@@ -1,3 +1,4 @@
+-f $MINITPU_RTL/lib/lib.f
 $MINITPU_RTL/define.vh
 //$MINITPU_RTL/acc.v
 //$MINITPU_RTL/act_mod.v
