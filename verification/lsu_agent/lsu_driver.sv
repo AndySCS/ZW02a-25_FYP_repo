@@ -146,6 +146,23 @@ task lsu_driver::main_phase(uvm_phase phase);
      	  	harness.u_lsu.iram.mem[8] = 128'h9123456789abcdeff0e0d0c0b0a89878;
      	  	harness.u_lsu.iram.mem[9] = 128'ha123456789abcdeff0e0d0c0b0a99979;
 
+     	  	harness.u_lsu.wram.mem[0] = 128'h1123456789abcdeff0e0d0c0b0a19080;
+     	  	harness.u_lsu.wram.mem[1] = 128'h2123456789abcdeff0e0d0c0b0a19181;
+     	  	harness.u_lsu.wram.mem[2] = 128'h3123456789abcdeff0e0d0c0b0a29282;
+     	  	harness.u_lsu.wram.mem[3] = 128'h4123456789abcdeff0e0d0c0b0a39383;
+     	  	harness.u_lsu.wram.mem[4] = 128'h5123456789abcdeff0e0d0c0b0a49474;
+     	  	harness.u_lsu.wram.mem[5] = 128'h6123456789abcdeff0e0d0c0b0a59585;
+     	  	harness.u_lsu.wram.mem[6] = 128'h7123456789abcdeff0e0d0c0b0a69686;
+     	  	harness.u_lsu.wram.mem[7] = 128'h8123456789abcdeff0e0d0c0b0a79787;
+     	  	harness.u_lsu.wram.mem[8] = 128'h9123456789abcdeff0e0d0c0b0a89878;
+     	  	harness.u_lsu.wram.mem[9] = 128'ha123456789abcdeff0e0d0c0b0a99979;
+     	  	harness.u_lsu.wram.mem[10] = 128'h8123456789abcdeff0e0d0c0b0aa9a8a;
+     	  	harness.u_lsu.wram.mem[11] = 128'h9123456789abcdeff0e0d0c0b0ab9b7b;
+     	  	harness.u_lsu.wram.mem[12] = 128'ha123456789abcdeff0e0d0c0b0ac9c7c;
+     	  	harness.u_lsu.wram.mem[13] = 128'h8123456789abcdeff0e0d0c0b0ad9d8d;
+     	  	harness.u_lsu.wram.mem[14] = 128'h9123456789abcdeff0e0d0c0b0ae9e7e;
+     	  	harness.u_lsu.wram.mem[15] = 128'ha123456789abcdeff0e0d0c0b0af9f7f;
+
      	  	harness.u_lsu.oram_hi.mem[0] = {16{8'd1}};
      	  	harness.u_lsu.oram_hi.mem[1] = {16{8'd2}};
      	  	harness.u_lsu.oram_hi.mem[2] = {16{8'd3}};
@@ -529,8 +546,9 @@ task lsu_driver::alu_signal_config_mm(lsu_tr tr);
             lsu_if.alu_lsu_conv = 1;
             lsu_if.alu_lsu_iram_start_addr = 1;
             lsu_if.alu_lsu_vld = 1;
-	    lsu_if.alu_lsu_iram_row_len = 0;
-	    lsu_if.alu_lsu_col_len = 1;
+	    lsu_if.alu_lsu_iram_row_len = 1;
+	    lsu_if.alu_lsu_wram_row_len = 2;
+	    lsu_if.alu_lsu_col_len = 2;
             @(negedge lsu_if.clk);
             lsu_if.alu_lsu_vld = 0;
         end
