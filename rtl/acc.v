@@ -28,7 +28,7 @@ module acc(
     wire [15:0] acc_sum_raw;
     wire acc_sum_of;
     wire acc_sum_uf;
-    wire acc_sum_qual;
+    wire [15:0] acc_sum_qual;
 
     //for int8 casting
     wire int8_direct_use_allow;
@@ -45,7 +45,7 @@ module acc(
     assign out_data_int16_en = acc_clr | load_vld | acc_vld;
     assign out_data_int16_nxt = acc_clr ? 16'h0000 :
                                 load_vld ? load_data :
-                                acc_data;
+                                acc_sum_qual;
 
     DFFRE #(.WIDTH(16))
     ff_out_data_int16(

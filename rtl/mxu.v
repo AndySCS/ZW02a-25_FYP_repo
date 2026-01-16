@@ -220,10 +220,10 @@ module mxu (
     assign lsu_mxu_vld_qual = lsu_mxu_vld & mxu_lsu_rdy;
     assign mxu_vld_nxt = lsu_mxu_vld_qual | mxu_vld & ~mxu_done;
 
-    assign mxu_done =  ~(|mxu_conv_awake_cnt_minus) & (|sys_arr_row_data_rdy);
+    assign mxu_done =  ~(|mxu_conv_awake_cnt) & (&sys_arr_row_data_rdy);
     assign mxu_lsu_rdy = mxu_done | ~mxu_vld;
 
-    assign mxu_lsu_data_rdy =  (|sys_arr_row_data_rdy) & ~act_busy ;
+    assign mxu_lsu_data_rdy =  (&sys_arr_row_data_rdy) & ~act_busy ;
 
     DFFR #(.WIDTH(1))
     ff_mxu_vld(
@@ -238,7 +238,7 @@ module mxu (
 
     assign mxu_conv_awake_cnt_en = (|mxu_conv_awake_cnt) | lsu_mxu_vld_qual;
     assign mxu_conv_awake_cnt_minus = mxu_conv_awake_cnt - 3'b1;
-    assign mxu_conv_awake_cnt_nxt = lsu_mxu_clr ? 3'b111 : mxu_conv_awake_cnt_minus;
+    assign mxu_conv_awake_cnt_nxt = (lsu_mxu_clr | |({lsu_mxu_iram_vld, lsu_mxu_wram_vld}) )? 3'b111 : mxu_conv_awake_cnt_minus;
 
     DFFRE #(.WIDTH(3))
     ff_mxu_conv_awake_cnt(
