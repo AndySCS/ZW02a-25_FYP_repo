@@ -37,7 +37,8 @@ module tpu(
     BID,
     BRESP,
     BVALID,
-    BREADY
+    BREADY,
+    wfi
 );
 
     parameter AWID_WIDTH = 4;
@@ -90,6 +91,8 @@ module tpu(
     input [1:0] BRESP;
     input BVALID;
     output BREADY;
+
+    output wfi;
 
     //ifu output
     wire ifu_idu_vld;
@@ -733,7 +736,8 @@ module tpu(
         .mxu_lsu_int8_row15_data(mxu_lsu_int8_row15_data),
         .mxu_lsu_int16_row15_data(mxu_lsu_int16_row15_data),
         .mxu_lsu_data_rdy(mxu_lsu_data_rdy),
-        .mxu_lsu_rdy(mxu_lsu_rdy)
+        .mxu_lsu_rdy(mxu_lsu_rdy),
+        .wfi(wfi)
     );
 
     rf u_rf(
