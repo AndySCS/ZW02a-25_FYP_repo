@@ -100,6 +100,14 @@
     assign lsu_mm_buff_cycle_cnt = (lsu_mm_buff_start_pulse_ff | lsu_mm_buff_start_pulse) ? 1'b0 : lsu_mm_buff_ctrl_vld_ff & ~(lsu_mm_buff_cycle_cnt_ff==lsu_mm_buff_cycle_need) ? lsu_mm_buff_cycle_cnt_ff+1 : lsu_mm_buff_cycle_cnt_ff;	
     assign lsu_mm_buff_mxu_end = lsu_mm_buff_cycle_cnt == lsu_mm_buff_cycle_need & lsu_mm_buff_ctrl_vld_ff;
     
+    DFFR #(.WIDTH(1))
+    ff_lsu_mm_buff_mxu_end(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(lsu_mm_buff_mxu_end),
+        .q(lsu_mm_buff_mxu_end_ff)
+    );
+
     DFFR #(.WIDTH(6))
     ff_lsu_mm_buff_cycle_cnt(
         .clk(clk),
@@ -143,7 +151,7 @@
     endgenerate
 
     assign lsu_mm_buff_mxu_data = lsu_mm_buff_ctrl_ram_type ? lsu_mm_buff_mxu_data_iram : lsu_mm_buff_mxu_data_wram >> (15-lsu_mm_buff_cycle_cnt)*8;
-    assign lsu_mm_buff_mxu_vld = lsu_mm_buff_ctrl_ram_type ? lsu_mm_buff_mxu_vld_iram : lsu_mm_buff_mxu_vld_wram;
+    assign lsu_mm_buff_mxu_vld = lsu_mm_buff_mxu_end_ff ? 1'b0 : lsu_mm_buff_ctrl_ram_type ? lsu_mm_buff_mxu_vld_iram : lsu_mm_buff_mxu_vld_wram;
     //data_byte_shifter data_shifter0(.in(lsu_mm_buff_ent_data_raw[0]), .offset(lsu_mm_buff_addr_cnt_ff), .out(lsu_mm_buff_ent_data[0]));
     //data_byte_shift data_shifter0(.in(lsu_mm_buff_ent_data_raw[0]), .offset(lsu_mm_buff_addr_cnt_ff), .out(lsu_mm_buff_ent_data[0]));
     //extract the data start from start_addr[3:0] => col_len;

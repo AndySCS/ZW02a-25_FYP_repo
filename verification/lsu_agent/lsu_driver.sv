@@ -22,6 +22,7 @@ class lsu_driver extends uvm_driver #(lsu_tr);
     extern virtual task alu_signal_config_riscv_st_alwaysrdy(lsu_tr tr);
     extern virtual task alu_signal_config_riscv_ld_alwaysrdy(lsu_tr tr);
     extern virtual task alu_signal_config_mm(lsu_tr tr);
+    extern virtual task alu_signal_config_lsu_mxu(lsu_tr tr);
 endclass //className extends superClass
 
 function void lsu_driver::build_phase(uvm_phase phase);
@@ -87,6 +88,7 @@ task lsu_driver::main_phase(uvm_phase phase);
     lsu_if.axi_lsu_rresp = 0;
     lsu_if.axi_lsu_rlast = 0;
     lsu_if.axi_lsu_rvld = 0;
+/*
     lsu_if.mxu_lsu_int8_row0_data = 0;
     lsu_if.mxu_lsu_int16_row0_data = 0;
     lsu_if.mxu_lsu_int8_row1_data = 0;
@@ -121,6 +123,7 @@ task lsu_driver::main_phase(uvm_phase phase);
     lsu_if.mxu_lsu_int16_row15_data = 0;
     lsu_if.mxu_lsu_data_rdy = 1;
     lsu_if.mxu_lsu_rdy = 0;
+*/
 
     for (int i=0;i<256;i++) begin
 	  if(i==10)begin
@@ -135,7 +138,7 @@ task lsu_driver::main_phase(uvm_phase phase);
      	  	harness.u_lsu.oram.mem[8] = 128'h9123456789abcdeff0e0d0c0b0a89888;
      	  	harness.u_lsu.oram.mem[9] = 128'ha123456789abcdeff0e0d0c0b0a99989;
 
-     	  	harness.u_lsu.iram.mem[0] = 128'h1123456789abcdeff0e0d0c0b0300201;
+     	  	harness.u_lsu.iram.mem[0] = 128'h1123456789abcdeff0e0d0c0b0030201;
      	  	harness.u_lsu.iram.mem[1] = 128'h2123456789abcdeff0e0d0c0b0060504;
      	  	harness.u_lsu.iram.mem[2] = 128'h3123456789abcdeff0e0d0c0b0090807;
      	  	harness.u_lsu.iram.mem[3] = 128'h4123456789abcdeff0e0d0c0b0a39383;
@@ -179,7 +182,7 @@ task lsu_driver::main_phase(uvm_phase phase);
      	  harness.u_lsu.iram.mem[i] = 128'h0 ;
       	  harness.u_lsu.wram.mem[i] = 128'h0 ;
    end	
-
+/*
     lsu_if.mxu_lsu_int8_row0_data = 'hf0e0d0c0b0a09080;
     lsu_if.mxu_lsu_int8_row1_data = 'hf0e0d0c0b0a09081;
     lsu_if.mxu_lsu_int8_row2_data = 'hf0e0d0c0b0a09082;
@@ -196,7 +199,7 @@ task lsu_driver::main_phase(uvm_phase phase);
     lsu_if.mxu_lsu_int8_row13_data = 'hf0e0d0c0b0a0908d;
     lsu_if.mxu_lsu_int8_row14_data = 'hf0e0d0c0b0a0908e;
     lsu_if.mxu_lsu_int8_row15_data = 'hf0e0d0c0b0a0908f;
-
+*/
     @(posedge lsu_if.rst_n); // wait till rstn is high
     count = 0;
     while(1) begin
@@ -210,6 +213,7 @@ task lsu_driver::main_phase(uvm_phase phase);
 	    //alu_signal_config_riscv_st_alwaysrdy(tr);
 	    //alu_signal_config_riscv_ld_alwaysrdy(tr);
         alu_signal_config_mm(tr);
+        alu_signal_config_lsu_mxu(tr);
         //seq_item_port.item_done();
     end
     	   
@@ -559,6 +563,28 @@ task lsu_driver::alu_signal_config_mm(lsu_tr tr);
 	//if(harness.u_lsu.lsu_mm_finish)begin
 		
 	//end
+	break;
+    end
+
+endtask
+
+task lsu_driver::alu_signal_config_lsu_mxu(lsu_tr tr);
+
+    while(1)begin
+        @(negedge lsu_if.clk);
+        if(lsu_if.lsu_alu_rdy) begin
+            @(negedge lsu_if.clk);
+            @(negedge lsu_if.clk);
+            lsu_if.alu_lsu_conv = 1;
+            lsu_if.alu_lsu_iram_start_addr = 1;
+            lsu_if.alu_lsu_wram_start_addr = 1;
+            lsu_if.alu_lsu_vld = 1;
+	    lsu_if.alu_lsu_iram_row_len = 1;
+	    lsu_if.alu_lsu_wram_row_len = 1;
+	    lsu_if.alu_lsu_col_len = 1;
+            @(negedge lsu_if.clk);
+            lsu_if.alu_lsu_vld = 0;
+        end
 	break;
     end
 

@@ -402,7 +402,7 @@ module lsu(
     );
 
     //assign lsu_alu_rdy = ~lsu_vld | (lsu_instr_finish & mxu_lsu_data_rdy);  
-    assign lsu_alu_rdy = (~lsu_vld | lsu_instr_finish) & mxu_lsu_data_rdy;    
+    assign lsu_alu_rdy = ~lsu_vld | (lsu_instr_finish & mxu_lsu_data_rdy);    
     wire lsu_st_iram_ff;
     wire lsu_st_wram_ff;
     wire lsu_st_oram_ff;
