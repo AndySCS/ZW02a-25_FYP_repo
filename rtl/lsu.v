@@ -391,7 +391,7 @@ module lsu(
 
     assign lsu_instr_finish = lsu_st_finish | lsu_ld_finish | lsu_mm_finish | lsu_riscv_finish;
     assign lsu_vld = alu_lsu_vld | lsu_vld_ff;
-    assign lsu_vld_nxt = (alu_lsu_vld | lsu_vld_ff) & ~(lsu_instr_finish & mxu_lsu_data_rdy);
+    assign lsu_vld_nxt = alu_lsu_vld | (lsu_vld_ff & ~lsu_instr_finish);
     //assign lsu_vld_nxt = alu_lsu_vld | (lsu_vld_ff & ~lsu_instr_finish);
     DFFR #(.WIDTH(1))
     ff_lsu_vld(
@@ -401,7 +401,8 @@ module lsu(
         .q(lsu_vld_ff)
     );
 
-    assign lsu_alu_rdy = ~lsu_vld | (lsu_instr_finish & mxu_lsu_data_rdy);    
+    //assign lsu_alu_rdy = ~lsu_vld | (lsu_instr_finish & mxu_lsu_data_rdy);  
+    assign lsu_alu_rdy = (~lsu_vld | lsu_instr_finish) & mxu_lsu_data_rdy;    
     wire lsu_st_iram_ff;
     wire lsu_st_wram_ff;
     wire lsu_st_oram_ff;
@@ -1656,8 +1657,20 @@ module lsu(
         .lsu_mm_buff_mxu_vld           (lsu_mm_buff_wram_mxu_vld),
         .lsu_mm_buff_mxu_data          (lsu_mm_buff_wram_mxu_data),
         .lsu_mm_buff_mxu_end	       (lsu_mm_buff_wram_mxu_end) 
-    );  
-
+    );
+ 
+    assign lsu_mxu_vld = alu_lsu_vld;
+    assign lsu_mxu_clr = alu_lsu_clr;
+    //once the data load out dircetly pass to mxu
+    assign lsu_mxu_iram_vld = lsu_mm_buff_iram_mxu_vld;
+    assign lsu_mxu_iram_pld = lsu_mm_buff_iram_mxu_data;
+    assign lsu_mxu_wram_vld = lsu_mm_buff_wram_mxu_vld;
+    assign lsu_mxu_wram_pld = lsu_mm_buff_wram_mxu_data;
+    assign lsu_mxu_pool_vld = alu_lsu_pool;
+    assign lsu_mxu_act_vld = alu_lsu_act;
+    //assign lsu_mxu_act_type = alu_lsu_act_type;
+    assign lsu_mxu_wfi = alu_lsu_wfi;
+    
     DFFR #(.WIDTH(1))
     ff_lsu_mm_buff_iram_read_vld(
         .clk(clk),
