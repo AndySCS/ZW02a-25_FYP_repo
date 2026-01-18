@@ -16,18 +16,20 @@ def download_sample() -> None:
     x_train = ds['image']
     y_train = ds['label']
     # Select just one sample (e.g., the first training image)
-    idx = np.random.choice(len(x_train))
-    sample_image, sample_label = x_train[idx], str(y_train[idx])
-    img = sample_image.convert("L")   # "L" mode = 8-bit pixels, black and white
-    # Convert to NumPy array
-    arr = np.array(img, dtype=np.int8)
-    # Flatten into 1D
-    flat_arr = arr.flatten()
-    np.savetxt("img.csv", flat_arr, delimiter=",", fmt="%d")
-    with open('label.txt', 'w') as f:
-        f.write(sample_label)
+    for _ in range(1000):
+        idx = np.random.choice(len(x_train))
+        sample_image, sample_label = x_train[idx], str(y_train[idx])
+        img = sample_image.convert("L")   # "L" mode = 8-bit pixels, black and white
+        # Convert to NumPy array
+        arr = np.array(img, dtype=np.int8)
+        # Flatten into 1D
+        flat_arr = arr.flatten()
+        img.save(f"ffn_test/mnist_data/img/img{_}.png")
+        np.savetxt(f"ffn_test/mnist_data/csv/img{_}.csv", flat_arr, delimiter=",", fmt="%d")
+        with open(f'ffn_test/mnist_data/label/label{_}.txt', 'w') as f:
+            f.write(sample_label)
 
 if __name__ == '__main__':
     seed = get_seed()
-    np.random.seed(seed)
+    #np.random.seed(seed)
     download_sample()
