@@ -156,7 +156,7 @@ layer_network_loop:
 addi x10, x0, 4 //iter thd
 addi x11, x0, 0 //number of iter
 addi x12, x0, 3 //last iter
-//init dram addr
+//init dram addr, 45000
 addi x6, x0, 0
 addi x6, x0, 175
 slli x6, x6, 8
