@@ -1,4 +1,6 @@
 interface axi_rd_intf(
+    clk,
+    rst_n,
     ARID,
     ARADDR,
     ARLEN,
@@ -14,6 +16,9 @@ interface axi_rd_intf(
     RVALID,
     RREADY,
 );
+
+    input clk;
+    input rst_n;
 
     input [AWID_WIDTH-1:0] ARID;
     input [AWADDR_WIDTH-1:0] ARADDR;
