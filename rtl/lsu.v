@@ -1587,7 +1587,7 @@ module lsu(
     assign lsu_mm_buff_iram_alloc_data = lsu_iram_dout & {128{alu_lsu_conv}};
     assign lsu_mm_buff_iram_ctrl_vld = alu_lsu_conv & lsu_vld;
     assign lsu_mm_buff_iram_ctrl_row_len = {4{alu_lsu_conv}} & alu_lsu_iram_row_len;
-    assign lsu_mm_buff_iram_ctrl_col_len = {4{alu_lsu_conv}} & alu_lsu_col_len;
+    assign lsu_mm_buff_iram_ctrl_col_len = {4{alu_lsu_conv}} & alu_lsu_wram_row_len;
     assign lsu_mm_buff_iram_ctrl_start_addr = {12{alu_lsu_conv}} & alu_lsu_iram_start_addr;
     assign lsu_mm_buff_iram_alloc_vld = lsu_mm_buff_iram_read_vld_ff;
     assign lsu_mm_buff_iram_alloc_addr = lsu_mm_buff_iram_read_addr_ff;
@@ -1599,7 +1599,7 @@ module lsu(
     assign lsu_mm_buff_wram_alloc_data = lsu_wram_dout & {128{alu_lsu_conv}};
     assign lsu_mm_buff_wram_ctrl_vld = alu_lsu_conv & lsu_vld;
     assign lsu_mm_buff_wram_ctrl_row_len = {4{alu_lsu_conv}} & alu_lsu_wram_row_len;
-    assign lsu_mm_buff_wram_ctrl_col_len = {4{alu_lsu_conv}} & alu_lsu_iram_row_len;
+    assign lsu_mm_buff_wram_ctrl_col_len = {4{alu_lsu_conv}} & alu_lsu_col_len;
     assign lsu_mm_buff_wram_ctrl_start_addr = {12{alu_lsu_conv}} & alu_lsu_wram_start_addr;
     assign lsu_mm_buff_wram_alloc_vld = lsu_mm_buff_wram_read_vld_ff;
     assign lsu_mm_buff_wram_alloc_addr = lsu_mm_buff_wram_read_addr_ff;
