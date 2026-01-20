@@ -1,10 +1,10 @@
-class model_read_tr extends uvm_sequence_item;
+class model_read_transaction extends uvm_sequence_item;
 
     bit [783:0][7:0] img_array;
     bit [43959:0][7:0] first_layer_weight;
     bit [569:0][7:0] second_layer_weigh;
 
-    function new(string name = "model_read_tr");
+    function new(string name = "model_read_transaction");
         super.new(name);
         read_img();
         read_layer1();
@@ -15,11 +15,11 @@ class model_read_tr extends uvm_sequence_item;
     extern function void read_layer1();
     extern function void read_layer2();
 
-    `uvm_object_utils(model_read_tr)
+    `uvm_object_utils(model_read_transaction)
 
 endclass //top_tr extends superClass
 
-function void model_read_tr::read_img();
+function void model_read_transaction::read_img();
     int 	 fd; 			// Variable for file descriptor handle
     int      arr_pos;
 
@@ -43,7 +43,7 @@ function void model_read_tr::read_img();
 
 endfunction
 
-function void model_read_tr::read_layer1();
+function void model_read_transaction::read_layer1();
     int 	 fd; 			// Variable for file descriptor handle
     int      arr_pos;
 
@@ -67,7 +67,7 @@ function void model_read_tr::read_layer1();
 
 endfunction
 
-function void model_read_tr::read_layer2();
+function void model_read_transaction::read_layer2();
     int 	 fd; 			// Variable for file descriptor handle
     int      arr_pos;
 
