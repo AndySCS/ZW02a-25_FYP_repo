@@ -35,6 +35,7 @@ endfunction
 task lsu_driver::main_phase(uvm_phase phase);
     int count;
     lsu_tr tr;
+    int mode;
     //tr = new("tr");
     lsu_if.alu_lsu_vld = 0;
     lsu_if.alu_lsu_wb_vld = 0;
@@ -88,6 +89,7 @@ task lsu_driver::main_phase(uvm_phase phase);
     lsu_if.axi_lsu_rresp = 0;
     lsu_if.axi_lsu_rlast = 0;
     lsu_if.axi_lsu_rvld = 0;
+    
 /*
     lsu_if.mxu_lsu_int8_row0_data = 0;
     lsu_if.mxu_lsu_int16_row0_data = 0;
@@ -124,10 +126,9 @@ task lsu_driver::main_phase(uvm_phase phase);
     //lsu_if.mxu_lsu_data_rdy = 1;
     lsu_if.mxu_lsu_rdy = 0;
 */
-
+    mode = 2;
     for (int i=0;i<256;i++) begin
 	  if(i==16)begin
-	  //if(i==10)begin
      	  	harness.u_lsu.oram.mem[0] = 128'h1123456789abcdeff0e0d0c0b0a19080;
      	  	harness.u_lsu.oram.mem[1] = 128'h2123456789abcdeff0e0d0c0b0a19181;
      	  	harness.u_lsu.oram.mem[2] = 128'h3123456789abcdeff0e0d0c0b0a29282;
@@ -139,6 +140,137 @@ task lsu_driver::main_phase(uvm_phase phase);
      	  	harness.u_lsu.oram.mem[8] = 128'h9123456789abcdeff0e0d0c0b0a89888;
      	  	harness.u_lsu.oram.mem[9] = 128'ha123456789abcdeff0e0d0c0b0a99989;
 
+     	  	harness.u_lsu.oram_hi.mem[0] = {16{8'd1}};
+     	  	harness.u_lsu.oram_hi.mem[1] = {16{8'd2}};
+     	  	harness.u_lsu.oram_hi.mem[2] = {16{8'd3}};
+     	  	harness.u_lsu.oram_hi.mem[3] = {16{8'd4}};
+     	  	harness.u_lsu.oram_hi.mem[4] = {16{8'd5}};
+     	  	harness.u_lsu.oram_hi.mem[5] = {16{8'd6}};
+     	  	harness.u_lsu.oram_hi.mem[6] = {16{8'd7}};
+     	  	harness.u_lsu.oram_hi.mem[7] = {16{8'd8}};
+     	  	harness.u_lsu.oram_hi.mem[8] = {16{8'd9}};
+     	  	harness.u_lsu.oram_hi.mem[9] = {16{8'd10}};
+		
+            //basic mode
+            //test for normal operation with row equal 
+            if(mode == 0)begin
+                //iram
+     	  	    harness.u_lsu.iram.mem[0] = {16{8'h1}};
+     	  	    harness.u_lsu.iram.mem[1] = {16{8'h2}};
+     	  	    harness.u_lsu.iram.mem[2] = {16{8'h3}};
+     	  	    harness.u_lsu.iram.mem[3] = {16{8'h4}};
+     	  	    harness.u_lsu.iram.mem[4] = {16{8'h5}};
+     	  	    harness.u_lsu.iram.mem[5] = {16{8'h6}};
+     	  	    harness.u_lsu.iram.mem[6] = {16{8'h7}};
+     	  	    harness.u_lsu.iram.mem[7] = {16{8'h8}};
+     	  	    harness.u_lsu.iram.mem[8] = {16{8'h9}};
+     	  	    harness.u_lsu.iram.mem[9] = {16{8'ha}};
+     	  	    harness.u_lsu.iram.mem[10] = {16{8'hb}};
+     	  	    harness.u_lsu.iram.mem[11] = {16{8'hc}};
+     	  	    harness.u_lsu.iram.mem[12] = {16{8'hd}};
+     	  	    harness.u_lsu.iram.mem[13] = {16{8'he}};
+     	  	    harness.u_lsu.iram.mem[14] = {16{8'hf}};
+     	  	    harness.u_lsu.iram.mem[15] = {16{8'h10}};
+
+                //wram
+     	  	    harness.u_lsu.wram.mem[0] = {16{8'h1}};
+     	  	    harness.u_lsu.wram.mem[1] = {16{8'h2}};
+     	  	    harness.u_lsu.wram.mem[2] = {16{8'h3}};
+     	  	    harness.u_lsu.wram.mem[3] = {16{8'h4}};
+     	  	    harness.u_lsu.wram.mem[4] = {16{8'h5}};
+     	  	    harness.u_lsu.wram.mem[5] = {16{8'h6}};
+     	  	    harness.u_lsu.wram.mem[6] = {16{8'h7}};
+     	  	    harness.u_lsu.wram.mem[7] = {16{8'h8}};
+     	  	    harness.u_lsu.wram.mem[8] = {16{8'h9}};
+     	  	    harness.u_lsu.wram.mem[9] = {16{8'ha}};
+     	  	    harness.u_lsu.wram.mem[10] = {16{8'hb}};
+     	  	    harness.u_lsu.wram.mem[11] = {16{8'hc}};
+     	  	    harness.u_lsu.wram.mem[12] = {16{8'hd}};
+     	  	    harness.u_lsu.wram.mem[13] = {16{8'he}};
+     	  	    harness.u_lsu.wram.mem[14] = {16{8'hf}};
+     	  	    harness.u_lsu.wram.mem[15] = {16{8'h10}};
+
+            end
+
+
+            //test for normal operation with wram row diff
+            if(mode == 1)begin
+                //iram
+     	  	    harness.u_lsu.iram.mem[0] = {16{8'h1}};
+     	  	    harness.u_lsu.iram.mem[1] = {16{8'h2}};
+     	  	    harness.u_lsu.iram.mem[2] = {16{8'h3}};
+     	  	    harness.u_lsu.iram.mem[3] = {16{8'h4}};
+     	  	    harness.u_lsu.iram.mem[4] = {16{8'h5}};
+     	  	    harness.u_lsu.iram.mem[5] = {16{8'h6}};
+     	  	    harness.u_lsu.iram.mem[6] = {16{8'h7}};
+     	  	    harness.u_lsu.iram.mem[7] = {16{8'h8}};
+     	  	    harness.u_lsu.iram.mem[8] = {16{8'h9}};
+     	  	    harness.u_lsu.iram.mem[9] = {16{8'ha}};
+     	  	    harness.u_lsu.iram.mem[10] = {16{8'hb}};
+     	  	    harness.u_lsu.iram.mem[11] = {16{8'hc}};
+     	  	    harness.u_lsu.iram.mem[12] = {16{8'hd}};
+     	  	    harness.u_lsu.iram.mem[13] = {16{8'he}};
+     	  	    harness.u_lsu.iram.mem[14] = {16{8'hf}};
+     	  	    harness.u_lsu.iram.mem[15] = {16{8'h10}};
+
+     	  	    harness.u_lsu.wram.mem[0] = 128'h100f_0e0d_0c0b_0a09_0807_0605_0403_0201;
+     	  	    harness.u_lsu.wram.mem[1] = 128'h100f0e0d0c0b0a090807060504030201;
+     	  	    harness.u_lsu.wram.mem[2] = 128'h100f0e0d0c0b0a090807060504030201;
+     	  	    harness.u_lsu.wram.mem[3] = 128'h100f0e0d0c0b0a090807060504030201;
+     	  	    harness.u_lsu.wram.mem[4] = 128'h100f0e0d0c0b0a090807060504030201;
+     	  	    harness.u_lsu.wram.mem[5] = 128'h100f0e0d0c0b0a090807060504030201;
+     	  	    harness.u_lsu.wram.mem[6] = 128'h100f0e0d0c0b0a090807060504030201;
+     	  	    harness.u_lsu.wram.mem[7] = 128'h100f0e0d0c0b0a090807060504030201;
+     	  	    harness.u_lsu.wram.mem[8] = 128'h100f0e0d0c0b0a090807060504030201;
+     	  	    harness.u_lsu.wram.mem[9] = 128'h100f0e0d0c0b0a090807060504030201;
+     	  	    harness.u_lsu.wram.mem[10] = 128'h100f0e0d0c0b0a090807060504030201;
+     	  	    harness.u_lsu.wram.mem[11] = 128'h100f0e0d0c0b0a090807060504030201;
+     	  	    harness.u_lsu.wram.mem[12] = 128'h100f0e0d0c0b0a090807060504030201;
+     	  	    harness.u_lsu.wram.mem[13] = 128'h100f0e0d0c0b0a090807060504030201;
+     	  	    harness.u_lsu.wram.mem[14] = 128'h100f0e0d0c0b0a090807060504030201;
+     	  	    harness.u_lsu.wram.mem[15] = 128'h100f0e0d0c0b0a090807060504030201;
+            end
+            
+            //mode3
+            //random number generate from poe with range 1-10
+            if(mode == 2)begin
+                //iram
+                harness.u_lsu.iram.mem[0] = 128'h09_01_04_06_03_05_08_02_07_0a_02_06_04_05_01_03;
+                harness.u_lsu.iram.mem[1] = 128'h02_08_03_07_01_09_05_04_0a_06_02_07_08_03_06_01;
+                harness.u_lsu.iram.mem[2] = 128'h06_05_09_01_02_04_0a_03_08_07_01_05_06_02_09_08;
+                harness.u_lsu.iram.mem[3] = 128'h03_07_05_0a_06_08_01_04_02_09_04_07_03_01_05_02;
+                harness.u_lsu.iram.mem[4] = 128'h01_04_06_09_07_03_02_0a_05_08_09_02_06_01_03_07;
+                harness.u_lsu.iram.mem[5] = 128'h08_02_01_05_04_0a_09_07_06_03_0a_04_08_03_05_02;
+                harness.u_lsu.iram.mem[6] = 128'h07_06_02_03_05_01_08_09_04_0a_01_06_04_08_03_02;
+                harness.u_lsu.iram.mem[7] = 128'h0a_09_03_02_01_06_07_05_08_04_03_0a_02_05_07_09;
+                harness.u_lsu.iram.mem[8] = 128'h04_02_07_03_09_08_05_01_06_0a_05_01_07_03_09_06;
+                harness.u_lsu.iram.mem[9] = 128'h05_01_0a_04_06_07_08_02_03_09_02_06_01_04_07_0a;
+                harness.u_lsu.iram.mem[10] = 128'h03_07_06_02_05_04_0a_08_01_09_08_02_03_05_06_07;
+                harness.u_lsu.iram.mem[11] = 128'h0a_04_05_09_01_03_02_06_08_07_01_09_0a_02_06_05;
+                harness.u_lsu.iram.mem[12] = 128'h06_03_04_01_05_0a_09_02_07_08_0a_03_04_08_01_06;
+                harness.u_lsu.iram.mem[13] = 128'h02_05_01_08_07_06_03_0a_04_09_09_05_07_08_01_06;
+                harness.u_lsu.iram.mem[14] = 128'h09_07_02_04_0a_08_03_05_06_01_03_02_09_07_04_0a;
+                harness.u_lsu.iram.mem[15] = 128'h06_08_01_04_02_09_05_0a_03_07_05_08_0a_01_04_02;
+
+                //wram
+                harness.u_lsu.wram.mem[0] = 128'h04_03_06_01_09_02_08_05_0a_07_03_01_06_02_08_05;
+                harness.u_lsu.wram.mem[1] = 128'h07_02_06_04_01_08_0a_03_09_05_07_01_02_06_04_09;
+                harness.u_lsu.wram.mem[2] = 128'h03_05_09_07_0a_04_08_01_06_02_05_07_0a_02_03_04;
+                harness.u_lsu.wram.mem[3] = 128'h08_0a_01_05_02_03_07_09_06_04_08_01_02_05_06_03;
+                harness.u_lsu.wram.mem[4] = 128'h01_0a_06_02_08_03_07_09_05_04_01_06_02_07_03_05;
+                harness.u_lsu.wram.mem[5] = 128'h09_04_05_02_01_06_08_03_0a_07_02_01_06_05_09_08;
+                harness.u_lsu.wram.mem[6] = 128'h0a_05_02_07_03_09_01_04_06_08_08_02_0a_03_05_06;
+                harness.u_lsu.wram.mem[7] = 128'h04_02_01_0a_07_05_06_08_03_09_01_04_0a_03_02_06;
+                harness.u_lsu.wram.mem[8] = 128'h07_0a_05_08_04_03_01_09_02_06_0a_07_05_02_08_01;
+                harness.u_lsu.wram.mem[9] = 128'h03_06_02_09_0a_01_08_04_07_05_02_09_08_01_06_03;
+                harness.u_lsu.wram.mem[10] = 128'h02_05_0a_04_07_08_06_01_03_09_05_01_0a_04_06_02;
+                harness.u_lsu.wram.mem[11] = 128'h08_03_06_02_01_09_0a_05_04_07_06_01_02_08_05_03;
+                harness.u_lsu.wram.mem[12] = 128'h05_09_07_03_0a_02_08_04_06_01_07_05_03_02_09_0a;
+                harness.u_lsu.wram.mem[13] = 128'h06_01_04_0a_03_08_02_09_05_06_07_02_01_04_0a_03;
+                harness.u_lsu.wram.mem[14] = 128'h0a_06_03_05_08_01_04_09_0a_02_06_05_01_07_08_02;
+                harness.u_lsu.wram.mem[15] = 128'h04_07_01_02_0a_09_06_03_08_05_02_01_0a_04_07_03;
+            end
+            
      	  	//harness.u_lsu.iram.mem[0] = 128'h1123456789abcdeff0e0d0c0b030201;
      	  	//harness.u_lsu.iram.mem[1] = 128'h2123456789abcdeff0e0d0c0b060504;
      	  	//harness.u_lsu.iram.mem[2] = 128'h3123456789abcdeff0e0d0c0b090807;
@@ -150,33 +282,7 @@ task lsu_driver::main_phase(uvm_phase phase);
      	  	//harness.u_lsu.iram.mem[8] = 128'h4123456789abcdeff0e0d0c0b0c0b0a;
      	  	//harness.u_lsu.iram.mem[9] = 128'h5123456789abcdeff0e0d0c0b0f0e0d;
 
-     	  	//harness.u_lsu.iram.mem[0] = 128'h0807060504030201;
-     	  	//harness.u_lsu.iram.mem[1] = 128'h0201090807060504;
-     	  	//harness.u_lsu.iram.mem[2] = 128'h0605040302010809;
-     	  	//harness.u_lsu.iram.mem[3] = 128'h0807060504030201;
-     	  	//harness.u_lsu.iram.mem[4] = 128'h0201090807060504;
-     	  	//harness.u_lsu.iram.mem[5] = 128'h0605040302010809;
-     	  	//harness.u_lsu.iram.mem[6] = 128'h0807060504030201;
-     	  	//harness.u_lsu.iram.mem[7] = 128'h0201090807060504;
-     	  	//harness.u_lsu.iram.mem[8] = 128'h0605040302010809;
-
-     	  	harness.u_lsu.iram.mem[0] = {16{8'h1}};
-     	  	harness.u_lsu.iram.mem[1] = {16{8'h2}};
-     	  	harness.u_lsu.iram.mem[2] = {16{8'h3}};
-     	  	harness.u_lsu.iram.mem[3] = {16{8'h4}};
-     	  	harness.u_lsu.iram.mem[4] = {16{8'h5}};
-     	  	harness.u_lsu.iram.mem[5] = {16{8'h6}};
-     	  	harness.u_lsu.iram.mem[6] = {16{8'h7}};
-     	  	harness.u_lsu.iram.mem[7] = {16{8'h8}};
-     	  	harness.u_lsu.iram.mem[8] = {16{8'h9}};
-     	  	harness.u_lsu.iram.mem[9] = {16{8'ha}};
-     	  	harness.u_lsu.iram.mem[10] = {16{8'hb}};
-     	  	harness.u_lsu.iram.mem[11] = {16{8'hc}};
-     	  	harness.u_lsu.iram.mem[12] = {16{8'hd}};
-     	  	harness.u_lsu.iram.mem[13] = {16{8'he}};
-     	  	harness.u_lsu.iram.mem[14] = {16{8'hf}};
-     	  	harness.u_lsu.iram.mem[15] = {16{8'h10}};
-
+ 
      	  	//harness.u_lsu.wram.mem[0] = 128'h1123456789abcdeff0e0d0c0b030201;
      	  	//harness.u_lsu.wram.mem[1] = 128'h2123456789abcdeff0e0d0c0b060504;
      	  	//harness.u_lsu.wram.mem[2] = 128'h3123456789abcdeff0e0d0c0b090807;
@@ -193,45 +299,6 @@ task lsu_driver::main_phase(uvm_phase phase);
      	  	//harness.u_lsu.wram.mem[13] = 128'h3123456789abcdeff0e0d0c0b090807;
      	  	//harness.u_lsu.wram.mem[14] = 128'h4123456789abcdeff0e0d0c0b0c0b0a;
      	  	//harness.u_lsu.wram.mem[15] = 128'h5123456789abcdeff0e0d0c0b0f0e0d;
-
-     	  	//harness.u_lsu.wram.mem[0] = 128'h0605040302010809;
-     	  	//harness.u_lsu.wram.mem[1] = 128'h0807060504030201;
-     	  	//harness.u_lsu.wram.mem[2] = 128'h0201090807060504;
-     	  	//harness.u_lsu.wram.mem[3] = 128'h0605040302010809;
-     	  	//harness.u_lsu.wram.mem[4] = 128'h0807060504030201;
-     	  	//harness.u_lsu.wram.mem[5] = 128'h0201090807060504;
-     	  	//harness.u_lsu.wram.mem[6] = 128'h0605040302010809;
-     	  	//harness.u_lsu.wram.mem[7] = 128'h0807060504030201;
-     	  	//harness.u_lsu.wram.mem[8] = 128'h0201090807060504;
-     	  	//harness.u_lsu.wram.mem[9] = 128'h0605040302010809;
-
-     	  	harness.u_lsu.wram.mem[0] = {16{8'h1}};
-     	  	harness.u_lsu.wram.mem[1] = {16{8'h2}};
-     	  	harness.u_lsu.wram.mem[2] = {16{8'h3}};
-     	  	harness.u_lsu.wram.mem[3] = {16{8'h4}};
-     	  	harness.u_lsu.wram.mem[4] = {16{8'h5}};
-     	  	harness.u_lsu.wram.mem[5] = {16{8'h6}};
-     	  	harness.u_lsu.wram.mem[6] = {16{8'h7}};
-     	  	harness.u_lsu.wram.mem[7] = {16{8'h8}};
-     	  	harness.u_lsu.wram.mem[8] = {16{8'h9}};
-     	  	harness.u_lsu.wram.mem[9] = {16{8'ha}};
-     	  	harness.u_lsu.wram.mem[10] = {16{8'hb}};
-     	  	harness.u_lsu.wram.mem[11] = {16{8'hc}};
-     	  	harness.u_lsu.wram.mem[12] = {16{8'hd}};
-     	  	harness.u_lsu.wram.mem[13] = {16{8'he}};
-     	  	harness.u_lsu.wram.mem[14] = {16{8'hf}};
-     	  	harness.u_lsu.wram.mem[15] = {16{8'h10}};
-
-     	  	harness.u_lsu.oram_hi.mem[0] = {16{8'd1}};
-     	  	harness.u_lsu.oram_hi.mem[1] = {16{8'd2}};
-     	  	harness.u_lsu.oram_hi.mem[2] = {16{8'd3}};
-     	  	harness.u_lsu.oram_hi.mem[3] = {16{8'd4}};
-     	  	harness.u_lsu.oram_hi.mem[4] = {16{8'd5}};
-     	  	harness.u_lsu.oram_hi.mem[5] = {16{8'd6}};
-     	  	harness.u_lsu.oram_hi.mem[6] = {16{8'd7}};
-     	  	harness.u_lsu.oram_hi.mem[7] = {16{8'd8}};
-     	  	harness.u_lsu.oram_hi.mem[8] = {16{8'd9}};
-     	  	harness.u_lsu.oram_hi.mem[9] = {16{8'd10}};
 	  end 
      	  harness.u_lsu.oram.mem[i] = 128'hf0e0d0c0b0a09080;
      	  harness.u_lsu.oram_hi.mem[i] = 128'hf0e0d0c0b0a09080;
@@ -637,9 +704,9 @@ task lsu_driver::alu_signal_config_lsu_mxu(lsu_tr tr);
             lsu_if.alu_lsu_iram_start_addr = 'b0;
             lsu_if.alu_lsu_wram_start_addr = 'b0;
             lsu_if.alu_lsu_vld = 1;
-	    lsu_if.alu_lsu_iram_row_len = 3;
+	    lsu_if.alu_lsu_iram_row_len = 15;
 	    lsu_if.alu_lsu_wram_row_len = 15;
-	    lsu_if.alu_lsu_col_len = 9;
+	    lsu_if.alu_lsu_col_len = 15;
             @(negedge lsu_if.clk);
             lsu_if.alu_lsu_vld = 0;
         end
@@ -671,7 +738,4 @@ endtask
         end
     end
     */
-
-
-
 
