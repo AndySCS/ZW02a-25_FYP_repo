@@ -2,10 +2,7 @@ class axi_rd_driver extends uvm_driver #(axi_rd_tr);
 
     virtual axi_rd_intf axi_rd_if;
 
-    bit [783:0][7:0] img_array;
-    bit [43959:0][7:0] first_layer_weight;
-    bit [569:0][7:0] second_layer_weigh;
-
+    model_read_transaction model_rd_tr;
     axi_transaction axi_rd_req_q[$];
 
     `uvm_component_utils(axi_rd_driver)
@@ -18,13 +15,10 @@ class axi_rd_driver extends uvm_driver #(axi_rd_tr);
     extern virtual task main_phase(uvm_phase phase);
     extern virtual task reset_phase(uvm_phase phase);
 
-    extern function void read_img();
-    extern function void read_layer1();
-    extern function void read_layer2();
-
-    extern function void send_axi_read_recv();
-    extern function void send_axi_read_send();
+    extern task send_axi_read_recv();
+    extern task send_axi_read_send();
     extern function void send_axi_read_send_tr(axi_transaction axi_tr);
+
     extern function void assign_data2bus(axi_transaction axi_tr);
     extern function bit[63:0] get_data(axi_transaction axi_tr);
 
@@ -32,6 +26,7 @@ endclass //className extends superClass
 
 function void axi_rd_driver::build_phase(uvm_phase phase);
     super.build_phase(phase);
+    model_rd_tr = new();
     if(!uvm_config_db#(virtual axi_rd_intf)::get(this, "", "axi_rd_if", axi_rd_if))begin
         `uvm_fatal("axi_rd_driver", "axi_rd driver fail to get axi_rd if")
     end
@@ -46,88 +41,13 @@ endtask
 task axi_rd_driver::main_phase(uvm_phase phase); 
     super.main_phase(phase);
     //init data
-    read_img();
-    read_layer1();
-    read_layer2();
     fork
         send_axi_read_recv();
         send_axi_read_send();
     join
 endtask
 
-function void axi_rd_driver::read_img();
-    int 	 fd; 			// Variable for file descriptor handle
-    int      arr_pos;
-
-    fd = $fopen ("sample.csv", "r")
-
-    while (!$feof(fd)) begin
-        
-        $fgets(line, fd);
-        if(line.len <= 0) break;
-
-        while ($sscanf(line, "%d,%s", value, line) >= 1) begin
-            img_array[arr_pos] = value;
-            arr_pos++;
-        end
-
-        // Close this file handle
-        $fclose(fd);
-    end
-
-    if(arr_pos != 784) `uvm_error(get_name(), $sformatf("img read is not correct, actual read cnt = %d", arr_pos));
-
-endfunction
-
-function void axi_rd_driver::read_layer1();
-    int 	 fd; 			// Variable for file descriptor handle
-    int      arr_pos;
-
-    fd = $fopen ("csv/mnist_kernel_785_128.csv", "r")
-
-    while (!$feof(fd)) begin
-        
-        $fgets(line, fd);
-        if(line.len <= 0) break;
-
-        while ($sscanf(line, "%d,%s", value, line) >= 1) begin
-            first_layer_weight[arr_pos] = value;
-            arr_pos++;
-        end
-
-        // Close this file handle
-        $fclose(fd);
-    end
-
-    if(arr_pos != 43960) `uvm_error(get_name(), $sformatf("layer 1 read weight cnt is not correct, actual weight cnt = %d", arr_pos));
-
-endfunction
-
-function void axi_rd_driver::read_layer2();
-    int 	 fd; 			// Variable for file descriptor handle
-    int      arr_pos;
-
-    fd = $fopen ("csv/mnist_kernel_129_10.csv", "r")
-
-    while (!$feof(fd)) begin
-        
-        $fgets(line, fd);
-        if(line.len <= 0) break;
-
-        while ($sscanf(line, "%d,%s", value, line) >= 1) begin
-            first_layer_weight[arr_pos] = value;
-            arr_pos++;
-        end
-
-        // Close this file handle
-        $fclose(fd);
-    end
-
-    if(arr_pos != 560) `uvm_error(get_name(), $sformatf("layer 2 read weight cnt is not correct, actual weight cnt = %d", arr_pos));
-
-endfunction
-
-function void axi_rd_driver::send_axi_read_recv();
+task axi_rd_driver::send_axi_read_recv();
     axi_transaction axi_rd_tr;
     int repeated_q[$];
 
@@ -140,7 +60,7 @@ function void axi_rd_driver::send_axi_read_recv();
 
         if(axi_rd_if.ARVALID & axi_rd_if.ARREADY)begin
             axi_rd_tr = axi_transaction::type_id::create();
-            axi_rd_tr.init_axi_rd_tr(
+            axi_rd_tr.init_axi_tr(
                 .AxID(axi_read_if.ARID),
                 .AxADDR(axi_read_if.ARADDR),
                 .AxLEN(axi_read_if.ARLEN),
@@ -151,12 +71,12 @@ function void axi_rd_driver::send_axi_read_recv();
             axi_rd_req_q.push_back(axi_rd_tr);
         end        
         
-        axi_read_if.ARREADY = (axi_rd_req_q.size() == 16);
+        axi_read_if.ARREADY = (axi_rd_req_q.size() < 16);
 
     end
-endfunction
+endtask
 
-function void axi_rd_driver::send_axi_read_send();
+task axi_rd_driver::send_axi_read_send();
     axi_transaction axi_rd_tr;
     bit is_sending;
 
@@ -165,6 +85,7 @@ function void axi_rd_driver::send_axi_read_send();
         if(is_sending);
         else if(axi_rd_req_q.size() > 0)begin
             axi_rd_tr = axi_rd_req_q.pop_front();
+            is_sending = 1;
         end
 
         if(!is_sending);
@@ -175,9 +96,10 @@ function void axi_rd_driver::send_axi_read_send();
         end
 
     end
-endfunction
+endtask
 
 function void axi_rd_driver::send_axi_read_send_tr(axi_transaction axi_tr);
+
     if(axi_rd_if.RREADY & axi_rd_if.RVALID)begin
         axi_rd_if.RVALID = 0;
         axi_tr.AxLEN--;
@@ -185,24 +107,26 @@ function void axi_rd_driver::send_axi_read_send_tr(axi_transaction axi_tr);
         if(axi_tr.AxBURST == `AXI_WR_BURST_INCR)begin
             axi_tr.AxADDR += (1 << axi_tr.AxSIZE);
         end
-        if(axi_tr.AxLEN >= 0 && axi_tr.send_cnt == 0) begin
-            assign_data2bus(axi_tr);
-        end
     end
-    else begin
+    
+    if(axi_tr.AxLEN >= 0 && axi_tr.send_cnt == 0) begin
         assign_data2bus(axi_tr);
     end
+
 endfunction
 
 function void axi_rd_driver::assign_data2bus(axi_transaction axi_tr);
+    
     axi_rd_if.RVALID = 1;
     axi_rd_if.RID    = axi_tr.AxID;
     axi_rd_if.RDATA  = get_data(axi_tr);
     axi_rd_if.RRESP  = 0;
     axi_rd_if.RLAST  = (axi_tr.AxLEN == 1);
+
 endfunction
 
 function bit[63:0] axi_rd_driver::get_data(axi_transaction axi_tr);
+
     bit[7:0][7:0] rdata_tmp;
     int arsize_convert;
 
@@ -210,19 +134,20 @@ function bit[63:0] axi_rd_driver::get_data(axi_transaction axi_tr);
 
     if(axi_tr.AxADDR < 1000)begin
         for(int i = 0; i < arsize_convert; i++)begin
-            rdata_tmp[i] = img_array[axi_tr.AxADDR+i];
+            rdata_tmp[i] = model_rd_tr.img_array[axi_tr.AxADDR+i];
         end
     end
     else if (axi_tr.AxADDR < 45000) begin 
         for(int i = 0; i < arsize_convert; i++)begin
-            rdata_tmp[i] = first_layer_weight[axi_tr.AxADDR-1000+i];
+            rdata_tmp[i] = model_rd_tr.first_layer_weight[axi_tr.AxADDR-1000+i];
         end
     end
     else begin
         for(int i = 0; i < arsize_convert; i++)begin
-            rdata_tmp[i] = second_layer_weight[axi_tr.AxADDR-45000+i];
+            rdata_tmp[i] = model_rd_tr.second_layer_weight[axi_tr.AxADDR-45000+i];
         end
     end
 
     return rdata_tmp;
+
 endfunction
