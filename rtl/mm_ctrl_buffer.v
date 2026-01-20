@@ -162,7 +162,7 @@
     endgenerate
 
     assign lsu_mm_buff_mxu_data = lsu_mm_buff_ctrl_ram_type ? lsu_mm_buff_mxu_data_iram >> (15-lsu_mm_buff_cycle_cnt)*8: lsu_mm_buff_mxu_data_wram;
-    assign lsu_mm_buff_mxu_vld =  lsu_mm_buff_ctrl_ram_type ? lsu_mm_buff_mxu_vld_iram : lsu_mm_buff_mxu_vld_wram;
+    assign lsu_mm_buff_mxu_vld =  lsu_mm_buff_mxu_end_ff ? 1'b0 : (lsu_mm_buff_ctrl_ram_type ? lsu_mm_buff_mxu_vld_iram : lsu_mm_buff_mxu_vld_wram);
     //assign lsu_mm_buff_mxu_data = lsu_mm_buff_ctrl_ram_type ? lsu_mm_buff_mxu_data_iram : lsu_mm_buff_mxu_data_wram >> (15-lsu_mm_buff_cycle_cnt)*8;
     //assign lsu_mm_buff_mxu_vld = lsu_mm_buff_mxu_end_ff ? 1'b0 : lsu_mm_buff_ctrl_ram_type ? lsu_mm_buff_mxu_vld_iram : lsu_mm_buff_mxu_vld_wram;
     //data_byte_shifter data_shifter0(.in(lsu_mm_buff_ent_data_raw[0]), .offset(lsu_mm_buff_addr_cnt_ff), .out(lsu_mm_buff_ent_data[0]));
