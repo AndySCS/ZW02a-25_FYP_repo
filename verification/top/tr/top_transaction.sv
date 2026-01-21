@@ -4,7 +4,6 @@ class top_tr extends uvm_sequence_item;
 
     function new(string name = "top_tr");
        super.new(name);
-       this.init_matrix();
     endfunction //new()
 
     `uvm_object_utils(top_tr)

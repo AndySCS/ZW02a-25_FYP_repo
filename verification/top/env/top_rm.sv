@@ -27,13 +27,14 @@ endfunction
 
 task top_rm::main_phase(uvm_phase phase);
     
-    top_tr tr;
+    model_output_transaction tr;
     bit [9:0][7:0] model_output;
 
     super.main_phase(phase);
 
     while(1)begin
-        model_output = cal_data();
+        port.get(tr);
+        tr.model_output = cal_data();
         ap.write(tr);
     end
 
