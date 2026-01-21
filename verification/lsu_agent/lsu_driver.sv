@@ -126,6 +126,7 @@ task lsu_driver::main_phase(uvm_phase phase);
     //lsu_if.mxu_lsu_data_rdy = 1;
     lsu_if.mxu_lsu_rdy = 0;
 */
+    //MODE
     mode = 2;
     for (int i=0;i<256;i++) begin
 	  if(i==16)begin
@@ -698,17 +699,19 @@ task lsu_driver::alu_signal_config_lsu_mxu(lsu_tr tr);
         if(lsu_if.lsu_alu_rdy) begin
             @(negedge lsu_if.clk);
             //@(negedge lsu_if.clk);
+            lsu_if.alu_lsu_clr = 1;
             lsu_if.alu_lsu_conv = 1;
 	    //lsu_if.alu_lsu_iram_start_addr = 0;
 	    //lsu_if.alu_lsu_wram_start_addr = 0;
-            lsu_if.alu_lsu_iram_start_addr = 'b0;
-            lsu_if.alu_lsu_wram_start_addr = 'b0;
+            lsu_if.alu_lsu_iram_start_addr = 'b11_0101;
+            lsu_if.alu_lsu_wram_start_addr = 'b10_0100;
             lsu_if.alu_lsu_vld = 1;
-	    lsu_if.alu_lsu_iram_row_len = 15;
-	    lsu_if.alu_lsu_wram_row_len = 15;
-	    lsu_if.alu_lsu_col_len = 15;
+	    lsu_if.alu_lsu_iram_row_len = 5;
+	    lsu_if.alu_lsu_wram_row_len = 3;
+	    lsu_if.alu_lsu_col_len = 6;
             @(negedge lsu_if.clk);
             lsu_if.alu_lsu_vld = 0;
+            lsu_if.alu_lsu_clr = 0;
         end
 	break;
     end

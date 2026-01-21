@@ -13,7 +13,7 @@ class lsu_rm extends uvm_component;
     extern virtual task main_phase(uvm_phase phase);
 
     extern function lsu_tr mm_inst(lsu_tr tr);
-    //extern function lsu_tr mm_cal(lsu_tr tr);
+    extern function lsu_tr mm_cal(lsu_tr tr);
 
 endclass //className extends superClass
 
@@ -30,14 +30,14 @@ task lsu_rm::main_phase(uvm_phase phase);
 
     while(1)begin
         port.get(tr);
-	    this.mm_inst(tr);
-        //this.mm_cal(tr);
+	//this.mm_inst(tr);
+        this.mm_cal(tr);
         ap.write(tr);
     end
 
 endtask
 
-//function lsu_tr lsu_rm::mm_cal(lsu_tr tr);
+function lsu_tr lsu_rm::mm_cal(lsu_tr tr);
 //    /*
 //        matrix_L x matrix_R = matrix_result
 //        matrix_result_size = L_col*R_row
@@ -55,15 +55,15 @@ endtask
 //        ...
 //    */
 //    //apply actual calculation
-//    for(int i =0; i < 16;i++)begin
-//        for(int j = 0; j < 16; j++)begin
-//            tr.matrix_result[i][j] = 0;
-//            for(int k = 0; k < 16; k++)begin
-//                tr.matrix_result[i][j] += tr.matrix_L[i][k] * tr.matrix_R[j][k];
-//            end
-//        end
-//    end
-//endfunction
+    for(int i =0; i < 16;i++)begin
+        for(int j = 0; j < 16; j++)begin
+            tr.matrix_result[i][j] = 0;
+            for(int k = 0; k < 16; k++)begin
+                tr.matrix_result[i][j] += tr.matrix_L[i][k] * tr.matrix_R[j][k];
+            end
+        end
+    end
+endfunction
 
 
 function lsu_tr lsu_rm::mm_inst(lsu_tr tr);
