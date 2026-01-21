@@ -43,12 +43,16 @@ task top_driver::main_phase(uvm_phase phase);
     while(1) begin
         seq_item_port.get_next_item(tr);
         send_cnt++;
-        @(negedge top_if.clk);
-        top_if.start_vld <= 1;
-        top_if.start_addr <= 0;
-        @(negedge top_if.clk);
-        top_if.rst_n <= 0;
-        seq_item_port.item_done();
+        while(1)begin
+            @(posedge top_if.clk);
+                if(!top_if.wfi)begin
+                top_if.start_vld <= 1;
+                top_if.start_addr <= 0;
+                @(posedge top_if.clk);
+                top_if.start_vld <= 0;
+                seq_item_port.item_done();
+            end
+        end
     end
         
 endtask
