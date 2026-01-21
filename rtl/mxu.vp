@@ -116,7 +116,7 @@ module mxu (
     assign wfi_en = lsu_mxu_vld_qual | start_vld;
     assign wfi_nxt = ~start_vld & lsu_mxu_wfi;
 
-    DFFRE #(.WIDTH(1))
+    DFFSE #(.WIDTH(1))
     ff_wfi(
         .clk(clk),
         .rst_n(rst_n),
