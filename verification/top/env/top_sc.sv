@@ -1,0 +1,59 @@
+class top_sc extends uvm_scoreboard;
+
+    model_output_transaction exp_result_q[$];
+    uvm_blocking_get_port #(top_tr) exp_port;
+    uvm_blocking_get_port #(top_tr) act_port;
+
+    function new(string name = "top_sc", uvm_component parent);
+        super.new(name, parent);
+    endfunction
+
+    extern virtual function void build_phase(uvm_phase phase);
+    extern virtual task main_phase(uvm_phase phase);
+    extern virtual function void final_phase(uvm_phase phase);
+
+    `uvm_component_utils(top_sc)
+
+endclass //env extends superClass
+
+function void top_sc::build_phase(uvm_phase phase);
+    super.build_phase(phase);
+    exp_port = new("exp_port", this);
+    act_port = new("act_port", this);
+endfunction
+
+task top_sc::main_phase(uvm_phase phase);
+    model_output_transaction exp_tr;
+    model_output_transaction act_tr;
+    model_output_transaction tmp_tr;
+
+    super.main_phase(phase);
+	
+    fork
+	while(1)begin
+		this.exp_port.get(exp_tr);
+    		`uvm_info("top_sc", "received exp matrix from rm", UVM_MEDIUM);
+		this.exp_result_q.push_back(exp_tr);
+	end
+	while(1)begin
+		this.act_port.get(act_tr);
+    	`uvm_info("top_sc", "received act matrix from mon", UVM_MEDIUM);
+		if(this.exp_result_q.size() > 0)begin
+			tmp_tr = this.exp_result_q.pop_front();
+			if(tmp_tr.model_output	 != act_tr.model_output) begin
+				`uvm_error(get_name(), $sformatf("exp and act model output is not the same, act output = %h, exp output = %h", act_tr.model_output, tmp_tr.model_output))
+			end
+		end
+		else begin
+			`uvm_error("top_sc", "exp_result_q is empty")
+		end
+	end
+    join
+
+endtask
+
+function void top_sc::final_phase(uvm_phase phase);
+    super.final_phase(phase);
+    if(exp_result_q.size() > 0) `uvm_error("top_sc", $sformatf("exp_result_q is not empty when tc ends, exp_result_q size is %d", exp_result_q.size()))
+    `uvm_info("top_sc", $sformatf("enter fianl phase, mxu_sc write cnt is %d", write_cnt), UVM_LOW);
+endfunction

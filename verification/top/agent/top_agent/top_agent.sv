@@ -3,6 +3,7 @@ class top_agent extends uvm_agent;
     top_driver top_drv;
     top_sequencer top_sqr;
     top_monitor top_mon; //input monitor
+    uvm_analysis_port #(model_output_transaction) ap;
 
     function new(string name = "top_agent", uvm_component parent);
         super.new(name, parent);
@@ -24,6 +25,6 @@ endfunction
 
 function void top_agent::connect_phase(uvm_phase phase);
     super.connect_phase(phase);
-    iap = top_mon.ap;
+    ap = top_mon.ap;
     top_drv.seq_item_port.connect(top_sqr.seq_item_export);
 endfunction
