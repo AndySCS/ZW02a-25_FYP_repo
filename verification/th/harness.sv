@@ -278,6 +278,7 @@ module harness;
         .lsu_rf_wb_addr                       (lsu_rf_wb_addr),
         .lsu_rf_wb_data                       (lsu_rf_wb_data)
     );
+    /*
     mxu_intf mxu_if(
         .clk(clk),
         .rst_n(rst_n),
@@ -327,7 +328,7 @@ module harness;
         .mxu_lsu_data_rdy(mxu_lsu_data_rdy),
         .mxu_lsu_rdy(mxu_lsu_rdy)
     );
-
+*/
     //set up config db'
     initial begin
         uvm_config_db#(virtual lsu_intf)::set(null, "uvm_test_top.tc_env.lsu_agt.lsu_drv", "lsu_if", lsu_if);
@@ -484,6 +485,7 @@ module harness;
         .lsu_rf_wb_addr                       (lsu_rf_wb_addr),
         .lsu_rf_wb_data                       (lsu_rf_wb_data)
     );
+    /*
     mxu u_mxu(
         .clk(clk),
         .rst_n(rst_n),
@@ -533,8 +535,10 @@ module harness;
         .mxu_lsu_data_rdy(mxu_lsu_data_rdy),
         .mxu_lsu_rdy(mxu_lsu_rdy)
     );
+    */
     initial begin
         run_test("tc_base");
     end
     
 endmodule
+

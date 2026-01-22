@@ -4,6 +4,7 @@ class lsu_driver extends uvm_driver #(lsu_tr);
     */
 
     virtual lsu_intf lsu_if;
+    virtual mxu_intf mxu_if;
 
     `uvm_component_utils(lsu_driver)
     
@@ -308,14 +309,14 @@ task lsu_driver::main_phase(uvm_phase phase);
       	  harness.u_lsu.wram.mem[i] = 128'h0 ;
    end
     
-    test_mode = 0;
+    test_mode = 4;
     // 0 : store type1
     // 1 : store type2
     // 2 : load
     // 3 : mm
     // 4 : riscv
     if (test_mode == 0) begin
-    	lsu_if.mxu_lsu_int8_row0_data = 'hf0e0d0c0b0a09080;
+	lsu_if.mxu_lsu_int8_row0_data = 'hf0e0d0c0b0a09080;
     	lsu_if.mxu_lsu_int8_row1_data = 'hf0e0d0c0b0a09081;
     	lsu_if.mxu_lsu_int8_row2_data = 'hf0e0d0c0b0a09082;
     	lsu_if.mxu_lsu_int8_row3_data = 'hf0e0d0c0b0a09083;
@@ -356,7 +357,8 @@ task lsu_driver::main_phase(uvm_phase phase);
 	end
 
 	else begin
-        	alu_signal_config_riscv(tr);
+		alu_signal_config_riscv_st_alwaysrdy(tr);
+		//alu_signal_config_riscv_ld_alwaysrdy(tr);
 	end
         //seq_item_port.get_next_item(tr);
         //alu_signal_config_type1_store(tr);
@@ -376,6 +378,7 @@ endtask
 task lsu_driver::alu_signal_config_riscv(lsu_tr tr);
     int count;	
     while(1)begin
+	lsu_if.mxu_lsu_data_rdy = 1;
         @(negedge lsu_if.clk);
         if(lsu_if.lsu_alu_rdy) begin
             lsu_if.alu_lsu_vld = 1;
@@ -393,24 +396,99 @@ task lsu_driver::alu_signal_config_riscv(lsu_tr tr);
 endtask
  
 task lsu_driver::alu_signal_config_riscv_ld_alwaysrdy(lsu_tr tr);
-    int count;	
+    int count;
+    int count_wb;	
+    int count_row;	
+    int count_col;	
+    int sram_rand;
+    int load_rand;
     while(1)begin
-	if(count%2)begin
+	lsu_if.mxu_lsu_data_rdy = 1;
+	count = $urandom_range(2,0);
+	load_rand = $urandom_range(5, 0);
+	sram_rand = $urandom_range(2, 0);
+	count_wb = $urandom_range(31, 0);
+	count_row = $urandom_range(255, 0);
+	count_col = $urandom_range(16, 0);
+	if(count > 0)begin
             @(negedge lsu_if.clk);
             lsu_if.alu_lsu_vld = 1;
-            lsu_if.alu_lsu_ld_iram = 1;
-            //lsu_if.alu_lsu_lb_op = 1;
-            //lsu_if.alu_lsu_lh_op = 1;
-            lsu_if.alu_lsu_lw_op = 1;
-            //lsu_if.alu_lsu_lbu_op = 1;
-            //lsu_if.alu_lsu_lhu_op = 1;
-            //lsu_if.alu_lsu_lwu_op = 1;
-	    lsu_if.alu_lsu_ld_st_addr = 0;
-	    lsu_if.alu_lsu_wb_addr = count;
-	    lsu_if.alu_lsu_ld_st_addr[11:4] = count; // check row change
-	    lsu_if.alu_lsu_ld_st_addr[3:0] = count; // check col change
+	    
+	    if(sram_rand == 0) begin
+            	lsu_if.alu_lsu_ld_iram = 1;
+            	lsu_if.alu_lsu_ld_wram = 0;
+            	lsu_if.alu_lsu_ld_oram = 0;
+	    end
+	
+	    else if(sram_rand == 1) begin
+            	lsu_if.alu_lsu_ld_iram = 0;
+            	lsu_if.alu_lsu_ld_wram = 1;
+            	lsu_if.alu_lsu_ld_oram = 0;
+	    end
+
+	    else (sram_rand == 2) begin
+            	lsu_if.alu_lsu_ld_iram = 0;
+            	lsu_if.alu_lsu_ld_wram = 0;
+            	lsu_if.alu_lsu_ld_oram = 1;
+	    end
+	
+	    if(load_rand == 0) begin
+            	lsu_if.alu_lsu_lb_op = 1;
+            	lsu_if.alu_lsu_lh_op = 0;
+            	lsu_if.alu_lsu_lw_op = 0;
+            	lsu_if.alu_lsu_lbu_op = 0;
+            	lsu_if.alu_lsu_lhu_op = 0;
+            	lsu_if.alu_lsu_lwu_op = 0;
+	    end
+
+	    else if(load_rand == 1) begin
+            	lsu_if.alu_lsu_lb_op = 0;
+            	lsu_if.alu_lsu_lh_op = 1;
+            	lsu_if.alu_lsu_lw_op = 0;
+            	lsu_if.alu_lsu_lbu_op = 0;
+            	lsu_if.alu_lsu_lhu_op = 0;
+            	lsu_if.alu_lsu_lwu_op = 0;
+	    end
+
+	    else if(load_rand == 2) begin
+            	lsu_if.alu_lsu_lb_op = 0;
+            	lsu_if.alu_lsu_lh_op = 0;
+            	lsu_if.alu_lsu_lw_op = 1;
+            	lsu_if.alu_lsu_lbu_op = 0;
+            	lsu_if.alu_lsu_lhu_op = 0;
+            	lsu_if.alu_lsu_lwu_op = 0;
+	    end
+
+	    else if(load_rand == 3) begin
+            	lsu_if.alu_lsu_lb_op = 0;
+            	lsu_if.alu_lsu_lh_op = 0;
+            	lsu_if.alu_lsu_lw_op = 0;
+            	lsu_if.alu_lsu_lbu_op = 1;
+            	lsu_if.alu_lsu_lhu_op = 0;
+            	lsu_if.alu_lsu_lwu_op = 0;
+	    end
+	    else if(load_rand == 4) begin
+            	lsu_if.alu_lsu_lb_op = 0;
+            	lsu_if.alu_lsu_lh_op = 0;
+            	lsu_if.alu_lsu_lw_op = 0;
+            	lsu_if.alu_lsu_lbu_op = 0;
+            	lsu_if.alu_lsu_lhu_op = 1;
+            	lsu_if.alu_lsu_lwu_op = 0;
+	    end
+
+	    else begin
+            	lsu_if.alu_lsu_lb_op = 0;
+            	lsu_if.alu_lsu_lh_op = 0;
+            	lsu_if.alu_lsu_lw_op = 0;
+            	lsu_if.alu_lsu_lbu_op = 0;
+            	lsu_if.alu_lsu_lhu_op = 0;
+            	lsu_if.alu_lsu_lwu_op = 1;
+	    end
+
+	    lsu_if.alu_lsu_wb_addr = count_wb;
+	    lsu_if.alu_lsu_ld_st_addr[11:4] = count_row; // check row change
+	    lsu_if.alu_lsu_ld_st_addr[3:0] = count_col; // check col change
     	    lsu_if.alu_lsu_src2 = 32'h12345678;
-	    count = count+1;
             //break;
 	end
 	else begin	
@@ -429,7 +507,6 @@ task lsu_driver::alu_signal_config_riscv_ld_alwaysrdy(lsu_tr tr);
 	    //lsu_if.alu_lsu_ld_st_addr[11:4] = count; // check row change
 	    lsu_if.alu_lsu_ld_st_addr[3:0] = count; // check col change
     	    lsu_if.alu_lsu_src2 = 32'h12345678;
-	    count = count+1;
             //break;
 	end
     end	
@@ -437,16 +514,52 @@ endtask
 
 task lsu_driver::alu_signal_config_riscv_st_alwaysrdy(lsu_tr tr);
     int count;	
+    int count_row;
+    int store_rand;
+    int sram_rand;
     while(1)begin
+	lsu_if.mxu_lsu_data_rdy = 1;
             @(negedge lsu_if.clk);
+	    count_row = $urandom_range(15, 0);
+	    store_rand = $urandom_range(2, 0);
+	    sram_rand = $urandom_range(2, 0);
             lsu_if.alu_lsu_vld = 1;
-            lsu_if.alu_lsu_st_iram = 1;
-            //lsu_if.alu_lsu_sb_op = 1;
-            //lsu_if.alu_lsu_sh_op = 1;
-            lsu_if.alu_lsu_sw_op = 1;
-	    //lsu_if.alu_lsu_ld_st_addr = 0;
+	    if(sram_rand == 0)begin
+            	lsu_if.alu_lsu_st_iram = 1;
+            	lsu_if.alu_lsu_st_wram = 0;
+            	lsu_if.alu_lsu_st_oram = 0;
+	    end
+
+	    else if(sram_rand == 1)begin
+            	lsu_if.alu_lsu_st_iram = 0;
+            	lsu_if.alu_lsu_st_wram = 1;
+            	lsu_if.alu_lsu_st_oram = 0;
+	    end
+	    else begin
+            	lsu_if.alu_lsu_st_iram = 0;
+            	lsu_if.alu_lsu_st_wram = 0;
+            	lsu_if.alu_lsu_st_oram = 1;
+	    end
+
+	    if(store_rand == 0)begin
+            	lsu_if.alu_lsu_sb_op = 1;
+            	lsu_if.alu_lsu_sh_op = 0;
+            	lsu_if.alu_lsu_sw_op = 0;
+	    end
+
+	    else if(store_rand == 1)begin
+            	lsu_if.alu_lsu_sb_op = 0;
+            	lsu_if.alu_lsu_sh_op = 1;
+            	lsu_if.alu_lsu_sw_op = 0;
+	    end
+	    else begin
+            	lsu_if.alu_lsu_sb_op = 0;
+            	lsu_if.alu_lsu_sh_op = 0;
+            	lsu_if.alu_lsu_sw_op = 1;
+	    end
+
 	    lsu_if.alu_lsu_ld_st_addr[11:4] = count; // check row change
-	    //lsu_if.alu_lsu_ld_st_addr[3:0] = count; // check col change
+	    lsu_if.alu_lsu_ld_st_addr[3:0] = count_row; // check col change
     	    lsu_if.alu_lsu_src2 = 32'h12345678;
 	    count = count+1;
             //break;
@@ -527,10 +640,16 @@ task lsu_driver::alu_signal_config_type1_store(lsu_tr tr);
     bit send_matrix_needed = 0;
 */
     int count;
-    count = $urandom_range(2, 0);
+    int count_num;
+    //count = $urandom_range(2, 0);
+
+    count_num = $urandom_range(15, 0);
+    count = 0;
+    //count_num = 0;
+
+	lsu_if.mxu_lsu_data_rdy = 1;
         @(negedge lsu_if.clk);
         if(lsu_if.lsu_alu_rdy) begin 
-    	//while(1)begin
         //@(negedge lsu_if.clk);
         //if(lsu_if.lsu_alu_rdy) begin 
             //@(negedge lsu_if.clk);
@@ -565,7 +684,7 @@ task lsu_driver::alu_signal_config_type1_store(lsu_tr tr);
             lsu_if.alu_lsu_len = 1; //element size
             lsu_if.alu_lsu_start_x = 0;
             lsu_if.alu_lsu_start_y = 0;
-            lsu_if.alu_lsu_ld_st_addr = 0;
+            lsu_if.alu_lsu_ld_st_addr = count_num;
 	    if (|lsu_if.alu_lsu_num)begin
 	    	@(negedge lsu_if.clk);
             	lsu_if.alu_lsu_vld = 0;
@@ -575,9 +694,8 @@ task lsu_driver::alu_signal_config_type1_store(lsu_tr tr);
            /// @(negedge lsu_if.clk);
             //@(negedge lsu_if.clk);
 	    //lsu_if.mxu_lsu_data_rdy = 1;
-            //break;
-        //end
-    end
+	    count_num = count_num+1;
+        end
 
     `uvm_info("lsu_driver", "begin sending alu data config", UVM_NONE)
 endtask
@@ -791,4 +909,5 @@ endtask
         end
     end
     */
+
 
