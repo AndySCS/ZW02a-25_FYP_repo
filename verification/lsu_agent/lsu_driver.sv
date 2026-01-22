@@ -309,7 +309,7 @@ task lsu_driver::main_phase(uvm_phase phase);
       	  harness.u_lsu.wram.mem[i] = 128'h0 ;
    end
     
-    test_mode = 4;
+    test_mode = 0;
     // 0 : store type1
     // 1 : store type2
     // 2 : load
@@ -338,8 +338,8 @@ task lsu_driver::main_phase(uvm_phase phase);
     count = 3;
     while(1) begin
 	if (test_mode == 0)begin
-        	alu_signal_config_type1_store(tr);
-        	//alu_signal_config_type1_store_mxualwaysrdy(tr);
+        	//alu_signal_config_type1_store(tr);
+        	alu_signal_config_type1_store_mxualwaysrdy(tr);
         	//alu_signal_config_type1_store_mxuwaitrdy(tr);
 	end
 
@@ -405,7 +405,7 @@ task lsu_driver::alu_signal_config_riscv_ld_alwaysrdy(lsu_tr tr);
     while(1)begin
 	lsu_if.mxu_lsu_data_rdy = 1;
 	count = $urandom_range(2,0);
-	load_rand = $urandom_range(5, 0);
+	load_rand = $urandom_range(4, 0);
 	sram_rand = $urandom_range(2, 0);
 	count_wb = $urandom_range(31, 0);
 	count_row = $urandom_range(255, 0);
@@ -426,7 +426,7 @@ task lsu_driver::alu_signal_config_riscv_ld_alwaysrdy(lsu_tr tr);
             	lsu_if.alu_lsu_ld_oram = 0;
 	    end
 
-	    else (sram_rand == 2) begin
+	    else begin
             	lsu_if.alu_lsu_ld_iram = 0;
             	lsu_if.alu_lsu_ld_wram = 0;
             	lsu_if.alu_lsu_ld_oram = 1;
@@ -438,7 +438,6 @@ task lsu_driver::alu_signal_config_riscv_ld_alwaysrdy(lsu_tr tr);
             	lsu_if.alu_lsu_lw_op = 0;
             	lsu_if.alu_lsu_lbu_op = 0;
             	lsu_if.alu_lsu_lhu_op = 0;
-            	lsu_if.alu_lsu_lwu_op = 0;
 	    end
 
 	    else if(load_rand == 1) begin
@@ -447,7 +446,6 @@ task lsu_driver::alu_signal_config_riscv_ld_alwaysrdy(lsu_tr tr);
             	lsu_if.alu_lsu_lw_op = 0;
             	lsu_if.alu_lsu_lbu_op = 0;
             	lsu_if.alu_lsu_lhu_op = 0;
-            	lsu_if.alu_lsu_lwu_op = 0;
 	    end
 
 	    else if(load_rand == 2) begin
@@ -456,7 +454,6 @@ task lsu_driver::alu_signal_config_riscv_ld_alwaysrdy(lsu_tr tr);
             	lsu_if.alu_lsu_lw_op = 1;
             	lsu_if.alu_lsu_lbu_op = 0;
             	lsu_if.alu_lsu_lhu_op = 0;
-            	lsu_if.alu_lsu_lwu_op = 0;
 	    end
 
 	    else if(load_rand == 3) begin
@@ -465,15 +462,6 @@ task lsu_driver::alu_signal_config_riscv_ld_alwaysrdy(lsu_tr tr);
             	lsu_if.alu_lsu_lw_op = 0;
             	lsu_if.alu_lsu_lbu_op = 1;
             	lsu_if.alu_lsu_lhu_op = 0;
-            	lsu_if.alu_lsu_lwu_op = 0;
-	    end
-	    else if(load_rand == 4) begin
-            	lsu_if.alu_lsu_lb_op = 0;
-            	lsu_if.alu_lsu_lh_op = 0;
-            	lsu_if.alu_lsu_lw_op = 0;
-            	lsu_if.alu_lsu_lbu_op = 0;
-            	lsu_if.alu_lsu_lhu_op = 1;
-            	lsu_if.alu_lsu_lwu_op = 0;
 	    end
 
 	    else begin
@@ -481,8 +469,7 @@ task lsu_driver::alu_signal_config_riscv_ld_alwaysrdy(lsu_tr tr);
             	lsu_if.alu_lsu_lh_op = 0;
             	lsu_if.alu_lsu_lw_op = 0;
             	lsu_if.alu_lsu_lbu_op = 0;
-            	lsu_if.alu_lsu_lhu_op = 0;
-            	lsu_if.alu_lsu_lwu_op = 1;
+            	lsu_if.alu_lsu_lhu_op = 1;
 	    end
 
 	    lsu_if.alu_lsu_wb_addr = count_wb;
@@ -568,7 +555,9 @@ task lsu_driver::alu_signal_config_riscv_st_alwaysrdy(lsu_tr tr);
 endtask 
  
 task lsu_driver::alu_signal_config_type1_store_mxualwaysrdy(lsu_tr tr);
-
+	int sram_rand;
+	sram_rand = $urandom_range(2, 0);
+	lsu_if.mxu_lsu_data_rdy = 1;
         @(negedge lsu_if.clk);
         if(lsu_if.lsu_alu_rdy) begin 
     	//while(1)begin
@@ -577,20 +566,34 @@ task lsu_driver::alu_signal_config_type1_store_mxualwaysrdy(lsu_tr tr);
             //@(negedge lsu_if.clk);
             @(negedge lsu_if.clk);
             lsu_if.alu_lsu_vld = 1;
-            lsu_if.alu_lsu_st_iram = 1;
-            lsu_if.alu_lsu_st_wram = 0;
-            lsu_if.alu_lsu_st_oram = 0;
-            lsu_if.alu_lsu_st_dram = 0;	
+
+	    if(sram_rand == 0)begin
+           	lsu_if.alu_lsu_st_iram = 1;
+            	lsu_if.alu_lsu_st_wram = 0;
+            	lsu_if.alu_lsu_st_oram = 0;
+            	lsu_if.alu_lsu_st_dram = 0;	
+	    end
+
+	    else if(sram_rand == 1)begin
+           	lsu_if.alu_lsu_st_iram = 0;
+            	lsu_if.alu_lsu_st_wram = 1;
+            	lsu_if.alu_lsu_st_oram = 0;
+            	lsu_if.alu_lsu_st_dram = 0;	
+	    end
+
+	    else begin
+           	lsu_if.alu_lsu_st_iram = 0;
+            	lsu_if.alu_lsu_st_wram = 0;
+            	lsu_if.alu_lsu_st_oram = 1;
+            	lsu_if.alu_lsu_st_dram = 0;	
+	    end
 	        //lsu_if.mxu_lsu_data_rdy = 1; //always ready
 	        //case1
-            lsu_if.alu_lsu_num = 15; //number of chunk
+            lsu_if.alu_lsu_num = 0; //number of chunk
             lsu_if.alu_lsu_len = 0; //element size
 
-	    //if(count == 3)begin
-	    //	lsu_if.alu_lsu_len = 4;
-	    //end
             lsu_if.alu_lsu_start_x = 0;
-            lsu_if.alu_lsu_start_y = 3;
+            lsu_if.alu_lsu_start_y = 0;
             lsu_if.alu_lsu_ld_st_addr = 0;
             //when num more than 1
 	    if(lsu_if.alu_lsu_num != 0)begin

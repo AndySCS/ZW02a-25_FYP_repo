@@ -1137,8 +1137,8 @@ module lsu(
     //assign lsu_st_type1_din_int8_qual = lsu_st_type1_din_int8_raw >> lsu_st_type1_shift_start << lsu_st_type1_shift_end >> lsu_st_type1_shift_end << lsu_st_type1_shift_start;
     assign lsu_st_type1_din_int8_qual = lsu_st_type1_din_int8_raw >> lsu_st_type1_shift_start << lsu_st_type1_shift_end >> lsu_st_type1_shift_end << lsu_st_type1_shift_sram_addr;
     // if the st_type1_store is qual then we and ce pull high
-    assign lsu_st_type1_ce =  lsu_st_type1_store_qual&~lsu_st_type1_done_ff;
-    assign lsu_st_type1_we =  lsu_st_type1_store_qual&~lsu_st_type1_done_ff;
+    assign lsu_st_type1_ce =  lsu_st_type1_store_qual&~lsu_st_type1_done_ff | (lsu_st_type1_store_qual & ~(|alu_lsu_num));
+    assign lsu_st_type1_we =  lsu_st_type1_store_qual&~lsu_st_type1_done_ff | (lsu_st_type1_store_qual & ~(|alu_lsu_num));
     assign lsu_st_type1_wen_raw = {127{1'b1}};
     assign lsu_st_type1_wen = lsu_st_type1_wen_raw >> lsu_st_type1_shift_start << lsu_st_type1_shift_end >> lsu_st_type1_shift_end << lsu_st_type1_shift_start;
     
