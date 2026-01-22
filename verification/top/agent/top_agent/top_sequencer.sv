@@ -34,7 +34,7 @@ task top_sequencer::main_phase(uvm_phase phase);
         @(posedge top_if.clk)begin
 	    phase_cnt++;
 	end
-        if(phase_cnt >= 2000) phase.drop_objection(phase);
+        if(phase_cnt >= 50000) phase.drop_objection(phase);
     end
      
 endtask
