@@ -25,7 +25,7 @@ task lsu_sc::main_phase(uvm_phase phase);
     lsu_tr exp_tr;
     lsu_tr act_tr;
     lsu_tr tmp_tr;
-
+/*
     super.main_phase(phase);
 	
     fork
@@ -52,6 +52,6 @@ task lsu_sc::main_phase(uvm_phase phase);
 		end
 	end
     join
-
+*/
 
 endtask

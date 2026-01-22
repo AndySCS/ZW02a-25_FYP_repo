@@ -1028,7 +1028,8 @@ module lsu(
     wire lsu_st_type1_cnt_row_en;
     wire lsu_st_type1_done_ff;
     //assign lsu_st_type1_done = lsu_st_type1_cnt_row == (alu_lsu_start_y + alu_lsu_num) & lsu_st_type1_store_qual&~alu_lsu_vld;
-    assign lsu_st_type1_done = lsu_st_type1_cnt_row == alu_lsu_num & lsu_st_type1_store_qual&~alu_lsu_vld;
+    //assign lsu_st_type1_done = lsu_st_type1_cnt_row == alu_lsu_num & lsu_st_type1_store_qual&~alu_lsu_vld;
+    assign lsu_st_type1_done = lsu_st_type1_cnt_row == alu_lsu_num & lsu_st_type1_store_qual;
     //assign lsu_st_type1_done = lsu_st_type1_cnt_row == (alu_lsu_start_y + alu_lsu_num) & ~lsu_st_mm_vld & ~alu_lsu_vld;
     //assign lsu_st_type1_doing = (lsu_st_type1_qual);
     //if is start, then assign startY as first row

@@ -14,6 +14,7 @@ class lsu_rm extends uvm_component;
 
     extern function lsu_tr mm_inst(lsu_tr tr);
     extern function lsu_tr mm_cal(lsu_tr tr);
+    extern function lsu_tr store_check(lsu_tr tr);
 
 endclass //className extends superClass
 
@@ -36,6 +37,11 @@ task lsu_rm::main_phase(uvm_phase phase);
     end
 
 endtask
+
+function lsu_tr lsu_rm::store_check(lsu_tr tr);
+	
+endfunction
+
 
 function lsu_tr lsu_rm::mm_cal(lsu_tr tr);
 //    /*
@@ -64,6 +70,7 @@ function lsu_tr lsu_rm::mm_cal(lsu_tr tr);
         end
     end
 endfunction
+
 
 
 function lsu_tr lsu_rm::mm_inst(lsu_tr tr);

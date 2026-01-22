@@ -36,6 +36,7 @@ task lsu_driver::main_phase(uvm_phase phase);
     int count;
     lsu_tr tr;
     int mode;
+    int test_mode;
     //tr = new("tr");
     lsu_if.alu_lsu_vld = 0;
     lsu_if.alu_lsu_wb_vld = 0;
@@ -305,28 +306,58 @@ task lsu_driver::main_phase(uvm_phase phase);
      	  harness.u_lsu.oram_hi.mem[i] = 128'hf0e0d0c0b0a09080;
      	  harness.u_lsu.iram.mem[i] = 128'h0 ;
       	  harness.u_lsu.wram.mem[i] = 128'h0 ;
-   end	
-/*
-    lsu_if.mxu_lsu_int8_row0_data = 'hf0e0d0c0b0a09080;
-    lsu_if.mxu_lsu_int8_row1_data = 'hf0e0d0c0b0a09081;
-    lsu_if.mxu_lsu_int8_row2_data = 'hf0e0d0c0b0a09082;
-    lsu_if.mxu_lsu_int8_row3_data = 'hf0e0d0c0b0a09083;
-    lsu_if.mxu_lsu_int8_row4_data = 'hf0e0d0c0b0a09084;
-    lsu_if.mxu_lsu_int8_row5_data = 'hf0e0d0c0b0a09085;
-    lsu_if.mxu_lsu_int8_row6_data = 'hf0e0d0c0b0a09086;
-    lsu_if.mxu_lsu_int8_row7_data = 'hf0e0d0c0b0a09087;
-    lsu_if.mxu_lsu_int8_row8_data = 'hf0e0d0c0b0a09088;
-    lsu_if.mxu_lsu_int8_row9_data = 'hf0e0d0c0b0a09089;
-    lsu_if.mxu_lsu_int8_row10_data = 'hf0e0d0c0b0a0908a;
-    lsu_if.mxu_lsu_int8_row11_data = 'hf0e0d0c0b0a0908b;
-    lsu_if.mxu_lsu_int8_row12_data = 'hf0e0d0c0b0a0908c;
-    lsu_if.mxu_lsu_int8_row13_data = 'hf0e0d0c0b0a0908d;
-    lsu_if.mxu_lsu_int8_row14_data = 'hf0e0d0c0b0a0908e;
-    lsu_if.mxu_lsu_int8_row15_data = 'hf0e0d0c0b0a0908f;
-*/
+   end
+    
+    test_mode = 0;
+    // 0 : store type1
+    // 1 : store type2
+    // 2 : load
+    // 3 : mm
+    // 4 : riscv
+    if (test_mode == 0) begin
+    	lsu_if.mxu_lsu_int8_row0_data = 'hf0e0d0c0b0a09080;
+    	lsu_if.mxu_lsu_int8_row1_data = 'hf0e0d0c0b0a09081;
+    	lsu_if.mxu_lsu_int8_row2_data = 'hf0e0d0c0b0a09082;
+    	lsu_if.mxu_lsu_int8_row3_data = 'hf0e0d0c0b0a09083;
+    	lsu_if.mxu_lsu_int8_row4_data = 'hf0e0d0c0b0a09084;
+    	lsu_if.mxu_lsu_int8_row5_data = 'hf0e0d0c0b0a09085;
+    	lsu_if.mxu_lsu_int8_row6_data = 'hf0e0d0c0b0a09086;
+    	lsu_if.mxu_lsu_int8_row7_data = 'hf0e0d0c0b0a09087;
+    	lsu_if.mxu_lsu_int8_row8_data = 'hf0e0d0c0b0a09088;
+    	lsu_if.mxu_lsu_int8_row9_data = 'hf0e0d0c0b0a09089;
+    	lsu_if.mxu_lsu_int8_row10_data = 'hf0e0d0c0b0a0908a;
+    	lsu_if.mxu_lsu_int8_row11_data = 'hf0e0d0c0b0a0908b;
+    	lsu_if.mxu_lsu_int8_row12_data = 'hf0e0d0c0b0a0908c;
+    	lsu_if.mxu_lsu_int8_row13_data = 'hf0e0d0c0b0a0908d;
+    	lsu_if.mxu_lsu_int8_row14_data = 'hf0e0d0c0b0a0908e;
+    	lsu_if.mxu_lsu_int8_row15_data = 'hf0e0d0c0b0a0908f;
+    end
+
     @(posedge lsu_if.rst_n); // wait till rstn is high
-    count = 0;
+    count = 3;
     while(1) begin
+	if (test_mode == 0)begin
+        	alu_signal_config_type1_store(tr);
+        	//alu_signal_config_type1_store_mxualwaysrdy(tr);
+        	//alu_signal_config_type1_store_mxuwaitrdy(tr);
+	end
+
+	else if (test_mode == 1)begin
+        	alu_signal_config_type2_store(tr);
+	end
+
+	else if (test_mode == 2)begin
+        	alu_signal_config_load(tr);
+	end
+
+	else if (test_mode == 3)begin
+        	//alu_signal_config_mm(tr);
+        	alu_signal_config_lsu_mxu(tr);
+	end
+
+	else begin
+        	alu_signal_config_riscv(tr);
+	end
         //seq_item_port.get_next_item(tr);
         //alu_signal_config_type1_store(tr);
         //alu_signal_config_type1_store_mxualwaysrdy(tr);
@@ -334,10 +365,10 @@ task lsu_driver::main_phase(uvm_phase phase);
         //alu_signal_config_type2_store(tr);
         //alu_signal_config_load(tr);
         //alu_signal_config_riscv(tr);
-	    //alu_signal_config_riscv_st_alwaysrdy(tr);
-	    //alu_signal_config_riscv_ld_alwaysrdy(tr);
+	//alu_signal_config_riscv_st_alwaysrdy(tr);
+	//alu_signal_config_riscv_ld_alwaysrdy(tr);
         //alu_signal_config_mm(tr);
-        alu_signal_config_lsu_mxu(tr);
+        //alu_signal_config_lsu_mxu(tr);
         //seq_item_port.item_done();
     end
     	   
@@ -495,35 +526,54 @@ task lsu_driver::alu_signal_config_type1_store(lsu_tr tr);
     int cycle_cnt = 0;
     bit send_matrix_needed = 0;
 */
-    int count = 0;
+    int count;
+    count = $urandom_range(2, 0);
         @(negedge lsu_if.clk);
         if(lsu_if.lsu_alu_rdy) begin 
     	//while(1)begin
         //@(negedge lsu_if.clk);
         //if(lsu_if.lsu_alu_rdy) begin 
             //@(negedge lsu_if.clk);
-            @(negedge lsu_if.clk);
+            //@(negedge lsu_if.clk);
             lsu_if.alu_lsu_vld = 1;
-            lsu_if.alu_lsu_st_iram = 1;
-            lsu_if.alu_lsu_st_wram = 0;
-            lsu_if.alu_lsu_st_oram = 0;
-            lsu_if.alu_lsu_st_dram = 0;
+
+	    if (count == 0)begin
+            	lsu_if.alu_lsu_st_iram = 1;
+            	lsu_if.alu_lsu_st_wram = 0;
+            	lsu_if.alu_lsu_st_oram = 0;
+            	lsu_if.alu_lsu_st_dram = 0;
+	    end
+
+	    else if (count == 1)begin
+            	lsu_if.alu_lsu_st_iram = 0;
+            	lsu_if.alu_lsu_st_wram = 1;
+            	lsu_if.alu_lsu_st_oram = 0;
+            	lsu_if.alu_lsu_st_dram = 0;
+	    end
+	    else begin
+            	lsu_if.alu_lsu_st_iram = 0;
+            	lsu_if.alu_lsu_st_wram = 0;
+            	lsu_if.alu_lsu_st_oram = 1;
+            	lsu_if.alu_lsu_st_dram = 0;
+	    end
 	    //lsu_if.mxu_lsu_data_rdy = 0;
 	
 	        //lsu_if.mxu_lsu_data_rdy = 1;
 	        //case1
 	        //lsu_if.alu_lsu_low = 0; //8/16int 
-            lsu_if.alu_lsu_num = 0; //number of chunk
+            lsu_if.alu_lsu_num = 1; //number of chunk
             lsu_if.alu_lsu_len = 1; //element size
             lsu_if.alu_lsu_start_x = 0;
             lsu_if.alu_lsu_start_y = 0;
             lsu_if.alu_lsu_ld_st_addr = 0;
-	    @(negedge lsu_if.clk);
-            lsu_if.alu_lsu_vld = 0;
+	    if (|lsu_if.alu_lsu_num)begin
+	    	@(negedge lsu_if.clk);
+            	lsu_if.alu_lsu_vld = 0;
+	    end	
             //lsu_if.alu_lsu_st_iram = 0;
             //@(negedge lsu_if.clk); 
            /// @(negedge lsu_if.clk);
-            @(negedge lsu_if.clk);
+            //@(negedge lsu_if.clk);
 	    //lsu_if.mxu_lsu_data_rdy = 1;
             //break;
         //end

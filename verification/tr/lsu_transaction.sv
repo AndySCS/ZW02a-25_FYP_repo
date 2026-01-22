@@ -11,6 +11,8 @@ class lsu_tr extends uvm_sequence_item;
     int matrix_L[15:0][15:0];
     int matrix_R[15:0][15:0];
     int matrix_result[15:0][15:0];
+    bit [127:0] mxu_result_int8[15:0];
+    string mxu_result_string;
 
     function new(string name = "lsu_tr");
        super.new(name);
@@ -42,9 +44,11 @@ function void lsu_tr::init_matrix();
             this.matrix_R[i][j] = i;
             this.matrix_L[i][j] = i;
             this.matrix_result[i][j] = 0;
+	    this.mxu_result_int8[i] = i;
         end
     end
-
+    mxu_result_string = $sformatf("%0d", mxu_result_int8[4]);
+    `uvm_info("test",mxu_result_string, UVM_NONE);
 endfunction
 
 function bit lsu_tr::compare(lsu_tr tr);
