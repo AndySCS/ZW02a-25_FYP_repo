@@ -12,6 +12,9 @@ class top_sc extends uvm_scoreboard;
     extern virtual task main_phase(uvm_phase phase);
     extern virtual function void final_phase(uvm_phase phase);
 
+
+    extern virtual function int softmax(bit[9:0][7:0] softmax_input);
+
     `uvm_component_utils(top_sc)
 
 endclass //env extends superClass
@@ -26,6 +29,9 @@ task top_sc::main_phase(uvm_phase phase);
     model_output_transaction exp_tr;
     model_output_transaction act_tr;
     model_output_transaction tmp_tr;
+
+    int softmax_output;
+	int fd;
 
     super.main_phase(phase);
 	
@@ -43,6 +49,12 @@ task top_sc::main_phase(uvm_phase phase);
 			if(tmp_tr.model_output	 != act_tr.model_output) begin
 				`uvm_error(get_name(), $sformatf("exp and act model output is not the same, act output = %h, exp output = %h", act_tr.model_output, tmp_tr.model_output))
 			end
+
+            softmax_output = softmax(tmp_tr.model_output);
+	        fd = $fopen("model_output.txt", "w");
+	        $fdisplay(fd, $sformatf("%d", softmax_output));
+	        $fclose(fd);
+
 		end
 		else begin
 			`uvm_error("top_sc", "exp_result_q is empty")
@@ -56,4 +68,31 @@ function void top_sc::final_phase(uvm_phase phase);
     super.final_phase(phase);
     if(exp_result_q.size() > 0) `uvm_error("top_sc", $sformatf("exp_result_q is not empty when tc ends, exp_result_q size is %d", exp_result_q.size()))
     `uvm_info("top_sc", $sformatf("enter fianl phase, mxu_sc write cnt is %d", write_cnt), UVM_LOW);
+endfunction
+
+function int top_sc::softmax(bit[9:0][7:0] softmax_input);
+
+    real [9:0] data;
+    real sum = 0;
+    real cur_max = 0;
+    int max_idx;
+
+    for(int i = 0; i < 10; i++)begin
+        data[i] = $exp(real'(softmax_input[i]));
+        sum += data[i];
+    end
+
+    for(int i = 0; i < 10; i++)begin
+        data[i] = data[i]/sum;
+    end
+    
+    for(int i = 0; i < 10; i++)begin
+        if(data[i] > cur_max)begin
+            cur_max = data[i];
+            max_idx = i;
+        end
+    end
+
+    return max_idx;
+
 endfunction
