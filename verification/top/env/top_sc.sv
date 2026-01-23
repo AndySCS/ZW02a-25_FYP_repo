@@ -72,7 +72,7 @@ endfunction
 
 function int top_sc::softmax(bit[9:0][7:0] softmax_input);
 
-    real [9:0] data;
+    real data[9:0];
     real sum = 0;
     real cur_max = 0;
     int max_idx;

@@ -1,3 +1,3 @@
--f $MINITPU_VER/top/axi_rd_agent/axi_rd_agt.f
--f $MINITPU_VER/top/axi_wr_agent/axi_wr_agt.f
--f $MINITPU_VER/top/top_agent/top_agt.f
+-f $MINITPU_VER/top/agent/axi_rd_agent/axi_rd_agt.f
+-f $MINITPU_VER/top/agent/axi_wr_agent/axi_wr_agt.f
+-f $MINITPU_VER/top/agent/top_agent/top_agt.f

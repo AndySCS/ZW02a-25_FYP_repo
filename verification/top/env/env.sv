@@ -5,7 +5,7 @@ class env extends uvm_env;
     axi_rd_agent axi_rd_agt;
     top_rm rm;
     top_sc sc;
-    force_agt force_agt;
+    force_agent force_agt;
     uvm_tlm_analysis_fifo #(model_output_transaction) agt_rm_fifo;
     uvm_tlm_analysis_fifo #(model_output_transaction) agt_sc_fifo;
     uvm_tlm_analysis_fifo #(model_output_transaction) rm_sc_fifo;
@@ -29,7 +29,7 @@ function void env::build_phase(uvm_phase phase);
     axi_rd_agt = axi_rd_agent::type_id::create("axi_rd_agt", this);
     rm = top_rm::type_id::create("rm", this);
     sc = top_sc::type_id::create("sc", this);
-    force_agt = force_agt::type_id::create("force_agt", this);
+    force_agt = force_agent::type_id::create("force_agt", this);
     
     agt_rm_fifo = new("agt_rm_fifo",this);
     agt_sc_fifo = new("agt_sc_fifo",this);

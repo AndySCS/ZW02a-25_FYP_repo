@@ -22,8 +22,9 @@ endclass //top_tr extends superClass
 function void model_read_transaction::read_img();
     int 	 fd; 			// Variable for file descriptor handle
     int      arr_pos;
+    string   line;
 
-    fd = $fopen ("sample.csv", "r")
+    fd = $fopen ("sample.csv", "r");
 
     while (!$feof(fd)) begin
         
@@ -46,8 +47,9 @@ endfunction
 function void model_read_transaction::read_layer1();
     int 	 fd; 			// Variable for file descriptor handle
     int      arr_pos;
+    string   line;
 
-    fd = $fopen ("csv/mnist_kernel_785_128.csv", "r")
+    fd = $fopen ("csv/mnist_kernel_785_128.csv", "r");
 
     while (!$feof(fd)) begin
         
@@ -70,8 +72,9 @@ endfunction
 function void model_read_transaction::read_layer2();
     int 	 fd; 			// Variable for file descriptor handle
     int      arr_pos;
+    string   line;
 
-    fd = $fopen ("csv/mnist_kernel_129_10.csv", "r")
+    fd = $fopen ("csv/mnist_kernel_129_10.csv", "r");
 
     while (!$feof(fd)) begin
         

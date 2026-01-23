@@ -13,7 +13,7 @@ class top_monitor extends uvm_monitor;
     
 endclass //top_input_monitor extends superClass
 
-function void top_input_monitor::build_phase(uvm_phase phase);
+function void top_monitor::build_phase(uvm_phase phase);
     super.build_phase(phase);
     if(!uvm_config_db#(virtual top_intf)::get(this, "", "top_if", top_if))begin
         `uvm_fatal(get_name(), "top input_monitor fail to get top if")
@@ -21,7 +21,7 @@ function void top_input_monitor::build_phase(uvm_phase phase);
     ap = new("ap", this);
 endfunction
 
-task top_input_monitor::main_phase(uvm_phase phase);
+task top_monitor::main_phase(uvm_phase phase);
     
     model_output_transaction tr;
    // top_tr tr_send;
@@ -32,7 +32,7 @@ task top_input_monitor::main_phase(uvm_phase phase);
     while (1) begin 
 
         while(1)begin
-            @posedge(top_if.clk)
+            @(posedge top_if.clk)
             if(top_if.start_vld) begin
                 break;
             end

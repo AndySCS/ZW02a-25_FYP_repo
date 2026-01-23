@@ -42,8 +42,8 @@ endtask
 
 function bit[9:0][7:0] top_rm::cal_data();
 
-    int [55:0] first_layer_ouput;
-    int [9:0]  second_layer_output;
+    int first_layer_ouput[55:0];
+    int second_layer_output[9:0];
     bit [784:0] [7:0] first_layer_input;
     bit [56:0]  [7:0] second_layer_input;
     

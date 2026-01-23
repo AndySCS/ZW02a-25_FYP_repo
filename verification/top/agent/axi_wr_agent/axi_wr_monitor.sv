@@ -1,7 +1,7 @@
 class axi_wr_monitor extends uvm_monitor;
 
     virtual axi_wr_intf axi_wr_if;
-    uvm_analysis_port #(axi_wr_tr) ap;
+    uvm_analysis_port #(model_output_transaction) ap;
 
     `uvm_component_utils(axi_wr_monitor)
     function new(string name = "axi_wr_monitor", uvm_component parent = null);
@@ -30,7 +30,7 @@ task axi_wr_monitor::main_phase(uvm_phase phase);
     super.main_phase(phase);   
     
     while(1)begin
-        @posedge(axi_wr_if.clk);
+        @(posedge axi_wr_if.clk);
         if(axi_wr_if.AWVALID & axi_wr_if.AWREADY)begin
             tr = new();
             wdata_len = axi_wr_if.AWLEN + 1;

@@ -29,8 +29,8 @@ module harness;
     wire BVALID;
     wire BREADY;
     
-    wire [AWID_WIDTH-1:0] ARID;
-    wire [AWADDR_WIDTH-1:0] ARADDR;
+    wire [`AWID_WIDTH-1:0] ARID;
+    wire [`AWADDR_WIDTH-1:0] ARADDR;
     wire [7:0] ARLEN;
     wire [2:0] ARSIZE;
     wire [1:0] ARBURST;
@@ -38,8 +38,8 @@ module harness;
     wire ARVALID;
     wire ARREADY;
 
-    wire [AWID_WIDTH-1:0] RID;
-    wire [WDATA_WIDTH-1:0] RDATA;
+    wire [`AWID_WIDTH-1:0] RID;
+    wire [`WDATA_WIDTH-1:0] RDATA;
     wire [1:0] RRESP;
     wire RLAST;
     wire RVALID;
@@ -69,7 +69,7 @@ module harness;
         .RRESP(RRESP),
         .RLAST(RLAST),
         .RVALID(RVALID),
-        .RREADY(RREADY),
+        .RREADY(RREADY)
     );
 
     axi_wr_intf axi_wr_if(

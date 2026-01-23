@@ -1,4 +1,4 @@
-class axi_rd_driver extends uvm_driver #(axi_rd_tr); 
+class axi_rd_driver extends uvm_driver; 
 
     virtual axi_rd_intf axi_rd_if;
 
@@ -52,26 +52,26 @@ task axi_rd_driver::send_axi_read_recv();
     int repeated_q[$];
 
     while(1)begin
-        @posedge(axi_rd_if.clk);
-        repeated_q = axi_rd_req_q.find(axi_req.AxID == axi_read_if.ARID);
+        @(posedge axi_rd_if.clk);
+        repeated_q = axi_rd_req_q.find(axi_req.AxID == axi_rd_if.ARID);
         if(repeated_q.size() > 0)begin
-            `uvm_error(get_name(), $sformatf("repeated ARID is received, ARID = %d", axi_read_if.ARID));
+            `uvm_error(get_name(), $sformatf("repeated ARID is received, ARID = %d", axi_rd_if.ARID));
         end        
 
         if(axi_rd_if.ARVALID & axi_rd_if.ARREADY)begin
             axi_rd_tr = axi_transaction::type_id::create();
             axi_rd_tr.init_axi_tr(
-                .AxID(axi_read_if.ARID),
-                .AxADDR(axi_read_if.ARADDR),
-                .AxLEN(axi_read_if.ARLEN),
-                .AxSIZE(axi_read_if.ARSIZE),
-                .AxBURST(axi_read_if.ARBURST),
-                .AxREGION(axi_read_if.ARREGION)
+                .AxID	     (axi_rd_if.ARID),
+                .AxADDR	     (axi_rd_if.ARADDR),
+                .AxLEN	     (axi_rd_if.ARLEN),
+                .AxSIZE	     (axi_rd_if.ARSIZE),
+                .AxBURST     (axi_rd_if.ARBURST),
+                .AxREGION    (axi_rd_if.ARREGION)
             );
             axi_rd_req_q.push_back(axi_rd_tr);
         end        
         
-        axi_read_if.ARREADY = (axi_rd_req_q.size() < 16);
+        axi_rd_if.ARREADY = (axi_rd_req_q.size() < 16);
 
     end
 endtask
@@ -81,7 +81,7 @@ task axi_rd_driver::send_axi_read_send();
     bit is_sending;
 
     while(1)begin
-        @posedge(axi_rd_if.clk);
+        @(posedge axi_rd_if.clk);
         if(is_sending);
         else if(axi_rd_req_q.size() > 0)begin
             axi_rd_tr = axi_rd_req_q.pop_front();

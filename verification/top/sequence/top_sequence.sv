@@ -17,7 +17,7 @@ class top_seqeunce extends uvm_sequence #(top_tr);
 endclass
     
 task top_seqeunce::body();
-    else send_random();
+     send_random();
     `uvm_info("top_sequence", $sformatf("all tr is sent, send num is %d", send_num), UVM_LOW);
     #200;
 endtask

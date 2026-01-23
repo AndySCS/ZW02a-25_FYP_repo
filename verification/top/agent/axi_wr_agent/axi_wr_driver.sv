@@ -1,4 +1,4 @@
-class axi_wr_driver extends uvm_driver #(axi_wr_tr); 
+class axi_wr_driver extends uvm_driver; 
 
     virtual axi_wr_intf axi_wr_if;
     axi_transaction axi_awr_q[$];
@@ -43,11 +43,11 @@ task axi_wr_driver::main_phase(uvm_phase phase);
     join
 endtask
 
-task void axi_wr_driver::axi_awr_recv();
+task axi_wr_driver::axi_awr_recv();
     axi_transaction axi_tr;
 
     while (1) begin
-        @posedge(axi_wr_if.clk);
+        @(posedge axi_wr_if.clk);
         if(axi_wr_if.AWREADY & axi_wr_if.AWVALID)begin
             axi_tr = axi_transaction::type_id::create();
             axi_tr.init_axi_tr(
@@ -68,7 +68,7 @@ endtask
 task axi_wr_driver::axi_wr_recv();
 
     while (1) begin
-        @posedge(axi_wr_if.clk);
+        @(posedge axi_wr_if.clk);
         
         if(axi_awr_q.size() == 0) begin
             axi_wr_if.WREADY = 0;
@@ -99,7 +99,7 @@ endtask
 task axi_wr_driver::axi_wr_resp();
 
     while (1) begin
-        @posedge(axi_wr_if.clk);
+        @(posedge axi_wr_if.clk);
         
         if(axi_wr_resp_q.size() == 0) begin
             axi_wr_if.BVALID = 0;

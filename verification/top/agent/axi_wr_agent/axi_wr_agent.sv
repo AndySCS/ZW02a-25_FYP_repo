@@ -1,7 +1,7 @@
 class axi_wr_agent extends uvm_agent;
     
     axi_wr_driver axi_wr_drv;
-    axi_wr_output_monitor axi_wr_mon; //output monitor
+    axi_wr_monitor axi_wr_mon; //output monitor
     uvm_analysis_port #(model_output_transaction) ap;
 
     function new(string name = "axi_wr_agent", uvm_component parent);
@@ -18,7 +18,7 @@ endclass //className extends superClass
 function void axi_wr_agent::build_phase(uvm_phase phase);
     super.build_phase(phase);
     axi_wr_drv = axi_wr_driver::type_id::create("axi_wr_drv", this);
-    axi_wr_mon = axi_wr_output_monitor::type_id::create("axi_wr_omon", this);
+    axi_wr_mon = axi_wr_monitor::type_id::create("axi_wr_mon", this);
 endfunction
 
 function void axi_wr_agent::connect_phase(uvm_phase phase);
