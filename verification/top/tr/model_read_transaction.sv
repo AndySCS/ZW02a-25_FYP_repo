@@ -2,7 +2,7 @@ class model_read_transaction extends uvm_sequence_item;
 
     bit [783:0][7:0] img_array;
     bit [43959:0][7:0] first_layer_weight;
-    bit [569:0][7:0] second_layer_weigh;
+    bit [569:0][7:0] second_layer_weight;
 
     function new(string name = "model_read_transaction");
         super.new(name);
@@ -21,8 +21,9 @@ endclass //top_tr extends superClass
 
 function void model_read_transaction::read_img();
     int 	 fd; 			// Variable for file descriptor handle
-    int      arr_pos;
-    string   line;
+    int          arr_pos;
+    string       line;
+    int          value;
 
     fd = $fopen ("sample.csv", "r");
 
@@ -46,8 +47,9 @@ endfunction
 
 function void model_read_transaction::read_layer1();
     int 	 fd; 			// Variable for file descriptor handle
-    int      arr_pos;
-    string   line;
+    int          arr_pos;
+    string       line;
+    int          value;
 
     fd = $fopen ("csv/mnist_kernel_785_128.csv", "r");
 
@@ -71,8 +73,9 @@ endfunction
 
 function void model_read_transaction::read_layer2();
     int 	 fd; 			// Variable for file descriptor handle
-    int      arr_pos;
-    string   line;
+    int          arr_pos;
+    string       line;
+    int          value;
 
     fd = $fopen ("csv/mnist_kernel_129_10.csv", "r");
 
@@ -82,7 +85,7 @@ function void model_read_transaction::read_layer2();
         if(line.len <= 0) break;
 
         while ($sscanf(line, "%d,%s", value, line) >= 1) begin
-            first_layer_weight[arr_pos] = value;
+            second_layer_weight[arr_pos] = value;
             arr_pos++;
         end
 

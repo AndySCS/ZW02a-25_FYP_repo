@@ -1,4 +1,4 @@
-class top_driver extends uvm_driver #(top_tr);
+class top_driver extends uvm_driver #(model_output_transaction);
     /*
     this class is responsible for generating top stimulus to the dut
     */
@@ -38,6 +38,7 @@ task top_driver::reset_phase(uvm_phase phase);
 endtask
 
 task top_driver::main_phase(uvm_phase phase);
+    model_output_transaction tr;
     
     super.main_phase(phase);
     while(1) begin

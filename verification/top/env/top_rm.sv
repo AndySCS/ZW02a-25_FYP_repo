@@ -1,7 +1,7 @@
 class top_rm extends uvm_component;
 
-    uvm_blocking_get_port #(top_tr) port;
-    uvm_analysis_port #(top_tr) ap;
+    uvm_blocking_get_port #(model_output_transaction) port;
+    uvm_analysis_port #(model_output_transaction) ap;
 
     model_read_transaction model_rd_tr;
 

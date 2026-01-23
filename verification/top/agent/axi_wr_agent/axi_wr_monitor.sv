@@ -36,7 +36,7 @@ task axi_wr_monitor::main_phase(uvm_phase phase);
             wdata_len = axi_wr_if.AWLEN + 1;
         end
         if(axi_wr_if.WVALID & axi_wr_if.WREADY)begin
-            tr.model_ouput[alloc_ptr] = axi_wr_if.WDATA;
+            tr.model_output[alloc_ptr] = axi_wr_if.WDATA;
             output_num -= wdata_len;
             alloc_ptr += wdata_len;
             if(output_num == 0) ap.write(tr);

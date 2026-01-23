@@ -49,11 +49,11 @@ endtask
 
 task axi_rd_driver::send_axi_read_recv();
     axi_transaction axi_rd_tr;
-    int repeated_q[$];
+    axi_transaction repeated_q[$];
 
     while(1)begin
         @(posedge axi_rd_if.clk);
-        repeated_q = axi_rd_req_q.find(axi_req.AxID == axi_rd_if.ARID);
+        repeated_q = axi_rd_req_q.find(item) with (item.AxID == axi_rd_if.ARID);
         if(repeated_q.size() > 0)begin
             `uvm_error(get_name(), $sformatf("repeated ARID is received, ARID = %d", axi_rd_if.ARID));
         end        
@@ -103,13 +103,13 @@ function void axi_rd_driver::send_axi_read_send_tr(axi_transaction axi_tr);
     if(axi_rd_if.RREADY & axi_rd_if.RVALID)begin
         axi_rd_if.RVALID = 0;
         axi_tr.AxLEN--;
-        axi_tr.send_cnt = $uramdom_range(100);
+        axi_tr.send_timer = $urandom_range(100);
         if(axi_tr.AxBURST == `AXI_WR_BURST_INCR)begin
             axi_tr.AxADDR += (1 << axi_tr.AxSIZE);
         end
     end
     
-    if(axi_tr.AxLEN >= 0 && axi_tr.send_cnt == 0) begin
+    if(axi_tr.AxLEN >= 0 && axi_tr.send_timer == 0) begin
         assign_data2bus(axi_tr);
     end
 

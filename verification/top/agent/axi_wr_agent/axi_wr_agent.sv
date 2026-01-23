@@ -24,5 +24,4 @@ endfunction
 function void axi_wr_agent::connect_phase(uvm_phase phase);
     super.connect_phase(phase);
     ap = axi_wr_mon.ap;
-    axi_wr_drv.seq_item_port.connect(axi_wr_sqr.seq_item_export);
 endfunction

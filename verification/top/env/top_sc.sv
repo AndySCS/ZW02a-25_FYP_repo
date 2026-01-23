@@ -1,8 +1,8 @@
 class top_sc extends uvm_scoreboard;
 
     model_output_transaction exp_result_q[$];
-    uvm_blocking_get_port #(top_tr) exp_port;
-    uvm_blocking_get_port #(top_tr) act_port;
+    uvm_blocking_get_port #(model_output_transaction) exp_port;
+    uvm_blocking_get_port #(model_output_transaction) act_port;
 
     function new(string name = "top_sc", uvm_component parent);
         super.new(name, parent);
@@ -67,7 +67,6 @@ endtask
 function void top_sc::final_phase(uvm_phase phase);
     super.final_phase(phase);
     if(exp_result_q.size() > 0) `uvm_error("top_sc", $sformatf("exp_result_q is not empty when tc ends, exp_result_q size is %d", exp_result_q.size()))
-    `uvm_info("top_sc", $sformatf("enter fianl phase, mxu_sc write cnt is %d", write_cnt), UVM_LOW);
 endfunction
 
 function int top_sc::softmax(bit[9:0][7:0] softmax_input);
