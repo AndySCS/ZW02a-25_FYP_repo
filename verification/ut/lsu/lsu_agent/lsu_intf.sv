@@ -16,7 +16,7 @@ interface lsu_intf(
     .alu_lsu_src2                         (alu_lsu_src2),
     .alu_lsu_ld_iram                      (alu_lsu_ld_iram),
     .alu_lsu_ld_wram                      (alu_lsu_ld_wram),
-    .alu_lsu_ld_oram			  (alu_lsu_ld_oram),
+    .alu_lsu_ld_oram			          (alu_lsu_ld_oram),
     .alu_lsu_st_iram                      (alu_lsu_st_iram),
     .alu_lsu_st_wram                      (alu_lsu_st_wram),
     .alu_lsu_st_oram                      (alu_lsu_st_oram),
@@ -33,15 +33,16 @@ interface lsu_intf(
     .alu_lsu_start_y                      (alu_lsu_start_y),
     .alu_lsu_ld_st_addr                   (alu_lsu_ld_st_addr),
     .alu_lsu_st_low                       (alu_lsu_st_low),
-    
+    .alu_lsu_st_row                       (alu_lsu_st_row),
+    .alu_lsu_st_col                       (alu_lsu_st_col),
+
     .alu_lsu_iram_start_addr              (alu_lsu_iram_start_addr),
-    .alu_lsu_iram_row_len                 (alu_lsu_iram_row_len),
     .alu_lsu_wram_start_addr              (alu_lsu_wram_start_addr),
+    .alu_lsu_iram_row_len                 (alu_lsu_iram_row_len),
     .alu_lsu_wram_row_len                 (alu_lsu_wram_row_len),
-   
     .alu_lsu_col_len                      (alu_lsu_col_len),
     .alu_lsu_act_type                     (alu_lsu_act_type),
-    .alu_lsu_clr                          (alu_lsu_clr),
+    .alu_lsu_mxu_clr                      (alu_lsu_mxu_clr),
     //.alu_lsu_pool_size                    (alu_lsu_pool_size),
 
     .axi_lsu_awrdy                        (axi_lsu_awrdy),
@@ -171,8 +172,11 @@ interface lsu_intf(
     input [2:0]  alu_lsu_str;
     input [3:0]  alu_lsu_start_x;
     input [3:0]  alu_lsu_start_y;
-    input [11:0] alu_lsu_ld_st_addr;
+    input [12:0] alu_lsu_ld_st_addr;
     input        alu_lsu_st_low;
+    input [3:0]  alu_lsu_st_row;
+    input [3:0]  alu_lsu_st_col;
+
     //payload related for matrix mutiplication
     input [11:0] alu_lsu_iram_start_addr;
     input [3:0] alu_lsu_iram_row_len;
