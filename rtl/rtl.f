@@ -14,6 +14,7 @@ $MINITPU_RTL/lsu.v
 $MINITPU_RTL/rf.v
 $MINITPU_RTL/axi_read_intf.v
 $MINITPU_RTL/axi_write_intf.v
+$MINITPU_RTL/mm_ctrl_buffer.v
 
 $MINITPU_RTL/tpu.v
 
