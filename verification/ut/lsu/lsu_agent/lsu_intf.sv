@@ -185,7 +185,7 @@ interface lsu_intf(
 
     input [3:0] alu_lsu_col_len;
     input [1:0]  alu_lsu_act_type;
-    input alu_lsu_clr;
+    input alu_lsu_mxu_clr;
     //input [1:0]  alu_lsu_pool_size;
 
     input axi_lsu_awrdy;
