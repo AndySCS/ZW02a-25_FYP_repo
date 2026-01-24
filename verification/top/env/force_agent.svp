@@ -1,0 +1,48 @@
+class force_agent extends uvm_component;
+
+    static int ram_cnt;
+    static bit [255:0][127:0] ram_tmp;
+
+    function new(string name = "force_agent", uvm_component parent);
+        super.new(name, parent);
+    endfunction
+
+    extern virtual function void build_phase(uvm_phase phase);
+    extern virtual task main_phase(uvm_phase phase);
+    
+    extern virtual function void force_ram();
+
+    `uvm_component_utils(force_agent)
+
+endclass //force_agent extends superClass
+
+function void force_agent::build_phase(uvm_phase phase);
+    super.build_phase(phase);
+    force_ram();
+endfunction
+
+function void force_agent::force_ram();
+    int fd;
+    string line;
+
+    fd = $fopen ("code.txt", "r");
+
+    while (!$feof(fd)) begin
+        
+        $fgets(line, fd);
+        if (line.len <= 0) break;
+        $sscanf (line, "%b", ram_tmp[ram_cnt]);
+        ram_cnt++;
+    end
+
+    // Close this file handle
+    $fclose(fd);
+    //:for($i = 0; $i < 256;$i++){    
+    force harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[{$i}] = ram_tmp[{$i}];
+    //:}
+
+endfunction
+
+task force_agent::main_phase(uvm_phase phase);
+    super.main_phase(phase);
+endtask

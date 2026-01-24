@@ -14,7 +14,7 @@ interface axi_rd_intf(
     RRESP,
     RLAST,
     RVALID,
-    RREADY,
+    RREADY
 );
 
     input clk;

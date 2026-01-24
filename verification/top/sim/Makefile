@@ -20,6 +20,8 @@ ifneq ($wildcard($(tc_opt_dir)),"")
 	tc_opt := $(shell cat $(tc_opt_dir))
 endif
 
+img_seed = $(shell expr $(seed) % 1000)
+
 
 fsdb_file_name = $(tc)
 #TC Name
@@ -34,7 +36,7 @@ fsdb_file_name = $(tc)
 $(shell $(MINITPU_SCRIPT)/linux/file_extend -dir $(MINITPU_VER))
 $(shell $(MINITPU_SCRIPT)/linux/file_extend -dir $(MINITPU_RTL))
 $(shell $(MINITPU_FOLDER)/ffn_test/tpu_code/cmp_linux -srcDir $(MINITPU_FOLDER)/ffn_test/tpu_code/code.tasmp -binDir code.txt)
-$(shell cp $(MINITPU_FOLDER)/ffn_test/mnist_data/img$(seed).csv sample.csv)
+$(shell cp $(MINITPU_FOLDER)/ffn_test/mnist_data/csv/img$(img_seed).csv sample.csv)
 
 GEN_MODE = mkdir -p $(mode) $(mode)/log $(mode)/wave $(mode)/cov
 VCS = vcs -sverilog 	 		          \
@@ -57,7 +59,8 @@ VCS = vcs -sverilog 	 		          \
           -cm_log $(mode)/cov/cm.log      \
           -cm_name $(fsdb_file_name)      \
           +max_chk=$(max_chk)             \
-          +define+FLASH_DEPTH=$(flash_depth)       
+          +define+FLASH_DEPTH=$(flash_depth)\
+          +lint=TFIPC-L 
 
 #Make Mode
 ifeq ($(ccov), on)

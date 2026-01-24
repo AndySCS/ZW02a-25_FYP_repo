@@ -42,7 +42,7 @@ module tpu(
 );
 
     parameter AWID_WIDTH = 4;
-    parameter AWADDR_WIDTH = 10;
+    parameter AWADDR_WIDTH = 32;
     parameter WDATA_WIDTH = 64;
     parameter WSTRB_WIDTH = WDATA_WIDTH/8; // should be WDATA_WIDTH/8
 
@@ -692,6 +692,7 @@ module tpu(
      mxu u_mxu(
         .clk(clk),
         .rst_n(rst_n),
+        .start_vld(start_vld),
         .lsu_mxu_vld(lsu_mxu_vld),
         .lsu_mxu_clr(lsu_mxu_clr),
         .lsu_mxu_iram_vld(lsu_mxu_iram_vld),
@@ -752,7 +753,12 @@ module tpu(
         .rf_idu_src2_data                    (rf_idu_src2_data)
     );
 
-    AXI_READ_INFT u_AXI_READ_INFT(
+    AXI_READ_INFT#(
+        .ARID_WIDTH  (4), 
+        .ARADDR_WIDTH(32), 
+        .RDATA_WIDTH (64)
+    )
+    u_AXI_READ_INFT(
         .clk                                  (clk),
         .rst_n                                (rst_n),
         .ARID                                 (ARID),
@@ -786,7 +792,13 @@ module tpu(
         .axi_lsu_arrdy                        (axi_lsu_arrdy)
     );
 
-    AXI_WRITE_INFT u_AXI_WRITE_INTF(
+    AXI_WRITE_INFT#(
+        .AWID_WIDTH  (4), 
+        .AWADDR_WIDTH(32), 
+        .WDATA_WIDTH (64)
+    )
+    u_AXI_WRITE_INTF
+    (
         .clk                                  (clk),
         .rst_n                                (rst_n),
         .AWID                                 (AWID),
