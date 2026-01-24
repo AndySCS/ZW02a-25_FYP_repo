@@ -545,14 +545,8 @@ module tpu(
         .alu_lsu_col_len                   (alu_lsu_col_len),
         .alu_lsu_act_type                  (alu_lsu_act_type),
         .alu_lsu_pool_size                 (alu_lsu_pool_size),
-	.alu_lsu_mxu_clr		   (alu_lsu_mxu_clr)
+	    .alu_lsu_mxu_clr		           (alu_lsu_mxu_clr)
     );
-
-     assign alu_lsu_iram_col_dir = 0;
-     assign alu_lsu_iram_row_dir = 0;
-     assign alu_lsu_wram_col_dir = 0;
-     assign alu_lsu_wram_row_dir = 0;
-
 
     lsu u_lsu(
         .clk                                  (clk),
@@ -588,18 +582,17 @@ module tpu(
         .alu_lsu_start_y                      (alu_lsu_start_y),
         .alu_lsu_ld_st_addr                   (alu_lsu_ld_st_addr),
         .alu_lsu_st_low                       (alu_lsu_st_low),
+        .alu_lsu_st_row                       (alu_lsu_st_row),
+        .alu_lsu_st_col                       (alu_lsu_st-col),
         .alu_lsu_iram_start_addr              (alu_lsu_iram_start_addr),
-        .alu_lsu_iram_col_dir                 (alu_lsu_iram_col_dir),
-        .alu_lsu_iram_row_dir                 (alu_lsu_iram_row_dir),
-        .alu_lsu_iram_col_len                 (alu_lsu_col_len),
-        .alu_lsu_iram_row_len                 (alu_lsu_iram_row_len),
         .alu_lsu_wram_start_addr              (alu_lsu_wram_start_addr),
-        .alu_lsu_wram_col_dir                 (alu_lsu_wram_col_dir),
-        .alu_lsu_wram_row_dir                 (alu_lsu_wram_row_dir),
-        .alu_lsu_wram_col_len                 (alu_lsu_iram_row_len),
+        .alu_lsu_iram_row_len                 (alu_lsu_iram_row_len),
         .alu_lsu_wram_row_len                 (alu_lsu_wram_row_len),
+        .alu_lsu_col_len                      (alu_lsu_col_len),
         .alu_lsu_act_type                     (alu_lsu_act_type),
         .alu_lsu_pool_size                    (alu_lsu_pool_size),
+        .alu_lsu_mxu_clr                      (alu_lsu_mxu_clr),
+
         .axi_lsu_awrdy                        (axi_lsu_awrdy),
         .axi_lsu_wrdy                         (axi_lsu_wrdy),
         .axi_lsu_bid                          (axi_lsu_bid),

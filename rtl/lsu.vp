@@ -38,16 +38,18 @@ module lsu(
     alu_lsu_start_x,
     alu_lsu_start_y,
     alu_lsu_ld_st_addr,
-    alu_lsu_st_low,
-    
+    alu_lsu_st_low, 
+    alu_lsu_st_row,
+    alu_lsu_st_col,
+
     alu_lsu_iram_start_addr,
-    alu_lsu_iram_row_len,
     alu_lsu_wram_start_addr,
+    alu_lsu_iram_row_len,
     alu_lsu_wram_row_len,
     alu_lsu_col_len,
     alu_lsu_act_type,
-    alu_lsu_clr,
-    //alu_lsu_pool_size,
+    alu_lsu_pool_size,
+    alu_lsu_mxu_clr,
 
     //from axi write 
     axi_lsu_awrdy,
@@ -206,6 +208,8 @@ module lsu(
     input [3:0] alu_lsu_start_y;
     input [11:0] alu_lsu_ld_st_addr;
     input alu_lsu_st_low;
+    input alu_lsu_st_row;
+    input alu_lsu_st_col;
 
     //payload related for matrix mutiplication
     input [11:0] alu_lsu_iram_start_addr;
@@ -217,8 +221,8 @@ module lsu(
     //payload for other instructions
     input [3:0] alu_lsu_col_len;
     input [1:0] alu_lsu_act_type;
-    //input [1:0] alu_lsu_pool_size; 
-    input alu_lsu_clr;
+    input [1:0] alu_lsu_pool_size; 
+    input alu_lsu_mxu_clr;
 
     //from axi write
     input axi_lsu_awrdy;
@@ -1661,7 +1665,7 @@ module lsu(
     );
  
     assign lsu_mxu_vld = alu_lsu_vld;
-    assign lsu_mxu_clr = alu_lsu_clr;
+    assign lsu_mxu_clr = alu_lsu_mxu_clr;
     //once the data load out dircetly pass to mxu
     assign lsu_mxu_iram_vld = lsu_mm_buff_iram_mxu_vld;
     assign lsu_mxu_iram_pld = lsu_mm_buff_iram_mxu_data;
