@@ -36,8 +36,10 @@ module harness;
     wire [2:0]  alu_lsu_str;
     wire [3:0]  alu_lsu_start_x;
     wire [3:0]  alu_lsu_start_y;
-    wire [11:0] alu_lsu_ld_st_addr;
+    wire [12:0] alu_lsu_ld_st_addr;
     wire        alu_lsu_st_low;
+    wire [3:0]  alu_lsu_st_row;
+    wire [3:0]  alu_lsu_st_col;
 
     wire [11:0] alu_lsu_iram_start_addr;
     wire [3:0] alu_lsu_iram_row_len;
@@ -45,8 +47,8 @@ module harness;
     wire [3:0] alu_lsu_wram_row_len;
     wire [3:0] alu_lsu_col_len;
     wire [1:0]  alu_lsu_act_type;
-    wire alu_lsu_clr;
-    //wire [1:0]  alu_lsu_pool_size;
+    wire alu_lsu_mxu_clr;
+    wire [1:0]  alu_lsu_pool_size;
 
     wire axi_lsu_awrdy;
     wire axi_lsu_wrdy;
@@ -176,6 +178,8 @@ module harness;
         .alu_lsu_start_y                      (alu_lsu_start_y),
         .alu_lsu_ld_st_addr                   (alu_lsu_ld_st_addr),
         .alu_lsu_st_low                       (alu_lsu_st_low),
+        .alu_lsu_st_row                       (alu_lsu_st_row),
+        .alu_lsu_st_col                       (alu_lsu_st_col),
     
         .alu_lsu_iram_start_addr              (alu_lsu_iram_start_addr),
         .alu_lsu_iram_row_len                 (alu_lsu_iram_row_len),
@@ -183,8 +187,8 @@ module harness;
         .alu_lsu_wram_row_len                 (alu_lsu_wram_row_len),
         .alu_lsu_col_len                      (alu_lsu_col_len), 
         .alu_lsu_act_type                     (alu_lsu_act_type),
-        .alu_lsu_clr                          (alu_lsu_clr),
-        ///.alu_lsu_pool_size                 (alu_lsu_pool_size),
+        .alu_lsu_mxu_clr                      (alu_lsu_mxu_clr),
+        .alu_lsu_pool_size                 (alu_lsu_pool_size),
 
         .axi_lsu_awrdy                        (axi_lsu_awrdy),
         .axi_lsu_wrdy                         (axi_lsu_wrdy),
@@ -383,15 +387,17 @@ module harness;
         .alu_lsu_start_y                      (alu_lsu_start_y),
         .alu_lsu_ld_st_addr                   (alu_lsu_ld_st_addr),
         .alu_lsu_st_low                       (alu_lsu_st_low),
-    
-        .alu_lsu_iram_start_addr              (alu_lsu_iram_start_addr),
+        .alu_lsu_st_row                       (alu_lsu_st_row),
+        .alu_lsu_st_col                       (alu_lsu_st_col),
+        
+	.alu_lsu_iram_start_addr              (alu_lsu_iram_start_addr),
         .alu_lsu_iram_row_len                 (alu_lsu_iram_row_len),
         .alu_lsu_wram_start_addr              (alu_lsu_wram_start_addr),
         .alu_lsu_wram_row_len                 (alu_lsu_wram_row_len), 
         .alu_lsu_col_len                      (alu_lsu_col_len),
         .alu_lsu_act_type                     (alu_lsu_act_type),
-        .alu_lsu_clr                          (alu_lsu_clr),
-        //.alu_lsu_pool_size                    (alu_lsu_pool_size),
+        .alu_lsu_mxu_clr                      (alu_lsu_mxu_clr),
+        .alu_lsu_pool_size                    (alu_lsu_pool_size),
 
         .axi_lsu_awrdy                        (axi_lsu_awrdy),
         .axi_lsu_wrdy                         (axi_lsu_wrdy),
