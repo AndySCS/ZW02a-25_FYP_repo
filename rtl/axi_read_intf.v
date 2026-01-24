@@ -24,7 +24,6 @@ module AXI_READ_INFT(
     lsu_axi_arsize,
     lsu_axi_arburst,
     lsu_axi_arstr,
-    lsu_axi_arnum,
     lsu_axi_arvld,
     lsu_axi_rrdy,
     axi_lsu_rid,
@@ -65,7 +64,7 @@ module AXI_READ_INFT(
     input [2:0] lsu_axi_arsize;
     input [1:0] lsu_axi_arburst;
     input [2:0] lsu_axi_arstr;
-    input [7:0] lsu_axi_arnum;
+    //input [7:0] lsu_axi_arnum;
     input lsu_axi_arvld;
     input lsu_axi_rrdy;
     //axi_lsu intf
@@ -213,7 +212,6 @@ module AXI_READ_INFT(
     assign ARBURST_nxt = lsu_axi_arvld_qual? lsu_axi_arburst : ARBURST;
     assign ARREGION_nxt = 4'b0;//lsu_axi_ARvld_qual? lsu_axi_ARID : ARID; 
     assign arstr_nxt = lsu_axi_arvld_qual ? lsu_axi_arstr : arstr;
-    assign arnum_nxt = lsu_axi_arvld_qual ? lsu_axi_arnum : arnum;
     assign arcnt_nxt = lsu_axi_arvld_qual ? 4'b0 : arcnt + 4'b1;
     assign arcnt_en = |axi_alloc_en;
     assign axi_doing_ld = arcnt < arnum;
@@ -341,3 +339,4 @@ module AXI_READ_INFT(
     ); 
 
 endmodule
+

@@ -149,7 +149,7 @@
 			    .en(lsu_mm_buff_ram_alloc_vld & (lsu_mm_buff_addr_cnt_ff == i)),
         		.q(lsu_mm_buff_ent_data_raw_ff[i])
    		    );
-    		data_byte_shift data_shifter0(.in(lsu_mm_buff_ent_data_raw[i]), .offset(lsu_mm_buff_cycle_cnt-i+lsu_mm_buff_ctrl_start_addr[3:0]), .out(lsu_mm_buff_ent_data[i]));
+    		data_byte_shift data_shifter0(.in(lsu_mm_buff_ent_data_raw[i]), .offset(lsu_mm_buff_cycle_cnt-i[5:0]+lsu_mm_buff_ctrl_start_addr[3:0]), .out(lsu_mm_buff_ent_data[i]));
 		    //source the data horizontally
             assign lsu_mm_buff_mxu_vld_wram[i] = (lsu_mm_buff_ctrl_vld_ff & lsu_mm_buff_cycle_cnt >= i & i<=lsu_mm_buff_ctrl_col_len) ? (lsu_mm_buff_cycle_cnt<=(i+lsu_mm_buff_ctrl_row_len)) : 1'b0;
             assign lsu_mm_buff_mxu_vld_iram[i] = (lsu_mm_buff_ctrl_vld_ff & lsu_mm_buff_cycle_cnt >= i & i<=lsu_mm_buff_ctrl_row_len) ? (lsu_mm_buff_cycle_cnt<=(i+lsu_mm_buff_ctrl_col_len)) : 1'b0;
@@ -172,9 +172,3 @@
     
 
 endmodule
-
-
-
-
-
-
