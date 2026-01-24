@@ -16,7 +16,7 @@ class lsu_tr extends uvm_sequence_item;
 
     function new(string name = "lsu_tr");
        super.new(name);
-       this.init_matrix();
+       //this.init_matrix();
     endfunction //new()
 
     `uvm_object_utils(lsu_tr)

@@ -684,7 +684,6 @@ module tpu(
      mxu u_mxu(
         .clk(clk),
         .rst_n(rst_n),
-        .start_vld(start_vld),
         .lsu_mxu_vld(lsu_mxu_vld),
         .lsu_mxu_clr(lsu_mxu_clr),
         .lsu_mxu_iram_vld(lsu_mxu_iram_vld),
@@ -730,7 +729,6 @@ module tpu(
         .mxu_lsu_int16_row15_data(mxu_lsu_int16_row15_data),
         .mxu_lsu_data_rdy(mxu_lsu_data_rdy),
         .mxu_lsu_rdy(mxu_lsu_rdy),
-        .wfi(wfi)
     );
 
     rf u_rf(

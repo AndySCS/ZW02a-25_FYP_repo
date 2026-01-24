@@ -53,7 +53,7 @@ task env::main_phase(uvm_phase phase);
     phase.raise_objection(phase);
     
     while(1)begin
-        @(posedge lsu_agt.lsu_drv.lsu_if.clk)begin
+        @(posedge lsu_agt.lsu_drv.tpu_if.clk)begin
 	    phase_cnt++;
 	end
         if(phase_cnt >= 2000) phase.drop_objection(phase);
