@@ -33,7 +33,7 @@ endfunction
 
 function void env::connect_phase(uvm_phase phase);
     super.connect_phase(phase);
-    
+
     lsu_agt.iap.connect(agt_rm_fifo.analysis_export);
     rm.port.connect(agt_rm_fifo.blocking_get_export);
 
