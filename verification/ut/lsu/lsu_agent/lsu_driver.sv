@@ -34,8 +34,42 @@ task lsu_driver::main_phase(uvm_phase phase);
 
     // input init
     tpu_if.start_vld = 0;
-    tpu_if.start_addr = 0;
     tpu_if.wfi = 0;
+    tpu_if.start_addr = 0;
+    tpu_if.AWID = 0;
+    tpu_if.AWADDR = 0;
+    tpu_if.AWLEN = 0;
+    tpu_if.AWSIZE = 0;
+    tpu_if.AWBURST = 0;
+    tpu_if.AWREGION = 0;
+    tpu_if.AWVALID = 0;
+    tpu_if.AWREADY = 1;
+    tpu_if.ARID = 0;
+    tpu_if.ARADDR = 0;
+    tpu_if.ARLEN = 0;
+    tpu_if.ARSIZE = 0;
+    tpu_if.ARBURST = 0;
+    tpu_if.ARREGION = 0;
+    tpu_if.ARVALID = 0;
+    tpu_if.ARREADY = 1;
+    tpu_if.WDATA = 0;
+    tpu_if.WSTRB = 0;
+    tpu_if.WLAST = 0;
+    tpu_if.WVALID = 0;
+    tpu_if.WREADY = 1;
+    tpu_if.RID = 0;
+    tpu_if.RDATA = 0;
+    tpu_if.RRESP = 0;
+    tpu_if.RLAST = 0;
+    tpu_if.RVALID = 0;
+    tpu_if.RREADY = 1;
+    tpu_if.BID = 0;
+    tpu_if.BRESP = 0;
+    tpu_if.BVALID = 0;
+    tpu_if.BREADY = 1;
+    tpu_if.wfi = 0;
+
+    
     //tr = new("tr");
 
     for (int i=0;i<256;i++) begin
@@ -43,7 +77,14 @@ task lsu_driver::main_phase(uvm_phase phase);
      	  harness.u_tpu.u_lsu.oram_hi.mem[i] = 128'hf0e0d0c0b0a09080;
      	  harness.u_tpu.u_lsu.iram.mem[i] = 128'h0 ;
       	  harness.u_tpu.u_lsu.wram.mem[i] = 128'h0 ;
-	  harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[i] = 128'h1 ;
+	  harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[i] = 128'h00004037000030370000203700001037;
+	  harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[i][31:0] = 32'h00000037 + (32'h1<<(i+12));
+	  harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[i][63:32] = 32'h00000037 + (32'h2<<(i+12));
+	  harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[i][95:64] = 32'h00000037 + (32'h3<<(i+12));
+	  harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[i][127:96] = 32'h00000037 + (32'h4<<(i+12));
+	  if(i == 2)begin
+	  	harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[i][31:0] = 32'h1f;
+	  end
     end
     
     @(posedge tpu_if.rst_n); // wait till rstn is high
@@ -75,4 +116,5 @@ task lsu_driver::tpu_input(lsu_tr tr);
 	
 endtask
  
+
 

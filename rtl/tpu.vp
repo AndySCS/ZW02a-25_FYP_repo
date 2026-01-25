@@ -728,7 +728,7 @@ module tpu(
         .mxu_lsu_int8_row15_data(mxu_lsu_int8_row15_data),
         .mxu_lsu_int16_row15_data(mxu_lsu_int16_row15_data),
         .mxu_lsu_data_rdy(mxu_lsu_data_rdy),
-        .mxu_lsu_rdy(mxu_lsu_rdy),
+        .mxu_lsu_rdy(mxu_lsu_rdy)
     );
 
     rf u_rf(
