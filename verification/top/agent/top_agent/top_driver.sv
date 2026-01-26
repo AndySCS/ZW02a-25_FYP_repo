@@ -48,12 +48,13 @@ task top_driver::main_phase(uvm_phase phase);
         send_cnt++;
         while(1)begin
             @(posedge top_if.clk);
-                if(!top_if.wfi)begin
+            if(top_if.wfi)begin
                 top_if.start_vld <= 1;
                 top_if.start_addr <= 0;
                 @(posedge top_if.clk);
                 top_if.start_vld <= 0;
                 seq_item_port.item_done();
+		break;
             end
         end
     end
