@@ -3,7 +3,7 @@ class top_seqeunce extends uvm_sequence #(model_output_transaction);
     `uvm_object_utils(top_seqeunce)
 
     // Randomizable fields for stimulus control
-    top_tr tr;
+    model_output_transaction tr;
     int tr_num = 1;
     int send_num = 0;
 
