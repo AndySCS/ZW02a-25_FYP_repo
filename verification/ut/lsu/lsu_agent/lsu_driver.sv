@@ -69,21 +69,29 @@ task lsu_driver::main_phase(uvm_phase phase);
     tpu_if.BREADY = 1;
     tpu_if.wfi = 0;
 
+    // mm 2*2 matrix
+    //harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[i][31:0] = 32'b0001_00000_00000_0001_0001_0000011;
     
-    //tr = new("tr");
+    // wfi
+    //harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[i][31:0] = 32'h7f;
+    
+    // tr = new("tr");
 
     for (int i=0;i<256;i++) begin
      	  harness.u_tpu.u_lsu.oram.mem[i] = 128'hf0e0d0c0b0a09080;
      	  harness.u_tpu.u_lsu.oram_hi.mem[i] = 128'hf0e0d0c0b0a09080;
-     	  harness.u_tpu.u_lsu.iram.mem[i] = 128'h0 ;
-      	  harness.u_tpu.u_lsu.wram.mem[i] = 128'h0 ;
+     	  harness.u_tpu.u_lsu.iram.mem[i] = 128'h1234 ;
+      	  harness.u_tpu.u_lsu.wram.mem[i] = 128'h1234 ;
 	  harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[i] = 128'h00004037000030370000203700001037;
 	  harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[i][31:0] = 32'h00000037 + (32'h1<<(i+12));
 	  harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[i][63:32] = 32'h00000037 + (32'h2<<(i+12));
 	  harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[i][95:64] = 32'h00000037 + (32'h3<<(i+12));
 	  harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[i][127:96] = 32'h00000037 + (32'h4<<(i+12));
-	  if(i == 2)begin
-	  	harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[i][31:0] = 32'h1f;
+	  if(i == 20)begin
+	  	harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[i][31:0] = 32'h7f;
+	  end
+	  if(i == 1)begin
+	  	harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[i][31:0] = 32'b0001_00000_00000_0001_0001_0000110;
 	  end
     end
     
