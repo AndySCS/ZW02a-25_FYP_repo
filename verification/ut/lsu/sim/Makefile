@@ -10,10 +10,18 @@ fcov = off
 sim_ccov_opts = 
 sim_fcov_opts = 0
 dbname = cov
-riscdv_test = ""
-riscdv_folder = "bin"
 flash_depth = 2048 
-max_chk = 15000 
+max_chk = 15000
+tc_opt = 
+
+tc_opt_dir = ../tc/$(tc).opt
+
+ifneq ($wildcard($(tc_opt_dir)),"")
+	tc_opt := $(shell cat $(tc_opt_dir))
+endif
+
+img_seed = $(shell expr $(seed) % 1000)
+
 
 fsdb_file_name = $(tc)
 #TC Name
@@ -25,6 +33,11 @@ fsdb_file_name = $(tc)
 #endif
 
 #Command
+$(shell $(MINITPU_SCRIPT)/linux/file_extend -dir $(MINITPU_VER))
+$(shell $(MINITPU_SCRIPT)/linux/file_extend -dir $(MINITPU_RTL))
+$(shell $(MINITPU_FOLDER)/ffn_test/tpu_code/cmp_linux -srcDir $(MINITPU_FOLDER)/ffn_test/tpu_code/code.tasmp -binDir code.txt)
+$(shell cp $(MINITPU_FOLDER)/ffn_test/mnist_data/csv/img$(img_seed).csv sample.csv)
+
 GEN_MODE = mkdir -p $(mode) $(mode)/log $(mode)/wave $(mode)/cov
 VCS = vcs -sverilog 	 		          \
           -ntb_opts uvm-1.2               \
@@ -45,10 +58,9 @@ VCS = vcs -sverilog 	 		          \
           -cm_dir $(mode)/cov/simv.vdb    \
           -cm_log $(mode)/cov/cm.log      \
           -cm_name $(fsdb_file_name)      \
-          +riscdv_tc=$(riscdv_test)       \
-          +riscdv_folder=$(riscdv_folder) \
           +max_chk=$(max_chk)             \
-          +define+FLASH_DEPTH=$(flash_depth)       
+          +define+FLASH_DEPTH=$(flash_depth)\
+          +lint=TFIPC-L 
 
 #Make Mode
 ifeq ($(ccov), on)
@@ -68,7 +80,7 @@ cmp:
 	$(VCS) 
 
 sim: 
-	./$(mode)/simv +UVM_TESTNAME=$(tc)                  \
+	./$(mode)/simv +UVM_TESTNAME=tc_base                  \
                    +ntb_random_seed=$(seed)             \
 				   +UVM_VERBOSITY=$(printlv)            \
                    +fsdb+autoflush                      \
@@ -77,20 +89,17 @@ sim:
                    -cm_name $(fsdb_file_name)           \
                    -cg_coverage_control=$(sim_fcov_opts)\
                    $(sim_ccov_opts)                     \
-                   +riscdv_tc=$(riscdv_test)            \
-                   +riscdv_folder=$(riscdv_folder)      \
                    +max_chk=$(max_chk)                  \
-                   +define+FLASH_DEPTH=$(flash_depth)       
+                   +define+FLASH_DEPTH=$(flash_depth)   \
+                   $(tc_opt)
 
 regress: 
-	./$(mode)/simv +UVM_TESTNAME=$(tc)                  \
+	./$(mode)/simv +UVM_TESTNAME=tc_base                  \
                    +ntb_random_seed=$(seed)             \
 				   +UVM_VERBOSITY=UVM_NONE              \
                    -cm_name $(fsdb_file_name)           \
                    -cg_coverage_control=$(sim_fcov_opts)\
                    $(sim_ccov_opts)                     \
-                   +riscdv_tc=$(riscdv_test)            \
-                   +riscdv_folder=$(riscdv_folder)      \
                    +max_chk=$(max_chk)                  \
                    +define+FLASH_DEPTH=$(flash_depth)       
 
