@@ -30,9 +30,11 @@ task top_driver::reset_phase(uvm_phase phase);
 
     super.reset_phase(phase);
     phase.raise_objection(phase);
+    `uvm_info(get_name(), "reset phase begin", UVM_LOW);
     top_if.rst_n <= 0;
     top_if.start_vld <= 0;
     repeat ($urandom_range(100, 0)) @(posedge top_if.clk);
+    `uvm_info(get_name(), "reset phase ends", UVM_LOW);
     phase.drop_objection(phase);
         
 endtask

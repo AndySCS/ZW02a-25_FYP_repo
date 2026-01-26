@@ -14,8 +14,10 @@ class tc_base extends uvm_test;
 endclass
 
 function void tc_base::build_phase(uvm_phase phase);
+    `uvm_info(get_name(), "build phase begins", UVM_LOW);
     super.build_phase(phase);
     tc_env = env::type_id::create("tc_env", this);
+    `uvm_info(get_name(), "build phase ends", UVM_LOW);
 endfunction
 
 function void tc_base::report_phase(uvm_phase phase);
