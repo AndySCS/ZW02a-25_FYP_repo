@@ -31,9 +31,9 @@ function void model_read_transaction::read_img();
     while (!$feof(fd)) begin
         
         $fgets(line, fd);
-        if(line.len <= 0) break;
+        if(line.len() <= 0) break;
 
-        while ($sscanf(line, "%d,%s", value, line_rest) >= 1) begin
+        while ($sscanf(line, "%d,%s", value, line_rest) == 2 || $sscanf(line, "%d", value, line_rest) == 1) begin
             img_array[arr_pos] = value;
             arr_pos++;
             line = line_rest;
@@ -59,12 +59,13 @@ function void model_read_transaction::read_layer1();
     while (!$feof(fd)) begin
         
         $fgets(line, fd);
-        if(line.len <= 0) break;
+        if(line.len() <= 0) break;
 
-        while ($sscanf(line, "%d,%s", value, line_rest) >= 1) begin
+        while ($sscanf(line, "%d,%s", value, line_rest) == 2 || $sscanf(line, "%d", value) == 1) begin
             first_layer_weight[arr_pos] = value;
             arr_pos++;
             line = line_rest;
+            if($sscanf(line, "%d,%s", value, line_rest) == 1) break;
         end
 
     end
@@ -87,12 +88,13 @@ function void model_read_transaction::read_layer2();
     while (!$feof(fd)) begin
         
         $fgets(line, fd);
-        if(line.len <= 0) break;
+        if(line.len() <= 0) break;
 
-        while ($sscanf(line, "%d,%s", value, line_rest) >= 1) begin
+        while ($sscanf(line, "%d,%s", value, line_rest) == 2 || $sscanf(line, "%d", value, line_rest) == 1) begin
             second_layer_weight[arr_pos] = value;
             arr_pos++;;
             line = line_rest;
+            if($sscanf(line, "%d,%s", value, line_rest) == 1) break;
         end
 
     end
