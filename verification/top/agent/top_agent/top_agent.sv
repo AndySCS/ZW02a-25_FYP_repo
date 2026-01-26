@@ -24,7 +24,9 @@ function void top_agent::build_phase(uvm_phase phase);
 endfunction
 
 function void top_agent::connect_phase(uvm_phase phase);
+    `uvm_info(get_name(), "connect phase begins", UVM_LOW);
     super.connect_phase(phase);
     ap = top_mon.ap;
     top_drv.seq_item_port.connect(top_sqr.seq_item_export);
+    `uvm_info(get_name(), "connect phase ends", UVM_LOW);
 endfunction

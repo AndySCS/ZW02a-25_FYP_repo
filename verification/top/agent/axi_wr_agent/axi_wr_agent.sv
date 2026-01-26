@@ -22,6 +22,8 @@ function void axi_wr_agent::build_phase(uvm_phase phase);
 endfunction
 
 function void axi_wr_agent::connect_phase(uvm_phase phase);
+    `uvm_info(get_name(), "connect phase begins", UVM_LOW);
     super.connect_phase(phase);
     ap = axi_wr_mon.ap;
+    `uvm_info(get_name(), "connect phase begins", UVM_LOW);
 endfunction

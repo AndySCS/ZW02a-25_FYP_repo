@@ -7,6 +7,8 @@ class tc_base extends uvm_test;
     endfunction //new()
 
     extern function void build_phase(uvm_phase phase);
+    extern function void connect_phase(uvm_phase phase);
+    extern task reset_phase(uvm_phase phase);
     extern function void report_phase(uvm_phase phase);
 
     `uvm_component_utils(tc_base)
@@ -19,6 +21,18 @@ function void tc_base::build_phase(uvm_phase phase);
     tc_env = env::type_id::create("tc_env", this);
     `uvm_info(get_name(), "build phase ends", UVM_LOW);
 endfunction
+
+function void tc_base::connect_phase(uvm_phase phase);
+    `uvm_info(get_name(), "connect phase begins", UVM_LOW);
+    super.connect_phase(phase);
+    `uvm_info(get_name(), "connect phase ends", UVM_LOW);
+endfunction
+
+task tc_base::reset_phase(uvm_phase phase);
+    `uvm_info(get_name(), "reset phase begins", UVM_LOW);
+    super.reset_phase(phase);
+    `uvm_info(get_name(), "reset phase ends", UVM_LOW);
+endtask
 
 function void tc_base::report_phase(uvm_phase phase);
 
