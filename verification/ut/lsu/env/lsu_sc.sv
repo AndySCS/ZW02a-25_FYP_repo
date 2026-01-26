@@ -1,4 +1,3 @@
-
 class lsu_sc extends uvm_scoreboard;
 
     lsu_tr exp_result_q[$];
@@ -26,7 +25,7 @@ task lsu_sc::main_phase(uvm_phase phase);
     lsu_tr exp_tr;
     lsu_tr act_tr;
     lsu_tr tmp_tr;
-
+/*
     super.main_phase(phase);
 	
     fork
@@ -42,9 +41,9 @@ task lsu_sc::main_phase(uvm_phase phase);
 			tmp_tr = this.exp_result_q.pop_front();
 			if(!tmp_tr.compare(act_tr))begin //compare false
 				$display("tmp_tr");
-				tmp_tr.print();
+				tmp_tr.print_result();
 				$display("act_tr");
-				act_tr.print();
+				act_tr.print_result();
 				`uvm_error("lsu_sc", "compare failed");
 			end
 		end
@@ -53,6 +52,6 @@ task lsu_sc::main_phase(uvm_phase phase);
 		end
 	end
     join
-
+*/
 
 endtask

@@ -1,7 +1,7 @@
-$MINITPU_VER/inc/inc.sv
--f $MINITPU_VER/tr/tr.f
--f $MINITPU_VER/mxu_agent/mxu_agt.f
--f $MINITPU_VER/env/env.f
--f $MINITPU_VER/tc/tc.f
+$MINITPU_VER/ut/lsu/inc/inc.sv
+-f $MINITPU_VER/ut/lsu/tr/tr.f
+-f $MINITPU_VER/ut/lsu/lsu_agent/lsu_agt.f
+-f $MINITPU_VER/ut/lsu/env/env.f
+-f $MINITPU_VER/ut/lsu/tc/tc.f
 
-$MINITPU_VER/th/harness.sv
+$MINITPU_VER/ut/lsu/th/harness.sv

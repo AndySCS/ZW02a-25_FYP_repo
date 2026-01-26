@@ -379,7 +379,9 @@ module lsu(
     wire [7:0] lsu_oram_hi_addr_ff;
 
     wire lsu_vld_ff;
+    wire lsu_riscv_ld_st_finish;
     wire lsu_riscv_finish;
+    wire lsu_riscv_error_pass;
     //assign lsu_instr_vld = alu_lsu_vld & lsu_alu_rdy;
     //assign lsu_vld_nxt = lsu_instr_vld | lsu_vld & ~lsu_instr_finish;
 
@@ -392,8 +394,15 @@ module lsu(
         //.d(lsu_vld_nxt),
         //.q(lsu_vld)
     //);
-
-    assign lsu_instr_finish = lsu_st_finish | lsu_ld_finish | lsu_mm_finish | lsu_riscv_finish;
+    assign lsu_riscv_error_pass = ~(alu_lsu_wb_vld|
+                                    alu_lsu_ld_iram|
+                                    alu_lsu_ld_wram|
+                                    alu_lsu_ld_oram|
+                                    alu_lsu_st_iram|
+                                    alu_lsu_st_wram|
+                                    alu_lsu_st_oram|
+                                    alu_lsu_st_dram);
+    assign lsu_instr_finish = lsu_st_finish | lsu_ld_finish | lsu_mm_finish | lsu_riscv_ld_st_finish | lsu_riscv_finish | lsu_riscv_error_pass;
     assign lsu_vld = alu_lsu_vld | lsu_vld_ff;
     assign lsu_vld_nxt = alu_lsu_vld | (lsu_vld_ff & ~lsu_instr_finish);
     //assign lsu_vld_nxt = alu_lsu_vld | (lsu_vld_ff & ~lsu_instr_finish);
@@ -406,7 +415,7 @@ module lsu(
     );
 
     //assign lsu_alu_rdy = ~lsu_vld | (lsu_instr_finish & mxu_lsu_data_rdy);  
-    assign lsu_alu_rdy = (~lsu_vld & mxu_lsu_data_rdy) | (lsu_instr_finish & mxu_lsu_data_rdy);    
+    assign lsu_alu_rdy = (~lsu_vld & mxu_lsu_data_rdy) | ((lsu_instr_finish |lsu_riscv_finish) & mxu_lsu_data_rdy);    
     wire lsu_st_iram_ff;
     wire lsu_st_wram_ff;
     wire lsu_st_oram_ff;
@@ -1709,7 +1718,8 @@ module lsu(
     );
 
     // instruction finish define
-    assign lsu_riscv_finish = lsu_riscv_ce;
+    assign lsu_riscv_ld_st_finish = lsu_riscv_ce;
+    assign lsu_riscv_finish = lsu_riscv_wb_vld & ~(lsu_riscv_ld_vld | lsu_riscv_st_vld);
 
     wire lsu_st_type2_done;
     assign lsu_st_type2_done = lsu_st_type2_bresp_end;
@@ -1951,5 +1961,6 @@ module lsu(
     assign lsu_rf_wb_data = lsu_riscv_ld_vld_ff ? lsu_riscv_dout : lsu_wb_data_ff;
      
 endmodule   
+
 
 
