@@ -218,7 +218,7 @@
 `define LD_OP_CODE                  7'b0000000
 `define ST_OP_CODE                  7'b0000001
 `define STM_OP_CODE                 7'b0000010
-`define MM_OP_CODE                  7'b0000011
+`define MM_OP_CODE                  7'b0001100
 `define ACT_OP_CODE                 7'b0000100
 `define POOL_OP_CODE                7'b0000101
 `define WFI_OP_CODE                 7'b1111111
