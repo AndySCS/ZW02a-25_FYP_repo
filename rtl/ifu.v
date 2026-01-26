@@ -77,7 +77,7 @@ module ifu (
         .dout(ifu_idu_ins_raw)
     );
 
-    assign ifu_idu_ins = {20'b0, cur_ins_addr};
+    assign ifu_idu_pc = {20'b0, cur_ins_addr};
 
 
 endmodule

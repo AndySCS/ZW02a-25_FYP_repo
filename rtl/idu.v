@@ -345,7 +345,7 @@ module idu (
     assign sram_type_wram = (idu_alu_src1[`SRAM_TYPE_RNG] == 2'b10);
     assign sram_type_oram = (idu_alu_src1[`SRAM_TYPE_RNG] == 2'b01);
 
-    assign idu_ifu_wfi = core_wfi;
+    assign idu_ifu_wfi = core_wfi | core_wfi_nxt;
 
     assign idu_alu_ld_iram = inst_type_is_ld & sram_type_iram;
     assign idu_alu_ld_wram = inst_type_is_ld & sram_type_wram;
@@ -353,6 +353,7 @@ module idu (
     assign idu_alu_st_iram = inst_type_is_st & sram_type_iram;
     assign idu_alu_st_wram = inst_type_is_st & sram_type_wram;
     assign idu_alu_st_oram = inst_type_is_st & sram_type_oram;
+    assign idu_alu_st_dram = inst_type_is_stm;
 
     assign idu_alu_conv = inst_type_is_mm;
     assign idu_alu_act  = inst_type_is_act;
