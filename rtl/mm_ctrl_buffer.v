@@ -6,7 +6,8 @@
         lsu_mm_buff_ram_alloc_addr,
         lsu_mm_buff_ram_alloc_data,
 
-        //ctrl wirelsu_
+        //ctrl wirelsu
+        lsu_mm_buff_ctrl_start,
         lsu_mm_buff_ctrl_vld,
         lsu_mm_buff_ctrl_row_len,
         lsu_mm_buff_ctrl_col_len,
@@ -30,6 +31,7 @@
     input  [7:0]   lsu_mm_buff_ram_alloc_addr;
     input  [127:0] lsu_mm_buff_ram_alloc_data;
 
+    input lsu_mm_buff_ctrl_start;
     input          lsu_mm_buff_ctrl_vld;
     input  [3:0]   lsu_mm_buff_ctrl_row_len;
     input  [3:0]   lsu_mm_buff_ctrl_col_len;
@@ -58,7 +60,7 @@
     //assign lsu_mm_buff_ctrl_row = lsu_mm_buff_ctrl_col_len;
 
 
-    assign lsu_mm_buff_start_pulse = lsu_mm_buff_ctrl_vld & ~lsu_mm_buff_ctrl_vld_ff;
+    assign lsu_mm_buff_start_pulse = lsu_mm_buff_ctrl_start;
     assign lsu_mm_buff_ram_read_vld = lsu_mm_buff_ctrl_vld & (~lsu_mm_buff_addr_cnt_end | lsu_mm_buff_start_pulse);
 
     //if it reach the col_len (y-axis) => end of get data
