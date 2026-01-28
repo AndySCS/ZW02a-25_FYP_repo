@@ -1,6 +1,7 @@
 module mxu (
     clk,
     rst_n,
+    start_vld,
     lsu_mxu_vld,
     lsu_mxu_clr,
     lsu_mxu_iram_vld,
@@ -45,11 +46,13 @@ module mxu (
     mxu_lsu_int8_row15_data,
     mxu_lsu_int16_row15_data,
     mxu_lsu_data_rdy,
-    mxu_lsu_rdy
+    mxu_lsu_rdy,
+    wfi
 );
    
     input clk;
     input rst_n;
+    input start_vld;
     input lsu_mxu_vld;
     input lsu_mxu_clr;
     input [15:0] lsu_mxu_iram_vld;
@@ -95,7 +98,8 @@ module mxu (
     output [255:0] mxu_lsu_int16_row15_data;
     output mxu_lsu_data_rdy;
     output mxu_lsu_rdy;
-
+    output wfi;
+    
     wire lsu_mxu_vld_qual;
     wire mxu_vld;
     wire mxu_vld_nxt;
@@ -116,6 +120,8 @@ module mxu (
     wire [2:0] mxu_conv_awake_cnt_nxt;
     wire [2:0] mxu_conv_awake_cnt_minus;
 
+    wire wfi_en;
+    wire wfi_nxt;
     
     wire [15:0] sys_arr_row0_load_vld;
     wire [255:0] sys_arr_row0_load_data;
@@ -249,7 +255,17 @@ module mxu (
         .q(mxu_conv_awake_cnt)
     );
 
+    assign wfi_en = lsu_mxu_vld_qual | start_vld;
+    assign wfi_nxt = ~start_vld & lsu_mxu_wfi;
 
+    DFFSE #(.WIDTH(1))
+    ff_wfi(
+        .clk(clk),
+        .rst_n(rst_n),
+        .en(wfi_en),
+        .d(wfi_nxt),
+        .q(wfi)
+    );
 
     wire [15:0] sys_arr_row0_vld;
     wire [127:0] sys_arr_row0_data;

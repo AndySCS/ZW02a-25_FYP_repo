@@ -140,6 +140,9 @@ module AXI_WRITE_INFT(
     wire [3:0] awcnt;
     wire [3:0] awcnt_nxt;
     wire [3:0] awcnt_en;
+    wire aw_alloc_fsm;
+    wire aw_alloc_fsm_nxt;
+    wire aw_alloc_fsm_en;
     
     wire BVALID_qual;
     wire lsu_resp_recv;
@@ -260,7 +263,18 @@ module AXI_WRITE_INFT(
     assign awstr_nxt = lsu_axi_awvld_qual? lsu_axi_awstr : awstr;
     assign awcnt_nxt = lsu_axi_awvld_qual? 4'b0 : awcnt + 4'b1;
     assign awcnt_en = |axi_alloc_en;
-    assign axi_doing_st = awcnt < awnum;
+    assign axi_doing_st = (awcnt < awnum) & aw_alloc_fsm;
+    assign aw_alloc_fsm_nxt = lsu_axi_awvld_qual | aw_alloc_fsm & ~(awcnt == awnum);
+    assign aw_alloc_fsm_en = lsu_axi_awvld_qual | aw_alloc_fsm;
+    
+    DFFRE #(.WIDTH(1))
+    ff_aw_alloc_fsm (
+        .clk(clk),
+        .rst_n(rst_n),
+        .en(aw_alloc_fsm_en),
+        .d(aw_alloc_fsm_nxt),
+        .q(aw_alloc_fsm)
+    );
     
     DFFRE #(.WIDTH(AWID_WIDTH))
     ff_AWID (
@@ -309,6 +323,14 @@ module AXI_WRITE_INFT(
         .en(lsu_axi_awvld),
         .d(awnum_nxt),
         .q(awnum)
+    );
+    
+    DFFE #(.WIDTH(4))
+    ff_awcnt(
+        .clk(clk),
+        .en(awcnt_en),
+        .d(awcnt_nxt),
+        .q(awcnt)
     );
     
     DFFE #(.WIDTH(3))
