@@ -176,9 +176,10 @@ module AXI_READ_INFT(
         .d(axi_vld_nxt),
         .q(axi_vld)
     );
-    DFFE #(.WIDTH(16))
+    DFFRE #(.WIDTH(16))
     ff_axi_sent(
         .clk(clk),
+        .rst_n(rst_n),
         .en(axi_sent_en),
         .d(axi_sent_nxt),
         .q(axi_sent)
@@ -191,7 +192,7 @@ module AXI_READ_INFT(
         .q(axi_recv)
     );
 
-    assign axi_lsu_arrdy = |axi_vld;
+    assign axi_lsu_arrdy = ~(|axi_vld);
 
     assign ARVALID = |(axi_vld & ~axi_sent);
     assign ARID_nxt = ARID + 4'b1;
@@ -297,7 +298,7 @@ module AXI_READ_INFT(
     //3/ rresp
     //4/ rlast
     //5/ rvld
-    wire [1:0] axi_lsu_resp_nxt;
+    wire [1:0] axi_lsu_rresp_nxt;
     //qual if can send read data to LSU
     assign RVALID_qual = RVALID & RREADY;
     assign lsu_resp_recv = lsu_axi_rrdy & axi_lsu_rvld;
@@ -309,7 +310,8 @@ module AXI_READ_INFT(
 
     //FIXME change the RID back to the read addr 
     assign axi_lsu_rid_nxt = RVALID_qual ? RID : axi_lsu_rid;
-    assign RREADY = ~axi_lsu_rvld;
+    //assign RREADY = ~axi_lsu_rvld;
+    assign RREADY = 1'b1;
 
     wire[15:0] axi_recv_ptr_raw; 
 
@@ -340,7 +342,7 @@ module AXI_READ_INFT(
         .clk(clk),
         .rst_n(rst_n),
         .en(RVALID),
-        .d(axi_lsu_resp_nxt),
+        .d(axi_lsu_rresp_nxt),
         .q(axi_lsu_rresp)
     );
     //rlast

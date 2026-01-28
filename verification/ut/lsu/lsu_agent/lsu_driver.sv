@@ -36,47 +36,28 @@ task lsu_driver::main_phase(uvm_phase phase);
     tpu_if.start_vld = 0;
     tpu_if.wfi = 0;
     tpu_if.start_addr = 0;
-    tpu_if.AWID = 0;
-    tpu_if.AWADDR = 0;
-    tpu_if.AWLEN = 0;
-    tpu_if.AWSIZE = 0;
-    tpu_if.AWBURST = 0;
-    tpu_if.AWREGION = 0;
-    tpu_if.AWVALID = 0;
     tpu_if.AWREADY = 1;
-    tpu_if.ARID = 0;
-    tpu_if.ARADDR = 0;
-    tpu_if.ARLEN = 0;
-    tpu_if.ARSIZE = 0;
-    tpu_if.ARBURST = 0;
-    tpu_if.ARREGION = 0;
-    tpu_if.ARVALID = 0;
     tpu_if.ARREADY = 1;
-    tpu_if.WDATA = 0;
-    tpu_if.WSTRB = 0;
-    tpu_if.WLAST = 0;
-    tpu_if.WVALID = 0;
-    tpu_if.WREADY = 1;
+    tpu_if.wfi = 0;
+
+    //assign for the axi read data
     tpu_if.RID = 0;
     tpu_if.RDATA = 0;
     tpu_if.RRESP = 0;
-    tpu_if.RLAST = 0;
     tpu_if.RVALID = 0;
-    tpu_if.RREADY = 1;
-    tpu_if.BID = 0;
-    tpu_if.BRESP = 0;
-    tpu_if.BVALID = 0;
-    tpu_if.BREADY = 1;
-    tpu_if.wfi = 0;
+    tpu_if.RLAST = 0;
 
     // mm 2*2 matrix
     //harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[i][31:0] = 32'b0001_00000_00000_0001_0001_0000011;
     
     // wfi
     //harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[i][31:0] = 32'h7f;
+
+    // ldt load 2 chunk 
+    //harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[i][31:0] = 32'b0_000000_00000_00000_01_000_0000000;
     
     // tr = new("tr");
-
+	
     for (int i=0;i<256;i++) begin
      	  harness.u_tpu.u_lsu.oram.mem[i] = 128'hf0e0d0c0b0a09080;
      	  //harness.u_tpu.u_lsu.oram_hi.mem[i] = 128'hf0e0d0c0b0a09080;
@@ -90,8 +71,9 @@ task lsu_driver::main_phase(uvm_phase phase);
 	  if(i == 20)begin
 	  	harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[i][31:0] = 32'h7f;
 	  end
-	  if(i == 0)begin
-	  	harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[i][31:0] = 32'b0001_00000_00000_0001_0001_0001100;
+	  if(i == 0)begin	
+    		harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[i][31:0] = 32'b0_000000_00000_00000_01_000_0000000;
+	  	//harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[i][31:0] = 32'b0001_00000_00000_0001_0001_0001100;
 	  	//harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[i][63:32] = 32'b0001_00000_00000_0001_0001_0001100;
 	  end
 	  if(i == 5)begin
@@ -109,7 +91,8 @@ task lsu_driver::main_phase(uvm_phase phase);
 endtask
 
 task lsu_driver::tpu_input(lsu_tr tr);
-    int count;	
+    int count;
+    int count_vld;	
     while(1)begin
         @(posedge tpu_if.clk);
         if(count == 0) begin
@@ -124,6 +107,33 @@ task lsu_driver::tpu_input(lsu_tr tr);
 	if (count == 500)begin
 		break;
 	end
+	if (tpu_if.ARVALID & count_vld == 0)begin
+        	@(posedge tpu_if.clk);
+       	 	@(posedge tpu_if.clk);
+        	@(posedge tpu_if.clk);
+        	@(posedge tpu_if.clk);
+        	@(posedge tpu_if.clk);
+        	@(posedge tpu_if.clk);
+       	 	@(posedge tpu_if.clk);
+        	@(posedge tpu_if.clk);
+        	@(posedge tpu_if.clk);
+        	@(negedge tpu_if.clk);
+		tpu_if.RID = 0;
+		tpu_if.RDATA = 1;
+		tpu_if.RRESP = 0;
+		tpu_if.RVALID = 1;
+        	@(negedge tpu_if.clk);
+		tpu_if.RID = 1;
+		tpu_if.RDATA = 2;
+		tpu_if.RRESP = 0;
+		tpu_if.RVALID = 1;
+		tpu_if.RLAST = 1;
+        	@(negedge tpu_if.clk);
+		tpu_if.RVALID = 0;
+		tpu_if.RLAST = 0;
+		count_vld = count_vld+1;
+		
+	end																																																																																		
     end
 	
 endtask

@@ -373,7 +373,7 @@ module idu (
     assign idu_alu_wram_start_addr  = idu_alu_src2[`WRAM_ADDR_RNG]; 
     assign idu_alu_iram_row_len     = idu_ins[`IRAM_RLEN_RNG]; 
     assign idu_alu_wram_row_len     = idu_ins[`WRAM_RLEN_RNG];
-    assign idu_alu_col_len 	    = idu_ins[10:7];
+    assign idu_alu_col_len 	        = idu_ins[10:7];
     assign idu_alu_st_row           = idu_ins[`RLEN_RNG];
     assign idu_alu_st_col           = idu_ins[`CLEN_RNG]; 
     

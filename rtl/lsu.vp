@@ -429,7 +429,7 @@ module lsu(
         .q(lsu_instr_finish_ff)
     );
 
-    assign lsu_instr_finish = lsu_riscv_finish | lsu_mm_finish;
+    assign lsu_instr_finish = lsu_riscv_finish | lsu_mm_finish | lsu_ld_finish;
 
 
     wire lsu_st_iram_ff;
@@ -512,55 +512,62 @@ module lsu(
     assign lsu_ld_wram_pulse = alu_lsu_ld_wram & alu_lsu_vld;
     assign lsu_ld_oram_pulse = alu_lsu_ld_wram & alu_lsu_vld;
 
-    DFFR #(.WIDTH(1))
+    DFFRE #(.WIDTH(1))
     ff_lsu_st_iram(
         .clk(clk),
         .rst_n(rst_n),
+	.en(lsu_vld_qual),
         .d(lsu_st_iram_pulse),
         .q(lsu_st_iram_ff)
     );
 
-    DFFR #(.WIDTH(1))
+    DFFRE #(.WIDTH(1))
     ff_lsu_st_wram(
         .clk(clk),
         .rst_n(rst_n),
+	.en(lsu_vld_qual),
         .d(lsu_st_wram_pulse),
         .q(lsu_st_wram_ff)
     );
-    DFFR #(.WIDTH(1))
+    DFFRE #(.WIDTH(1))
     ff_lsu_st_oram(
         .clk(clk),
         .rst_n(rst_n),
+	.en(lsu_vld_qual),
         .d(lsu_st_oram_pulse),
         .q(lsu_st_oram_ff)
     );
-    DFFR #(.WIDTH(1))
+    DFFRE #(.WIDTH(1))
     ff_lsu_st_dram(
         .clk(clk),
         .rst_n(rst_n),
+	.en(lsu_vld_qual),
         .d(lsu_st_dram_pulse),
         .q(lsu_st_dram_ff)
     );
-    DFFR #(.WIDTH(1))
+    DFFRE #(.WIDTH(1))
     ff_lsu_ld_iram(
         .clk(clk),
         .rst_n(rst_n),
+	.en(lsu_vld_qual),
         .d(lsu_ld_iram_pulse),
         .q(lsu_ld_iram_ff)
     );
 
-    DFFR #(.WIDTH(1))
+    DFFRE #(.WIDTH(1))
     ff_lsu_ld_wram(
         .clk(clk),
         .rst_n(rst_n),
+	.en(lsu_vld_qual),
         .d(lsu_ld_wram_pulse),
         .q(lsu_ld_wram_ff)
     );
 
-    DFFR #(.WIDTH(1))
+    DFFRE #(.WIDTH(1))
     ff_lsu_ld_oram(
         .clk(clk),
         .rst_n(rst_n),
+	.en(lsu_vld_qual),
         .d(lsu_ld_oram_pulse),
         .q(lsu_ld_oram_ff)
     );
@@ -1283,7 +1290,7 @@ module lsu(
     wire lsu_ld_en;
     wire lsu_ld_vld_ff;
 
-    assign lsu_ld_vld = lsu_vld & (lsu_ld_iram_ff | lsu_ld_wram_ff);
+    assign lsu_ld_vld = lsu_vld_qual & (lsu_ld_iram_pulse | lsu_ld_wram_pulse);
     assign lsu_ld_en = lsu_ld_vld | lsu_ld_finish;
     DFFRE #(.WIDTH(1))
     ff_lsu_ld_vld(
@@ -1454,8 +1461,9 @@ module lsu(
     assign lsu_ld_sram_chunk_last = 1'b1;
     assign lsu_ld_sram_chunk_cnt_nxt = (lsu_ld_vld|lsu_ld_sram_chunk_last) ? 1'b0 : (lsu_ld_rd_qual | lsu_ld_rd_qual_ff) ? lsu_ld_sram_chunk_cnt + 1 : lsu_ld_sram_chunk_cnt;
     
-    assign lsu_ld_sram_addr_cnt = lsu_ld_rd_qual ? (lsu_rlast_ff ? lsu_ld_sram_addr_cnt_ff+1'b1 : lsu_ld_sram_addr_cnt_ff) : lsu_ld_sram_addr_cnt_ff;
-    
+    //assign lsu_ld_sram_addr_cnt = lsu_ld_rd_qual ? (lsu_rlast_ff ? lsu_ld_sram_addr_cnt_ff+1'b1 : lsu_ld_sram_addr_cnt_ff) : lsu_ld_sram_addr_cnt_ff;
+    assign lsu_ld_sram_addr_cnt = lsu_ld_rd_qual ? ((~lsu_ld_rd_qual_ff) ? lsu_ld_sram_addr_cnt : lsu_ld_sram_addr_cnt_ff+1'b1) : lsu_ld_sram_addr_cnt_ff;
+
     assign lsu_ld_rd_done = lsu_ld_sram_addr_cnt_end;
     
     //assign lsu_ld_rd_doing = (lsu_ld_rd_qual | lsu_ld_rd_qual_ff) & ~lsu_ld_rd_done;
@@ -1482,15 +1490,17 @@ module lsu(
     ff_lsu_rlast(
         .clk(clk),
         .rst_n(rst_n),
-        .d(axi_lsu_rlast),
+        .d(axi_lsu_rlast & lsu_ld_rd_qual),
         .q(lsu_rlast_ff)
     );
 
     //assign lsu_ld_sram_din = lsu_ld_rd_qual ? {64{lsu_ld_rd_qual}} & axi_lsu_rdata : {64{lsu_ld_rd_qual_ff}} & axi_lsu_rdata;
     //assign lsu_ld_sram_ce = lsu_ld_rd_doing;
     //assign lsu_ld_sram_we = lsu_ld_rd_doing;
-    assign lsu_ld_sram_we = lsu_ld_rd_qual & axi_lsu_rlast;
-    assign lsu_ld_sram_ce = lsu_ld_rd_qual & axi_lsu_rlast;
+    //assign lsu_ld_sram_we = lsu_ld_rd_qual & axi_lsu_rlast;
+    //assign lsu_ld_sram_ce = lsu_ld_rd_qual & axi_lsu_rlast;
+    assign lsu_ld_sram_we = lsu_ld_rd_qual;
+    assign lsu_ld_sram_ce = lsu_ld_rd_qual;
 
     //filter back iram / wram
     wire lsu_ld_iram_ce;
@@ -1898,7 +1908,7 @@ module lsu(
     assign lsu_st_finish = lsu_st_type1_done & (lsu_st_type1_qual | lsu_st_type1_qual_ff) | lsu_st_type2_done;
     
     //FOR load instr
-    assign lsu_ld_finish = 1'b0;
+    assign lsu_ld_finish = lsu_rlast_ff;
     
     //FOR mm instr
     assign lsu_mm_finish_nxt = lsu_mm_buff_wram_mxu_end & lsu_mm_buff_iram_mxu_end & ~(lsu_vld_qual & alu_lsu_conv);
