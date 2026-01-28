@@ -306,7 +306,7 @@ module alu(
 
     assign alu_lsu_vld_nxt = alu_vld | alu_lsu_vld & ~lsu_alu_rdy;
     assign alu_vld = idu_alu_vld & alu_idu_rdy & ~alu_ifu_br_vld;
-    assign alu_lsu_wb_vld_nxt = alu_vld & idu_alu_wb_vld;
+    assign alu_lsu_wb_vld_nxt = alu_vld & idu_alu_wb_vld | alu_lsu_wb_vld & ~lsu_alu_rdy;
     assign alu_idu_rdy = lsu_alu_rdy;
     assign alu_idu_flush_vld = alu_ifu_br_vld;
 

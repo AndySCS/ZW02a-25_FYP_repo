@@ -23,6 +23,7 @@ function void model_read_transaction::read_img();
     int 	 fd; 			// Variable for file descriptor handle
     int          arr_pos;
     string       line;
+    string       line_rest;
     int          value;
 
     fd = $fopen ("sample.csv", "r");
@@ -30,16 +31,17 @@ function void model_read_transaction::read_img();
     while (!$feof(fd)) begin
         
         $fgets(line, fd);
-        if(line.len <= 0) break;
+        if(line.len() <= 0) break;
 
-        while ($sscanf(line, "%d,%s", value, line) >= 1) begin
+        while ($sscanf(line, "%d,%s", value, line_rest) == 2 || $sscanf(line, "%d", value, line_rest) == 1) begin
             img_array[arr_pos] = value;
             arr_pos++;
+            line = line_rest;
         end
 
         // Close this file handle
-        $fclose(fd);
     end
+    $fclose(fd);
 
     if(arr_pos != 784) `uvm_error(get_name(), $sformatf("img read is not correct, actual read cnt = %d", arr_pos));
 
@@ -49,25 +51,30 @@ function void model_read_transaction::read_layer1();
     int 	 fd; 			// Variable for file descriptor handle
     int          arr_pos;
     string       line;
+    string       line_rest;
     int          value;
+    int 	 line_num;
 
     fd = $fopen ("csv/mnist_kernel_785_128.csv", "r");
 
     while (!$feof(fd)) begin
         
         $fgets(line, fd);
-        if(line.len <= 0) break;
+        if(line.len() <= 0) break;
+	line_num++;
 
-        while ($sscanf(line, "%d,%s", value, line) >= 1) begin
+        while ($sscanf(line, "%d,%s", value, line_rest) == 2 || $sscanf(line, "%d", value) == 1) begin
             first_layer_weight[arr_pos] = value;
             arr_pos++;
+            if($sscanf(line, "%d,%s", value, line_rest) == 1) break;
+            line = line_rest;
         end
 
-        // Close this file handle
-        $fclose(fd);
     end
+    // Close this file handle
+    $fclose(fd);
 
-    if(arr_pos != 43960) `uvm_error(get_name(), $sformatf("layer 1 read weight cnt is not correct, actual weight cnt = %d", arr_pos));
+    if(arr_pos != 43960) `uvm_error(get_name(), $sformatf("layer 1 read weight cnt is not correct, actual weight cnt = %d, line num = %d", arr_pos, line_num));
 
 endfunction
 
@@ -75,6 +82,7 @@ function void model_read_transaction::read_layer2();
     int 	 fd; 			// Variable for file descriptor handle
     int          arr_pos;
     string       line;
+    string       line_rest;
     int          value;
 
     fd = $fopen ("csv/mnist_kernel_129_10.csv", "r");
@@ -82,17 +90,19 @@ function void model_read_transaction::read_layer2();
     while (!$feof(fd)) begin
         
         $fgets(line, fd);
-        if(line.len <= 0) break;
+        if(line.len() <= 0) break;
 
-        while ($sscanf(line, "%d,%s", value, line) >= 1) begin
+        while ($sscanf(line, "%d,%s", value, line_rest) == 2 || $sscanf(line, "%d", value, line_rest) == 1) begin
             second_layer_weight[arr_pos] = value;
-            arr_pos++;
+            arr_pos++;;
+            if($sscanf(line, "%d,%s", value, line_rest) == 1) break;
+            line = line_rest;
         end
 
-        // Close this file handle
-        $fclose(fd);
     end
+    // Close this file handle
+    $fclose(fd);
 
-    if(arr_pos != 560) `uvm_error(get_name(), $sformatf("layer 2 read weight cnt is not correct, actual weight cnt = %d", arr_pos));
+    if(arr_pos != 570) `uvm_error(get_name(), $sformatf("layer 2 read weight cnt is not correct, actual weight cnt = %d", arr_pos));
 
 endfunction

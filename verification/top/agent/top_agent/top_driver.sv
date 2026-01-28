@@ -30,9 +30,12 @@ task top_driver::reset_phase(uvm_phase phase);
 
     super.reset_phase(phase);
     phase.raise_objection(phase);
+    `uvm_info(get_name(), "reset phase begin", UVM_LOW);
     top_if.rst_n <= 0;
     top_if.start_vld <= 0;
-    repeat ($urandom_range(100, 0)) @(posedge top_if.clk);
+    repeat ($urandom_range(100, 1)) @(posedge top_if.clk);
+    top_if.rst_n <= 1;
+    `uvm_info(get_name(), "reset phase ends", UVM_LOW);
     phase.drop_objection(phase);
         
 endtask
@@ -46,12 +49,13 @@ task top_driver::main_phase(uvm_phase phase);
         send_cnt++;
         while(1)begin
             @(posedge top_if.clk);
-                if(!top_if.wfi)begin
+            if(top_if.wfi)begin
                 top_if.start_vld <= 1;
                 top_if.start_addr <= 0;
                 @(posedge top_if.clk);
                 top_if.start_vld <= 0;
                 seq_item_port.item_done();
+		break;
             end
         end
     end

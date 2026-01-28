@@ -23,6 +23,7 @@ class env extends uvm_env;
 endclass //env extends superClass
 
 function void env::build_phase(uvm_phase phase);
+    `uvm_info(get_name(), "build phase begins", UVM_LOW);
     super.build_phase(phase);
     top_agt = top_agent::type_id::create("top_agt", this);
     axi_wr_agt = axi_wr_agent::type_id::create("axi_wr_agt", this);
@@ -34,10 +35,12 @@ function void env::build_phase(uvm_phase phase);
     agt_rm_fifo = new("agt_rm_fifo",this);
     agt_sc_fifo = new("agt_sc_fifo",this);
     rm_sc_fifo = new("rm_sc_fifo",this);
+    `uvm_info(get_name(), "build phase ends", UVM_LOW);
 
 endfunction
 
 function void env::connect_phase(uvm_phase phase);
+    `uvm_info(get_name(), "connect phase begins", UVM_LOW);
     super.connect_phase(phase);
 
     top_agt.ap.connect(agt_rm_fifo.analysis_export);
@@ -48,6 +51,7 @@ function void env::connect_phase(uvm_phase phase);
     
     rm.ap.connect(rm_sc_fifo.analysis_export);
     sc.exp_port.connect(rm_sc_fifo.blocking_get_export);
+    `uvm_info(get_name(), "connect phase ends", UVM_LOW);
 
 endfunction
 

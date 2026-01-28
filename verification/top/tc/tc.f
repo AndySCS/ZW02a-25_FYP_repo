@@ -1,1 +1,1 @@
-$MINITPU_VER/ut/mxu/tc/tc_base.sv
+$MINITPU_VER/top/tc/tc_base.sv
