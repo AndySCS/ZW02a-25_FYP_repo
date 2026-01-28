@@ -301,7 +301,7 @@ module idu (
     wire core_wfi_en;
 
     assign idu_vld = idu_ifu_rdy & ifu_idu_vld & ~alu_idu_flush_vld;
-    assign idu_alu_vld_nxt = idu_vld | idu_vld & ~alu_idu_rdy;
+    assign idu_alu_vld_nxt = idu_vld | idu_alu_vld & ~alu_idu_rdy;
     assign idu_ins_nxt = idu_vld ? ifu_idu_ins : idu_ins;
 
     DFFR #(.WIDTH(1))
