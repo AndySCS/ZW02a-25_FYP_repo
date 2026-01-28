@@ -92,7 +92,7 @@ task lsu_driver::main_phase(uvm_phase phase);
 	  end
 	  if(i == 0)begin
 	  	harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[i][31:0] = 32'b0001_00000_00000_0001_0001_0001100;
-	  	harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[i][63:32] = 32'b0001_00000_00000_0001_0001_0001100;
+	  	//harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[i][63:32] = 32'b0001_00000_00000_0001_0001_0001100;
 	  end
 	  if(i == 5)begin
 	  	harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[i][31:0] = 32'b0001_00000_00000_0001_0001_0001100;
