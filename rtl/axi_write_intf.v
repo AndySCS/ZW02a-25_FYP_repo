@@ -570,9 +570,15 @@ module AXI_WRITE_INFT(
         .en(BVALID),
         .d(axi_lsu_resp_bid_nxt),
         .q(axi_lsu_resp_bid)
-    );
-    
+    ); 
 
+    DFFE #(.WIDTH(2))
+    ff_axi_lsu_bresp(
+        .clk(clk),
+        .en(BVALID),
+        .d(axi_lsu_bresp_nxt),
+        .q(axi_lsu_bresp)
+    );
 
     ///
 
