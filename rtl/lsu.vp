@@ -387,7 +387,7 @@ module lsu(
     wire lsu_vld_qual_en;
 
     assign lsu_vld_qual = alu_lsu_vld & lsu_alu_rdy;
-    assign lsu_vld_qual_en = lsu_vld_qual;
+    assign lsu_vld_qual_en = lsu_vld_qual | ~alu_lsu_vld;
     DFFRE #(.WIDTH(1))
     ff_lsu_vld(
         .clk(clk),
@@ -2143,6 +2143,7 @@ module lsu(
     assign lsu_rf_wb_data = lsu_riscv_ld_vld_ff ? lsu_riscv_dout : lsu_wb_data_ff;
      
 endmodule   
+
 
 
 
