@@ -304,7 +304,8 @@ module alu(
 
     wire [31:0] st_addr_sum;
 
-    assign alu_lsu_vld_nxt = alu_vld | alu_lsu_vld & ~lsu_alu_rdy;
+    assign alu_lsu_vld_nxt = alu_vld & ~ (idu_alu_beq_op | idu_alu_bne_op | idu_alu_blt_op | idu_alu_bge_op | idu_alu_bltu_op | idu_alu_bgeu_op)
+	                   | alu_lsu_vld & ~lsu_alu_rdy;
     assign alu_vld = idu_alu_vld & alu_idu_rdy & ~alu_ifu_br_vld;
     assign alu_lsu_wb_vld_nxt = alu_vld & idu_alu_wb_vld | alu_lsu_wb_vld & ~lsu_alu_rdy;
     assign alu_idu_rdy = lsu_alu_rdy;

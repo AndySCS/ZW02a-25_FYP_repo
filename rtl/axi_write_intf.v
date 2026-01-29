@@ -152,7 +152,7 @@ module AXI_WRITE_INFT(
     wire axi_doing_st_nxt;
     wire [3:0] awcnt;
     wire [3:0] awcnt_nxt;
-    wire [3:0] awcnt_en;
+    wire awcnt_en;
     wire aw_alloc_fsm;
     wire aw_alloc_fsm_nxt;
     wire aw_alloc_fsm_en;
