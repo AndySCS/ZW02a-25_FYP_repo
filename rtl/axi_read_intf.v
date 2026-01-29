@@ -184,9 +184,10 @@ module AXI_READ_INFT(
         .d(axi_sent_nxt),
         .q(axi_sent)
     );
-    DFFE #(.WIDTH(16))
+    DFFRE #(.WIDTH(16))
     ff_axi_recv(
         .clk(clk),
+        .rst_n(rst_n),
         .en(axi_recv_en),
         .d(axi_recv_nxt),
         .q(axi_recv)
@@ -298,7 +299,6 @@ module AXI_READ_INFT(
     //3/ rresp
     //4/ rlast
     //5/ rvld
-    wire [1:0] axi_lsu_rresp_nxt;
     //qual if can send read data to LSU
     assign RVALID_qual = RVALID & RREADY;
     assign lsu_resp_recv = lsu_axi_rrdy & axi_lsu_rvld;
@@ -315,8 +315,8 @@ module AXI_READ_INFT(
 
     wire[15:0] axi_recv_ptr_raw; 
 
-    dec4to16 resp_RID_dec(.in(axi_lsu_rid), .out(axi_recv_ptr_raw));
-    assign axi_recv_ptr = (axi_lsu_rid == 'b0) ? 1'b0 : axi_recv_ptr_raw;
+    dec4to16 resp_RID_dec(.in(RID+1), .out(axi_recv_ptr_raw));
+    assign axi_recv_ptr = axi_lsu_rvld ? axi_recv_ptr_raw : 'b0;
 
     //FIXME rid
     DFFRE #(.WIDTH(8))
