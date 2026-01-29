@@ -36,6 +36,10 @@ task axi_rd_driver::reset_phase(uvm_phase phase);
     super.reset_phase(phase); 
     axi_rd_if.RVALID    <= 0;
     axi_rd_if.ARREADY   <= 1;
+    axi_rd_if.RID       <= 'hx; 
+    axi_rd_if.RDATA     <= 'hx; 
+    axi_rd_if.RRESP     <= 'hx; 
+    axi_rd_if.RLAST     <= 'hx; 
 endtask
 
 task axi_rd_driver::main_phase(uvm_phase phase); 
@@ -117,11 +121,11 @@ endfunction
 
 function void axi_rd_driver::assign_data2bus(axi_transaction axi_tr);
     
-    axi_rd_if.RVALID = 1;
-    axi_rd_if.RID    = axi_tr.AxID;
-    axi_rd_if.RDATA  = get_data(axi_tr);
-    axi_rd_if.RRESP  = 0;
-    axi_rd_if.RLAST  = (axi_tr.AxLEN == 1);
+    axi_rd_if.RVALID <= 1;
+    axi_rd_if.RID    <= axi_tr.AxID;
+    axi_rd_if.RDATA  <= get_data(axi_tr);
+    axi_rd_if.RRESP  <= 0;
+    axi_rd_if.RLAST  <= (axi_tr.AxLEN == 1);
 
 endfunction
 
