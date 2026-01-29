@@ -1481,9 +1481,12 @@ module lsu(
     assign lsu_ld_sram_chunk_last = 1'b1;
     assign lsu_ld_sram_chunk_cnt_nxt = (lsu_ld_vld|lsu_ld_sram_chunk_last) ? 1'b0 : (lsu_ld_rd_qual | lsu_ld_rd_qual_ff) ? lsu_ld_sram_chunk_cnt + 1 : lsu_ld_sram_chunk_cnt;
     
+    wire lsu_ld_128_rd_qual;
+    wire lsu_ld_128_rd_qual_ff;
     //assign lsu_ld_sram_addr_cnt = lsu_ld_rd_qual ? (lsu_rlast_ff ? lsu_ld_sram_addr_cnt_ff+1'b1 : lsu_ld_sram_addr_cnt_ff) : lsu_ld_sram_addr_cnt_ff;
-    assign lsu_ld_sram_addr_cnt = lsu_ld_rd_qual ? ((~lsu_ld_rd_qual_ff) ? lsu_ld_sram_addr_cnt : lsu_ld_sram_addr_cnt_ff+1'b1) : lsu_ld_sram_addr_cnt_ff;
+    //assign lsu_ld_sram_addr_cnt = lsu_ld_rd_qual ? ((~lsu_ld_rd_qual_ff) ? lsu_ld_sram_addr_cnt : lsu_ld_sram_addr_cnt_ff+1'b1) : lsu_ld_sram_addr_cnt_ff;
 
+    assign lsu_ld_sram_addr_cnt = lsu_ld_rd_qual ? ((~lsu_ld_rd_qual_ff) ? lsu_ld_sram_addr_cnt : (lsu_axi_arsize[2] ? (lsu_ld_128_rd_qual ? lsu_ld_sram_addr_cnt_ff+1'b1 : lsu_ld_sram_addr_cnt_ff) : lsu_ld_sram_addr_cnt_ff+1'b1)) : lsu_ld_sram_addr_cnt_ff;
     assign lsu_ld_rd_done = lsu_ld_sram_addr_cnt_end;
     
     //assign lsu_ld_rd_doing = (lsu_ld_rd_qual | lsu_ld_rd_qual_ff) & ~lsu_ld_rd_done;
@@ -1497,9 +1500,19 @@ module lsu(
                                                                                           : (lsu_axi_arsize[0] ? {lsu_ld_st_addr[3],{3{1'b0}}}
                                                                                                             : {4{1'b0}}); 
  
-    //assign lsu_ld_sram_din = lsu_axi_arsize[2] ? (axi_lsu_rlast ? ((lsu_ld_sram_din_ff<<7'd64) | lsu_ld_rd_data_raw) : lsu_ld_rd_data_raw) : lsu_ld_rd_data_raw >> (lsu_ld_sram_din_shift*4'd8);
+    assign lsu_ld_128_rd_qual = lsu_ld_rd_qual ? ((lsu_ld_rd_qual & ~lsu_ld_rd_qual_ff) ? 1'b0 : ~lsu_ld_128_rd_qual_ff) : 1'b0;
+
+    DFFR #(.WIDTH(1))
+    ff_lsu_ld_128_rd_qual(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(lsu_ld_128_rd_qual),
+        .q(lsu_ld_128_rd_qual_ff)
+    );
+
+    assign lsu_ld_sram_din = lsu_axi_arsize[2] ? (lsu_ld_128_rd_qual ? ((lsu_ld_sram_din_ff<<7'd64) | lsu_ld_rd_data_raw) : lsu_ld_rd_data_raw) : lsu_ld_rd_data_raw << (lsu_ld_sram_din_shift*4'd8);
  
-    assign lsu_ld_sram_din = lsu_axi_arsize[2] ? (axi_lsu_rlast ? ((lsu_ld_sram_din_ff<<7'd64) | lsu_ld_rd_data_raw) : lsu_ld_rd_data_raw) : lsu_ld_rd_data_raw;
+    //assign lsu_ld_sram_din = lsu_axi_arsize[2] ? (axi_lsu_rlast ? ((lsu_ld_sram_din_ff<<7'd64) | lsu_ld_rd_data_raw) : lsu_ld_rd_data_raw) : lsu_ld_rd_data_raw;
     
     DFFR #(.WIDTH(128))
     ff_lsu_ld_sram_din(
@@ -1522,7 +1535,9 @@ module lsu(
     //assign lsu_ld_sram_we = lsu_ld_rd_doing;
     //assign lsu_ld_sram_we = lsu_ld_rd_qual & axi_lsu_rlast;
     //assign lsu_ld_sram_ce = lsu_ld_rd_qual & axi_lsu_rlast;
-    assign lsu_ld_sram_ce = lsu_ld_rd_qual;
+    assign lsu_ld_sram_ce = lsu_axi_arsize[2] ? lsu_ld_128_rd_qual : lsu_ld_rd_qual;
+    
+    //assign lsu_ld_sram_ce = lsu_ld_rd_qual;
     wire [15:0] lsu_ld_sram_we_init;
     assign lsu_ld_sram_we_init = ~(|lsu_axi_arsize) ? {{15{1'b0}},{1'b1}} : lsu_axi_arsize[0]^lsu_axi_arsize[1] ? (lsu_axi_arsize[0] ? {{14{1'b0}}, {2{1'b1}}} 
                                                                                                             : {{12{1'b0}}, {4{1'b1}}})
@@ -2170,9 +2185,3 @@ module lsu(
     assign lsu_rf_wb_data = lsu_riscv_ld_vld_ff ? lsu_riscv_dout : lsu_wb_data_ff;
      
 endmodule   
-
-
-
-
-
-
