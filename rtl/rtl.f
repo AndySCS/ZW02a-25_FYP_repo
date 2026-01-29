@@ -1,5 +1,6 @@
 -f $MINITPU_RTL/lib/lib.f
 $MINITPU_RTL/mem_wrapper/mem_wrapper.v
+$MINITPU_RTL/mem_wrapper/ram_mem_wrapper.v
 
 $MINITPU_RTL/define.vh
 $MINITPU_RTL/acc.v
