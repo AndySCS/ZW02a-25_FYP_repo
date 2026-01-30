@@ -195,7 +195,7 @@ module AXI_READ_INFT(
 
     assign axi_lsu_arrdy = ~(&axi_vld);
 
-    assign ARVALID = lsu_axi_arvld_qual ? ~(&(axi_vld & axi_sent)) : 1'b0;
+    assign ARVALID = |(axi_vld & ~axi_sent);
     assign ARID_nxt = ARVALID_sent ? ARID + 4'b1 : ARID;
     assign lsu_axi_arvld_qual = lsu_axi_arvld & axi_lsu_arrdy;
     assign ARVALID_sent = ARVALID & ARREADY;
