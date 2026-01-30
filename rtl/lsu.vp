@@ -414,14 +414,26 @@ module lsu(
     //assign lsu_instr_finish = 1'b0;
     
     wire lsu_mm_finish_nxt;
+    wire lsu_mm_finish_ff;
+    wire lsu_mm_finish_pulse;
     DFFRE #(.WIDTH(1))
     ff_lsu_mm_finish(
         .clk(clk),
         .rst_n(rst_n),
         .d(lsu_mm_finish_nxt & mxu_lsu_data_rdy),
         .en(mxu_lsu_data_rdy),
-        .q(lsu_mm_finish)
+        .q(lsu_mm_finish) 
     );
+	
+    DFFR #(.WIDTH(1))
+    ff_lsu_mm_finish_ff(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(lsu_mm_finish),
+        .q(lsu_mm_finish_ff) 
+    );
+    assign lsu_mm_finish_pulse = lsu_mm_finish & ~lsu_mm_finish_ff;
+
     wire lsu_ld_st_addr_en;
     wire [12:0] lsu_ld_st_addr;
     assign lsu_ld_st_addr_en = lsu_vld_qual & (alu_lsu_ld_iram | alu_lsu_ld_wram | alu_lsu_st_iram | alu_lsu_st_wram | alu_lsu_st_oram);
@@ -449,7 +461,7 @@ module lsu(
         .d(lsu_instr_finish),
         .q(lsu_instr_finish_ff)
     );
-    assign lsu_instr_finish = lsu_riscv_finish | lsu_mm_finish | lsu_ld_finish;
+    assign lsu_instr_finish = lsu_riscv_finish | lsu_mm_finish_pulse | lsu_ld_finish | lsu_st_finish;
 
 
     wire lsu_st_iram_ff;
