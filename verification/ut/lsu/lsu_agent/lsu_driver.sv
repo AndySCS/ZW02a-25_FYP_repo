@@ -54,10 +54,9 @@ task lsu_driver::main_phase(uvm_phase phase);
     //harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[i][31:0] = 32'h7f;
 
     // ldt load 2 chunk 
-    //harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[i][31:0] = 32'b0_000000_00000_00000_01_000_0000000;
+    //harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[i][31:0] = 32'b0_000000_00000_00000_01_000_000_0000000;
     
     // tr = new("tr");
-	
     for (int i=0;i<256;i++) begin
      	  harness.u_tpu.u_lsu.oram.mem[i] = 128'hf0e0d0c0b0a09080;
      	  //harness.u_tpu.u_lsu.oram_hi.mem[i] = 128'hf0e0d0c0b0a09080;
@@ -72,7 +71,9 @@ task lsu_driver::main_phase(uvm_phase phase);
 	  	harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[i][31:0] = 32'h7f;
 	  end
 	  if(i == 0)begin	
-    		harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[i][31:0] = 32'b0_000000_00000_00000_01_000_0000000;
+		harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[i][31:0] = 32'b000000011000_00000_000_00001_0010011;
+    		harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[i][63:32] = 32'b0_100000_00000_00001_01_100_000_0000000;
+    		//harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[i][63:32] = 32'b0_000000_00100_00000_01_000_000_0000000;
 	  	//harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[i][31:0] = 32'b0001_00000_00000_0001_0001_0001100;
 	  	//harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[i][63:32] = 32'b0001_00000_00000_0001_0001_0001100;
 	  end
@@ -92,7 +93,8 @@ endtask
 
 task lsu_driver::tpu_input(lsu_tr tr);
     int count;
-    int count_vld;	
+    int count_vld;
+    int count_ld;	
     while(1)begin
         @(posedge tpu_if.clk);
         if(count == 0) begin
@@ -117,14 +119,28 @@ task lsu_driver::tpu_input(lsu_tr tr);
        	 	@(posedge tpu_if.clk);
         	@(posedge tpu_if.clk);
         	@(posedge tpu_if.clk);
+		while (1)begin
+        		@(negedge tpu_if.clk);
+			tpu_if.RID = count_ld;
+			tpu_if.RDATA = count_ld+64'hfedcba9876543210;
+			tpu_if.RRESP = 0;
+			tpu_if.RVALID = 1;
+			if(count_ld >= 14)begin
+				break;
+			end
+			
+			//test for invlaid
+			//if(count_ld == 2)begin	
+			//	tpu_if.RVALID = 0;
+			//	tpu_if.RID = count_ld;
+			//	tpu_if.RDATA = count_ld+99;
+			//	tpu_if.RRESP = 0;
+			//end
+			count_ld = count_ld + 1;
+		end
         	@(negedge tpu_if.clk);
-		tpu_if.RID = 0;
-		tpu_if.RDATA = 1;
-		tpu_if.RRESP = 0;
-		tpu_if.RVALID = 1;
-        	@(negedge tpu_if.clk);
-		tpu_if.RID = 1;
-		tpu_if.RDATA = 2;
+		tpu_if.RID = 15;
+		tpu_if.RDATA = 99;
 		tpu_if.RRESP = 0;
 		tpu_if.RVALID = 1;
 		tpu_if.RLAST = 1;
@@ -133,8 +149,8 @@ task lsu_driver::tpu_input(lsu_tr tr);
 		tpu_if.RLAST = 0;
 		count_vld = count_vld+1;
 		
-	end																																																																																		
-    end
+	end																																							
+      end
 	
 endtask
  
