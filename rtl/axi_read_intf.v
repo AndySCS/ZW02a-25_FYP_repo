@@ -315,7 +315,7 @@ module AXI_READ_INFT(
 
     wire[15:0] axi_recv_ptr_raw; 
 
-    dec4to16 resp_RID_dec(.in(RID+1), .out(axi_recv_ptr_raw));
+    dec4to16 resp_RID_dec(.in(RID), .out(axi_recv_ptr_raw));
     assign axi_recv_ptr = axi_lsu_rvld ? axi_recv_ptr_raw : 'b0;
 
     //FIXME rid
