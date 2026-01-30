@@ -42,8 +42,12 @@ endtask
 
 task top_driver::main_phase(uvm_phase phase);
     model_output_transaction tr;
+    int phase_cnt;
+    bit val_begin;
     
     super.main_phase(phase);
+    phase.raise_objection(this);
+    fork
     while(1) begin
         seq_item_port.get_next_item(tr);
         send_cnt++;
@@ -52,6 +56,8 @@ task top_driver::main_phase(uvm_phase phase);
             if(top_if.wfi)begin
                 top_if.start_vld <= 1;
                 top_if.start_addr <= 0;
+		phase_cnt = 0;
+		val_begin = 1;
                 @(posedge top_if.clk);
                 top_if.start_vld <= 0;
                 seq_item_port.item_done();
@@ -59,6 +65,17 @@ task top_driver::main_phase(uvm_phase phase);
             end
         end
     end
+    while(1)begin
+        @(posedge top_if.clk);
+        if(val_begin & top_if.wfi)begin
+	    phase_cnt++;
+        end
+	if(phase_cnt > 100000) begin
+    	   `uvm_info(get_name(), "main phase ends", UVM_LOW);
+	    phase.drop_objection(this);
+	end
+    end
+    join
         
 endtask
 

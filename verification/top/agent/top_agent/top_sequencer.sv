@@ -27,7 +27,7 @@ task top_sequencer::main_phase(uvm_phase phase);
 
     super.main_phase(phase);
     `uvm_info(get_name(), "main phase begin", UVM_LOW);
-    phase.raise_objection(phase);
+    phase.raise_objection(this);
 
     top_seq.start(this);
     
@@ -35,7 +35,10 @@ task top_sequencer::main_phase(uvm_phase phase);
         @(posedge top_if.clk)begin
 	    phase_cnt++;
 	end
-        if(phase_cnt >= 10000) phase.drop_objection(phase);
+        if(phase_cnt >= 10000) begin
+	    phase.drop_objection(this);
+	    break;
+	end
     end
     `uvm_info(get_name(), "main phase ends", UVM_LOW);
      

@@ -34,12 +34,12 @@ endfunction
 
 task axi_rd_driver::reset_phase(uvm_phase phase);
     super.reset_phase(phase); 
-    axi_rd_if.RVALID    <= 0;
-    axi_rd_if.ARREADY   <= 1;
-    axi_rd_if.RID       <= 'hx; 
-    axi_rd_if.RDATA     <= 'hx; 
-    axi_rd_if.RRESP     <= 'hx; 
-    axi_rd_if.RLAST     <= 'hx; 
+    axi_rd_if.RVALID    = 0;
+    axi_rd_if.ARREADY   = 1;
+    axi_rd_if.RID       = 'hx; 
+    axi_rd_if.RDATA     = 'hx; 
+    axi_rd_if.RRESP     = 'hx; 
+    axi_rd_if.RLAST     = 'hx; 
 endtask
 
 task axi_rd_driver::main_phase(uvm_phase phase); 
@@ -73,6 +73,7 @@ task axi_rd_driver::send_axi_read_recv();
                 .AxREGION    (axi_rd_if.ARREGION)
             );
             axi_rd_req_q.push_back(axi_rd_tr);
+            `uvm_info(get_name(), $sformatf("received axi_rd_tr, ARID = %d", axi_rd_tr.AxID), UVM_LOW);
         end        
         
         axi_rd_if.ARREADY = (axi_rd_req_q.size() < 16);
@@ -96,7 +97,8 @@ task axi_rd_driver::send_axi_read_send();
         else if(axi_rd_tr.send_timer >0) axi_rd_tr.send_timer--;
         else begin
             send_axi_read_send_tr(axi_rd_tr);
-            is_sending = axi_rd_tr.AxLEN >= 0;
+            is_sending = axi_rd_tr.AxLEN[8] != 1;
+            if (!is_sending) `uvm_info(get_name(), $sformatf("finished sending axi_rd_tr, ARID = %d", axi_rd_tr.AxID), UVM_LOW);
         end
 
     end
@@ -105,9 +107,10 @@ endtask
 function void axi_rd_driver::send_axi_read_send_tr(axi_transaction axi_tr);
 
     if(axi_rd_if.RREADY & axi_rd_if.RVALID)begin
+        //`uvm_info(get_name(), $sformatf("sending axi_rd_tr, LEN = %d", axi_tr.AxLEN), UVM_LOW);
         axi_rd_if.RVALID = 0;
         axi_tr.AxLEN--;
-        axi_tr.send_timer = $urandom_range(100);
+        axi_tr.send_timer = $urandom_range(5);
         if(axi_tr.AxBURST == `AXI_WR_BURST_INCR)begin
             axi_tr.AxADDR += (1 << axi_tr.AxSIZE);
         end
@@ -121,11 +124,11 @@ endfunction
 
 function void axi_rd_driver::assign_data2bus(axi_transaction axi_tr);
     
-    axi_rd_if.RVALID <= 1;
-    axi_rd_if.RID    <= axi_tr.AxID;
-    axi_rd_if.RDATA  <= get_data(axi_tr);
-    axi_rd_if.RRESP  <= 0;
-    axi_rd_if.RLAST  <= (axi_tr.AxLEN == 1);
+    axi_rd_if.RVALID = 1;
+    axi_rd_if.RID    = axi_tr.AxID;
+    axi_rd_if.RDATA  = get_data(axi_tr);
+    axi_rd_if.RRESP  = 0;
+    axi_rd_if.RLAST  = (axi_tr.AxLEN == 0);
 
 endfunction
 
