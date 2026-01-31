@@ -1377,6 +1377,7 @@ module lsu(
     wire [1:0] lsu_ld_arburst_nxt;
     wire [2:0] lsu_ld_arstr_nxt;
     wire [7:0] lsu_ld_arnum_nxt;
+    wire [11:0] lsu_ld_sram_addr_nxt;
 
     wire lsu_ld_doing_ff;
     wire lsu_ld_ar_en;
@@ -1395,7 +1396,7 @@ module lsu(
     assign lsu_ld_arburst_nxt      = lsu_vld_qual ? 2'b01             :lsu_axi_arburst; 
     assign lsu_ld_arstr_nxt        = lsu_vld_qual ? alu_lsu_str       :lsu_axi_arstr  ; 
     assign lsu_ld_arnum_nxt        = lsu_vld_qual ? alu_lsu_num 	  :lsu_axi_arnum  ;  
-    assign lsu_ld_sram_addr_nxt    = lsu_vld_qual ? alu_lsu_ld_st_addr[11:0] 	  :lsu_ld_sram_addr  ;  
+    assign lsu_ld_sram_addr_nxt    = lsu_vld_qual ? alu_lsu_ld_st_addr[11:0] 	  :lsu_axi_sram_addr  ;  
     
     DFFR #(.WIDTH(1))
     ff_lsu_axi_arvld(

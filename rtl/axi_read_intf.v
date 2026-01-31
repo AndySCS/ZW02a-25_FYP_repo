@@ -68,7 +68,7 @@ module AXI_READ_INFT(
     input [2:0] lsu_axi_arsize;
     input [1:0] lsu_axi_arburst;
     input [2:0] lsu_axi_arstr;
-    input [11:0] lsu_axi_sram_addr,
+    input [11:0] lsu_axi_sram_addr;
     input [7:0] lsu_axi_arnum;
     input lsu_axi_arvld;
     input lsu_axi_rrdy;
@@ -86,13 +86,14 @@ module AXI_READ_INFT(
     //AXI ID
     wire        sram_en;
     wire [11:0] sram_addr      [15:0];
-    wire [11:0] sram_addr_nxt  [15:0];
+    wire [11:0] sram_addr_nxt;
     wire [11:0] sram_addr_cur;
     wire [31:0] dram_addr      [15:0];
-    wire [31:0] dram_addr_nxt  [15:0];
+    wire [31:0] dram_addr_nxt;
     wire [3:0]  ram_ptr_nxt;
     wire [3:0]  ram_ptr;
     wire [15:0] ram_addr_en;
+    wire [3:0]  ram_nxt;
 
     wire [15:0] axi_vld;
     wire [15:0] axi_vld_nxt;
@@ -133,7 +134,7 @@ module AXI_READ_INFT(
     wire axi_doing_ld_nxt;
     wire [3:0] arcnt;
     wire [3:0] arcnt_nxt;
-    wire [3:0] arcnt_en;
+    wire arcnt_en;
      
     wire RVALID_qual;
     wire lsu_resp_recv;
@@ -227,11 +228,7 @@ module AXI_READ_INFT(
     assign lsu_axi_arvld_qual = lsu_axi_arvld & axi_lsu_arrdy;
     assign ARVALID_sent = ARVALID & ARREADY;
     assign ARADDR_en = ARVALID_sent | lsu_axi_arvld_qual;
-    assign ARADDR_pconst = {ARADDR_WIDTH{(arstr == 3'b000)}} & 'd16
-                         | {ARADDR_WIDTH{(arstr == 3'b001)}} & 'd32
-                         | {ARADDR_WIDTH{(arstr == 3'b010)}} & 'd64
-                         | {ARADDR_WIDTH{(arstr == 3'b011)}} & 'd128
-                         | {ARADDR_WIDTH{(arstr == 3'b100)}} & 'd256;
+    assign ARADDR_pconst = 32'b1 << ARSIZE;
     assign ARADDR_add_str = ARADDR + ARADDR_pconst;
     assign ARADDR_nxt = lsu_axi_arvld_qual ? lsu_axi_araddr
                         : axi_doing_ld ? ARADDR_add_str
@@ -253,14 +250,14 @@ module AXI_READ_INFT(
     genvar i;
     generate;
         for(i = 0; i < 16; i++)begin
-            ram_addr_en = ARVALID_sent & (ram_ptr == i);
+            assign ram_addr_en[i] = ARVALID_sent & (ram_ptr == i);
 
             DFFE #(.WIDTH(12))
             ff_sram_addr (
                 .clk(clk),
                 .en(ram_addr_en[i]),
                 .d(sram_addr_cur),
-                .q(sram_addr[ram_ptr])
+                .q(sram_addr[i])
             );
             
             DFFE #(.WIDTH(32))
@@ -268,13 +265,14 @@ module AXI_READ_INFT(
                 .clk(clk),
                 .en(ram_addr_en[i]),
                 .d(dram_addr_nxt),
-                .q(sram_addr[ram_ptr])
+                .q(dram_addr[i])
             );
 
         end
     endgenerate
    
     assign sram_en = lsu_axi_arvld_qual | ARVALID_sent;
+    assign ram_nxt = lsu_axi_arvld_qual ? 4'b0 : ram_ptr + 4'b1;
 
     DFFE #(.WIDTH(12))
     ff_sram_addr_cur (
@@ -284,11 +282,10 @@ module AXI_READ_INFT(
         .q(sram_addr_cur)
     );
 
-    DFFRE #(.WIDTH(4))
+    DFFE #(.WIDTH(4))
     ff_ram_ptr (
         .clk(clk),
-        .rst_n(rst_n),
-        .en(ARVALID_sent),
+        .en(sram_en),
         .d(ram_nxt),
         .q(ram_ptr)
     );
@@ -354,6 +351,15 @@ module AXI_READ_INFT(
         .en(lsu_axi_arvld),
         .d(arstr_nxt),
         .q(arstr)
+    );
+    
+    DFFRE #(.WIDTH(8))
+    ff_arcnt (
+        .clk(clk),
+	.rst_n(rst_n),
+        .en(arcnt_en),
+        .d(arcnt_nxt),
+        .q(arcnt)
     );
 
     assign ARREGION = 4'b0;

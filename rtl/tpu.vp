@@ -268,6 +268,7 @@ module tpu(
     wire [1:0] lsu_axi_arburst;
     wire [2:0] lsu_axi_arstr;
     wire [7:0] lsu_axi_arnum;
+    wire [11:0] lsu_axi_sram_addr;
     wire lsu_axi_arvld;
     wire lsu_axi_rrdy;
 
@@ -678,6 +679,7 @@ module tpu(
         .lsu_axi_arburst                      (lsu_axi_arburst),
         .lsu_axi_arstr                        (lsu_axi_arstr),
         .lsu_axi_arnum                        (lsu_axi_arnum),
+	.lsu_axi_sram_addr		      (lsu_axi_sram_addr),
         .lsu_axi_arvld                        (lsu_axi_arvld),
         .lsu_axi_rrdy                         (lsu_axi_rrdy),
         .lsu_idu_wb_vld                       (lsu_idu_wb_vld),
@@ -782,6 +784,7 @@ module tpu(
         .lsu_axi_arburst                      (lsu_axi_arburst),
         .lsu_axi_arstr                        (lsu_axi_arstr),
         .lsu_axi_arnum                        (lsu_axi_arnum),
+	.lsu_axi_sram_addr		      (lsu_axi_sram_addr),
         .lsu_axi_arvld                        (lsu_axi_arvld),
         .lsu_axi_rrdy                         (lsu_axi_rrdy),
         .axi_lsu_rid                          (axi_lsu_rid),
