@@ -1553,6 +1553,7 @@ module lsu(
                                                : lsu_ld_rd_data_raw << {lsu_ld_sram_din_shift, 3'b0};
  
     //assign lsu_ld_sram_din = lsu_axi_arsize[2] ? (axi_lsu_rlast ? ((lsu_ld_sram_din_ff<<7'd64) | lsu_ld_rd_data_raw) : lsu_ld_rd_data_raw) : lsu_ld_rd_data_raw;
+    assign lsu_axi_done_nxt = lsu_ld_rd_qual & axi_lsu_axi_done;
     
     DFFR #(.WIDTH(128))
     ff_lsu_ld_sram_din(

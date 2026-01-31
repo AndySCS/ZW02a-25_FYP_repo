@@ -119,7 +119,7 @@
 `define SRAM_ADDR_RNG               `SRAM_ADDR_MSB : `SRAM_ADDR_LSB
 
 `define SRAM_TYPE_SIZE              2
-`define SRAM_TYPE_LSB               (`SRAM_ADDR_LSB + 1)
+`define SRAM_TYPE_LSB               (`SRAM_ADDR_MSB + 1)
 `define SRAM_TYPE_MSB               (`SRAM_TYPE_LSB + `SRAM_TYPE_SIZE -1)
 `define SRAM_TYPE_RNG               `SRAM_TYPE_MSB : `SRAM_TYPE_LSB
 

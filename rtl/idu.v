@@ -482,7 +482,7 @@ module idu (
     assign op_b    = (ifu_idu_ins[`OP_RNG] == `BRANCH);
 
     assign add_op  = (ifu_idu_ins[`FUNCT3_RNG] == `FUNCT3_ADD ) & (op_i | (op_r & ifu_idu_ins[`FUNCT7_RNG] == `FUNCT7_NORM));
-    assign sub_op  = (ifu_idu_ins[`FUNCT3_RNG] == `FUNCT3_ADD ) & (op_i | (op_r & ifu_idu_ins[`FUNCT7_RNG] == `FUNCT7_ALT ));
+    assign sub_op  = (ifu_idu_ins[`FUNCT3_RNG] == `FUNCT3_ADD ) & (op_r & ifu_idu_ins[`FUNCT7_RNG] == `FUNCT7_ALT );
     assign slt_op  = (ifu_idu_ins[`FUNCT3_RNG] == `FUNCT3_SLT ) & (op_i | (op_r & ifu_idu_ins[`FUNCT7_RNG] == `FUNCT7_NORM));
     assign sltu_op = (ifu_idu_ins[`FUNCT3_RNG] == `FUNCT3_SLTU) & (op_i | (op_r & ifu_idu_ins[`FUNCT7_RNG] == `FUNCT7_NORM));
     assign xor_op  = (ifu_idu_ins[`FUNCT3_RNG] == `FUNCT3_XOR ) & (op_i | (op_r & ifu_idu_ins[`FUNCT7_RNG] == `FUNCT7_NORM));
