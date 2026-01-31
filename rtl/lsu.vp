@@ -1437,7 +1437,7 @@ module lsu(
     assign lsu_ld_arsize_nxt   = lsu_vld_qual ? lsu_ld_arsize_tmp :lsu_axi_arsize ; 
     assign lsu_ld_arburst_nxt  = lsu_vld_qual ? 2'b01             :lsu_axi_arburst; 
     assign lsu_ld_arstr_nxt    = lsu_vld_qual ? alu_lsu_str       :lsu_axi_arstr  ; 
-    assign lsu_ld_arnum_nxt    = lsu_vld_qual ? alu_lsu_num 	  :lsu_axi_arnum  ; 
+    assign lsu_ld_arnum_nxt    = lsu_vld_qual ? alu_lsu_num 	  :lsu_axi_arnum  ;  
     
     DFFR #(.WIDTH(1))
     ff_lsu_axi_arvld(
