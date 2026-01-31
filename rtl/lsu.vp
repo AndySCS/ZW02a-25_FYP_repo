@@ -1475,12 +1475,11 @@ module lsu(
     assign lsu_axi_rrdy = 1'b1; 
     assign lsu_ld_rd_qual = lsu_axi_rrdy & axi_lsu_rvld;
 
-    DFFRE #(.WIDTH(1))
+    DFFR #(.WIDTH(1))
     ff_lsu_ld_rd_qual(
         .clk(clk),
         .rst_n(rst_n),
         .d(lsu_ld_rd_qual),
-        .en(lsu_ld_rd_qual),
         .q(lsu_ld_rd_qual_ff)
     );
 
@@ -1504,6 +1503,9 @@ module lsu(
     wire [127:0] lsu_ld_sram_din;
     wire [127:0] lsu_ld_sram_din_ff;
     wire [7:0] lsu_ld_sram_din_shift;
+
+    wire lsu_axi_done_nxt;
+    wire lsu_axi_done;
     //if the size is 128
     //need two cycle of load
     //first cycle the cnt dun update
@@ -1564,8 +1566,8 @@ module lsu(
     ff_lsu_rlast(
         .clk(clk),
         .rst_n(rst_n),
-        .d(axi_lsu_rlast & lsu_ld_rd_qual),
-        .q(lsu_rlast_ff)
+        .d(lsu_axi_done_nxt),
+        .q(lsu_axi_done)
     );
 
     //assign lsu_ld_sram_din = lsu_ld_rd_qual ? {64{lsu_ld_rd_qual}} & axi_lsu_rdata : {64{lsu_ld_rd_qual_ff}} & axi_lsu_rdata;
@@ -1577,10 +1579,11 @@ module lsu(
     
     //assign lsu_ld_sram_ce = lsu_ld_rd_qual;
     wire [15:0] lsu_ld_sram_we_init;
-    assign lsu_ld_sram_we_init = ~(|lsu_axi_arsize) ? {{15{1'b0}},{1'b1}} : lsu_axi_arsize[0]^lsu_axi_arsize[1] ? (lsu_axi_arsize[0] ? {{14{1'b0}}, {2{1'b1}}} 
-                                                                                                            : {{12{1'b0}}, {4{1'b1}}})
-                                                                                          : (lsu_axi_arsize[0] ? {{8{1'b0}}, {8{1'b1}}}
-                                                                                                            : {16{1'b1}}); 
+    assign lsu_ld_sram_we_init = {16{lsu_axi_arsize == 0}} & 16'h0001
+                               | {16{lsu_axi_arsize == 1}} & 16'h0003
+                               | {16{lsu_axi_arsize == 2}} & 16'h000f
+                               | {16{lsu_axi_arsize == 3}} & 16'h00ff;
+    
     assign lsu_ld_sram_we =  lsu_ld_sram_we_init << lsu_ld_sram_din_shift;
 
     //filter back iram / wram
@@ -1892,7 +1895,7 @@ module lsu(
         .lsu_mm_buff_ram_alloc_data    (lsu_mm_buff_iram_alloc_data),
 
         //from lsu ctrl input
-	.lsu_mm_buff_ctrl_start        (lsu_mm_buff_ctrl_start),
+	    .lsu_mm_buff_ctrl_start        (lsu_mm_buff_ctrl_start),
         .lsu_mm_buff_ctrl_vld          (lsu_mm_buff_iram_ctrl_vld | lsu_mm_buff_iram_ctrl_vld_ff),
         .lsu_mm_buff_ctrl_row_len      (lsu_mm_buff_iram_ctrl_row_len | lsu_mm_buff_iram_ctrl_row_len_ff),
         .lsu_mm_buff_ctrl_col_len      (lsu_mm_buff_iram_ctrl_col_len | lsu_mm_buff_iram_ctrl_col_len_ff),
@@ -1919,7 +1922,7 @@ module lsu(
         .lsu_mm_buff_ram_alloc_data    (lsu_mm_buff_wram_alloc_data),
 
         //ctrl wire
-	.lsu_mm_buff_ctrl_start        (lsu_mm_buff_ctrl_start),
+	    .lsu_mm_buff_ctrl_start        (lsu_mm_buff_ctrl_start),
         .lsu_mm_buff_ctrl_vld          (lsu_mm_buff_wram_ctrl_vld | lsu_mm_buff_wram_ctrl_vld_ff),
         .lsu_mm_buff_ctrl_row_len      (lsu_mm_buff_wram_ctrl_row_len | lsu_mm_buff_wram_ctrl_row_len_ff),
         .lsu_mm_buff_ctrl_col_len      (lsu_mm_buff_wram_ctrl_col_len | lsu_mm_buff_wram_ctrl_col_len_ff),
@@ -1989,7 +1992,7 @@ module lsu(
     assign lsu_st_finish = lsu_st_type1_done & (lsu_st_type1_qual | lsu_st_type1_qual_ff) | lsu_st_type2_done;
     
     //FOR load instr
-    assign lsu_ld_finish = lsu_rlast_ff;
+    assign lsu_ld_finish = lsu_axi_done;
     
     //FOR mm instr
     assign lsu_mm_finish_nxt = lsu_mm_buff_wram_mxu_end & lsu_mm_buff_iram_mxu_end & ~(lsu_vld_qual & alu_lsu_conv);
