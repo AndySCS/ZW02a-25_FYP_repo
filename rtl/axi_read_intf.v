@@ -24,6 +24,7 @@ module AXI_READ_INFT(
     lsu_axi_arsize,
     lsu_axi_arburst,
     lsu_axi_arstr,
+    lsu_axi_arnum,
     lsu_axi_arvld,
     lsu_axi_rrdy,
     axi_lsu_rid,
@@ -59,12 +60,12 @@ module AXI_READ_INFT(
     output RREADY; 
     //lsu->axi intf
     input [7:0] lsu_axi_arid;
-    input [9:0] lsu_axi_araddr;
+    input [ARADDR_WIDTH-1:0] lsu_axi_araddr;
     input [7:0] lsu_axi_arlen;
     input [2:0] lsu_axi_arsize;
     input [1:0] lsu_axi_arburst;
     input [2:0] lsu_axi_arstr;
-    //input [7:0] lsu_axi_arnum;
+    input [7:0] lsu_axi_arnum;
     input lsu_axi_arvld;
     input lsu_axi_rrdy;
     //axi_lsu intf
@@ -82,6 +83,7 @@ module AXI_READ_INFT(
     wire [15:0] axi_alloc_en;
     wire [15:0] axi_alloc_ptr;
     wire [15:0] axi_alloc_ptr_nxt;
+    wire        axi_alloc_ptr_en;
     wire [15:0] axi_invld;
     wire [15:0] axi_recv;
     wire [15:0] axi_recv_nxt;
@@ -109,8 +111,8 @@ module AXI_READ_INFT(
     wire [3:0] ARREGION_nxt;
     wire [2:0] arstr;
     wire [2:0] arstr_nxt;
-    wire [3:0] arnum;
-    wire [3:0] arnum_nxt;
+    wire [7:0] arnum;
+    wire [7:0] arnum_nxt;
     wire axi_doing_ld;
     wire axi_doing_ld_nxt;
     wire [3:0] arcnt;
@@ -132,6 +134,7 @@ module AXI_READ_INFT(
     assign axi_recv_nxt = {16{RVALID_qual}} | axi_recv & ~axi_alloc_en; 
     assign axi_sent_ptr_nxt = {axi_sent_ptr[14:0], axi_sent_ptr[15]};
     assign axi_alloc_ptr_nxt = {axi_alloc_ptr[14:0], axi_alloc_ptr[15]};
+    assign axi_alloc_ptr_en  = |axi_alloc_en;
     assign axi_sent_en = axi_alloc_vld | ARVALID_sent;
     assign axi_recv_en = axi_alloc_vld | RVALID_qual;
 
@@ -156,7 +159,7 @@ module AXI_READ_INFT(
     ff_axi_alloc_ptr_lo(
         .clk(clk),
         .rst_n(rst_n),
-        .en(lsu_axi_arvld_qual),
+        .en(axi_alloc_ptr_en),
         .d(axi_alloc_ptr_nxt[0]),
         .q(axi_alloc_ptr[0])
     );
@@ -164,7 +167,7 @@ module AXI_READ_INFT(
     ff_axi_alloc_ptr_hi(
         .clk(clk),
         .rst_n(rst_n),
-        .en(lsu_axi_arvld_qual),
+        .en(axi_alloc_ptr_en),
         .d(axi_alloc_ptr_nxt[15:1]),
         .q(axi_alloc_ptr[15:1])
     );
@@ -193,7 +196,7 @@ module AXI_READ_INFT(
         .q(axi_recv)
     );
 
-    assign axi_lsu_arrdy = ~(&axi_vld);
+    assign axi_lsu_arrdy = ~(|axi_vld);
 
     assign ARVALID = |(axi_vld & ~axi_sent);
     assign ARID_nxt = ARVALID_sent ? ARID + 4'b1 : ARID;
@@ -213,7 +216,7 @@ module AXI_READ_INFT(
     assign ARSIZE_nxt = lsu_axi_arvld_qual? lsu_axi_arsize : ARSIZE;
     assign ARBURST_nxt = lsu_axi_arvld_qual? lsu_axi_arburst : ARBURST;
     assign ARREGION_nxt = 4'b0;//lsu_axi_ARvld_qual? lsu_axi_ARID : ARID;
-    assign arnum_nxt = lsu_axi_arvld_qual ? (lsu_axi_arsize[2] ? (lsu_axi_arsize[0] ? 3'b100 : 2'b10) : 1'b1) : 1'b0;
+    assign arnum_nxt = lsu_axi_arvld_qual ? lsu_axi_arnum : arnum;
     assign arstr_nxt = lsu_axi_arvld_qual ? lsu_axi_arstr : arstr;
     assign arcnt_nxt = lsu_axi_arvld_qual ? 4'b0 : arcnt + 4'b1;
     assign arcnt_en = |axi_alloc_en;
@@ -272,7 +275,7 @@ module AXI_READ_INFT(
         .q(ARBURST)
     );
     
-    DFFRE #(.WIDTH(4))
+    DFFRE #(.WIDTH(8))
     ff_ARnum (
         .clk(clk),
 	.rst_n(rst_n),
@@ -310,8 +313,8 @@ module AXI_READ_INFT(
 
     //FIXME change the RID back to the read addr 
     assign axi_lsu_rid_nxt = RVALID_qual ? RID : axi_lsu_rid;
-    //assign RREADY = ~axi_lsu_rvld;
-    assign RREADY = 1'b1;
+    assign RREADY = ~axi_lsu_rvld;
+    //assign RREADY = 1'b1;
 
     wire[15:0] axi_recv_ptr_raw; 
 

@@ -142,6 +142,7 @@ module lsu(
     lsu_axi_arsize,
     lsu_axi_arburst,
     lsu_axi_arstr,
+    lsu_axi_arnum,
     lsu_axi_arvld,
     lsu_axi_rrdy,
 
@@ -309,11 +310,12 @@ module lsu(
     output lsu_axi_brdy;
     //for read interface
     output [7:0] lsu_axi_arid;
-    output [9:0] lsu_axi_araddr;
+    output [31:0] lsu_axi_araddr;
     output [7:0] lsu_axi_arlen;
     output [2:0] lsu_axi_arsize;
     output [1:0] lsu_axi_arburst;
     output [2:0] lsu_axi_arstr;
+    output [7:0] lsu_axi_arnum;
     output lsu_axi_arvld;
     output lsu_axi_rrdy;
 
@@ -1350,17 +1352,28 @@ module lsu(
         .q(lsu_ld_qual_ff)
     );
 
-    wire [7:0] lsu_ld_arid;
-    wire [9:0] lsu_ld_araddr;
+    //wire [7:0] lsu_ld_arid;
+    wire [31:0] lsu_ld_araddr;
     wire [7:0] lsu_ld_arlen;
     wire [2:0] lsu_ld_arsize;
     wire [1:0] lsu_ld_arburst;
     wire [2:0] lsu_ld_arstr;
 
+   // wire [7:0] lsu_ld_arid_nxt;
+    wire lsu_axi_arvld_nxt;
+    wire [31:0] lsu_ld_araddr_nxt;
+    wire [7:0] lsu_ld_arlen_tmp;
+    wire [7:0] lsu_ld_arlen_nxt;
+    wire [2:0] lsu_ld_arsize_tmp;
+    wire [2:0] lsu_ld_arsize_nxt;
+    wire [1:0] lsu_ld_arburst_nxt;
+    wire [2:0] lsu_ld_arstr_nxt;
+    wire [7:0] lsu_ld_arnum_nxt;
+
     wire lsu_ld_doing_ff;
     wire lsu_ld_ar_en;
     assign lsu_ld_ar_en = lsu_ld_en;
-    
+   /* 
     DFFRE #(.WIDTH(8))
     ff_lsu_ld_arid(
         .clk(clk),
@@ -1410,18 +1423,78 @@ module lsu(
         .en(lsu_ld_ar_en),
         .q(lsu_ld_arstr)
     );
+    */
      
     //adress read part
     //once we sense load instr give arvld and other ar signal
     //id and burst not support 
-    assign lsu_axi_arvld   = lsu_ld_finish ? 'b0 : lsu_ld_vld | lsu_ld_vld_ff; 
-    assign lsu_axi_arid    = lsu_ld_finish ? 'b0 : lsu_ld_vld ? 'b0               : {8{lsu_ld_vld_ff }} & lsu_ld_arid;
-    assign lsu_axi_araddr  = lsu_ld_finish ? 'b0 :lsu_ld_vld ? alu_lsu_dram_addr : {10{lsu_ld_vld_ff}} & lsu_ld_araddr;
-    assign lsu_axi_arlen   = lsu_ld_finish ? 'b0 :lsu_ld_vld ? alu_lsu_num       : {8{lsu_ld_vld_ff }} & lsu_ld_arlen;
-    assign lsu_axi_arsize  = lsu_ld_finish ? 'b0 :lsu_ld_vld ? alu_lsu_len       : {3{lsu_ld_vld_ff }} & lsu_ld_arsize;
-    assign lsu_axi_arburst = lsu_ld_finish ? 'b0 :lsu_ld_vld ? 2'b00             : {2{lsu_ld_vld_ff }} & lsu_ld_arburst;
-    assign lsu_axi_arstr   = lsu_ld_finish ? 'b0 :lsu_ld_vld ? alu_lsu_str       : {3{lsu_ld_vld_ff }} & lsu_ld_arstr;
+    //assign lsu_ld_arid_nxt     = lsu_alu_vld_qual ? lsu_alu_ard     :lsu_axi_arid   ; 
+    assign lsu_axi_arvld_nxt   = lsu_vld_qual & (alu_lsu_ld_iram | alu_lsu_ld_wram) & ~alu_lsu_wb_vld | lsu_axi_arvld & ~axi_lsu_arrdy;
+    assign lsu_ld_arlen_tmp    = alu_lsu_len[2] ? 8'd2 : 8'd1;  
+    assign lsu_ld_arsize_tmp   = alu_lsu_len[2] ? 3'b011 : alu_lsu_len;  
+    assign lsu_ld_araddr_nxt   = lsu_vld_qual ? alu_lsu_dram_addr :lsu_axi_araddr ; 
+    assign lsu_ld_arlen_nxt    = lsu_vld_qual ? lsu_ld_arlen_tmp  :lsu_axi_arlen  ; 
+    assign lsu_ld_arsize_nxt   = lsu_vld_qual ? lsu_ld_arsize_tmp :lsu_axi_arsize ; 
+    assign lsu_ld_arburst_nxt  = lsu_vld_qual ? 2'b01             :lsu_axi_arburst; 
+    assign lsu_ld_arstr_nxt    = lsu_vld_qual ? alu_lsu_str       :lsu_axi_arstr  ; 
+    assign lsu_ld_arnum_nxt    = lsu_vld_qual ? alu_lsu_num 	  :lsu_axi_arnum  ; 
     
+    DFFR #(.WIDTH(1))
+    ff_lsu_axi_arvld(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(lsu_axi_arvld_nxt),
+        .q(lsu_axi_arvld)
+    );
+
+    DFFE #(.WIDTH(32))
+    ff_lsu_ld_araddr(
+        .clk(clk),
+        .en(lsu_vld_qual),
+        .d(lsu_ld_araddr_nxt),
+        .q(lsu_axi_araddr)
+    );
+ 
+    DFFE #(.WIDTH(8))
+    ff_lsu_ld_arlen(
+        .clk(clk),
+        .en(lsu_vld_qual),
+        .d(lsu_ld_arlen_nxt),
+        .q(lsu_axi_arlen)
+    );
+ 
+    DFFE #(.WIDTH(3))
+    ff_lsu_ld_arsize(
+        .clk(clk),
+        .en(lsu_vld_qual),
+        .d(lsu_ld_arsize_nxt),
+        .q(lsu_axi_arsize)
+    );
+ 
+    DFFE #(.WIDTH(2))
+    ff_lsu_ld_arburst(
+        .clk(clk),
+        .en(lsu_vld_qual),
+        .d(lsu_ld_arburst_nxt),
+        .q(lsu_axi_arburst)
+    );
+ 
+    DFFE #(.WIDTH(3))
+    ff_lsu_ld_arstr(
+        .clk(clk),
+        .en(lsu_vld_qual),
+        .d(lsu_ld_arstr_nxt),
+        .q(lsu_axi_arstr)
+    );
+ 
+    DFFE #(.WIDTH(8))
+    ff_lsu_ld_arnum(
+        .clk(clk),
+        .en(lsu_vld_qual),
+        .d(lsu_ld_arnum_nxt),
+        .q(lsu_axi_arnum)
+    );
+ 
     //read data part
 
     //give out 
