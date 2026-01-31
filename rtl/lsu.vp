@@ -1416,13 +1416,16 @@ module lsu(
     //adress read part
     //once we sense load instr give arvld and other ar signal
     //id and burst not support 
-    assign lsu_axi_arvld   = lsu_ld_finish ? 'b0 : lsu_ld_vld | lsu_ld_vld_ff; 
-    assign lsu_axi_arid    = lsu_ld_finish ? 'b0 : lsu_ld_vld ? 'b0               : {8{lsu_ld_vld_ff }} & lsu_ld_arid;
-    assign lsu_axi_araddr  = lsu_ld_finish ? 'b0 :lsu_ld_vld ? alu_lsu_dram_addr : {10{lsu_ld_vld_ff}} & lsu_ld_araddr;
-    assign lsu_axi_arlen   = lsu_ld_finish ? 'b0 :lsu_ld_vld ? alu_lsu_num       : {8{lsu_ld_vld_ff }} & lsu_ld_arlen;
-    assign lsu_axi_arsize  = lsu_ld_finish ? 'b0 :lsu_ld_vld ? alu_lsu_len       : {3{lsu_ld_vld_ff }} & lsu_ld_arsize;
-    assign lsu_axi_arburst = lsu_ld_finish ? 'b0 :lsu_ld_vld ? 2'b00             : {2{lsu_ld_vld_ff }} & lsu_ld_arburst;
-    assign lsu_axi_arstr   = lsu_ld_finish ? 'b0 :lsu_ld_vld ? alu_lsu_str       : {3{lsu_ld_vld_ff }} & lsu_ld_arstr;
+    //assign lsu_ld_arid_nxt     = lsu_alu_vld_qual ? lsu_alu_ard     :lsu_axi_arid   ; 
+    assign lsu_axi_arvld_nxt   = lsu_vld_qual & (alu_lsu_ld_iram | alu_lsu_ld_wram) & ~alu_lsu_wb_vld | lsu_axi_arvld & ~axi_lsu_arrdy;
+    assign lsu_ld_arlen_tmp    = alu_lsu_len[2] ? 8'd2 : 8'd1;  
+    assign lsu_ld_arsize_tmp   = alu_lsu_len[2] ? 3'b011 : alu_lsu_len;  
+    assign lsu_ld_araddr_nxt   = lsu_vld_qual ? alu_lsu_dram_addr :lsu_axi_araddr ; 
+    assign lsu_ld_arlen_nxt    = lsu_vld_qual ? lsu_ld_arlen_tmp  :lsu_axi_arlen  ; 
+    assign lsu_ld_arsize_nxt   = lsu_vld_qual ? lsu_ld_arsize_tmp :lsu_axi_arsize ; 
+    assign lsu_ld_arburst_nxt  = lsu_vld_qual ? 2'b01             :lsu_axi_arburst; 
+    assign lsu_ld_arstr_nxt    = lsu_vld_qual ? alu_lsu_str       :lsu_axi_arstr  ; 
+    assign lsu_ld_arnum_nxt    = lsu_vld_qual ? alu_lsu_num 	  :lsu_axi_arnum  ;  
     
     //read data part
 
