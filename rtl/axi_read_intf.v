@@ -132,8 +132,8 @@ module AXI_READ_INFT(
     wire [7:0] arnum_nxt;
     wire axi_doing_ld;
     wire axi_doing_ld_nxt;
-    wire [3:0] arcnt;
-    wire [3:0] arcnt_nxt;
+    wire [7:0] arcnt;
+    wire [7:0] arcnt_nxt;
     wire arcnt_en;
      
     wire RVALID_qual;
@@ -145,8 +145,8 @@ module AXI_READ_INFT(
     wire axi_lsu_rvld_nxt;
 
     wire axi_rlast_cnt_en;
-    wire [7:0] axi_rlast_cnt;
-    wire [7:0] axi_rlast_cnt_nxt;
+    wire [8:0] axi_rlast_cnt;
+    wire [8:0] axi_rlast_cnt_nxt;
 
     wire [3:0] axi_rid;
 
@@ -239,7 +239,7 @@ module AXI_READ_INFT(
     assign ARREGION_nxt = 4'b0;//lsu_axi_ARvld_qual? lsu_axi_ARID : ARID;
     assign arnum_nxt = lsu_axi_arvld_qual ? lsu_axi_arnum : arnum;
     assign arstr_nxt = lsu_axi_arvld_qual ? lsu_axi_arstr : arstr;
-    assign arcnt_nxt = lsu_axi_arvld_qual ? 4'b0 : arcnt + 4'b1;
+    assign arcnt_nxt = lsu_axi_arvld_qual ? 8'b0 : arcnt + 8'b1;
     assign arcnt_en = |axi_alloc_en;
     assign axi_doing_ld = arcnt < arnum;
 
@@ -387,17 +387,17 @@ module AXI_READ_INFT(
 
     wire[15:0] axi_recv_ptr_raw; 
 
-    dec4to16 resp_RID_dec(.in(RID), .out(axi_recv_ptr_raw));
-    assign axi_recv_ptr = {16{axi_lsu_rvld}} & axi_recv_ptr_raw;
+    dec4to16 resp_RID_dec(.in(axi_rid), .out(axi_recv_ptr_raw));
+    assign axi_recv_ptr = {16{axi_lsu_rlast}} & axi_recv_ptr_raw;
 
     assign axi_lsu_sram_addr = sram_addr[axi_rid];
     assign axi_lsu_dram_addr = dram_addr[axi_rid];
     assign axi_rlast_cnt_en = RVALID_qual | lsu_axi_arvld_qual;
-    assign axi_rlast_cnt_nxt = lsu_axi_arvld_qual ? 8'b0 
-                             : RVALID_qual & RLAST ? axi_rlast_cnt + 8'b1 
+    assign axi_rlast_cnt_nxt = lsu_axi_arvld_qual ? 9'b0 
+                             : RVALID_qual & RLAST ? axi_rlast_cnt + 9'b1 
                              : axi_rlast_cnt;
 
-    assign axi_lsu_axi_done = (axi_rlast_cnt == arnum);
+    assign axi_lsu_axi_done = (axi_rlast_cnt > arnum);
 
     //FIXME rid
     DFFRE #(.WIDTH(8))
@@ -444,7 +444,7 @@ module AXI_READ_INFT(
         .q(axi_rid)
     );
     
-    DFFE #(.WIDTH(8))
+    DFFE #(.WIDTH(9))
     ff_axi_rlast_cnt (
         .clk(clk),
         .en(axi_rlast_cnt_en),
