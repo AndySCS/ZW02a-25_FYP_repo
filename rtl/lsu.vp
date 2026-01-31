@@ -142,6 +142,7 @@ module lsu(
     lsu_axi_arsize,
     lsu_axi_arburst,
     lsu_axi_arstr,
+    lsu_axi_sram_addr,
     lsu_axi_arvld,
     lsu_axi_rrdy,
 
@@ -314,6 +315,7 @@ module lsu(
     output [2:0] lsu_axi_arsize;
     output [1:0] lsu_axi_arburst;
     output [2:0] lsu_axi_arstr;
+    output [11:0] lsu_axi_sram_addr;
     output lsu_axi_arvld;
     output lsu_axi_rrdy;
 
