@@ -32,9 +32,11 @@ module AXI_READ_INFT(
     axi_lsu_rdata,
     axi_lsu_rresp,
     axi_lsu_rlast,
+    axi_lsu_sram_addr,
+    axi_lsu_dram_addr,
     axi_lsu_rvld,
-    axi_lsu_arrdy
-
+    axi_lsu_arrdy,
+    axi_lsu_axi_done
 );
     //parameter
     parameter ARID_WIDTH = 4;
@@ -75,9 +77,11 @@ module AXI_READ_INFT(
     output [63:0] axi_lsu_rdata;
     output [1:0] axi_lsu_rresp;
     output axi_lsu_rlast;
+    output [11:0] axi_lsu_sram_addr;
+    output [31:0] axi_lsu_dram_addr;
     output axi_lsu_rvld;
     output axi_lsu_arrdy;
-    
+    output axi_lsu_axi_done;
 
     //AXI ID
     wire        sram_en;
@@ -138,6 +142,12 @@ module AXI_READ_INFT(
     wire [1:0] axi_lsu_rresp_nxt;
     wire axi_lsu_rlast_nxt;
     wire axi_lsu_rvld_nxt;
+
+    wire axi_rlast_cnt_en;
+    wire [7:0] axi_rlast_cnt;
+    wire [7:0] axi_rlast_cnt_nxt;
+
+    wire [3:0] axi_rid;
 
     assign axi_invld = ~axi_vld;
     assign axi_alloc_en = {16{axi_alloc_vld}} & axi_alloc_ptr & axi_invld;
@@ -329,7 +339,7 @@ module AXI_READ_INFT(
     );
     
     DFFRE #(.WIDTH(8))
-    ff_ARnum (
+    ff_arnum (
         .clk(clk),
 	.rst_n(rst_n),
         .en(lsu_axi_arvld),
@@ -338,7 +348,7 @@ module AXI_READ_INFT(
     );
     
     DFFRE #(.WIDTH(3))
-    ff_ARstr (
+    ff_arstr (
         .clk(clk),
 	.rst_n(rst_n),
         .en(lsu_axi_arvld),
@@ -359,7 +369,7 @@ module AXI_READ_INFT(
     assign RVALID_qual = RVALID & RREADY;
     assign lsu_resp_recv = lsu_axi_rrdy & axi_lsu_rvld;
     //update the read resp siganl if RVALID
-    assign axi_lsu_rvld_nxt = RVALID_qual | axi_lsu_rvld & ~lsu_resp_recv;
+    assign axi_lsu_rvld_nxt = RVALID_qual | axi_lsu_rvld & ~lsu_axi_rrdy;
     assign axi_lsu_rresp_nxt = RVALID_qual ? RRESP : axi_lsu_rresp;
     assign axi_lsu_rlast_nxt = RVALID_qual ? RLAST : axi_lsu_rlast;
     assign axi_lsu_rdata_nxt = RVALID_qual ? RDATA : axi_lsu_rdata;
@@ -372,7 +382,16 @@ module AXI_READ_INFT(
     wire[15:0] axi_recv_ptr_raw; 
 
     dec4to16 resp_RID_dec(.in(RID), .out(axi_recv_ptr_raw));
-    assign axi_recv_ptr = axi_lsu_rvld ? axi_recv_ptr_raw : 'b0;
+    assign axi_recv_ptr = {16{axi_lsu_rvld}} & axi_recv_ptr_raw;
+
+    assign axi_lsu_sram_addr = sram_addr[axi_rid];
+    assign axi_lsu_dram_addr = dram_addr[axi_rid];
+    assign axi_rlast_cnt_en = RVALID_qual | lsu_axi_arvld_qual;
+    assign axi_rlast_cnt_nxt = lsu_axi_arvld_qual ? 8'b0 
+                             : RVALID_qual & RLAST ? axi_rlast_cnt + 8'b1 
+                             : axi_rlast_cnt;
+
+    assign axi_lsu_axi_done = (axi_rlast_cnt == arnum);
 
     //FIXME rid
     DFFRE #(.WIDTH(8))
@@ -409,6 +428,22 @@ module AXI_READ_INFT(
         .en(RVALID),
         .d(axi_lsu_rlast_nxt),
         .q(axi_lsu_rlast)
+    );
+    
+    DFFE #(.WIDTH(4))
+    ff_axi_rid (
+        .clk(clk),
+        .en(RVALID_qual),
+        .d(RID),
+        .q(axi_rid)
+    );
+    
+    DFFE #(.WIDTH(8))
+    ff_axi_rlast_cnt (
+        .clk(clk),
+        .en(axi_rlast_cnt_en),
+        .d(axi_rlast_cnt_nxt),
+        .q(axi_rlast_cnt)
     );
     //rvld
     DFFR #(.WIDTH(1))

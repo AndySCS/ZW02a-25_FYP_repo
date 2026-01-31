@@ -65,7 +65,10 @@ module lsu(
     axi_lsu_rdata,
     axi_lsu_rresp,
     axi_lsu_rlast,
+    axi_lsu_sram_addr,
+    axi_lsu_dram_addr,
     axi_lsu_rvld,
+    axi_lsu_axi_done,
 
     //to idu
     lsu_alu_rdy,
@@ -142,6 +145,7 @@ module lsu(
     lsu_axi_arsize,
     lsu_axi_arburst,
     lsu_axi_arstr,
+    lsu_axi_arnum,
     lsu_axi_sram_addr,
     lsu_axi_arvld,
     lsu_axi_rrdy,
@@ -239,7 +243,10 @@ module lsu(
     input [63:0] axi_lsu_rdata;
     input [1:0] axi_lsu_rresp;
     input axi_lsu_rlast;
+    input [11:0] axi_lsu_sram_addr;
+    input [31:0] axi_lsu_dram_addr;
     input axi_lsu_rvld;
+    input axi_lsu_axi_done;
 
     //from mxu
     input [127:0] mxu_lsu_int8_row0_data;
@@ -310,11 +317,12 @@ module lsu(
     output lsu_axi_brdy;
     //for read interface
     output [7:0] lsu_axi_arid;
-    output [9:0] lsu_axi_araddr;
+    output [31:0] lsu_axi_araddr;
     output [7:0] lsu_axi_arlen;
     output [2:0] lsu_axi_arsize;
     output [1:0] lsu_axi_arburst;
     output [2:0] lsu_axi_arstr;
+    output [7:0] lsu_axi_arnum;
     output [11:0] lsu_axi_sram_addr;
     output lsu_axi_arvld;
     output lsu_axi_rrdy;
@@ -1352,81 +1360,107 @@ module lsu(
         .q(lsu_ld_qual_ff)
     );
 
-    wire [7:0] lsu_ld_arid;
-    wire [9:0] lsu_ld_araddr;
+    //wire [7:0] lsu_ld_arid;
+    wire [31:0] lsu_ld_araddr;
     wire [7:0] lsu_ld_arlen;
     wire [2:0] lsu_ld_arsize;
     wire [1:0] lsu_ld_arburst;
     wire [2:0] lsu_ld_arstr;
 
+   // wire [7:0] lsu_ld_arid_nxt;
+    wire lsu_axi_arvld_nxt;
+    wire [31:0] lsu_ld_araddr_nxt;
+    wire [7:0] lsu_ld_arlen_tmp;
+    wire [7:0] lsu_ld_arlen_nxt;
+    wire [2:0] lsu_ld_arsize_tmp;
+    wire [2:0] lsu_ld_arsize_nxt;
+    wire [1:0] lsu_ld_arburst_nxt;
+    wire [2:0] lsu_ld_arstr_nxt;
+    wire [7:0] lsu_ld_arnum_nxt;
+
     wire lsu_ld_doing_ff;
     wire lsu_ld_ar_en;
     assign lsu_ld_ar_en = lsu_ld_en;
-    
-    DFFRE #(.WIDTH(8))
-    ff_lsu_ld_arid(
-        .clk(clk),
-        .rst_n(rst_n),
-        .d(8'b0),
-        .en(lsu_ld_ar_en),
-        .q(lsu_ld_arid)
-    );
-    DFFRE #(.WIDTH(10))
-    ff_lsu_ld_araddr(
-        .clk(clk),
-        .rst_n(rst_n),
-        .d(alu_lsu_dram_addr[13:4]),
-        .en(lsu_ld_ar_en),
-        .q(lsu_ld_araddr)
-    );
-    DFFRE #(.WIDTH(8))
-    ff_lsu_ld_arlen(
-        .clk(clk),
-        .rst_n(rst_n),
-        .d(alu_lsu_num),
-        .en(lsu_ld_ar_en),
-        .q(lsu_ld_arlen)
-    );
-    DFFRE #(.WIDTH(3))
-    ff_lsu_ld_arsize(
-        .clk(clk),
-        .rst_n(rst_n),
-        .d(alu_lsu_len),
-        .en(lsu_ld_ar_en),
-        .q(lsu_ld_arsize)
-    );
-    //burst type not support
-    DFFRE #(.WIDTH(2))
-    ff_lsu_ld_arburst(
-        .clk(clk),
-        .rst_n(rst_n),
-        .d(2'b0),
-        .en(lsu_ld_ar_en),
-        .q(lsu_ld_arburst)
-    );
-    DFFRE #(.WIDTH(3))
-    ff_lsu_ld_arstr(
-        .clk(clk),
-        .rst_n(rst_n),
-        .d(alu_lsu_str),
-        .en(lsu_ld_ar_en),
-        .q(lsu_ld_arstr)
-    );
      
     //adress read part
     //once we sense load instr give arvld and other ar signal
     //id and burst not support 
     //assign lsu_ld_arid_nxt     = lsu_alu_vld_qual ? lsu_alu_ard     :lsu_axi_arid   ; 
-    assign lsu_axi_arvld_nxt   = lsu_vld_qual & (alu_lsu_ld_iram | alu_lsu_ld_wram) & ~alu_lsu_wb_vld | lsu_axi_arvld & ~axi_lsu_arrdy;
-    assign lsu_ld_arlen_tmp    = alu_lsu_len[2] ? 8'd2 : 8'd1;  
-    assign lsu_ld_arsize_tmp   = alu_lsu_len[2] ? 3'b011 : alu_lsu_len;  
-    assign lsu_ld_araddr_nxt   = lsu_vld_qual ? alu_lsu_dram_addr :lsu_axi_araddr ; 
-    assign lsu_ld_arlen_nxt    = lsu_vld_qual ? lsu_ld_arlen_tmp  :lsu_axi_arlen  ; 
-    assign lsu_ld_arsize_nxt   = lsu_vld_qual ? lsu_ld_arsize_tmp :lsu_axi_arsize ; 
-    assign lsu_ld_arburst_nxt  = lsu_vld_qual ? 2'b01             :lsu_axi_arburst; 
-    assign lsu_ld_arstr_nxt    = lsu_vld_qual ? alu_lsu_str       :lsu_axi_arstr  ; 
-    assign lsu_ld_arnum_nxt    = lsu_vld_qual ? alu_lsu_num 	  :lsu_axi_arnum  ;  
+    assign lsu_axi_arvld_nxt       = lsu_vld_qual & (alu_lsu_ld_iram | alu_lsu_ld_wram) & ~alu_lsu_wb_vld | lsu_axi_arvld & ~axi_lsu_arrdy;
+    assign lsu_ld_arlen_tmp        = alu_lsu_len[2] ? 8'd2 : 8'd1;  
+    assign lsu_ld_arsize_tmp       = alu_lsu_len[2] ? 3'b011 : alu_lsu_len;  
+    assign lsu_ld_araddr_nxt       = lsu_vld_qual ? alu_lsu_dram_addr :lsu_axi_araddr ; 
+    assign lsu_ld_arlen_nxt        = lsu_vld_qual ? lsu_ld_arlen_tmp  :lsu_axi_arlen  ; 
+    assign lsu_ld_arsize_nxt       = lsu_vld_qual ? lsu_ld_arsize_tmp :lsu_axi_arsize ; 
+    assign lsu_ld_arburst_nxt      = lsu_vld_qual ? 2'b01             :lsu_axi_arburst; 
+    assign lsu_ld_arstr_nxt        = lsu_vld_qual ? alu_lsu_str       :lsu_axi_arstr  ; 
+    assign lsu_ld_arnum_nxt        = lsu_vld_qual ? alu_lsu_num 	  :lsu_axi_arnum  ;  
+    assign lsu_ld_sram_addr_nxt    = lsu_vld_qual ? alu_lsu_ld_st_addr[11:0] 	  :lsu_ld_sram_addr  ;  
     
+    DFFR #(.WIDTH(1))
+    ff_lsu_axi_arvld(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(lsu_axi_arvld_nxt),
+        .q(lsu_axi_arvld)
+    );
+
+    DFFE #(.WIDTH(32))
+    ff_lsu_ld_araddr(
+        .clk(clk),
+        .en(lsu_vld_qual),
+        .d(lsu_ld_araddr_nxt),
+        .q(lsu_axi_araddr)
+    );
+ 
+    DFFE #(.WIDTH(8))
+    ff_lsu_ld_arlen(
+        .clk(clk),
+        .en(lsu_vld_qual),
+        .d(lsu_ld_arlen_nxt),
+        .q(lsu_axi_arlen)
+    );
+ 
+    DFFE #(.WIDTH(3))
+    ff_lsu_ld_arsize(
+        .clk(clk),
+        .en(lsu_vld_qual),
+        .d(lsu_ld_arsize_nxt),
+        .q(lsu_axi_arsize)
+    );
+ 
+    DFFE #(.WIDTH(2))
+    ff_lsu_ld_arburst(
+        .clk(clk),
+        .en(lsu_vld_qual),
+        .d(lsu_ld_arburst_nxt),
+        .q(lsu_axi_arburst)
+    );
+ 
+    DFFE #(.WIDTH(3))
+    ff_lsu_ld_arstr(
+        .clk(clk),
+        .en(lsu_vld_qual),
+        .d(lsu_ld_arstr_nxt),
+        .q(lsu_axi_arstr)
+    );
+ 
+    DFFE #(.WIDTH(8))
+    ff_lsu_ld_arnum(
+        .clk(clk),
+        .en(lsu_vld_qual),
+        .d(lsu_ld_arnum_nxt),
+        .q(lsu_axi_arnum)
+    );
+ 
+    DFFE #(.WIDTH(12))
+    ff_lsu_ld_sram_addr(
+        .clk(clk),
+        .en(lsu_vld_qual),
+        .d(lsu_ld_sram_addr_nxt),
+        .q(lsu_axi_sram_addr)
+    );
+ 
     //read data part
 
     //give out 
@@ -1497,13 +1531,9 @@ module lsu(
     //assign lsu_ld_rd_doing = (lsu_ld_rd_qual | lsu_ld_rd_qual_ff) & ~lsu_ld_rd_done;
     //only extract the rdata when it is qual
     wire[127:0] lsu_ld_rd_data_raw;
-    assign lsu_ld_rd_data_raw = {{64{1'b0}}, axi_lsu_rdata} & {128{1'b1}}; 
+    assign lsu_ld_rd_data_raw = {64'b0, axi_lsu_rdata}; 
     
-    assign lsu_ld_sram_din_shift = ~(|lsu_axi_arsize) ? lsu_ld_st_addr[3:0] 
-                                                          : lsu_axi_arsize[0]^lsu_axi_arsize[1] ? (lsu_axi_arsize[0] ? {lsu_ld_st_addr[3:1],1'b0} 
-                                                                                                            : {lsu_ld_st_addr[3:2],{2{1'b0}}})
-                                                                                          : (lsu_axi_arsize[0] ? {lsu_ld_st_addr[3],{3{1'b0}}}
-                                                                                                            : {4{1'b0}}); 
+    assign lsu_ld_sram_din_shift = (4'hf << lsu_axi_arsize) & lsu_ld_st_addr[3:0];
  
     assign lsu_ld_128_rd_qual = lsu_ld_rd_qual ? ((lsu_ld_rd_qual & ~lsu_ld_rd_qual_ff) ? 1'b0 : ~lsu_ld_128_rd_qual_ff) : 1'b0;
 
@@ -1515,7 +1545,9 @@ module lsu(
         .q(lsu_ld_128_rd_qual_ff)
     );
 
-    assign lsu_ld_sram_din = lsu_axi_arsize[2] ? (lsu_ld_128_rd_qual ? ((lsu_ld_sram_din_ff<<7'd64) | lsu_ld_rd_data_raw) : lsu_ld_rd_data_raw) : lsu_ld_rd_data_raw << (lsu_ld_sram_din_shift*4'd8);
+    assign lsu_ld_sram_din = lsu_axi_arsize[2] ? (lsu_ld_128_rd_qual ? {lsu_ld_sram_din_ff, lsu_ld_rd_data_raw[63:0]}
+                                                                     : lsu_ld_rd_data_raw) 
+                                               : lsu_ld_rd_data_raw << {lsu_ld_sram_din_shift, 3'b0};
  
     //assign lsu_ld_sram_din = lsu_axi_arsize[2] ? (axi_lsu_rlast ? ((lsu_ld_sram_din_ff<<7'd64) | lsu_ld_rd_data_raw) : lsu_ld_rd_data_raw) : lsu_ld_rd_data_raw;
     

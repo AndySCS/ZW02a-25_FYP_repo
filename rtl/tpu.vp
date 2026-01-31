@@ -290,6 +290,9 @@ module tpu(
     wire axi_lsu_rvld;
     wire axi_lsu_arrdy;
     wire axi_lsu_awrdy;
+    wire [11:0] axi_lsu_sram_addr;
+    wire [31:0] axi_lsu_dram_addr;
+    wire axi_lsu_axi_done;
     wire axi_lsu_wrdy;
     wire axi_lsu_bid;
     wire [1:0] axi_lsu_bresp;
@@ -600,6 +603,9 @@ module tpu(
         .axi_lsu_bresp                        (axi_lsu_bresp),
         .axi_lsu_bvld                         (axi_lsu_bvld),
         .axi_lsu_resp_oram_addr               (axi_lsu_resp_oram_addr),
+        .axi_lsu_sram_addr                    (axi_lsu_sram_addr),
+        .axi_lsu_dram_addr                    (axi_lsu_dram_addr),
+        .axi_lsu_axi_done                     (axi_lsu_axi_done),
         .axi_lsu_arrdy                        (axi_lsu_arrdy),
         .axi_lsu_rid                          (axi_lsu_rid),
         .axi_lsu_rdata                        (axi_lsu_rdata),
@@ -783,6 +789,9 @@ module tpu(
         .axi_lsu_rresp                        (axi_lsu_rresp),
         .axi_lsu_rlast                        (axi_lsu_rlast),
         .axi_lsu_rvld                         (axi_lsu_rvld),
+        .axi_lsu_sram_addr                    (axi_lsu_sram_addr),
+        .axi_lsu_dram_addr                    (axi_lsu_dram_addr),
+        .axi_lsu_axi_done                     (axi_lsu_axi_done),
         .axi_lsu_arrdy                        (axi_lsu_arrdy)
     );
 
