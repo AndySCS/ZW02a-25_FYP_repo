@@ -12,23 +12,25 @@ module ram_mem_wrapper (
     parameter DEPTH = 1 << ADDR_WIDTH;
     
     input clk;
-    input [15 : 0]we;
+    input [DATA_WIDTH/8-1:0]we;
     input ce;
     input [ADDR_WIDTH-1:0] addr;
     input [DATA_WIDTH-1:0] din;
     output reg [DATA_WIDTH-1:0] dout;
 
-    reg [DATA_WIDTH-1:0] mem [0:DEPTH-1];
+    wire [DATA_WIDTH-1:0] we_wide;
+    reg  [DATA_WIDTH-1:0] mem [0:DEPTH-1];
+
+    genvar i;
+    generate;
+        for (i = 0; i < DATA_WIDTH/8; i = i + 1) begin
+            assign we_wide[7+i*8:0+i*8] = {8{we[i]}};
+        end
+    endgenerate
     
     always @(posedge clk) begin
         if ((|we) & ce) begin
-        	for (int i = 0; i < 16 ; i=i+1) begin
-	   	 	    if(we[i])begin
-        			for (int j = 0; j < 8 ; j=j+1) begin
-            				mem[addr][(i*8)+j] <= din[(i*8)+j];
-				    end
-	    		end
-        	end
+            mem[addr] <= (din & we_wide) | (mem[addr] & ~we_wide); // Synchronous writeqq
         end
         else if(ce) begin
             dout <= mem[addr]; // Synchronous read
