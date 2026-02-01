@@ -356,7 +356,7 @@ module AXI_WRITE_INFT(
         .q(oram_addr_15)
     );
 
-    assign axi_lsu_awrdy = |axi_vld;
+    assign axi_lsu_awrdy = ~(|axi_vld);
    
     assign AWVALID = |(axi_vld & ~axi_sent);
     assign AWID_nxt = AWID + 4'b1;

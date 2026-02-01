@@ -7,8 +7,8 @@ load_input: //
     //load image input, 28*28 = 784
     //rs1: register for the dest, [11:0] dest addr, [13:12] dest type
     //rs2: register for storing the dram addr
-    addi x1, x0, 1  //add iterator
-    beq x1, x2, load_input_if
+    addi x1, x1, 1  //add iterator
+    bne x1, x2, load_input_else
     load_input_if:
         LDT x3, x6, 15, 000, 000  //LDT rs1, rs2, <num>, <len>, <stride>
         jal x0, load_input_end//jal rd, simm21

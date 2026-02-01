@@ -68,13 +68,13 @@
 `define B_TYPE_IMM_11_MSB           (`B_TYPE_IMM_11_LSB + `B_TYPE_IMM_11_SIZE -1)
 `define B_TYPE_IMM_11_RNG           `B_TYPE_IMM_11_MSB : `B_TYPE_IMM_11_LSB
 
-`define B_TYPE_IMM_4_1_SIZE         1
-`define B_TYPE_IMM_4_1_LSB          (`RS2_MSB + 1)
+`define B_TYPE_IMM_4_1_SIZE         4
+`define B_TYPE_IMM_4_1_LSB          (`B_TYPE_IMM_11_MSB + 1)
 `define B_TYPE_IMM_4_1_MSB          (`B_TYPE_IMM_4_1_LSB + `B_TYPE_IMM_4_1_SIZE -1)
 `define B_TYPE_IMM_4_1_RNG          `B_TYPE_IMM_4_1_MSB : `B_TYPE_IMM_4_1_LSB
 
-`define B_TYPE_IMM_10_5_SIZE        1
-`define B_TYPE_IMM_10_5_LSB         (`B_TYPE_IMM_11_MSB + 1)
+`define B_TYPE_IMM_10_5_SIZE        6
+`define B_TYPE_IMM_10_5_LSB         (`RS2_MSB + 1)
 `define B_TYPE_IMM_10_5_MSB         (`B_TYPE_IMM_10_5_LSB + `B_TYPE_IMM_10_5_SIZE -1)
 `define B_TYPE_IMM_10_5_RNG         `B_TYPE_IMM_10_5_MSB : `B_TYPE_IMM_10_5_LSB
 
@@ -119,7 +119,7 @@
 `define SRAM_ADDR_RNG               `SRAM_ADDR_MSB : `SRAM_ADDR_LSB
 
 `define SRAM_TYPE_SIZE              2
-`define SRAM_TYPE_LSB               (`SRAM_ADDR_LSB + 1)
+`define SRAM_TYPE_LSB               (`SRAM_ADDR_MSB + 1)
 `define SRAM_TYPE_MSB               (`SRAM_TYPE_LSB + `SRAM_TYPE_SIZE -1)
 `define SRAM_TYPE_RNG               `SRAM_TYPE_MSB : `SRAM_TYPE_LSB
 

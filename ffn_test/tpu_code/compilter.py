@@ -174,7 +174,7 @@ def convert_opcode2bin(operator):
     return opcode_dict.get(operator, None)
 
 def convert_itype2bin(line_elem, addr_hash, addr):
-    imm12 = format(int(line_elem[3]), "012b")
+    imm12 = format(int(line_elem[3]) & 0xFFFF_FFFF, "012b")
     rs1 = convert_reg2bin(line_elem[2])
     func3 = convert_func32bin(line_elem[0])
     rd = convert_reg2bin(line_elem[1])
@@ -203,16 +203,16 @@ def convert_rtype2bin(line_elem, addr_hash, addr):
     return machine_code
 
 def convert_stype2bin(line_elem, addr_hash, addr):
-    imm12 = format(int(line_elem[3]), "012b")
+    imm12 = format(int(line_elem[3]) & 0xFFFF_FFFF, "012b")[::-1]
     rs2 = convert_reg2bin(line_elem[1])
     rs1 = convert_reg2bin(line_elem[2])
     func3 = convert_func32bin(line_elem[0])
     opcode = convert_opcode2bin(line_elem[0])
-    machine_code = imm12[5:12] + rs2 + rs1 + func3 + imm12[0:5] + opcode
+    machine_code = imm12[5:12][::-1] + rs2 + rs1 + func3 + imm12[0:5][::-1] + opcode
     return machine_code
 
 def convert_utype2bin(line_elem, addr_hash, addr):
-    imm20 = format(int(line_elem[2]), "020b")
+    imm20 = format(int(line_elem[2]) & 0xFFFF_FFFF, "020b")
     rd = convert_reg2bin(line_elem[1])
     opcode = convert_opcode2bin(line_elem[0])
     machine_code = imm20 + rd + opcode
@@ -222,13 +222,13 @@ def convert_btype2bin(line_elem, addr_hash, addr):
     target_addr = addr_hash.get(line_elem[3], None)
     if target_addr is None:
         raise Exception(f"{line_elem[3]} is not found in addr_hash")
-    addr_diff = int(target_addr) - addr
-    imm13 = format(addr_diff, "013b")
+    addr_diff = (int(target_addr) - addr) & 0xFFFF_FFFF
+    imm13 = format(addr_diff, "013b")[::-1]
     rs1 = convert_reg2bin(line_elem[1])
-    rs2 = convert_reg2bin(line_elem[2])
+    rs2 = convert_reg2bin(line_elem[2]) 
     func3 = convert_func32bin(line_elem[0])
     opcode = convert_opcode2bin(line_elem[0])
-    machine_code = imm13[12] + imm13[5:11] + rs2 + rs1 + func3 + imm13[1:5] + imm13[11] + opcode
+    machine_code = imm13[12] + imm13[5:11][::-1] + rs2 + rs1 + func3 + imm13[1:5][::-1] + imm13[11] + opcode
     return machine_code
 
 def convert_jtype2bin(line_elem, addr_hash, addr):
@@ -236,10 +236,10 @@ def convert_jtype2bin(line_elem, addr_hash, addr):
     if target_addr is None:
         raise Exception(f"{line_elem[2]} is not found in addr_hash")
     addr_diff = int(target_addr) - addr
-    imm21 = format(addr_diff, "021b")
+    imm21 = format(addr_diff & 0xFFFF_FFFF, "021b")[::-1]
     rd = convert_reg2bin(line_elem[1])
     opcode = convert_opcode2bin(line_elem[0])
-    machine_code = imm21[20] + imm21[1:11] + imm21[11] + imm21[12:20] + rd + opcode
+    machine_code = imm21[20] + imm21[1:11][::-1] + imm21[11] + imm21[12:20][::-1] + rd + opcode
     return machine_code
 
 def convert_self_def_ldt2bin(line_elem, addr_hash, addr):
@@ -250,7 +250,7 @@ def convert_self_def_ldt2bin(line_elem, addr_hash, addr):
     rs1 = convert_reg2bin(line_elem[1])
     rs2 = convert_reg2bin(line_elem[2])
     opcode = convert_opcode2bin(line_elem[0])
-    machine_code = '0' + num[2:8] + rs2 + rs1 + num[0:2] + len + stride + opcode
+    machine_code = '0' + num[0:6] + rs2 + rs1 + num[6:8] + len + stride + opcode
     return machine_code
 
 def convert_self_def_stt2bin(line_elem, addr_hash, addr):
@@ -261,7 +261,7 @@ def convert_self_def_stt2bin(line_elem, addr_hash, addr):
     rs1 = convert_reg2bin(line_elem[1])
     rs2 = convert_reg2bin(line_elem[2])
     opcode = convert_opcode2bin(line_elem[0])
-    machine_code = low + num[2:8] + rs2 + rs1 + num[0:2] + len + stride + opcode
+    machine_code = low + num[0:6] + rs2 + rs1 + num[6:8] + len + stride + opcode
     return machine_code
 
 def convert_self_def_stmt2bin(line_elem, addr_hash, addr):
