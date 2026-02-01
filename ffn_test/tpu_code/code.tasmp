@@ -26,7 +26,6 @@ load_input: //
 addi x6, x0, 0  
 //
 
-lui x4, 4 //set wram addr
 addi x3, x0, 15 //reset iram addr for store
 
 addi x30, x0, 56 //number of perceptrons
@@ -64,10 +63,11 @@ layer_network_loop:
 
         addi x25, x25, 1 //update iter
         blt x25, x24, load_weight_else
-        addi x4, x4, 0
 
         load_weight_if: // iter == 50
             addi x29, x0, 0 // init loop iter
+            addi x4, x0, 0
+	    lui x4, 4 //set wram addr
             load_weight_else_for_loop: // load weight loop
                 addi x29, x29, 1 // update iter
                 LDT x4, x6, 0, 0, 0  //load weight to wram
@@ -79,6 +79,8 @@ layer_network_loop:
 
         load_weight_else: //iter is < 50, load bias only
             addi x29, x0, 0 // init loop iter
+            addi x4, x0, 0
+	    lui x4, 4 //set wram addr
             load_weight_else_for_loop: // load weight loop
                 addi x29, x29, 1 // update iter
                 LDT x4, x6, 15, 0, 0  //load weight to wram
@@ -173,6 +175,8 @@ second_layer_loop:
 
     sl_load_weight_if: // iter == 50
         addi x29, x0, 0 // init loop iter
+        addi x4, x0, 0
+	lui x4, 4 //set wram addr
         sl_load_weight_else_for_loop: // load weight loop
             addi x29, x29, 1 // update iter
             LDT x4, x6, 8, 0, 0  //load weight to wram
@@ -184,6 +188,8 @@ second_layer_loop:
 
     sl_load_weight_else: //iter is < 50, load bias only
         addi x29, x0, 0 // init loop iter
+        addi x4, x0, 0
+	lui x4, 4 //set wram addr
         sl_load_weight_else_for_loop: // load weight loop
             addi x29, x29, 1 // update iter
             LDT x4, x6, 15, 0, 0  //load weight to wram
