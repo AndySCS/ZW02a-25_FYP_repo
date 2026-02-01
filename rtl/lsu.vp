@@ -354,6 +354,8 @@ module lsu(
     //for mm instr
     wire lsu_mm_finish;
 
+    wire lsu_act_finish;
+
     //for sram
     wire [15:0] lsu_iram_we;
     wire lsu_iram_ce;
@@ -400,7 +402,7 @@ module lsu(
 
     assign lsu_vld_qual = alu_lsu_vld & lsu_alu_rdy;
     assign lsu_vld_qual_en = lsu_vld_qual | ~alu_lsu_vld;
-    assign lsu_vld_nxt = lsu_vld_qual | lsu_vld & ~(lsu_riscv_finish | lsu_instr_finish_ff);
+    assign lsu_vld_nxt = lsu_vld_qual | lsu_vld & ~(lsu_riscv_finish | lsu_instr_finish_ff | lsu_act_finish);
 
     DFFR #(.WIDTH(1))
     ff_lsu_vld(
@@ -417,13 +419,14 @@ module lsu(
         .q(lsu_vld_qual_ff)
     );
     //assign lsu_alu_rdy = ~lsu_vld | lsu_instr_finish | lsu_instr_finish_ff;
-    assign lsu_alu_rdy = ~lsu_vld | lsu_riscv_finish | lsu_instr_finish_ff;
+    assign lsu_alu_rdy = ~lsu_vld | lsu_riscv_finish | lsu_instr_finish_ff | lsu_act_finish;
 
     //wire lsu_mm_finish_nxt;
     //assign lsu_mm_finish = lsu_mm_finish_nxt & mxu_lsu_data_rdy;
-    //assign lsu_instr_finish = lsu_st_finish | lsu_ld_finish | lsu_mm_finish | lsu_riscv_ld_st_finish | lsu_riscv_finish;
+    //assign lsu_instr_finish = lsu_st_finish | lsu_ld_finish | lsu_mm_finish | lsu_riscv_ld_st_finish | lsu_riscv_finish | lsu_act_finish;
     //assign lsu_instr_finish = 1'b0;
     
+    assign lsu_act_finish = lsu_mxu_vld & mxu_lsu_data_rdy & lsu_mxu_act_vld;
     wire lsu_mm_finish_nxt;
     DFFRE #(.WIDTH(1))
     ff_lsu_mm_finish(
@@ -460,7 +463,7 @@ module lsu(
         .d(lsu_instr_finish),
         .q(lsu_instr_finish_ff)
     );
-    assign lsu_instr_finish = lsu_riscv_finish | lsu_mm_finish | lsu_ld_finish;
+    assign lsu_instr_finish = lsu_riscv_finish | lsu_mm_finish | lsu_ld_finish | lsu_act_finish;
 
 
     wire lsu_st_iram_ff;
