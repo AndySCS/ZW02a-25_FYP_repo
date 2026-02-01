@@ -699,86 +699,64 @@ module lsu(
     assign lsu_st_type2_awstr_nxt        = lsu_vld_qual ? alu_lsu_str       :lsu_axi_awstr  ; 
     assign lsu_st_type2_awnum_nxt        = lsu_vld_qual ? alu_lsu_num 	  :lsu_axi_awnum  ;  
 
-    DFFRE #(.WIDTH(8))
-    ff_lsu_st_type2_awid(
+    DFFE #(.WIDTH(32))
+    ff_lsu_axi_awaddr(
         .clk(clk),
-        .rst_n(rst_n),
-        .d(8'b0),
-        .en(lsu_st_type2_aw_en),
-        .q(lsu_st_type2_awid)
+        .en(lsu_vld_qual),
+        .d(lsu_st_type2_awaddr_nxt),
+        .q(lsu_axi_awaddr)
     );
-    DFFRE #(.WIDTH(10))
-    ff_lsu_st_type2_awaddr(
+ 
+    DFFE #(.WIDTH(8))
+    ff_lsu_axi_awlen(
         .clk(clk),
-        .rst_n(rst_n),
-        .d(alu_lsu_dram_addr[13:4]),
-        .en(lsu_st_type2_aw_en),
-        .q(lsu_st_type2_awaddr)
+        .en(lsu_vld_qual),
+        .d(lsu_st_type2_awlen_nxt),
+        .q(lsu_axi_awlen)
     );
-    DFFRE #(.WIDTH(8))
-    ff_lsu_st_type2_awlen(
+ 
+    DFFE #(.WIDTH(3))
+    ff_lsu_axi_awsize(
         .clk(clk),
-        .rst_n(rst_n),
-        .d(alu_lsu_num),
-        .en(lsu_st_type2_aw_en),
-        .q(lsu_st_type2_awlen)
+        .en(lsu_vld_qual),
+        .d(lsu_st_type2_awsize_nxt),
+        .q(lsu_axi_awsize)
     );
-    DFFRE #(.WIDTH(3))
-    ff_lsu_st_type2_awsize(
+ 
+    DFFE #(.WIDTH(2))
+    ff_lsu_axi_awburst(
         .clk(clk),
-        .rst_n(rst_n),
-        .d(alu_lsu_len),
-        .en(lsu_st_type2_aw_en),
-        .q(lsu_st_type2_awsize)
+        .en(lsu_vld_qual),
+        .d(lsu_st_type2_awburst_nxt),
+        .q(lsu_axi_awburst)
     );
-    //burst type not support
-    DFFRE #(.WIDTH(2))
-    ff_lsu_st_type2_awburst(
+ 
+    DFFE #(.WIDTH(3))
+    ff_lsu_axi_awstr(
         .clk(clk),
-        .rst_n(rst_n),
-        .d(2'b0),
-        .en(lsu_st_type2_aw_en),
-        .q(lsu_st_type2_awburst)
+        .en(lsu_vld_qual),
+        .d(lsu_st_type2_awstr_nxt),
+        .q(lsu_axi_awstr)
     );
-    DFFRE #(.WIDTH(3))
-    ff_lsu_st_type2_awstr(
+ 
+    DFFE #(.WIDTH(8))
+    ff_lsu_axi_awnum(
         .clk(clk),
-        .rst_n(rst_n),
-        .d(alu_lsu_str),
-        .en(lsu_st_type2_aw_en),
-        .q(lsu_st_type2_awstr)
+        .en(lsu_vld_qual),
+        .d(lsu_st_type2_awnum_nxt),
+        .q(lsu_axi_awnum)
     );
-    wire [4:0] lsu_awnum_raw;
-    assign lsu_awnum_raw = 5'b10000 >> alu_lsu_len; 
-    DFFRE #(.WIDTH(5))
-    ff_lsu_st_type2_awnum(
-        .clk(clk),
-        .rst_n(rst_n),
-        .d(lsu_awnum_raw),
-        .en(lsu_st_type2_aw_en),
-        .q(lsu_st_type2_awnum)
-    );
+
     wire lsu_st_type2_st_low_ff;
+
     DFFRE #(.WIDTH(1))
     ff_lsu_st_type2_st_low(
         .clk(clk),
         .rst_n(rst_n),
         .d(alu_lsu_st_low),
-        .en(lsu_st_type2_aw_en),
+        .en(lsu_vld_qual),
         .q(lsu_st_type2_st_low_ff)
     );
-    //wire [4:0]lsu_axi_awnum;
-    //adress write part
-    //once we sense store instr give awvld and other aw signal
-
-    assign lsu_axi_awvld   = (lsu_st_mm_vld & (&lsu_st_type)) | (lsu_st_mm_vld_ff & (&lsu_st_type_ff)) ; 
-    assign lsu_axi_awid    = (lsu_st_mm_vld & (&lsu_st_type)) ? 'b0               : {8{(lsu_st_mm_vld_ff  &(&lsu_st_type_ff))}} & lsu_st_type2_awid;
-    assign lsu_axi_awaddr  = (lsu_st_mm_vld & (&lsu_st_type)) ? alu_lsu_dram_addr : {10{(lsu_st_mm_vld_ff &(&lsu_st_type_ff))}} & lsu_st_type2_awaddr;
-    assign lsu_axi_awlen   = (lsu_st_mm_vld & (&lsu_st_type)) ? alu_lsu_num       : {8{(lsu_st_mm_vld_ff  &(&lsu_st_type_ff))}} & lsu_st_type2_awlen;
-    assign lsu_axi_awsize  = (lsu_st_mm_vld & (&lsu_st_type)) ? alu_lsu_len       : {3{(lsu_st_mm_vld_ff  &(&lsu_st_type_ff))}} & lsu_st_type2_awsize;
-    assign lsu_axi_awburst = (lsu_st_mm_vld & (&lsu_st_type)) ? 2'b00             : {2{(lsu_st_mm_vld_ff  &(&lsu_st_type_ff))}} & lsu_st_type2_awburst;
-    assign lsu_axi_awstr   = (lsu_st_mm_vld & (&lsu_st_type)) ? alu_lsu_str       : {3{(lsu_st_mm_vld_ff  &(&lsu_st_type_ff))}} & lsu_st_type2_awstr;
-    //assign lsu_axi_awnum   = (lsu_st_mm_vld & (&lsu_st_type)) ? lsu_awnum_raw     : {5{(lsu_st_mm_vld_ff  &(&lsu_st_type_ff))}} & lsu_st_type2_awnum;
     
     wire lsu_st_type2_wr_cnt_end;
    
