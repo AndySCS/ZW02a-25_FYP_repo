@@ -129,7 +129,7 @@ module lsu(
     lsu_axi_awsize,
     lsu_axi_awburst,
     lsu_axi_awstr,
-    //lsu_axi_awnum,
+    lsu_axi_awnum,
     lsu_axi_awvld,
     lsu_axi_oram_addr,
     lsu_axi_wdata,
@@ -303,11 +303,12 @@ module lsu(
     //to axi interface
     //for write interface
     output [7:0] lsu_axi_awid;
-    output [9:0] lsu_axi_awaddr;
+    output [31:0] lsu_axi_awaddr;
     output [7:0] lsu_axi_awlen;
     output [2:0] lsu_axi_awsize;
     output [1:0] lsu_axi_awburst;
     output [2:0] lsu_axi_awstr;
+    output [7:0] lsu_axi_awnum;
     output lsu_axi_awvld;
     output [11:0] lsu_axi_oram_addr;
     output [63:0] lsu_axi_wdata;
@@ -354,6 +355,8 @@ module lsu(
     //for mm instr
     wire lsu_mm_finish;
 
+    wire lsu_act_finish;
+
     //for sram
     wire [15:0] lsu_iram_we;
     wire lsu_iram_ce;
@@ -396,15 +399,17 @@ module lsu(
     wire lsu_riscv_error_pass;
     wire lsu_vld_qual_en;
     wire lsu_wb_vld_ff;
+    wire lsu_instr_finish_ff;
 
     assign lsu_vld_qual = alu_lsu_vld & lsu_alu_rdy;
     assign lsu_vld_qual_en = lsu_vld_qual | ~alu_lsu_vld;
-    DFFRE #(.WIDTH(1))
+    assign lsu_vld_nxt = lsu_vld_qual | lsu_vld & ~(lsu_riscv_finish | lsu_instr_finish_ff | lsu_act_finish);
+
+    DFFR #(.WIDTH(1))
     ff_lsu_vld(
         .clk(clk),
         .rst_n(rst_n),
-        .d(lsu_vld_qual),
-        .en(lsu_vld_qual_en),
+        .d(lsu_vld_nxt),
         .q(lsu_vld)
     );
     DFFR #(.WIDTH(1))
@@ -414,15 +419,15 @@ module lsu(
         .d(lsu_vld_qual),
         .q(lsu_vld_qual_ff)
     );
-    wire lsu_instr_finish_ff;
     //assign lsu_alu_rdy = ~lsu_vld | lsu_instr_finish | lsu_instr_finish_ff;
-    assign lsu_alu_rdy = ~lsu_vld | lsu_riscv_finish | lsu_instr_finish_ff;
+    assign lsu_alu_rdy = ~lsu_vld | lsu_riscv_finish | lsu_instr_finish_ff | lsu_act_finish;
 
     //wire lsu_mm_finish_nxt;
     //assign lsu_mm_finish = lsu_mm_finish_nxt & mxu_lsu_data_rdy;
-    //assign lsu_instr_finish = lsu_st_finish | lsu_ld_finish | lsu_mm_finish | lsu_riscv_ld_st_finish | lsu_riscv_finish;
+    //assign lsu_instr_finish = lsu_st_finish | lsu_ld_finish | lsu_mm_finish | lsu_riscv_ld_st_finish | lsu_riscv_finish | lsu_act_finish;
     //assign lsu_instr_finish = 1'b0;
     
+    assign lsu_act_finish = lsu_mxu_vld & mxu_lsu_data_rdy & lsu_mxu_act_vld;
     wire lsu_mm_finish_nxt;
     wire lsu_mm_finish_ff;
     wire lsu_mm_finish_pulse;
@@ -471,8 +476,8 @@ module lsu(
         .d(lsu_instr_finish),
         .q(lsu_instr_finish_ff)
     );
-    assign lsu_instr_finish = lsu_riscv_finish | lsu_mm_finish_pulse | lsu_ld_finish | lsu_st_finish;
 
+    assign lsu_instr_finish = lsu_riscv_finish | lsu_mm_finish_pulse | lsu_ld_finish | lsu_st_finish | lsu_act_finish;
 
     wire lsu_st_iram_ff;
     wire lsu_st_wram_ff;
@@ -657,18 +662,43 @@ module lsu(
     );
 
     //type2 dram store
-    wire [7:0] lsu_st_type2_awid;
-    wire [9:0] lsu_st_type2_awaddr;
+    //wire [7:0] lsu_st_type2_awid;
+    wire [31:0] lsu_st_type2_awaddr;
     wire [7:0] lsu_st_type2_awlen;
     wire [2:0] lsu_st_type2_awsize;
     wire [1:0] lsu_st_type2_awburst;
     wire [2:0] lsu_st_type2_awstr;
     wire [4:0] lsu_st_type2_awnum;
 
+   // wire [7:0] lsu_ld_arid_nxt;
+    wire lsu_axi_awvld_nxt;
+    wire [31:0]lsu_st_type2_awaddr_nxt;
+    wire [7:0] lsu_st_type2_awlen_tmp;
+    wire [7:0] lsu_st_type2_awlen_nxt;
+    wire [2:0] lsu_st_type2_awsize_tmp;
+    wire [2:0] lsu_st_type2_awsize_nxt;
+    wire [1:0] lsu_st_type2_awburst_nxt;
+    wire [2:0] lsu_st_type2_awstr_nxt;
+    wire [7:0] lsu_st_type2_awnum_nxt;
+
     wire lsu_st_type2_doing_ff;
     wire lsu_st_type2_aw_en;
     assign lsu_st_type2_aw_en = lsu_st_mm_en & (&lsu_st_type);
     
+    //adress read part
+    //once we sense load instr give arvld and other ar signal
+    //id and burst not support 
+    //assign lsu_ld_arid_nxt     = lsu_alu_vld_qual ? lsu_alu_ard     :lsu_axi_arid   ; 
+    assign lsu_axi_awvld_nxt       = lsu_vld_qual & alu_lsu_st_dram & ~alu_lsu_wb_vld | lsu_axi_awvld & ~axi_lsu_awrdy;
+    assign lsu_st_type2_awlen_tmp        = alu_lsu_len[2] ? (alu_lsu_len[0] ? 8'd4 : 8'd2) : 8'd1;  
+    assign lsu_st_type2_awsize_tmp       = alu_lsu_len[2] ? 3'b011 : alu_lsu_len;  
+    assign lsu_st_type2_awaddr_nxt       = lsu_vld_qual ? alu_lsu_dram_addr :lsu_axi_awaddr ; 
+    assign lsu_st_type2_awlen_nxt        = lsu_vld_qual ? lsu_ld_awlen_tmp  :lsu_axi_awlen  ; 
+    assign lsu_st_type2_awsize_nxt       = lsu_vld_qual ? lsu_ld_awsize_tmp :lsu_axi_awsize ; 
+    assign lsu_st_type2_awburst_nxt      = lsu_vld_qual ? 2'b01             :lsu_axi_awburst; 
+    assign lsu_st_type2_awstr_nxt        = lsu_vld_qual ? alu_lsu_str       :lsu_axi_awstr  ; 
+    assign lsu_st_type2_awnum_nxt        = lsu_vld_qual ? alu_lsu_num 	  :lsu_axi_awnum  ;  
+
     DFFRE #(.WIDTH(8))
     ff_lsu_st_type2_awid(
         .clk(clk),
@@ -740,7 +770,7 @@ module lsu(
     //wire [4:0]lsu_axi_awnum;
     //adress write part
     //once we sense store instr give awvld and other aw signal
-    //id and burst not support 
+
     assign lsu_axi_awvld   = (lsu_st_mm_vld & (&lsu_st_type)) | (lsu_st_mm_vld_ff & (&lsu_st_type_ff)) ; 
     assign lsu_axi_awid    = (lsu_st_mm_vld & (&lsu_st_type)) ? 'b0               : {8{(lsu_st_mm_vld_ff  &(&lsu_st_type_ff))}} & lsu_st_type2_awid;
     assign lsu_axi_awaddr  = (lsu_st_mm_vld & (&lsu_st_type)) ? alu_lsu_dram_addr : {10{(lsu_st_mm_vld_ff &(&lsu_st_type_ff))}} & lsu_st_type2_awaddr;
@@ -1729,7 +1759,7 @@ module lsu(
                                          alu_lsu_lbu_op|
                                          alu_lsu_lhu_op);
 
-    assign lsu_riscv_st_vld = lsu_vld_qual & alu_lsu_sb_op | alu_lsu_sh_op | alu_lsu_sw_op;
+    assign lsu_riscv_st_vld = lsu_vld_qual & (alu_lsu_sb_op | alu_lsu_sh_op | alu_lsu_sw_op);
     assign lsu_riscv_wb_vld = lsu_vld_qual & alu_lsu_wb_vld; 
     
 
@@ -2027,7 +2057,7 @@ module lsu(
 
     // instruction finish define
     assign lsu_riscv_ld_st_finish = lsu_riscv_ce;
-    assign lsu_riscv_finish = lsu_riscv_wb_vld & ~(lsu_riscv_ld_vld | lsu_riscv_st_vld) & lsu_alu_rdy;
+    assign lsu_riscv_finish = (lsu_riscv_wb_vld | lsu_riscv_st_vld) & lsu_alu_rdy;
 
     wire lsu_st_type2_done;
     assign lsu_st_type2_done = lsu_st_type2_bresp_end;
