@@ -1,0 +1,36 @@
+//lui rd, imm
+lui x0,  0
+lui x1,  1
+lui x2,  2
+lui x3,  3
+lui x4,  4
+lui x5,  5
+lui x6,  6
+lui x7,  7
+lui x8,  8
+lui x9,  9
+lui x10, 10
+lui x11, 11
+lui x12, 12
+lui x13, 13
+lui x14, 14
+lui x15, 15
+lui x16, 16
+lui x17, 17
+lui x18, 18
+lui x19, 19
+lui x20, 20
+lui x21, 21
+lui x22, 22
+lui x23, 23
+lui x24, 24
+lui x25, 25
+lui x26, 26
+lui x27, 27
+lui x28, 28
+lui x29, 29
+lui x30, 30
+lui x31, 31
+
+WFI
+

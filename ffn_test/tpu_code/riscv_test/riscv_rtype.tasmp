@@ -35,38 +35,69 @@ addi x30, x0, 30
 addi x31, x0, 31
 
 //start of rtype
-//add add rd, rs1, rs2
-add x0,  x0, 50
-add x1,  x0, x1 
-add x2,  x0, x2 
-add x3,  x0, x3 
-add x4,  x0, x4 
-add x5,  x0, x5 
-add x6,  x0, x6 
-add x7,  x0, x7 
-add x8,  x0, x8 
-add x9,  x0, x9 
-add x10, x0, x10 
-add x11, x0, x11 
-add x12, x0, x12 
-add x13, x0, x13 
-add x14, x0, x14 
-add x15, x0, x15 
-add x16, x0, x16 
-add x17, x0, x17 
-add x18, x0, x18 
-add x19, x0, x19
-add x20, x0, x20 
-add x21, x0, x21 
-add x22, x0, x22 
-add x23, x0, x23 
-add x24, x0, x24 
-add x25, x0, x25 
-add x26, x0, x26 
-add x27, x0, x27 
-add x28, x0, x28 
-add x29, x0, x29
-add x30, x0, x30
-add x31, x0, x31
+//add rd, rs1, rs2
+add x0,  x0, x31
+add x1,  x1, x1 
+add x2,  x0, x1 
+add x3,  x0, x2 
+add x4,  x0, x3 
+add x5,  x0, x4 
+add x6,  x0, x5 
+add x7,  x0, x6 
+add x8,  x0, x7 
+add x9,  x0, x8 
+add x10, x0, x9 
+add x11, x0, x10 
+add x12, x0, x11 
+add x13, x0, x12 
+add x14, x0, x13 
+add x15, x0, x14 
+add x16, x0, x15 
+add x17, x0, x16 
+add x18, x0, x17 
+add x19, x0, x18
+add x20, x0, x19 
+add x21, x0, x20 
+add x22, x0, x21
+add x23, x0, x22 
+add x24, x0, x23 
+add x25, x0, x24 
+add x26, x0, x25 
+add x27, x0, x26 
+add x28, x0, x27 
+add x29, x0, x28
+add x30, x0, x29
+add x31, x0, x30
+
+// Test addition
+addi x5, x0, 5          // x5 = 5
+addi x6, x0, 10         // x6 = 10
+add x7, x5, x6          // x7 = x5 + x6 (5 + 10 = 15)
+
+// Test subtraction
+addi x8, x0, 15         // x8 = 15
+sub x9, x8, x5          // x9 = x8 - x5 (15 - 5 = 10)
+
+// Test logical AND
+addi x12, x0, 0b101010  // x12 = 0b101010
+addi x13, x0, 0b110011  // x13 = 0b110011
+and x14, x12, x13       // x14 = x12 & x13
+
+// Test logical OR
+or x15, x12, x13        // x15 = x12 | x13
+
+// Test logical XOR
+xor x16, x12, x13       // x16 = x12 ^ x13
+
+// Test shift left logical
+sll x17, x5, 2          // x17 = x5 << 2 (5 << 2 = 20)
+
+// Test shift right logical
+srl x18, x17, 2         // x18 = x17 >> 2 (20 >> 2 = 5)
+
+// Test shift right arithmetic
+addi x19, x0, -8        // x19 = -8
+sra x20, x19, 1         // x20 = x19 >> 1 (-8 >> 1 = -4)
 
 WFI
+
