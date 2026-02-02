@@ -2139,7 +2139,7 @@ module lsu(
 
     assign lsu_oram_we   = (lsu_st_type1_oram_we & {16{lsu_st_type1_low }} & {16{lsu_st_type1_oram_ce}}) 
                             | (lsu_st_type2_oram_we & (alu_lsu_st_low | lsu_st_full_low_en)) 
-                            | (16{{alu_lsu_st_low}} & lsu_riscv_we & {16{alu_lsu_st_wram}});
+                            | ({16{alu_lsu_st_low}} & lsu_riscv_we & {16{alu_lsu_st_wram}});
     assign lsu_oram_ce   = (lsu_st_type1_oram_ce & lsu_st_type1_low)
                             | (lsu_st_type2_oram_ce & (alu_lsu_st_low | lsu_st_full_low_en)) 
                             | (alu_lsu_st_low & lsu_riscv_ce & (alu_lsu_st_oram | alu_lsu_ld_oram));
