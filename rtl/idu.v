@@ -419,17 +419,17 @@ module idu (
                | {32{riscv_u_type}} & u_imm
                | {32{riscv_j_type}} & j_imm;
 
-    assign alu_idu_hazard_src1    = (alu_idu_wb_addr == idu_rf_src1_addr) & alu_idu_wb_vld & ~(riscv_u_type | riscv_j_type) & ~alu_idu_ld_vld;
-    assign alu_idu_ld_hazard_src1 = (alu_idu_wb_addr == idu_rf_src1_addr) & alu_idu_wb_vld & ~(riscv_u_type | riscv_j_type) &  alu_idu_ld_vld;
-    assign lsu_idu_hazard_src1    = (lsu_idu_wb_addr == idu_rf_src1_addr) & lsu_idu_wb_vld & ~(riscv_u_type | riscv_j_type) & ~lsu_idu_ld_vld;
-    assign lsu_idu_ld_hazard_src1 = (lsu_idu_wb_addr == idu_rf_src1_addr) & lsu_idu_wb_vld & ~(riscv_u_type | riscv_j_type) &  lsu_idu_ld_vld;
-    assign rf_idu_hazard_src1     = (lsu_rf_wb_addr  == idu_rf_src1_addr) & lsu_rf_wb_vld  & ~(riscv_u_type | riscv_j_type);
+    assign alu_idu_hazard_src1    = (alu_idu_wb_addr == idu_rf_src1_addr) & alu_idu_wb_vld & ~(riscv_u_type | riscv_j_type) & ~alu_idu_ld_vld & (|idu_rf_src1_addr);
+    assign alu_idu_ld_hazard_src1 = (alu_idu_wb_addr == idu_rf_src1_addr) & alu_idu_wb_vld & ~(riscv_u_type | riscv_j_type) &  alu_idu_ld_vld & (|idu_rf_src1_addr);
+    assign lsu_idu_hazard_src1    = (lsu_idu_wb_addr == idu_rf_src1_addr) & lsu_idu_wb_vld & ~(riscv_u_type | riscv_j_type) & ~lsu_idu_ld_vld & (|idu_rf_src1_addr);
+    assign lsu_idu_ld_hazard_src1 = (lsu_idu_wb_addr == idu_rf_src1_addr) & lsu_idu_wb_vld & ~(riscv_u_type | riscv_j_type) &  lsu_idu_ld_vld & (|idu_rf_src1_addr);
+    assign rf_idu_hazard_src1     = (lsu_rf_wb_addr  == idu_rf_src1_addr) & lsu_rf_wb_vld  & ~(riscv_u_type | riscv_j_type) & (|idu_rf_src1_addr);
     
-    assign alu_idu_hazard_src2    = (alu_idu_wb_addr == idu_rf_src2_addr) & alu_idu_wb_vld & ~(riscv_u_type | riscv_j_type | riscv_i_type) & ~alu_idu_ld_vld;
-    assign alu_idu_ld_hazard_src2 = (alu_idu_wb_addr == idu_rf_src2_addr) & alu_idu_wb_vld & ~(riscv_u_type | riscv_j_type | riscv_i_type) &  alu_idu_ld_vld;
-    assign lsu_idu_hazard_src2    = (lsu_idu_wb_addr == idu_rf_src2_addr) & lsu_idu_wb_vld & ~(riscv_u_type | riscv_j_type | riscv_i_type) & ~lsu_idu_ld_vld;
-    assign lsu_idu_ld_hazard_src2 = (lsu_idu_wb_addr == idu_rf_src2_addr) & lsu_idu_wb_vld & ~(riscv_u_type | riscv_j_type | riscv_i_type) &  lsu_idu_ld_vld;
-    assign rf_idu_hazard_src2     = (lsu_rf_wb_addr  == idu_rf_src2_addr) & lsu_rf_wb_vld  & ~(riscv_u_type | riscv_j_type | riscv_i_type);
+    assign alu_idu_hazard_src2    = (alu_idu_wb_addr == idu_rf_src2_addr) & alu_idu_wb_vld & ~(riscv_u_type | riscv_j_type | riscv_i_type) & ~alu_idu_ld_vld & (|idu_rf_src2_addr);
+    assign alu_idu_ld_hazard_src2 = (alu_idu_wb_addr == idu_rf_src2_addr) & alu_idu_wb_vld & ~(riscv_u_type | riscv_j_type | riscv_i_type) &  alu_idu_ld_vld & (|idu_rf_src2_addr);
+    assign lsu_idu_hazard_src2    = (lsu_idu_wb_addr == idu_rf_src2_addr) & lsu_idu_wb_vld & ~(riscv_u_type | riscv_j_type | riscv_i_type) & ~lsu_idu_ld_vld & (|idu_rf_src2_addr);
+    assign lsu_idu_ld_hazard_src2 = (lsu_idu_wb_addr == idu_rf_src2_addr) & lsu_idu_wb_vld & ~(riscv_u_type | riscv_j_type | riscv_i_type) &  lsu_idu_ld_vld & (|idu_rf_src2_addr);
+    assign rf_idu_hazard_src2     = (lsu_rf_wb_addr  == idu_rf_src2_addr) & lsu_rf_wb_vld  & ~(riscv_u_type | riscv_j_type | riscv_i_type) & (|idu_rf_src2_addr);
     
     DFFE #(.WIDTH(32))
     ff_idu_alu_src1(
