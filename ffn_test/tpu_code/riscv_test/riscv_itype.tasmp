@@ -1,0 +1,22 @@
+// Initialize registers for testing using ADDI
+addi x1, x0, 5      // Load immediate value 5 into x1 (x1 = 5)
+addi x2, x0, 10     // Load immediate value 10 into x2 (x2 = 10)
+addi x3, x0, -3     // Load immediate value -3 into x3 (x3 = -3)
+  
+// Test ADDI (Add Immediate)
+addi x4, x1, 10     // x4 = x1 + 10 => x4 = 5 + 10 = 15
+    
+// Test SLTI (Set Less Than Immediate)
+slti x5, x1, 6      // x5 = (x1 < 6) => x5 = (5 < 6) = 1
+slti x6, x2, 5      // x6 = (x2 < 5) => x6 = (10 < 5) = 0
+    
+// Test ANDI (Bitwise AND Immediate)
+andi x7, x1, 3      // x7 = x1 & 3 => x7 = 5 & 3 = 1 (binary: 101 & 011 = 001)
+    
+// Test ORI (Bitwise OR Immediate)
+ori x8, x2, 2       // x8 = x2 | 2 => x8 = 10 | 2 = 10 (binary: 1010 | 0010 = 1010)
+    
+// Test XORI (Bitwise XOR Immediate)
+xori x9, x1, 5      // x9 = x1 ^ 5 => x9 = 5 ^ 5 = 0 (binary: 101 ^ 101 = 000)
+    
+WFI
