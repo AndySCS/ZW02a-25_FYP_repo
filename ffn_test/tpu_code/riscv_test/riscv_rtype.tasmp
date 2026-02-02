@@ -69,35 +69,47 @@ add x29, x0, x28
 add x30, x0, x29
 add x31, x0, x30
 
-// Test addition
+//Test ADD
 addi x5, x0, 5          // x5 = 5
 addi x6, x0, 10         // x6 = 10
 add x7, x5, x6          // x7 = x5 + x6 (5 + 10 = 15)
 
-// Test subtraction
+// Test SUB
 addi x8, x0, 15         // x8 = 15
 sub x9, x8, x5          // x9 = x8 - x5 (15 - 5 = 10)
+sub x10, x5, x8        // x10 = x5 - x8 (5-15 = -10 => FFFFFFF6)
 
-// Test logical AND
-addi x12, x0, 3  // x12 = 0b101010
-addi x13, x0, 5  // x13 = 0b110011
-and x14, x12, x13       // x14 = x12 & x13
+//Test SLL
+addi x3, x0, 4
+sll x11, x5, x3          // x17 = x5 << 4 (5 << 2 = 80)
+sll x12, x10, x3         // x12 = x10 << 4 (FFFFFFF6 << 4 = FFFFFF60)
 
-// Test logical OR
-or x15, x12, x13        // x15 = x12 | x13
+//Test SLT
+slt x13, x11, x12       // x11 > x12 => 0
+slt x14, x12, x11 	// x12 < x11 => 1
 
-// Test logical XOR
-xor x16, x12, x13       // x16 = x12 ^ x13
+//TEST SLTU
+sltu x15, x11, x12       // x11 < x12 => 1
+sltu x16, x12, x11 	// x12 > x11 => 0
 
-// Test shift left logical
-sll x17, x5, 2          // x17 = x5 << 2 (5 << 2 = 20)
+//Tets XOR
+xor x17, x13, x14       // x16 = x13 ^ x14 => 1
+xor x18, x13, x16       // x18 = x13 ^ x16 => 0
 
-// Test shift right logical
-srl x18, x17, 2         // x18 = x17 >> 2 (20 >> 2 = 5)
+//Test SRL
+srl x19, x11, x3         // x19 = x11 >> 4 (80 >> 4 = 5)
+srl x20, x10, x3         // x20 = x10 >> 4 (FFFFFFF6 >> 4 = 0FFFFFF6)
 
-// Test shift right arithmetic
-addi x19, x0, 3        // x19 = 3
-sra x20, x19, 1         // x20 = x19 >> 1 (3 >> 1 = 1)
+//Test SRA
+sra x21, x11, x3         // x21 = x11 >> 4 (80 >> 4 = 5)
+sra x22, x10, x3         // x22 = x10 >> 4 (FFFFFFF6 >> 4 = FFFFFFFF)
+
+//Test OR
+or x23, x13, x14        // x23 = x13 | x14 => 1
+
+//Test AND
+and x24, x13, x14        // x24 = x13 & x14 => 0
+
 
 WFI
 
