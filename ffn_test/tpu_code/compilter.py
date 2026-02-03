@@ -189,7 +189,7 @@ def convert_itypesp2bin(line_elem, addr_hash, addr):
     func3 = convert_func32bin(line_elem[0])
     rd = convert_reg2bin(line_elem[1])
     opcode = convert_opcode2bin(line_elem[0])
-    machine_code = shamt + func7 + rs1 + func3 + rd + opcode
+    machine_code = func7 + shamt + rs1 + func3 + rd + opcode
     return machine_code
 
 def convert_rtype2bin(line_elem, addr_hash, addr):
