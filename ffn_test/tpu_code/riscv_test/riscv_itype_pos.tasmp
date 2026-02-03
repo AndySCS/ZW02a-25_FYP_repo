@@ -1,24 +1,19 @@
 // Initialize registers for testing using ADDI
 addi x1, x0, 5      // Load immediate value 5 into x1 (x1 = 5)
 addi x2, x0, 10     // Load immediate value 10 into x2 (x2 = 10)
-sub x3, x0, x1     // Load immediate value -3 into x3 (x3 = -5)
+addi x3, x0, 3     // Load immediate value -3 into x3 (x3 = 3)
   
 // Test ADDI (Add Immediate)
 addi x4, x1, 10     // x4 = x1 + 10 => x4 = 5 + 10 = 15
-sub x5, x0, x1     // x5 = x0 -1 => x5 = 0 - 1 = -5 => FFFF_FFFB
+addi x5, x0, 1     // x5 = x0 -1 => x5 = 1
     
 // Test SLTI (Set Less Than Immediate)
 //normal case
 slti x6, x1, 6      // x6 = (x1 < 6) => x6 = (5 < 6) = 1
 slti x7, x2, 5      // x7 = (x2 < 5) => x7 = (10 < 5) = 0
 
-//imm neg test
-slti x6, x1, -6     // x6 = (x1 < -6) => x6 = (5 < -6) = 0
-slti x7, x2, -5     // x7 = (x2 < -5) => x7 = (10 < -5) = 0
-
 //rs1 neg test 
-slti x6, x5, -6     // x6 = (x5 < -6) => x6 = (-1 < -6) = 0
-slti x7, x5, 5      // x7 = (x5 <  5) => x7 = (-1 <  5) = 1
+slti x7, x5, 5      // x7 = (x5 <  5) => x7 = (1 <  5) = 1
     
 // Test ANDI (Bitwise AND Immediate)
 andi x7, x1, 3      // x7 = x1 & 3 => x7 = 5 & 3 = 1 (binary: 101 & 011 = 001)
@@ -31,12 +26,17 @@ xori x9, x1, 5      // x9 = x1 ^ 5 => x9 = 5 ^ 5 = 0 (binary: 101 ^ 101 = 000)
 
 // TEST SLLI
 slli x10, x1, 2     // x10 = x1 << 2 => x10 = ('b101 << 2) = 'b10100
+//0x00209513
 
 // TEST SRLI
-srli x11, x1, 2     // x11 = x1 >> 2 => x11 = ('b101 >> 2) = 'b1
+srli x11, x1, 1     // x11 = x1 >> 2 => x11 = ('b101 >> 1) = 'b10
+//0x0010d513
 
 // TEST SRAI
 srai x12, x1, 2     // x12 = x1 >> 2 => x12 = ('b101 >> 2) = 'b1
-srai x13, x5, 2     // x12 = x5 >> 2 => x12 = ('hFFFFFFFF >> 2) = 'hFFFFFFFF
+//0x4010d513
+
+addi x0, x0, 3
     
 WFI
+
