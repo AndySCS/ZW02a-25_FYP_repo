@@ -1,0 +1,24 @@
+# Load base address of buffer using addi
+addi x5, x0, -2           # Load FFFFFFFE into x5
+lb x6, 0(x5)              # Load byte at offset 0 into x6
+lb x7, 1(x5)              # Load byte at offset 1 into x7
+    
+# Load base address of halfwords using addi
+addi x8, x0, -2           # Load base address of halfwords into x8
+lh x9, 0(x8)              # Load halfword at offset 0 into x9
+lh x10, 2(x8)             # Load halfword at offset 2 into x10
+    
+# Load base address of words using addi
+addi x11, x0, -2          # Load base address of words into x11
+lw x12, 0(x11)            # Load word at offset 0 into x12
+lw x13, 4(x11)            # Load word at offset 4 into x13
+    
+# Load Byte Unsigned (lbu)
+lbu x14, 0(x5)            # Load unsigned byte at offset 0 into x14
+lbu x15, 1(x5)            # Load unsigned byte at offset 1 into x15
+    
+# Load Halfword Unsigned (lhu)
+lhu x16, 0(x8)            # Load unsigned halfword at offset 0 into x16
+lhu x17, 2(x8)            # Load unsigned halfword at offset 2 into x17
+
+WFI

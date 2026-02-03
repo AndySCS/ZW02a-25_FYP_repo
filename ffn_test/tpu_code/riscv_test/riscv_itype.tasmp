@@ -5,10 +5,20 @@ addi x3, x0, -3     // Load immediate value -3 into x3 (x3 = -3)
   
 // Test ADDI (Add Immediate)
 addi x4, x1, 10     // x4 = x1 + 10 => x4 = 5 + 10 = 15
+addi x5, x0, -1     // x5 = x0 -1 => x5 = 0 - 1 = FFFFFFFF
     
 // Test SLTI (Set Less Than Immediate)
-slti x5, x1, 6      // x5 = (x1 < 6) => x5 = (5 < 6) = 1
-slti x6, x2, 5      // x6 = (x2 < 5) => x6 = (10 < 5) = 0
+//normal case
+slti x6, x1, 6      // x6 = (x1 < 6) => x6 = (5 < 6) = 1
+slti x7, x2, 5      // x7 = (x2 < 5) => x7 = (10 < 5) = 0
+
+//imm neg test
+slti x6, x1, -6     // x6 = (x1 < -6) => x6 = (5 < -6) = 0
+slti x7, x2, -5     // x7 = (x2 < -5) => x7 = (10 < -5) = 0
+
+//rs1 neg test 
+slti x6, x5, -6     // x6 = (x5 < -6) => x6 = (-1 < -6) = 0
+slti x7, x5, 5      // x7 = (x5 <  5) => x7 = (-1 <  5) = 1
     
 // Test ANDI (Bitwise AND Immediate)
 andi x7, x1, 3      // x7 = x1 & 3 => x7 = 5 & 3 = 1 (binary: 101 & 011 = 001)
@@ -18,5 +28,15 @@ ori x8, x2, 2       // x8 = x2 | 2 => x8 = 10 | 2 = 10 (binary: 1010 | 0010 = 10
     
 // Test XORI (Bitwise XOR Immediate)
 xori x9, x1, 5      // x9 = x1 ^ 5 => x9 = 5 ^ 5 = 0 (binary: 101 ^ 101 = 000)
+
+// TEST SLLI
+slli x10, x1, 2     // x10 = x1 << 2 => x10 = ('b101 << 2) = 'b10100
+
+// TEST SRLI
+srli x11, x1, 2     // x11 = x1 >> 2 => x11 = ('b101 >> 2) = 'b1
+
+// TEST SRAI
+srai x12, x1, 2     // x12 = x1 >> 2 => x12 = ('b101 >> 2) = 'b1
+srai x13, x5, 2     // x12 = x5 >> 2 => x12 = ('hFFFFFFFF >> 2) = 'hFFFFFFFF
     
 WFI
