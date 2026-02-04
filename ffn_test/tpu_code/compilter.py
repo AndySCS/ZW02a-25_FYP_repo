@@ -174,7 +174,7 @@ def convert_opcode2bin(operator):
     return opcode_dict.get(operator, None)
 
 def convert_itype2bin(line_elem, addr_hash, addr):
-    imm12 = format(int(line_elem[3]) & 0xFFFF_FFFF, "012b")
+    imm12 = format(int(line_elem[3]) & 0xFFF, "012b")
     rs1 = convert_reg2bin(line_elem[2])
     func3 = convert_func32bin(line_elem[0])
     rd = convert_reg2bin(line_elem[1])
@@ -203,7 +203,7 @@ def convert_rtype2bin(line_elem, addr_hash, addr):
     return machine_code
 
 def convert_stype2bin(line_elem, addr_hash, addr):
-    imm12 = format(int(line_elem[3]) & 0xFFFF_FFFF, "012b")[::-1]
+    imm12 = format(int(line_elem[3]) & 0xFFF, "012b")[::-1]
     rs2 = convert_reg2bin(line_elem[1])
     rs1 = convert_reg2bin(line_elem[2])
     func3 = convert_func32bin(line_elem[0])
@@ -212,7 +212,7 @@ def convert_stype2bin(line_elem, addr_hash, addr):
     return machine_code
 
 def convert_utype2bin(line_elem, addr_hash, addr):
-    imm20 = format(int(line_elem[2]) & 0xFFFF_FFFF, "020b")
+    imm20 = format(int(line_elem[2]) & 0xFF_FFFF, "020b")
     rd = convert_reg2bin(line_elem[1])
     opcode = convert_opcode2bin(line_elem[0])
     machine_code = imm20 + rd + opcode
@@ -222,7 +222,7 @@ def convert_btype2bin(line_elem, addr_hash, addr):
     target_addr = addr_hash.get(line_elem[3], None)
     if target_addr is None:
         raise Exception(f"{line_elem[3]} is not found in addr_hash")
-    addr_diff = (int(target_addr) - addr) & 0xFFFF_FFFF
+    addr_diff = (int(target_addr) - addr) & 0x1FFF
     imm13 = format(addr_diff, "013b")[::-1]
     rs1 = convert_reg2bin(line_elem[1])
     rs2 = convert_reg2bin(line_elem[2]) 
@@ -236,7 +236,7 @@ def convert_jtype2bin(line_elem, addr_hash, addr):
     if target_addr is None:
         raise Exception(f"{line_elem[2]} is not found in addr_hash")
     addr_diff = int(target_addr) - addr
-    imm21 = format(addr_diff & 0xFFFF_FFFF, "021b")[::-1]
+    imm21 = format(addr_diff & 0x1FF_FFFF, "021b")[::-1]
     rd = convert_reg2bin(line_elem[1])
     opcode = convert_opcode2bin(line_elem[0])
     machine_code = imm21[20] + imm21[1:11][::-1] + imm21[11] + imm21[12:20][::-1] + rd + opcode
