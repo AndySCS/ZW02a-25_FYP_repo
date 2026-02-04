@@ -39,7 +39,8 @@ $(shell $(MINITPU_FOLDER)/ffn_test/tpu_code/cmp_linux -srcDir $(MINITPU_FOLDER)/
 #$(shell $(MINITPU_FOLDER)/ffn_test/tpu_code/cmp_linux -srcDir $(MINITPU_FOLDER)/ffn_test/tpu_code/riscv_test/riscv_rtype.tasmp -binDir code.txt)
 #$(shell $(MINITPU_FOLDER)/ffn_test/tpu_code/cmp_linux -srcDir $(MINITPU_FOLDER)/ffn_test/tpu_code/riscv_test/riscv_lui.tasmp -binDir code.txt)
 #$(shell $(MINITPU_FOLDER)/ffn_test/tpu_code/cmp_linux -srcDir $(MINITPU_FOLDER)/ffn_test/tpu_code/riscv_test/riscv_itype.tasmp -binDir code.txt)
-#$(shell $(MINITPU_FOLDER)/ffn_test/tpu_code/cmp_linux -srcDir $(MINITPU_FOLDER)/ffn_test/tpu_code/riscv_test/riscv_ldtype.tasmp -binDir code.txt)
+#$(shell $(MINITPU_FOLDER)/ffn_test/tpu_code/cmp_linux -srcDir $(MINITPU_FOLDER)/ffn_test/tpu_code/riscv_test/riscv_ld.tasmp -binDir code.txt)
+#$(shell $(MINITPU_FOLDER)/ffn_test/tpu_code/cmp_linux -srcDir $(MINITPU_FOLDER)/ffn_test/tpu_code/riscv_test/riscv_st.tasmp -binDir code.txt)
 $(shell cp $(MINITPU_FOLDER)/ffn_test/mnist_data/csv/img$(img_seed).csv sample.csv)
 
 GEN_MODE = mkdir -p $(mode) $(mode)/log $(mode)/wave $(mode)/cov
