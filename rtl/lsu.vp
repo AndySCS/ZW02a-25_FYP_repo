@@ -459,14 +459,6 @@ module lsu(
         .en(lsu_ld_st_addr_en),
         .q(lsu_ld_st_addr)
     );
-    
-    //DFFR #(.WIDTH(1))
-    //ff_lsu_instr_finish(
-    //    .clk(clk),
-    //    .rst_n(rst_n),
-    //    .d(lsu_riscv_finish),
-    //    .q(lsu_instr_finish_ff)
-    //);
 
     DFFR #(.WIDTH(1))
     ff_lsu_instr_finish(
@@ -857,7 +849,7 @@ module lsu(
     wire lsu_st_full_low_en;
     wire [7:0] lsu_st_type2_oram_addr_shift;
      
-    assign lsu_st_type2_oram_ce = lsu_st_type2_wr_qual;
+    assign lsu_st_type2_oram_ce = lsu_axi_wsend_doing & ~(lsu_axi_wvld & ~axi_lsu_wrdy);
     assign lsu_st_type2_oram_addr = lsu_st_type2_wr_chunk_len_cnt_nxt + alu_lsu_ld_st_addr[12:5];
 
     assign lsu_st_full_low_en = alu_lsu_len[2] & alu_lsu_len[0] & ~lsu_st_type2_wr_chunk_size_cnt[1]; 
@@ -977,15 +969,18 @@ module lsu(
     wire lsu_st_type2_bresp_qual_ff;
     wire lsu_st_type2_bresp_qual_en;
     wire lsu_st_type2_bresp_end;
+
+    wire       lsu_st_type2_brep_chunk_len_cnt_en;
     wire [7:0] lsu_st_type2_brep_chunk_len_cnt;
-    wire [7:0] lsu_st_type2_brep_chunk_len_cnt_ff;
+    wire [7:0] lsu_st_type2_brep_chunk_len_cnt_nxt;
 
     assign lsu_axi_brdy = lsu_vld;
     assign lsu_st_type2_bresp_qual = lsu_axi_brdy & axi_lsu_bvld;
 
-    assign lsu_st_type2_brep_chunk_len_cnt = lsu_st_type2_start_wr_pulse ? 1'b0 : (lsu_st_type2_bresp_qual ?  lsu_st_type2_brep_chunk_len_cnt_ff + 1 : lsu_st_type2_brep_chunk_len_cnt_ff);
+    assign lsu_st_type2_brep_chunk_len_cnt_en = lsu_axi_awvld_qual | lsu_st_type2_bresp_qual;
+    assign lsu_st_type2_brep_chunk_len_cnt_nxt = lsu_axi_awvld_qual ? 8'b0 : (lsu_st_type2_brep_chunk_len_cnt + 8'b1);
 
-    assign lsu_st_type2_bresp_end = lsu_st_type2_brep_chunk_len_cnt == lsu_axi_awlen+1;
+    assign lsu_st_type2_bresp_end = lsu_st_type2_brep_chunk_len_cnt == lsu_axi_awlen;
     assign lsu_st_type2_bresp_qual_en = lsu_st_type2_bresp_qual | lsu_st_type2_bresp_end;
     
     DFFRE #(.WIDTH(1))
@@ -997,13 +992,12 @@ module lsu(
         .q(lsu_st_type2_bresp_qual_ff)
     );
 
-    DFFR #(.WIDTH(8))
+    DFFE #(.WIDTH(8))
     ff_lsu_st_type2_bresp_chunk_len_cnt(
         .clk(clk),
-        .rst_n(rst_n),
-        .d(lsu_st_type2_brep_chunk_len_cnt),
-        //.en(lsu_st_type2_bresp_qual_en),
-        .q(lsu_st_type2_brep_chunk_len_cnt_ff)
+        .en(lsu_st_type2_brep_chunk_len_cnt_en),
+        .d(lsu_st_type2_brep_chunk_len_cnt_nxt),
+        .q(lsu_st_type2_brep_chunk_len_cnt)
     );
 
     wire [255:0] lsu_st_type2_bresp_resend;
@@ -2089,7 +2083,7 @@ module lsu(
     wire lsu_st_type2_done;
     assign lsu_st_type2_done = lsu_st_type2_bresp_end;
     //assign lsu_st_finish = lsu_st_type1_done & (lsu_st_type1_qual | lsu_st_type1_qual_ff) | lsu_st_type2_done;
-    assign lsu_st_finish = lsu_st_type1_done;
+    assign lsu_st_finish = lsu_st_type1_done | lsu_st_type2_done;
 
     //FOR load instr
     assign lsu_ld_finish = lsu_axi_done;
