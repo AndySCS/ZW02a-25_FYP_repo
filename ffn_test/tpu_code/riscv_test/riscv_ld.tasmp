@@ -1,3 +1,48 @@
+// Prepare data to load
+// op rd, rs1, offset
+// load (rs1+offset)_data into rd in memory
+
+addi x1, x0, 258  //x1 => 0x0102
+slli x1, x1, 16 //x1
+addi x1, x0, 722
+slli x1, x1, 8
+
+addi x1, x1, 5 
+slli x1, x1, 8
+
+addi x1, x1, 6
+slli x1, x1, 8
+
+addi x1, x1, 7 
+slli x1, x1, 8
+
+addi x1, x1, 8 
+slli x1, x1, 8
+
+addi x1, x1, 9
+slli x1, x1, 8
+
+addi x1, x1, 10 
+slli x1, x1, 8
+
+addi x1, x1, 11 
+slli x1, x1, 8
+
+addi x1, x1, 12 
+slli x1, x1, 8
+
+addi x1, x1, 13
+slli x1, x1, 8
+
+addi x1, x1, 14 
+slli x1, x1, 8
+
+addi x1, x1, 15
+slli x1, x1, 8
+
+addi x1, x1, 16 
+slli x1, x1, 8
+
 // Load base address of buffer using addi
 addi x1, x0, 2
 addi x5, x0, 16            // Load FFFFFFFE into x5
