@@ -44,7 +44,11 @@ task top_driver::main_phase(uvm_phase phase);
     model_output_transaction tr;
     int phase_cnt;
     bit val_begin;
-    
+    for (int i=0;i<256;i++) begin
+     	  harness.u_tpu.u_lsu.iram.mem[i] = 'h0;
+     	  harness.u_tpu.u_lsu.wram.mem[i] = 'h0;
+     	  harness.u_tpu.u_lsu.oram.mem[i] = 'h0;
+    end
     super.main_phase(phase);
     phase.raise_objection(this);
     fork
