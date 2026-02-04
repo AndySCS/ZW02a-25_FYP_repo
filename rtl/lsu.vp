@@ -1741,8 +1741,8 @@ module lsu(
     assign lsu_riscv_ce = lsu_riscv_st_vld | lsu_riscv_ld_vld;
 
     assign lsu_riscv_we_raw = alu_lsu_sb_op ? 16'h1 :
-			                  alu_lsu_sh_op ? 16'hf :
-			                  alu_lsu_sw_op ? 16'hff:
+			                  alu_lsu_sh_op ? 16'd3 :
+			                  alu_lsu_sw_op ? 16'd15:
 			      		      16'h0;
                               	
     assign lsu_riscv_we = (lsu_riscv_we_raw << lsu_riscv_st_data_shift) & {16{lsu_riscv_ce}};
