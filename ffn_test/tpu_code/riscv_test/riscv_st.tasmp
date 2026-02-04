@@ -64,10 +64,41 @@ sh x2, x16, 0 => iram[0] => 0xFF00_FF00_FF00_FF00_FF00_FF00_FF00
 sh x2, x17, 0 => iram[0] => 0xFF00_FF00_FF00_FF00_FF00_FF00_FF00_FF00
 sh x2, x18, 0 => iram[0] => 0xFF00_FF00_FF00_FF00_FF00_FF00_FF00_FF00
 
+//sw test
+sw x3, x0,  0 => iram[0] => 0xFF00_0000
+sw x3, x4,  0 => iram[0] => 0xFF00_0000
+sw x3, x5,  0 => iram[0] => 0xFF00_0000
+sw x3, x6,  0 => iram[0] => 0xFF00_0000
+sw x3, x7,  0 => iram[0] => 0xFF00_0000_FF00_0000
+sw x3, x8,  0 => iram[0] => 0xFF00_0000_FF00_0000
+sw x3, x9,  0 => iram[0] => 0xFF00_0000_FF00_0000
+sw x3, x10, 0 => iram[0] => 0xFF00_0000_FF00_0000
+sw x3, x11, 0 => iram[0] => 0xFF00_0000_FF00_0000_FF00_0000
+sw x3, x12, 0 => iram[0] => 0xFF00_0000_FF00_0000_FF00_0000
+sw x3, x13, 0 => iram[0] => 0xFF00_0000_FF00_0000_FF00_0000
+sw x3, x14, 0 => iram[0] => 0xFF00_0000_FF00_0000_FF00_0000
+sw x3, x15, 0 => iram[0] => 0xFF00_0000_FF00_0000_FF00_0000_FF00_0000
+sw x3, x16, 0 => iram[0] => 0xFF00_0000_FF00_0000_FF00_0000_FF00_0000
+sw x3, x17, 0 => iram[0] => 0xFF00_0000_FF00_0000_FF00_0000_FF00_0000
+sw x3, x18, 0 => iram[0] => 0xFF00_0000_FF00_0000_FF00_0000_FF00_0000
 
-//add for stop cmp non stop
-add x0, x0, x0
+//Test for store offset
+sw x3, x0,  32 
+sw x3, x15, 32
+sh x2, x0,  32 
+sh x2, x15, 32 
+sb x1, x0,  32 
+sb x1, x15, 32 
+
+//Test for store addr data extarct range
+sb x3, x0, 64 
+sb x2, x0, 65 
+
 
 WFI
+
+
+
+
 
 
