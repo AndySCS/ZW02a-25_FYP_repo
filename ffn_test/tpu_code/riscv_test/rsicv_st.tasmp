@@ -1,0 +1,18 @@
+// Prepare data to store
+addi x1, x0, 25            // Set x1 to 25 (for byte)
+addi x2, x0, 0x1234        // Set x2 to 0x1234 (for halfword)
+addi x3, x0, 0xFFFFFFFF     // Set x3 to 0xFFFFFFFF (for word)
+
+// Store Byte (sb)
+addi x4, x0, buffer        // Load base address of buffer into x4
+sb x1, 0(x4)              // Store byte 25 at offset 0
+
+// Store Halfword (sh)
+addi x5, x0, halfwords     // Load base address of halfwords into x5
+sh x2, 0(x5)              // Store halfword 0x1234 at offset 0
+
+// Store Word (sw)
+addi x6, x0, words         // Load base address of words into x6
+sw x3, 0(x6)              // Store word 0xFFFFFFFF at offset 0
+
+WFI

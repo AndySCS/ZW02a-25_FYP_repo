@@ -2,7 +2,8 @@
 addi x1, x0, 5      // Load immediate value 5 into x1 (x1 = 5)
 addi x2, x0, 10     // Load immediate value 10 into x2 (x2 = 10)
 sub x3, x0, x1     // Load immediate value -3 into x3 (x3 = -5)
-  
+addi x3, x0, -3  
+
 // Test ADDI (Add Immediate)
 addi x4, x1, 10     // x4 = x1 + 10 => x4 = 5 + 10 = 15
 sub x5, x0, x1     // x5 = x0 -1 => x5 = 0 - 1 = -5 => FFFF_FFFB
