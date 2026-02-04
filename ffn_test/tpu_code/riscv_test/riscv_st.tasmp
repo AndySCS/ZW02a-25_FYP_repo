@@ -1,18 +1,73 @@
 // Prepare data to store
-addi x1, x0, 25            // Set x1 to 25 (for byte)
-addi x2, x0, 0x1234        // Set x2 to 0x1234 (for halfword)
-addi x3, x0, 0xFFFFFFFF     // Set x3 to 0xFFFFFFFF (for word)
+// op rs2, rs1, offset
+// store rs2_data into (rs1+offset) addr in memory
 
-// Store Byte (sb)
-addi x4, x0, 1        // Load base address of buffer into x4
-sb x1, x4, 0              // Store byte 25 at offset 0
+//Data prepare
+//rs2_data prepare
+addi x1, x0, 255 //x1 => 0xFF
+slli x2, x1, 8   //x2 =>  0XFF00
+slli x3, x2, 16  // x3 => 0xFF000000
 
-// Store Halfword (sh)
-addi x5, x0, halfwords     // Load base address of halfwords into x5
-sh x2, x5, 0              // Store halfword 0x1234 at offset 0
+//rs1_addr prepare
+addi x4,  x0, 1 //x4  => 'h1
+addi x5,  x0, 2 //x5  => 'h10
+addi x6,  x0, 3 //x6  => 'h11
+addi x7,  x0, 4 //x7  => 'h100
+addi x8,  x0, 5 //x8  => 'h101
+addi x9,  x0, 6 //x9  => 'h110
+addi x10, x0, 7 //x10 => 'h0111
+addi x11, x0, 8 //x11 => 'h1000
 
-// Store Word (sw)
-addi x6, x0, words         // Load base address of words into x6
-sw x3, x6, 0              // Store word 0xFFFFFFFF at offset 0
+addi x12,  x0,  9 //x4  => 'h1001
+addi x13,  x0, 10 //x5  => 'h1010
+addi x14,  x0, 11 //x6  => 'h1011
+addi x15,  x0, 12 //x7  => 'h1100
+addi x16,  x0, 13 //x8  => 'h1101
+addi x17,  x0, 14 //x9  => 'h1110
+addi x18,  x0, 15 //x10 => 'h1111
+addi x19,  x0, 16 //x11 => 'h10000
+
+//sb test
+sb x1, x0,  0 => iram[0] => 0xFF
+sb x1, x4,  0 => iram[0] => 0xFFFF
+sb x1, x5,  0 => iram[0] => 0xFFFF_FF
+sb x1, x6,  0 => iram[0] => 0xFFFF_FFFF
+sb x1, x7,  0 => iram[0] => 0xFFFF_FFFF_FF
+sb x1, x8,  0 => iram[0] => 0xFFFF_FFFF_FFFF
+sb x1, x9,  0 => iram[0] => 0xFFFF_FFFF_FFFF_FF
+sb x1, x10, 0 => iram[0] => 0xFFFF_FFFF_FFFF_FFFF
+sb x1, x11, 0 => iram[0] => 0xFFFF_FFFF_FFFF_FFFF_FF
+sb x1, x12, 0 => iram[0] => 0xFFFF_FFFF_FFFF_FFFF_FFFF
+sb x1, x13, 0 => iram[0] => 0xFFFF_FFFF_FFFF_FFFF_FFFF_FF
+sb x1, x14, 0 => iram[0] => 0xFFFF_FFFF_FFFF_FFFF_FFFF_FFFF
+sb x1, x15, 0 => iram[0] => 0xFFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FF
+sb x1, x16, 0 => iram[0] => 0xFFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF
+sb x1, x17, 0 => iram[0] => 0xFFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FF
+sb x1, x18, 0 => iram[0] => 0xFFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF_FFFF
+sb x1, x19, 0 => iram[1] => 0xFF
+
+//sh test
+sh x2, x0,  0 => iram[0] => 0xFF00
+sh x2, x4,  0 => iram[0] => 0xFF00
+sh x2, x5,  0 => iram[0] => 0xFF00_FF00
+sh x2, x6,  0 => iram[0] => 0xFF00_FF00
+sh x2, x7,  0 => iram[0] => 0xFF00_FF00_FF00
+sh x2, x8,  0 => iram[0] => 0xFF00_FF00_FF00
+sh x2, x9,  0 => iram[0] => 0xFF00_FF00_FF00_FF00
+sh x2, x10, 0 => iram[0] => 0xFF00_FF00_FF00_FF00
+sh x2, x11, 0 => iram[0] => 0xFF00_FF00_FF00_FF00_FF00
+sh x2, x12, 0 => iram[0] => 0xFF00_FF00_FF00_FF00_FF00
+sh x2, x13, 0 => iram[0] => 0xFF00_FF00_FF00_FF00_FF00_FF00
+sh x2, x14, 0 => iram[0] => 0xFF00_FF00_FF00_FF00_FF00_FF00
+sh x2, x15, 0 => iram[0] => 0xFF00_FF00_FF00_FF00_FF00_FF00_FF00
+sh x2, x16, 0 => iram[0] => 0xFF00_FF00_FF00_FF00_FF00_FF00_FF00
+sh x2, x17, 0 => iram[0] => 0xFF00_FF00_FF00_FF00_FF00_FF00_FF00_FF00
+sh x2, x18, 0 => iram[0] => 0xFF00_FF00_FF00_FF00_FF00_FF00_FF00_FF00
+
+
+//add for stop cmp non stop
+add x0, x0, x0
 
 WFI
+
+
