@@ -28,8 +28,8 @@ function instr_utype::pack();
 endfunction
 
 constraint instr_utype::utype_cons_opcode{
-    instr_opcode inside {OPCODE_LUI, 
-                         OPCODE_AUIPC}; 
+    instr_opcode inside {7'b0110111, 
+                         7'b0010111}; 
 }
 
 //U Type instructon
@@ -39,7 +39,7 @@ class instr_lui extends instr_utype;
 endclass
 
 constraint instr_lui::cons_opcode{
-    instr_opcode == OPCODE_LUI; 
+    instr_opcode == 7'b0110111; 
 }
 
 //=============== AUIPC
@@ -48,7 +48,7 @@ class instr_auipc extends instr_utype;
 endclass
 
 constraint instr_auipc::cons_opcode{
-    instr_opcode == OPCODE_AUIPC; 
+    instr_opcode == 7'b0010111; 
 }
 
 `endif

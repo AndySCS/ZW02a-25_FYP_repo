@@ -9,5 +9,5 @@ $MINITPU_VER/top/tc/tc_utype.sv
 $MINITPU_VER/top/tc/tc_br.sv
 $MINITPU_VER/top/tc/tc_mix.sv
 
--f $MINITPU_VER/top/tc/instr_seq_gen/instr_base.sv
--f $MINITPU_VER/top/tc/instr_seq_gen/utype_seq.sv
+$MINITPU_VER/top/tc/instr_seq_gen/instr_base.sv
+$MINITPU_VER/top/tc/instr_seq_gen/utype_seq.sv
