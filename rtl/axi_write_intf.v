@@ -28,6 +28,7 @@ module AXI_WRITE_INFT(
     lsu_axi_awsize,
     lsu_axi_awburst,
     lsu_axi_awstr,
+    lsu_axi_awnum,
     lsu_axi_awvld,
     lsu_axi_oram_addr,
     lsu_axi_wdata,
@@ -79,6 +80,7 @@ module AXI_WRITE_INFT(
     input [2:0] lsu_axi_awsize;
     input [1:0] lsu_axi_awburst;
     input [2:0] lsu_axi_awstr;
+    input [7:0] lsu_axi_awnum;
     input lsu_axi_awvld;
     input [11:0] lsu_axi_oram_addr;
     input [63:0] lsu_axi_wdata;
@@ -382,6 +384,7 @@ module AXI_WRITE_INFT(
     assign axi_doing_st = (awcnt < awnum) & aw_alloc_fsm;
     assign aw_alloc_fsm_nxt = lsu_axi_awvld_qual | aw_alloc_fsm & ~(awcnt == awnum);
     assign aw_alloc_fsm_en = lsu_axi_awvld_qual | aw_alloc_fsm;
+    assign awnum_nxt = lsu_axi_awvld_qual? lsu_axi_awnum : awnum;
     
     DFFRE #(.WIDTH(1))
     ff_aw_alloc_fsm (
