@@ -440,6 +440,16 @@ module lsu(
     wire [255:0] lsu_st_type1_din_int16_raw;
     
     wire lsu_st_type2_done;
+    
+    wire lsu_st_type2_bresp_qual;
+    wire lsu_st_type2_bresp_qual_ff;
+    wire lsu_st_type2_bresp_qual_en;
+    wire lsu_st_type2_bresp_end;
+
+    wire       lsu_st_type2_brep_chunk_len_cnt_en;
+    wire [7:0] lsu_st_type2_brep_chunk_len_cnt;
+    wire [7:0] lsu_st_type2_brep_chunk_len_cnt_nxt;
+
 
 
     assign lsu_vld_qual = alu_lsu_vld & lsu_alu_rdy;
@@ -701,7 +711,6 @@ module lsu(
     wire [2:0] lsu_st_type2_awstr;
     wire [4:0] lsu_st_type2_awnum;
 
-    wire lsu_st_type2_doing_ff;
     wire lsu_st_type2_aw_en;
     assign lsu_st_type2_aw_en = lsu_st_mm_en & (&lsu_st_type);
     
@@ -825,6 +834,7 @@ module lsu(
     wire [7:0] lsu_st_type2_oram_addr_nxt;
     wire [127:0] lsu_st_type2_oram_dout;
     wire lsu_st_type2_doing;
+    wire lsu_st_type2_doing_ff;
     wire lsu_st_type2_wr_done;
 
     wire [7:0] lsu_st_type2_cnt_row_nxt;
@@ -954,7 +964,7 @@ module lsu(
 
     assign lsu_axi_wsend_done      = lsu_st_type2_wr_chunk_num_cnt_end & lsu_st_type2_wr_chunk_len_cnt_end;
     assign lsu_axi_wsend_doing_nxt = lsu_vld_qual & alu_lsu_st_dram | lsu_axi_wsend_doing & ~(lsu_axi_wsend_done & lsu_axi_wvld_qual);
-    assign lsu_st_type2_doing      = lsu_vld_qual & alu_lsu_st_dram | lsu_st_type2_doing_ff & ~lsu_st_type2_done;
+    assign lsu_st_type2_doing        = lsu_vld_qual & alu_lsu_st_dram | ~lsu_st_type2_bresp_end & lsu_st_type2_doing_ff;
 
     assign lsu_axi_wvld_nxt   = lsu_st_type2_doing_ff & lsu_st_type2_oram_ce | lsu_axi_wvld & ~axi_lsu_wrdy;
     assign lsu_axi_wstrb_nxt  = lsu_axi_wstrb_raw;
@@ -1015,15 +1025,6 @@ module lsu(
     );
    
     //TODO update for the load doing and mm doing later
-    wire lsu_st_type2_bresp_qual;
-    wire lsu_st_type2_bresp_qual_ff;
-    wire lsu_st_type2_bresp_qual_en;
-    wire lsu_st_type2_bresp_end;
-
-    wire       lsu_st_type2_brep_chunk_len_cnt_en;
-    wire [7:0] lsu_st_type2_brep_chunk_len_cnt;
-    wire [7:0] lsu_st_type2_brep_chunk_len_cnt_nxt;
-
     assign lsu_axi_brdy = lsu_vld;
     assign lsu_st_type2_bresp_qual = lsu_axi_brdy & axi_lsu_bvld;
 
@@ -1031,14 +1032,13 @@ module lsu(
     assign lsu_st_type2_brep_chunk_len_cnt_nxt = lsu_axi_awvld_qual ? 8'b0 : (lsu_st_type2_brep_chunk_len_cnt + 8'b1);
 
     assign lsu_st_type2_bresp_end = lsu_st_type2_brep_chunk_len_cnt == lsu_axi_awlen;
-    assign lsu_st_type2_bresp_qual_en = lsu_st_type2_bresp_qual | lsu_st_type2_bresp_end;
+    assign lsu_st_type2_bresp_qual_en = lsu_st_type2_bresp_qual;
     
-    DFFRE #(.WIDTH(1))
+    DFFR #(.WIDTH(1))
     ff_lsu_st_type2_bresp_qual(
         .clk(clk),
         .rst_n(rst_n),
         .d(lsu_st_type2_bresp_qual),
-        .en(lsu_st_type2_bresp_qual_en),
         .q(lsu_st_type2_bresp_qual_ff)
     );
 
@@ -2084,7 +2084,7 @@ module lsu(
     assign lsu_riscv_ld_st_finish = lsu_riscv_ce;
     assign lsu_riscv_finish = (lsu_riscv_wb_vld | lsu_riscv_st_vld) & lsu_alu_rdy;
 
-    assign lsu_st_type2_done = lsu_st_type2_bresp_end;
+    assign lsu_st_type2_done = lsu_st_type2_bresp_end & lsu_st_type2_doing_ff;
     //assign lsu_st_finish = lsu_st_type1_done & (lsu_st_type1_qual | lsu_st_type1_qual_ff) | lsu_st_type2_done;
     assign lsu_st_finish = lsu_st_type1_done | lsu_st_type2_done;
 
