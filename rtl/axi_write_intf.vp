@@ -82,7 +82,7 @@ module AXI_WRITE_INFT(
     input [2:0] lsu_axi_awstr;
     input [7:0] lsu_axi_awnum;
     input lsu_axi_awvld;
-    input [11:0] lsu_axi_oram_addr;
+    input [31:0] lsu_axi_oram_addr;
     input [63:0] lsu_axi_wdata;
     input [7:0] lsu_axi_wstrb;
     input lsu_axi_wlast;
@@ -94,7 +94,7 @@ module AXI_WRITE_INFT(
     output axi_lsu_bid;
     output [1:0] axi_lsu_bresp;
     output axi_lsu_bvld;
-    output [11:0] axi_lsu_resp_oram_addr;
+    output [31:0] axi_lsu_resp_oram_addr;
 
     //AXI ID
     wire [15:0] axi_vld;
@@ -114,10 +114,10 @@ module AXI_WRITE_INFT(
     wire axi_sent_en;
     wire axi_alloc_vld;
     //:for($i=0;$i<16;$i++){
-    wire [11:0] oram_addr_{$i};
+    wire [31:0] oram_addr_{$i};
     //:}
-    wire [11:0] oram_addr_cur;
-    wire [11:0] oram_addr_nxt;
+    wire [31:0] oram_addr_cur;
+    wire [31:0] oram_addr_nxt;
     wire oram_addr_en;
 
     //AW INTF
@@ -225,7 +225,7 @@ module AXI_WRITE_INFT(
         .q(axi_recv)
     );
 
-    DFFE #(.WIDTH(12))
+    DFFE #(.WIDTH(32))
     ff_oram_addr_cur(
         .clk(clk),
         .en(axi_recv_en),
@@ -233,7 +233,7 @@ module AXI_WRITE_INFT(
         .q(oram_addr_cur)
     );
     //:for($i=0;$i<16;$i++){
-    DFFE #(.WIDTH(12))
+    DFFE #(.WIDTH(32))
     ff_oram_addr_{$i}(
         .clk(clk),
         .en(lsu_axi_awvld_qual),
@@ -418,7 +418,7 @@ module AXI_WRITE_INFT(
     assign axi_lsu_bresp_nxt = BVALID_qual ? BRESP : axi_lsu_bresp;
     assign BREADY = ~axi_lsu_bvld;
 
-    mux16 #(.WIDTH(12))
+    mux16 #(.WIDTH(32))
     reso_oram_addr_mux(
         //:for($i=0;$i<16;$i++){
         .in{$i}(oram_addr_{$i}),

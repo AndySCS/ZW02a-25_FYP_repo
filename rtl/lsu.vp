@@ -372,9 +372,6 @@ module lsu(
     
     wire lsu_st_type1_doing;
 
-    wire [7:0] lsu_oram_addr_ff;
-    wire [7:0] lsu_oram_hi_addr_ff;
-
     wire lsu_vld_ff;
     wire lsu_vld_qual;
     wire lsu_vld_qual_ff;
@@ -397,6 +394,7 @@ module lsu(
     wire [7:0]  lsu_axi_anum_nxt;
     wire [11:0] lsu_axi_sram_addr_nxt;
     wire [12:0] lsu_axi_oram_addr_nxt;
+    wire        lsu_axi_oram_addr_en;  
     
     wire [31:0] lsu_axi_aaddr;
     wire [7:0]  lsu_axi_alen;
@@ -847,6 +845,36 @@ module lsu(
     
     wire [4:0] lsu_st_type2_wdata_shift;
     
+    //get the use col
+    wire [127:0] lsu_st_type1_din_int8_qual;
+
+    //filter the useable element in int8 => 128bit
+    //by the start_x and the len
+    //assume it will not over the boundary limit
+    wire [7:0] lsu_st_type1_shift_len;
+    wire [7:0] lsu_st_type1_shift_start;
+
+    wire [7:0] lsu_st_type1_shift_end;
+
+    wire [7:0] lsu_st_type1_shift_sram_addr;
+    wire lsu_st_type1_ce;
+    wire [15:0] lsu_st_type1_we;
+
+    wire [15:0] lsu_st_type1_we_raw;
+    wire [15:0] lsu_st_type1_we_raw_ff;
+    
+    wire [7:0] lsu_st_type1_addr;
+
+    wire [3:0] lsu_st_type1_shift_sram_addr_pre;
+    wire[3:0] lsu_start_x;
+   
+    wire [7:0] lsu_st_type1_sram_shift;
+    wire [7:0] lsu_st_type1_mxu_shift;
+    wire [127:0] lsu_st_type1_din_raw;
+    wire [127:0] lsu_st_type1_din;
+    wire lsu_st_type1_low;
+
+    
     assign lsu_st_type2_start_wr_pulse = ~lsu_st_type2_wr_qual_2ff & lsu_st_type2_wr_qual_ff;
     assign lsu_st_type2_start_wr = lsu_st_type2_wr_qual_ff;
 
@@ -958,11 +986,8 @@ module lsu(
         .q(lsu_st_type2_doing_ff)
     );
     
-    wire        lsu_axi_oram_addr_en;  
-    wire [12:0] lsu_axi_oram_addr_nxt; 
 
-    assign lsu_axi_oram_addr_en = lsu_vld_qual | lsu_axi_wvld_qual & lsu_axi_wlast;
-    assign lsu_axi_oram_addr_nxt = lsu_vld_qual ? alu_lsu_ld_st_addr[12:0] : lsu_axi_oram_addr + 1;
+    assign lsu_axi_oram_addr_en = lsu_vld_qual;
 
     DFFE #(.WIDTH(13))
     ff_lsu_axi_oram_addr (
@@ -972,14 +997,6 @@ module lsu(
         .q(lsu_axi_oram_addr)
     );
 
-    DFFR #(.WIDTH(128))
-    ff_lsu_type2_wdata (
-        .clk(clk),
-        .rst_n(rst_n),
-        .d(lsu_st_type2_wdata_mdf_nxt),
-        .q(lsu_st_type2_wdata_mdf)
-    );
- 
     DFFRE #(.WIDTH(8))
     ff_lsu_type2_store_addr (
         .clk(clk),
@@ -1040,8 +1057,8 @@ module lsu(
     wire [31:0] lsu_st_type2_bresp_resend_sub_data;
     wire [31:0] lsu_st_type2_bresp_resend_update;
     
-    assign lsu_st_type2_bresp_resend_bank_num = lsu_axi_oram_addr[11:9];
-    assign lsu_st_type2_bresp_resend_sub_data_num = lsu_axi_oram_addr[8:4];
+    assign lsu_st_type2_bresp_resend_bank_num = axi_lsu_resp_oram_addr[11:9];
+    assign lsu_st_type2_bresp_resend_sub_data_num = axi_lsu_resp_oram_addr[8:4];
     assign lsu_st_type2_bresp_resend_update = ((lsu_st_type2_bresp_qual | lsu_st_type2_bresp_qual_ff) & (|axi_lsu_bresp)) ? lsu_st_type2_bresp_data_original | lsu_st_type2_bresp_resend_sub_data : lsu_st_type2_bresp_data_original; 
     
     resp_data_get resp_data(
@@ -1061,8 +1078,6 @@ module lsu(
         .out(lsu_st_type2_bresp_resend)
     );
 
-    //assign lsu_st_type2_bresp_resend[lsu_axi_oram_addr[11:3]] = 1'b1;
-    //assign lsu_st_type2_bresp_resend[lsu_axi_oram_addr[11:3]] = (lsu_st_type2_bresp_qual | lsu_st_type2_bresp_qual_ff) & (|axi_lsu_bresp);
     //cancel back the last cycle resend one
     //assign lsu_st_type2_bresp_resend[ctrl_store_resp_oram_addr_ff] = 1'b0;
     //assign lsu_st_type2_bresp_resend_have_error = (|lsu_st_type2_bresp_resend) & lsu_st_type2_axi_write_fsm[1];
@@ -1242,8 +1257,8 @@ module lsu(
     ff_lsu_st_type1_sram_start_col (
         .clk(clk),
         .rst_n(rst_n),
+ 	.en(lsu_st_mm_vld),
         .d(alu_lsu_ld_st_addr[3:0]),
-	    .en(lsu_st_mm_vld),
         .q(lsu_st_type1_sram_start_col)
     );
 
@@ -1251,9 +1266,18 @@ module lsu(
     ff_lsu_st_low (
         .clk(clk),
         .rst_n(rst_n),
-	    .en(lsu_st_mm_vld),
+	.en(lsu_st_mm_vld),
         .d(alu_lsu_st_low),
         .q(lsu_st_low)
+    );
+    
+    DFFRE #(.WIDTH(16))
+    ff_lsu_st_type1_we_raw (
+        .clk(clk),
+        .rst_n(rst_n),
+	.en(lsu_vld_qual),
+        .d(lsu_st_type1_we_raw),
+        .q(lsu_st_type1_we_raw_ff)
     );
 
     //get the mxu row
@@ -1303,41 +1327,15 @@ module lsu(
         .out(lsu_st_type1_din_int16_raw)
     );
 
-    //get the use col
-    wire [127:0] lsu_st_type1_din_int8_qual;
-
-    //filter the useable element in int8 => 128bit
-    //by the start_x and the len
-    //assume it will not over the boundary limit
-    wire [7:0] lsu_st_type1_shift_len;
-    wire [7:0] lsu_st_type1_shift_start;
-
-    wire [7:0] lsu_st_type1_shift_end;
-
-    wire [7:0] lsu_st_type1_shift_sram_addr;
-    wire lsu_st_type1_ce;
-    wire [15:0] lsu_st_type1_we;
-
-    wire [15:0] lsu_st_type1_we_raw;
-    
-    wire [7:0] lsu_st_type1_addr;
-
-    wire [3:0] lsu_st_type1_shift_sram_addr_pre;
-    wire[3:0] lsu_start_x;
-   
-    wire [7:0] lsu_st_type1_sram_shift;
-    wire [7:0] lsu_st_type1_mxu_shift;
-    wire [127:0] lsu_st_type1_din_raw;
-    wire [127:0] lsu_st_type1_din;
-    wire lsu_st_type1_low;
-
     assign lsu_st_type1_sram_shift = lsu_st_type1_qual ? alu_lsu_ld_st_addr[3:0]<<3 : lsu_st_type1_sram_start_col<<3;
     assign lsu_st_type1_mxu_shift = lsu_st_type1_qual ? alu_lsu_start_x<<3 : lsu_st_type1_mxu_start_col<<3;
 
-    assign lsu_st_type1_ce      =  (lsu_st_type1_qual_ff) & ~lsu_st_type1_done_ff | (lsu_st_type1_qual);
-    assign lsu_st_type1_we_raw  = lsu_st_type1_qual ? {(alu_lsu_st_col+1){1'b1}} : {(lsu_st_col+1){1'b1}};
-    assign lsu_st_type1_we      = lsu_st_type1_qual ? (lsu_st_type1_we_raw << alu_lsu_ld_st_addr[3:0]) : (lsu_st_type1_we_raw << lsu_st_type1_sram_start_col); 
-    assign lsu_st_type1_addr    = lsu_st_type1_qual ? alu_lsu_ld_st_addr[11:4] : lsu_st_type1_sram_start_row+lsu_st_type1_cnt_row;
+    assign lsu_st_type1_ce      = (lsu_st_type1_qual_ff) & ~lsu_st_type1_done_ff | (lsu_st_type1_qual);
+    assign lsu_st_type1_we_raw  = ~(16'hfffe << alu_lsu_st_col);
+    assign lsu_st_type1_we      = lsu_st_type1_qual ? (lsu_st_type1_we_raw << alu_lsu_ld_st_addr[3:0]) 
+				: (lsu_st_type1_we_raw_ff << lsu_st_type1_sram_start_col); 
+    assign lsu_st_type1_addr    = lsu_st_type1_qual ? alu_lsu_ld_st_addr[11:4] 
+                                : lsu_st_type1_sram_start_row + lsu_st_type1_cnt_row;
     assign lsu_st_type1_din_raw = lsu_st_type1_din_int8_raw >> lsu_st_type1_mxu_shift;
     assign lsu_st_type1_din     = lsu_st_type1_din_raw << lsu_st_type1_sram_shift;
     assign lsu_st_type1_low     = lsu_st_type1_qual ? alu_lsu_st_low : lsu_st_low;
@@ -2202,24 +2200,6 @@ module lsu(
                             | (lsu_st_type2_oram_addr & {8{lsu_st_type2_oram_ce}}) 
                             | ({8{alu_lsu_st_low}} & lsu_riscv_addr & ({8{alu_lsu_st_oram}} | {8{alu_lsu_ld_oram}}));
 
-    DFFRE #(.WIDTH(8))
-    ff_lsu_oram_addr (
-        .clk(clk),
-        .rst_n(rst_n),
-        .en(lsu_oram_ce),
-        .d(lsu_oram_addr),
-        .q(lsu_oram_addr_ff)
-    );
-
-    DFFRE #(.WIDTH(8))
-    ff_lsu_oram_hi_addr (
-        .clk(clk),
-        .rst_n(rst_n),
-        .en(lsu_oram_hi_ce),
-        .d(lsu_oram_hi_addr),
-        .q(lsu_oram_hi_addr_ff)
-    );
-    
     ram_mem_wrapper #(.DATA_WIDTH(128))
     oram_lo(
         .clk (clk),
@@ -2247,7 +2227,7 @@ module lsu(
     wire lsu_lw_op_ff;
     wire lsu_lbu_op_ff;
     wire lsu_lhu_op_ff;
-    wire [3:0] lsu_ld_st_addr_ff;
+    wire [12:0] lsu_ld_st_addr_ff;
 
     DFFR #(.WIDTH(1))
     ff_lsu_riscv_ld_vld (
@@ -2292,11 +2272,11 @@ module lsu(
         .d(alu_lsu_lw_op),
         .q(lsu_lw_op_ff)
     );
-    DFFR #(.WIDTH(4))
+    DFFR #(.WIDTH(13))
     ff_lsu_ld_st_addr (
         .clk(clk),
         .rst_n(rst_n),
-        .d(alu_lsu_ld_st_addr[3:0]),
+        .d(alu_lsu_ld_st_addr[12:0]),
         .q(lsu_ld_st_addr_ff)
     );
 
