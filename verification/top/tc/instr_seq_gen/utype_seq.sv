@@ -24,6 +24,6 @@ task utype_seq::body();
         auipc = new();
         auipc.randomize();
     end
-   	`uvm_info(get_type_name(), "LUI IMEM LD FINISH", UVM_NONE)
+   	`uvm_info(get_type_name(), "LUI IMEM INIT FINISH", UVM_NONE)
 endtask
 `endif
