@@ -235,7 +235,7 @@ module lsu(
     input axi_lsu_bid;
     input [1:0] axi_lsu_bresp;
     input axi_lsu_bvld;
-    input [11:0] axi_lsu_resp_oram_addr;
+    input [12:0] axi_lsu_resp_oram_addr;
 
     //from axi read
     input axi_lsu_arrdy;
@@ -882,10 +882,10 @@ module lsu(
     assign lsu_st_type2_wr_chunk_num_cnt_end = (lsu_st_type2_wr_chunk_num_cnt == lsu_axi_anum);
     assign lsu_st_type2_wr_chunk_num_cnt_nxt = {8{~(lsu_axi_awvld_qual | lsu_vld_qual)}} & (lsu_st_type2_wr_chunk_num_cnt + {7'b0, lsu_axi_wlast});
 
-    DFFRE #(.WIDTH(8))
+    DFFE #(.WIDTH(8))
     ff_lsu_st_type2_wr_chunk_num_cnt(
         .clk(clk),
-	    .en(lsu_st_type2_wr_chunk_num_cnt_en),
+	.en(lsu_st_type2_wr_chunk_num_cnt_en),
         .d(lsu_st_type2_wr_chunk_num_cnt_nxt),
         .q(lsu_st_type2_wr_chunk_num_cnt)
     );
@@ -897,7 +897,7 @@ module lsu(
     DFFE #(.WIDTH(3))
     ff_lsu_st_type2_wr_chunk_len_cnt(
         .clk(clk),
-	    .en(lsu_st_type2_wr_chunk_len_cnt_en),
+	.en(lsu_st_type2_wr_chunk_len_cnt_en),
         .d(lsu_st_type2_wr_chunk_len_cnt_nxt),
         .q(lsu_st_type2_wr_chunk_len_cnt)
     );
