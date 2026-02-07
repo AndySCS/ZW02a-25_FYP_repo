@@ -32,6 +32,8 @@ task axi_wr_driver::reset_phase(uvm_phase phase);
     axi_wr_if.AWREADY   <= 1;
     axi_wr_if.WREADY    <= 0;
     axi_wr_if.BVALID    <= 0;
+    axi_wr_if.BRESP     <= 0;
+    axi_wr_if.BID       <= 0;
 endtask
 
 task axi_wr_driver::main_phase(uvm_phase phase); 
@@ -71,7 +73,7 @@ task axi_wr_driver::axi_wr_recv();
         @(posedge axi_wr_if.clk);
         
         if(axi_awr_q.size() == 0) begin
-            axi_wr_if.WREADY = 0;
+            axi_wr_if.WREADY <= 0;
             continue;
         end
         
@@ -88,8 +90,9 @@ task axi_wr_driver::axi_wr_recv();
             axi_awr_q[0].send_timer--;
         end
 
-        if(axi_awr_q[0].AxLEN < 0)begin
+        if(axi_awr_q[0].AxLEN[8])begin
             axi_wr_resp_q.push_back(axi_awr_q.pop_front());
+            `uvm_info(get_name(),"pushed tr into axi_wr_resp_q", UVM_LOW);
         end
         
     end
@@ -102,20 +105,21 @@ task axi_wr_driver::axi_wr_resp();
         @(posedge axi_wr_if.clk);
         
         if(axi_wr_resp_q.size() == 0) begin
-            axi_wr_if.BVALID = 0;
+            axi_wr_if.BVALID <= 0;
             continue;
         end
         
         if(axi_wr_if.BVALID & axi_wr_if.BREADY)begin
-            axi_wr_if.BVALID = 0;
+            axi_wr_if.BVALID <= 0;
             axi_wr_resp_q.pop_front();
         end
 
         if(axi_wr_resp_q.size() == 0);
         else if(axi_wr_resp_q[0].send_timer == 0)begin
-            axi_wr_if.BVALID = 1;
-            axi_wr_if.BRESP = 0;
-            axi_wr_if.BID = axi_wr_resp_q[0].AxID;
+            `uvm_info(get_name(),"send axi bresp to tpu", UVM_LOW);
+            axi_wr_if.BVALID <= 1;
+            axi_wr_if.BRESP  <= 0;
+            axi_wr_if.BID    <= axi_wr_resp_q[0].AxID;
         end
         else begin
             axi_wr_resp_q[0].send_timer--;
