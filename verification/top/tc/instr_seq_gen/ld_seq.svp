@@ -1,0 +1,150 @@
+`ifndef LD_SEQ_SV
+`define LD_SEQ_SV
+
+class ld_seq extends uvm_sequence;
+    `uvm_object_utils(ld_seq);	
+
+    instr_lb   lb;
+    instr_lh   lh;
+    instr_lw   lw;
+    instr_lbu  lbu;
+    instr_lhu  lhu;
+
+    extern function new(string name="ld_seq");
+    extern task body();
+endclass
+
+
+function ld_seq::new(string name="ld_seq");
+    super.new(name);
+endfunction
+
+task ld_seq::body();
+    static bit [255:0][127:0] ram_tmp;
+    static bit [127:0] ram_tmp_pre;
+    static int ram_count;
+
+    for(int i = 0; i < 201; i++) begin
+        lb = new();
+        lb.randomize();
+	    lb.pack();
+	    if(i==0)begin
+		    ram_tmp_pre[31:0] = lb.instruction;
+	    end
+        else if(i%4 == 1)begin
+		    ram_tmp_pre[63:32] = lb.instruction;
+	    end
+        else if(i%4 == 2)begin
+		    ram_tmp_pre[95:64] = lb.instruction;
+	    end
+        else if(i%4 == 3)begin
+		    ram_tmp_pre[127:96] = lb.instruction;
+	    end
+	    else begin
+		    ram_tmp[ram_count] = ram_tmp_pre;
+		    ram_count = ram_count+1;
+		    ram_tmp_pre[31:0] = lb.instruction;
+	    end
+    end
+
+    for(int i = 401; i < 401; i++) begin
+        lh = new();
+        lh.randomize();
+	    lh.pack();
+	    if(i==0)begin
+		    ram_tmp_pre[31:0] = lh.instruction;
+	    end
+        else if(i%4 == 1)begin
+		    ram_tmp_pre[63:32] = lh.instruction;
+	    end
+        else if(i%4 == 2)begin
+		    ram_tmp_pre[95:64] = lh.instruction;
+	    end
+        else if(i%4 == 3)begin
+		    ram_tmp_pre[127:96] = lh.instruction;
+	    end
+	    else begin
+		    ram_tmp[ram_count] = ram_tmp_pre;
+		    ram_count = ram_count+1;
+		    ram_tmp_pre[31:0] = lh.instruction;
+	    end
+    end
+
+    for(int i = 401; i < 601; i++) begin
+        lw = new();
+        lw.randomize();
+	    lw.pack();
+	    if(i==0)begin
+		    ram_tmp_pre[31:0] = lw.instruction;
+	    end
+        else if(i%4 == 1)begin
+		    ram_tmp_pre[63:32] = lw.instruction;
+	    end
+        else if(i%4 == 2)begin
+		    ram_tmp_pre[95:64] = lw.instruction;
+	    end
+        else if(i%4 == 3)begin
+		    ram_tmp_pre[127:96] = lw.instruction;
+	    end
+	    else begin
+		    ram_tmp[ram_count] = ram_tmp_pre;
+		    ram_count = ram_count+1;
+		    ram_tmp_pre[31:0] = lw.instruction;
+	    end
+    end
+    
+    for(int i = 601; i < 801; i++) begin
+        lbu = new();
+        lbu.randomize();
+	    lbu.pack();
+	    if(i==0)begin
+		    ram_tmp_pre[31:0] = lbu.instruction;
+	    end
+        else if(i%4 == 1)begin
+		    ram_tmp_pre[63:32] = lbu.instruction;
+	    end
+        else if(i%4 == 2)begin
+		    ram_tmp_pre[95:64] = lbu.instruction;
+	    end
+        else if(i%4 == 3)begin
+		    ram_tmp_pre[127:96] = lbu.instruction;
+	    end
+	    else begin
+		    ram_tmp[ram_count] = ram_tmp_pre;
+		    ram_count = ram_count+1;
+		    ram_tmp_pre[31:0] = lbu.instruction;
+	    end
+    end
+
+    for(int i = 801; i < 1024; i++) begin
+        lhu = new();
+        lhu.randomize();
+	    lhu.pack();
+	    if(i==0)begin
+		    ram_tmp_pre[31:0] = lhu.instruction;
+	    end
+        else if(i%4 == 1)begin
+		    ram_tmp_pre[63:32] = lhu.instruction;
+	    end
+        else if(i%4 == 2)begin
+		    ram_tmp_pre[95:64] = lhu.instruction;
+	    end
+        else if(i%4 == 3)begin
+		    ram_tmp_pre[127:96] = lhu.instruction;
+	    end
+	    else begin
+		    ram_tmp[ram_count] = ram_tmp_pre;
+		    ram_count = ram_count+1;
+		    ram_tmp_pre[31:0] = lhu.instruction;
+	    end
+    end
+
+    ram_tmp[255][31:0] = 'h73; 
+    //:for($i = 0; $i < 256;$i++){    
+    force harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[{$i}] = ram_tmp[{$i}];
+    //:}
+   	`uvm_info(get_type_name(), "LUI IMEM INIT FINISH", UVM_NONE)
+endtask
+
+`endif
+

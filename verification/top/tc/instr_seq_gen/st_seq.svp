@@ -1,0 +1,103 @@
+`ifndef ST_SEQ_SV
+`define ST_SEQ_SV
+
+class st_seq extends uvm_sequence;
+    `uvm_object_utils(st_seq);	
+
+    instr_sb   sb;
+    instr_sh   sh;
+    instr_sw   sw;
+
+    extern function new(string name="st_seq");
+    extern task body();
+endclass
+
+
+function st_seq::new(string name="st_seq");
+    super.new(name);
+endfunction
+
+task st_seq::body();
+    static bit [255:0][127:0] ram_tmp;
+    static bit [127:0] ram_tmp_pre;
+    static int ram_count;
+
+    for(int i = 0; i < 351; i++) begin
+        sb = new();
+        sb.randomize();
+	    sb.pack();
+	    if(i==0)begin
+		    ram_tmp_pre[31:0] = sb.instruction;
+	    end
+        else if(i%4 == 1)begin
+		    ram_tmp_pre[63:32] = sb.instruction;
+	    end
+        else if(i%4 == 2)begin
+		    ram_tmp_pre[95:64] = sb.instruction;
+	    end
+        else if(i%4 == 3)begin
+		    ram_tmp_pre[127:96] = sb.instruction;
+	    end
+	    else begin
+		    ram_tmp[ram_count] = ram_tmp_pre;
+		    ram_count = ram_count+1;
+		    ram_tmp_pre[31:0] = sb.instruction;
+	    end
+    end
+
+    for(int i = 351; i < 701; i++) begin
+        sh = new();
+        sh.randomize();
+	    sh.pack();
+	    if(i==0)begin
+		    ram_tmp_pre[31:0] = sh.instruction;
+	    end
+        else if(i%4 == 1)begin
+		    ram_tmp_pre[63:32] = sh.instruction;
+	    end
+        else if(i%4 == 2)begin
+		    ram_tmp_pre[95:64] = sh.instruction;
+	    end
+        else if(i%4 == 3)begin
+		    ram_tmp_pre[127:96] = sh.instruction;
+	    end
+	    else begin
+		    ram_tmp[ram_count] = ram_tmp_pre;
+		    ram_count = ram_count+1;
+		    ram_tmp_pre[31:0] = sh.instruction;
+	    end
+    end
+
+    for(int i = 701; i < 1024; i++) begin
+        sw = new();
+        sw.randomize();
+	    sw.pack();
+	    if(i==0)begin
+		    ram_tmp_pre[31:0] = sw.instruction;
+	    end
+        else if(i%4 == 1)begin
+		    ram_tmp_pre[63:32] = sw.instruction;
+	    end
+        else if(i%4 == 2)begin
+		    ram_tmp_pre[95:64] = sw.instruction;
+	    end
+        else if(i%4 == 3)begin
+		    ram_tmp_pre[127:96] = sw.instruction;
+	    end
+	    else begin
+		    ram_tmp[ram_count] = ram_tmp_pre;
+		    ram_count = ram_count+1;
+		    ram_tmp_pre[31:0] = sw.instruction;
+	    end
+    end
+    
+
+    ram_tmp[255][31:0] = 'h73; 
+    //:for($i = 0; $i < 256;$i++){    
+    force harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[{$i}] = ram_tmp[{$i}];
+    //:}
+   	`uvm_info(get_type_name(), "LUI IMEM INIT FINISH", UVM_NONE)
+endtask
+
+`endif
+
