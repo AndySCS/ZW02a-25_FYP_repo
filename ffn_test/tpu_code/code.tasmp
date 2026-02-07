@@ -223,6 +223,6 @@ STMT x3, x0, 0, 9, 1 //store result oram
 addi x5, x0, 0
 lui x5, 12
 addi x5, x5, 1520
-STT x3, x5,  0, 0, 5, 1 // store result to dram
+STT x3, x5,  9, 0, 0, 1 // store result to dram
 
 WFI
