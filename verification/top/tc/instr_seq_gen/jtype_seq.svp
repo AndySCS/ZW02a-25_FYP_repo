@@ -5,7 +5,7 @@ class jtype_seq extends uvm_sequence;
     `uvm_object_utils(jtype_seq);	
 
     instr_jal   jal;
-    instr_jarl  jarl;
+    instr_jalr  jalr;
 	instr_addi  addi;
 
     extern function new(string name="jtype_seq");
