@@ -481,7 +481,7 @@ module AXI_WRITE_INFT(
     assign WDATA_nxt = lsu_axi_wvld_qual ? lsu_axi_wdata : WDATA;
     assign WSTRB_nxt = lsu_axi_wvld_qual ? lsu_axi_wstrb : WSTRB;
     assign wcnt_full = wcnt == AWLEN;
-    assign WLAST_nxt = wcnt_full;
+    assign WLAST_nxt = lsu_axi_wvld_qual? lsu_axi_wlast : WLAST;
     assign wcnt_nxt = (lsu_axi_awvld_qual | wcnt_full) ? 8'b0 : wcnt_nxt + 7'b1;
     assign wcnt_en = lsu_axi_awvld_qual | lsu_axi_wvld_qual;
     

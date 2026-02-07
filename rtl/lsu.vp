@@ -979,6 +979,14 @@ module lsu(
         .d(lsu_axi_wsend_doing_nxt),
         .q(lsu_axi_wsend_doing)
     );
+    
+    DFFR #(.WIDTH(1))
+    ff_lsu_axi_wvld (
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(lsu_axi_wvld_nxt),
+        .q(lsu_axi_wvld)
+    );
 
     DFFE #(.WIDTH(8))
     ff_lsu_axi_wstrb (
@@ -1028,8 +1036,8 @@ module lsu(
     assign lsu_axi_brdy = lsu_vld;
     assign lsu_st_type2_bresp_qual = lsu_axi_brdy & axi_lsu_bvld;
 
-    assign lsu_st_type2_brep_chunk_len_cnt_en = lsu_axi_awvld_qual | lsu_st_type2_bresp_qual;
-    assign lsu_st_type2_brep_chunk_len_cnt_nxt = lsu_axi_awvld_qual ? 8'b0 : (lsu_st_type2_brep_chunk_len_cnt + 8'b1);
+    assign lsu_st_type2_brep_chunk_len_cnt_en = lsu_axi_awvld_qual | lsu_st_type2_bresp_qual | lsu_vld_qual;
+    assign lsu_st_type2_brep_chunk_len_cnt_nxt = (lsu_axi_awvld_qual| lsu_vld_qual) ? 8'b0 : (lsu_st_type2_brep_chunk_len_cnt + 8'b1);
 
     assign lsu_st_type2_bresp_end = lsu_st_type2_brep_chunk_len_cnt == lsu_axi_awlen;
     assign lsu_st_type2_bresp_qual_en = lsu_st_type2_bresp_qual;
@@ -1456,7 +1464,10 @@ module lsu(
      
     //adress read part
     //once we sense load instr give arvld and other ar signal
-    //id and burst not support 
+    //id and burst not support
+
+    assign lsu_axi_awvld_qual      = lsu_axi_awvld & axi_lsu_awrdy; 
+    assign lsu_axi_wvld_qual       = lsu_axi_wvld & axi_lsu_wrdy; 
     assign lsu_axi_arvld_nxt       = lsu_vld_qual & (alu_lsu_ld_iram | alu_lsu_ld_wram) & ~alu_lsu_wb_vld | lsu_axi_arvld & ~axi_lsu_arrdy;
     assign lsu_axi_awvld_nxt       = lsu_vld_qual & alu_lsu_st_dram | lsu_axi_awvld & ~axi_lsu_awrdy;
 
