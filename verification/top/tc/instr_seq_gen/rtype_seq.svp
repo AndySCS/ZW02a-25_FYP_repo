@@ -24,6 +24,10 @@ function rtype_seq::new(string name="rtype_seq");
 endfunction
 
 task rtype_seq::body();
+    static bit [255:0][127:0] ram_tmp;
+    static bit [127:0] ram_tmp_pre;
+    static int ram_count;
+    
     for(int i = 0; i < 101; i++) begin
         add_instr = new();
         add_instr.randomize();
