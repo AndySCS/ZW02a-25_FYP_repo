@@ -85,7 +85,7 @@ cmp:
 	$(VCS) 
 
 sim: 
-	./$(mode)/simv +UVM_TESTNAME=tc_base                  \
+	./$(mode)/simv +UVM_TESTNAME=$(tc)                  \
                    +ntb_random_seed=$(seed)             \
 				   +UVM_VERBOSITY=$(printlv)            \
                    +fsdb+autoflush                      \
@@ -99,7 +99,7 @@ sim:
                    $(tc_opt)
 
 regress: 
-	./$(mode)/simv +UVM_TESTNAME=tc_base                  \
+	./$(mode)/simv +UVM_TESTNAME=$(tc)                  \
                    +ntb_random_seed=$(seed)             \
 				   +UVM_VERBOSITY=UVM_NONE              \
                    -cm_name $(fsdb_file_name)           \
