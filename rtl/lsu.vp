@@ -1043,7 +1043,7 @@ module lsu(
     assign lsu_st_type2_brep_chunk_len_cnt_en = lsu_axi_awvld_qual | lsu_st_type2_bresp_qual | lsu_vld_qual;
     assign lsu_st_type2_brep_chunk_len_cnt_nxt = (lsu_axi_awvld_qual| lsu_vld_qual) ? 8'b0 : (lsu_st_type2_brep_chunk_len_cnt + 8'b1);
 
-    assign lsu_st_type2_bresp_end = (lsu_st_type2_brep_chunk_len_cnt == lsu_axi_awlen) & lsu_st_type2_bresp_qual;
+    assign lsu_st_type2_bresp_end = (lsu_st_type2_brep_chunk_len_cnt == lsu_axi_awnum) & lsu_st_type2_bresp_qual;
     assign lsu_st_type2_bresp_qual_en = lsu_st_type2_bresp_qual;
     
     DFFR #(.WIDTH(1))
