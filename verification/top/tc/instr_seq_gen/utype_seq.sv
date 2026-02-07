@@ -25,57 +25,53 @@ task utype_seq::body();
     for(int i = 0; i < 512; i++) begin
         lui = new();
         lui.randomize();
-	lui.pack();
-	if(i==0)begin
-		ram_tmp_pre[31:0] = lui.instruction;
-	end
+	    lui.pack();
+	    if(i==0)begin
+		    ram_tmp_pre[31:0] = lui.instruction;
+	    end
         else if(i%4 == 1)begin
-		ram_tmp_pre[63:32] = lui.instruction;
-	end
-
+		    ram_tmp_pre[63:32] = lui.instruction;
+	    end
         else if(i%4 == 2)begin
-		ram_tmp_pre[95:64] = lui.instruction;
-	end
-
+		    ram_tmp_pre[95:64] = lui.instruction;
+	    end
         else if(i%4 == 3)begin
-		ram_tmp_pre[127:96] = lui.instruction;
-	end
-	else begin
-		ram_tmp[ram_count] = ram_tmp_pre;
-		ram_count = ram_count+1;
-		ram_tmp_pre[31:0] = lui.instruction;
-	end
-	//`uvm_info("LUI_op", $sformatf("The integer value is: %0h", lui.instr_opcode), UVM_NONE);
-	//`uvm_info("LUI_imm", $sformatf("The integer value is: %0h", lui.instr_imm), UVM_NONE);
-	//`uvm_info("LUI_rd", $sformatf("The integer value is: %0h", lui.instr_rd), UVM_NONE);
-	//`uvm_info("LUI_instr", $sformatf("The integer value is: %0h", lui.instruction), UVM_NONE);
-	//`uvm_info("LUI_pack", $sformatf("The integer value is: %0h", lui.randomize()), UVM_NONE);
-	//`uvm_info("RAM_TMP", $sformatf("The integer value is: %0h", ram_tmp[i]), UVM_NONE);
+		    ram_tmp_pre[127:96] = lui.instruction;
+	    end
+	    else begin
+		    ram_tmp[ram_count] = ram_tmp_pre;
+		    ram_count = ram_count+1;
+		    ram_tmp_pre[31:0] = lui.instruction;
+	    end
+	    //`uvm_info("LUI_op", $sformatf("The integer value is: %0h", lui.instr_opcode), UVM_NONE);
+	    //`uvm_info("LUI_imm", $sformatf("The integer value is: %0h", lui.instr_imm), UVM_NONE);
+	    //`uvm_info("LUI_rd", $sformatf("The integer value is: %0h", lui.instr_rd), UVM_NONE);
+	    //`uvm_info("LUI_instr", $sformatf("The integer value is: %0h", lui.instruction), UVM_NONE);
+	    //`uvm_info("LUI_pack", $sformatf("The integer value is: %0h", lui.randomize()), UVM_NONE);
+	    //`uvm_info("RAM_TMP", $sformatf("The integer value is: %0h", ram_tmp[i]), UVM_NONE);
     end
 
     for(int i = 512; i < 1024; i++) begin
         auipc = new();
         auipc.randomize();
-	auipc.pack();
-	if(i==0)begin
-		ram_tmp_pre[31:0] = auipc.instruction;
-	end
+	    auipc.pack();
+	    if(i==0)begin
+		    ram_tmp_pre[31:0] = auipc.instruction;
+	    end
         else if(i%4 == 1)begin
-		ram_tmp_pre[63:32] = auipc.instruction;
-	end
-
+		    ram_tmp_pre[63:32] = auipc.instruction;
+	    end
         else if(i%4 == 2)begin
-		ram_tmp_pre[95:64] = auipc.instruction;
-	end
-
+		    ram_tmp_pre[95:64] = auipc.instruction;
+	    end
         else if(i%4 == 3)begin
-		ram_tmp_pre[127:96] = auipc.instruction;
-	end
-	else begin
-		ram_tmp[ram_count] = ram_tmp_pre;
-		ram_count = ram_count+1;
-		ram_tmp_pre[31:0] = auipc.instruction;
-	end
+		    ram_tmp_pre[127:96] = auipc.instruction;
+	    end
+	    else begin
+		    ram_tmp[ram_count] = ram_tmp_pre;
+		    ram_count = ram_count+1;
+		    ram_tmp_pre[31:0] = auipc.instruction;
+	    end
     end
 
     ram_tmp[255][31:0] = 'h73; 

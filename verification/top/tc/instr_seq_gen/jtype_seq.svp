@@ -1,0 +1,101 @@
+`ifndef JTYPE_SEQ_SV
+`define JTYPE_SEQ_SV
+
+class jtype_seq extends uvm_sequence;
+    `uvm_object_utils(jtype_seq);	
+
+    instr_jal   jal;
+    instr_jarl  jarl;
+	instr_addi  addi;
+
+    extern function new(string name="jtype_seq");
+    extern task body();
+endclass
+
+
+function jtype_seq::new(string name="jtype_seq");
+    super.new(name);
+endfunction
+
+task jtype_seq::body();
+    static bit [255:0][127:0] ram_tmp;
+    static bit [127:0] ram_tmp_pre;
+    static int ram_count;
+
+    for(int i = 0; i < 51; i++) begin
+        addi = new();
+        addi.randomize();
+	    addi.pack();
+	    if(i==0)begin
+		    ram_tmp_pre[31:0] = addi.instruction;
+	    end
+        else if(i%4 == 1)begin
+		    ram_tmp_pre[63:32] = addi.instruction;
+	    end
+        else if(i%4 == 2)begin
+		    ram_tmp_pre[95:64] = addi.instruction;
+	    end
+        else if(i%4 == 3)begin
+		    ram_tmp_pre[127:96] = addi.instruction;
+	    end
+	    else begin
+		    ram_tmp[ram_count] = ram_tmp_pre;
+		    ram_count = ram_count+1;
+		    ram_tmp_pre[31:0] = addi.instruction;
+	    end
+    end
+
+    for(int i = 51; i < 512; i++) begin
+        jal = new();
+        jal.randomize();
+	    jal.pack();
+	    if(i==0)begin
+		    ram_tmp_pre[31:0] = jal.instruction;
+	    end
+        else if(i%4 == 1)begin
+		    ram_tmp_pre[63:32] = jal.instruction;
+	    end
+        else if(i%4 == 2)begin
+		    ram_tmp_pre[95:64] = jal.instruction;
+	    end
+        else if(i%4 == 3)begin
+		    ram_tmp_pre[127:96] = jal.instruction;
+	    end
+	    else begin
+		    ram_tmp[ram_count] = ram_tmp_pre;
+		    ram_count = ram_count+1;
+		    ram_tmp_pre[31:0] = jal.instruction;
+	    end
+    end
+
+    for(int i = 512; i < 1024; i++) begin
+        jalr = new();
+        jalr.randomize();
+	    jalr.pack();
+	    if(i==0)begin
+		    ram_tmp_pre[31:0] = jalr.instruction;
+	    end
+        else if(i%4 == 1)begin
+		    ram_tmp_pre[63:32] = jalr.instruction;
+	    end
+        else if(i%4 == 2)begin
+		    ram_tmp_pre[95:64] = jalr.instruction;
+	    end
+        else if(i%4 == 3)begin
+		    ram_tmp_pre[127:96] = jalr.instruction;
+	    end
+	    else begin
+		    ram_tmp[ram_count] = ram_tmp_pre;
+		    ram_count = ram_count+1;
+		    ram_tmp_pre[31:0] = jalr.instruction;
+	    end
+    end
+    ram_tmp[255][31:0] = 'h73; 
+    //:for($i = 0; $i < 256;$i++){    
+    force harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[{$i}] = ram_tmp[{$i}];
+    //:}
+   	`uvm_info(get_type_name(), "jal IMEM INIT FINISH", UVM_NONE)
+endtask
+
+`endif
+

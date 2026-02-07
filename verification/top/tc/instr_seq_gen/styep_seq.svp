@@ -1,23 +1,23 @@
-`ifndef ST_SEQ_SV
-`define ST_SEQ_SV
+`ifndef STYPE_SEQ_SV
+`define STYPE_SEQ_SV
 
-class st_seq extends uvm_sequence;
-    `uvm_object_utils(st_seq);	
+class stype_seq extends uvm_sequence;
+    `uvm_object_utils(stype_seq);	
 
     instr_sb   sb;
     instr_sh   sh;
     instr_sw   sw;
 
-    extern function new(string name="st_seq");
+    extern function new(string name="stype_seq");
     extern task body();
 endclass
 
 
-function st_seq::new(string name="st_seq");
+function stype_seq::new(string name="stype_seq");
     super.new(name);
 endfunction
 
-task st_seq::body();
+task stype_seq::body();
     static bit [255:0][127:0] ram_tmp;
     static bit [127:0] ram_tmp_pre;
     static int ram_count;

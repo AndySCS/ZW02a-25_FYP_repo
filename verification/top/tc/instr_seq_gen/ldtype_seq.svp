@@ -1,8 +1,8 @@
-`ifndef LD_SEQ_SV
-`define LD_SEQ_SV
+`ifndef LDTYPE_SEQ_SV
+`define LDTYPE_SEQ_SV
 
-class ld_seq extends uvm_sequence;
-    `uvm_object_utils(ld_seq);	
+class ldtype_seq extends uvm_sequence;
+    `uvm_object_utils(ldtype_seq);	
 
     instr_lb   lb;
     instr_lh   lh;
@@ -10,16 +10,16 @@ class ld_seq extends uvm_sequence;
     instr_lbu  lbu;
     instr_lhu  lhu;
 
-    extern function new(string name="ld_seq");
+    extern function new(string name="ldtype_seq");
     extern task body();
 endclass
 
 
-function ld_seq::new(string name="ld_seq");
+function ldtype_seq::new(string name="ldtype_seq");
     super.new(name);
 endfunction
 
-task ld_seq::body();
+task ldtype_seq::body();
     static bit [255:0][127:0] ram_tmp;
     static bit [127:0] ram_tmp_pre;
     static int ram_count;

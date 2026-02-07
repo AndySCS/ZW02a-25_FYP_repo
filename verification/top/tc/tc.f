@@ -1,9 +1,13 @@
 $MINITPU_VER/top/tc/tc_base.sv
 
 $MINITPU_VER/top/tc/instr_seq_gen/instr_base.sv
-$MINITPU_VER/top/tc/instr_seq_gen/utype_seq.sv
 $MINITPU_VER/top/tc/instr_seq_gen/rtype_seq.sv
 $MINITPU_VER/top/tc/instr_seq_gen/itype_seq.sv
+$MINITPU_VER/top/tc/instr_seq_gen/ldtype_seq.sv
+$MINITPU_VER/top/tc/instr_seq_gen/utype_seq.sv
+$MINITPU_VER/top/tc/instr_seq_gen/stype_seq.sv
+$MINITPU_VER/top/tc/instr_seq_gen/btype_seq.sv
+$MINITPU_VER/top/tc/instr_seq_gen/jtype_seq.sv
 
 $MINITPU_VER/top/tc/tc_sanity.sv
 $MINITPU_VER/top/tc/tc_rtype.sv

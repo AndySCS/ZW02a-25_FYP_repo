@@ -4,16 +4,16 @@
 class rtype_seq extends uvm_sequence;
     `uvm_object_utils(rtype_seq);	
 
-    instr_add   add;
-    instr_sub   sub;
-    instr_sll   sll;
-    instr_slt   slt;
-    instr_sltu  sltu;
-    //instr_xor   xor;
-    instr_srl   srl;
-    instr_sra   sra;
-    //instr_or    or;
-    //instr_and   and; 
+    instr_add   add_instr;
+    instr_sub   sub_instr;
+    instr_sll   sll_instr;
+    instr_slt   slt_instr;
+    instr_sltu  sltu_instr;
+    instr_xor   xor_instr;
+    instr_srl   srl_instr;
+    instr_sra   sra_instr;
+    instr_or    or_instr;
+    instr_and   and_instr;
 
     extern function new(string name="rtype_seq");
     extern task body();
@@ -24,56 +24,240 @@ function rtype_seq::new(string name="rtype_seq");
 endfunction
 
 task rtype_seq::body();
-    for(int i = 0; i < 100; i++) begin
-        add = new();
-        add.randomize();
+    for(int i = 0; i < 101; i++) begin
+        add_instr = new();
+        add_instr.randomize();
+        add_instr.pack();
+	    if(i==0)begin
+		    ram_tmp_pre[31:0] = add_instr.instruction;
+	    end
+        else if(i%4 == 1)begin
+		    ram_tmp_pre[63:32] = add_instr.instruction;
+	    end
+        else if(i%4 == 2)begin
+		    ram_tmp_pre[95:64] = add_instr.instruction;
+	    end
+        else if(i%4 == 3)begin
+		    ram_tmp_pre[127:96] = add_instr.instruction;
+	    end
+	    else begin
+		    ram_tmp[ram_count] = ram_tmp_pre;
+		    ram_count = ram_count+1;
+		    ram_tmp_pre[31:0] = add_instr.instruction;
+	    end
     end
 
-    for(int i = 101; i < 200; i++) begin
-        sub = new();
-        sub.randomize();
+    for(int i = 101; i < 201; i++) begin
+        sub_instr = new();
+        sub_instr.randomize();
+        sub_instr.pack();
+	    if(i==0)begin
+		    ram_tmp_pre[31:0] = sub_instr.instruction;
+	    end
+        else if(i%4 == 1)begin
+		    ram_tmp_pre[63:32] = sub_instr.instruction;
+	    end
+        else if(i%4 == 2)begin
+		    ram_tmp_pre[95:64] = sub_instr.instruction;
+	    end
+        else if(i%4 == 3)begin
+		    ram_tmp_pre[127:96] = sub_instr.instruction;
+	    end
+	    else begin
+		    ram_tmp[ram_count] = ram_tmp_pre;
+		    ram_count = ram_count+1;
+		    ram_tmp_pre[31:0] = sub_instr.instruction;
+	    end
+
     end
 
-    for(int i = 201; i < 300; i++) begin
-        sll = new();
-        sll.randomize();
+    for(int i = 201; i < 301; i++) begin
+        sll_instr = new();
+        sll_instr.randomize();
+        sll_instr.pack();
+	    if(i==0)begin
+		    ram_tmp_pre[31:0] = sll_instr.instruction;
+	    end
+        else if(i%4 == 1)begin
+		    ram_tmp_pre[63:32] = sll_instr.instruction;
+	    end
+        else if(i%4 == 2)begin
+		    ram_tmp_pre[95:64] = sll_instr.instruction;
+	    end
+        else if(i%4 == 3)begin
+		    ram_tmp_pre[127:96] = sll_instr.instruction;
+	    end
+	    else begin
+		    ram_tmp[ram_count] = ram_tmp_pre;
+		    ram_count = ram_count+1;
+		    ram_tmp_pre[31:0] = sll_instr.instruction;
+	    end
     end
 
-    for(int i = 301; i < 400; i++) begin
-        slt = new();
-        slt.randomize();
+    for(int i = 301; i < 401; i++) begin
+        slt_instr = new();
+        slt_instr.randomize();
+        slt_instr.pack();
+	    if(i==0)begin
+		    ram_tmp_pre[31:0] = slt_instr.instruction;
+	    end
+        else if(i%4 == 1)begin
+		    ram_tmp_pre[63:32] = slt_instr.instruction;
+	    end
+        else if(i%4 == 2)begin
+		    ram_tmp_pre[95:64] = slt_instr.instruction;
+	    end
+        else if(i%4 == 3)begin
+		    ram_tmp_pre[127:96] = slt_instr.instruction;
+	    end
+	    else begin
+		    ram_tmp[ram_count] = ram_tmp_pre;
+		    ram_count = ram_count+1;
+		    ram_tmp_pre[31:0] = slt_instr.instruction;
+	    end
     end
 
-    for(int i = 401; i < 500; i++) begin
-        sltu = new();
-        sltu.randomize();
+    for(int i = 401; i < 501; i++) begin
+        sltu_instr = new();
+        sltu_instr.randomize();
+        sltu_instr.pack();
+	    if(i==0)begin
+		    ram_tmp_pre[31:0] = sltu_instr.instruction;
+	    end
+        else if(i%4 == 1)begin
+		    ram_tmp_pre[63:32] = sltu_instr.instruction;
+	    end
+        else if(i%4 == 2)begin
+		    ram_tmp_pre[95:64] = sltu_instr.instruction;
+	    end
+        else if(i%4 == 3)begin
+		    ram_tmp_pre[127:96] = sltu_instr.instruction;
+	    end
+	    else begin
+		    ram_tmp[ram_count] = ram_tmp_pre;
+		    ram_count = ram_count+1;
+		    ram_tmp_pre[31:0] = sltu_instr.instruction;
+	    end
     end
 
-    //for(int i = 501; i < 600; i++) begin
-    //    xor = new();
-    //    xor.randomize();
-    //end
-
-    for(int i = 601; i < 700; i++) begin
-        srl = new();
-        srl.randomize();
+    for(int i = 501; i < 601; i++) begin
+        xor_instr = new();
+        xor_instr.randomize();
+        xor_instr.pack();
+	    if(i==0)begin
+		    ram_tmp_pre[31:0] = xor_instr.instruction;
+	    end
+        else if(i%4 == 1)begin
+		    ram_tmp_pre[63:32] = xor_instr.instruction;
+	    end
+        else if(i%4 == 2)begin
+		    ram_tmp_pre[95:64] = xor_instr.instruction;
+	    end
+        else if(i%4 == 3)begin
+		    ram_tmp_pre[127:96] = xor_instr.instruction;
+	    end
+	    else begin
+		    ram_tmp[ram_count] = ram_tmp_pre;
+		    ram_count = ram_count+1;
+		    ram_tmp_pre[31:0] = xor_instr.instruction;
+	    end
     end
 
-    for(int i = 701; i < 800; i++) begin
-        sra = new();
-        sra.randomize();
+    for(int i = 601; i < 701; i++) begin
+        srl_instr = new();
+        srl_instr.randomize();
+        srl_instr.pack();
+	    if(i==0)begin
+		    ram_tmp_pre[31:0] = srl_instr.instruction;
+	    end
+        else if(i%4 == 1)begin
+		    ram_tmp_pre[63:32] = srl_instr.instruction;
+	    end
+        else if(i%4 == 2)begin
+		    ram_tmp_pre[95:64] = srl_instr.instruction;
+	    end
+        else if(i%4 == 3)begin
+		    ram_tmp_pre[127:96] = srl_instr.instruction;
+	    end
+	    else begin
+		    ram_tmp[ram_count] = ram_tmp_pre;
+		    ram_count = ram_count+1;
+		    ram_tmp_pre[31:0] = srl_instr.instruction;
+	    end
     end
 
-    //for(int i = 801; i < 900; i++) begin
-    //    or = new();
-    //    or.randomize();
-    //end
+    for(int i = 701; i < 801; i++) begin
+        sra_instr = new();
+        sra_instr.randomize();
+        sra_instr.pack();
+	    if(i==0)begin
+		    ram_tmp_pre[31:0] = sra_instr.instruction;
+	    end
+        else if(i%4 == 1)begin
+		    ram_tmp_pre[63:32] = sra_instr.instruction;
+	    end
+        else if(i%4 == 2)begin
+		    ram_tmp_pre[95:64] = sra_instr.instruction;
+	    end
+        else if(i%4 == 3)begin
+		    ram_tmp_pre[127:96] = sra_instr.instruction;
+	    end
+	    else begin
+		    ram_tmp[ram_count] = ram_tmp_pre;
+		    ram_count = ram_count+1;
+		    ram_tmp_pre[31:0] = sra_instr.instruction;
+	    end
+    end
 
-    //for(int i = 901; i < 1000; i++) begin
-    //    and = new();
-    //    and.randomize();
-    //end
+    for(int i = 801; i < 901; i++) begin
+        or_instr = new();
+        or_instr.randomize();
+        or_instr.pack();
+	    if(i==0)begin
+		    ram_tmp_pre[31:0] = or_instr.instruction;
+	    end
+        else if(i%4 == 1)begin
+		    ram_tmp_pre[63:32] = or_instr.instruction;
+	    end
+        else if(i%4 == 2)begin
+		    ram_tmp_pre[95:64] = or_instr.instruction;
+	    end
+        else if(i%4 == 3)begin
+		    ram_tmp_pre[127:96] = or_instr.instruction;
+	    end
+	    else begin
+		    ram_tmp[ram_count] = ram_tmp_pre;
+		    ram_count = ram_count+1;
+		    ram_tmp_pre[31:0] = or_instr.instruction;
+	    end
+    end
 
+    for(int i = 901; i < 1024; i++) begin
+        and_instr = new();
+        and_instr.randomize();
+        and_instr.pack();
+	    if(i==0)begin
+		    ram_tmp_pre[31:0] = and_instr.instruction;
+	    end
+        else if(i%4 == 1)begin
+		    ram_tmp_pre[63:32] = and_instr.instruction;
+	    end
+        else if(i%4 == 2)begin
+		    ram_tmp_pre[95:64] = and_instr.instruction;
+	    end
+        else if(i%4 == 3)begin
+		    ram_tmp_pre[127:96] = and_instr.instruction;
+	    end
+	    else begin
+		    ram_tmp[ram_count] = ram_tmp_pre;
+		    ram_count = ram_count+1;
+		    ram_tmp_pre[31:0] = and_instr.instruction;
+	    end
+    end
+    ram_tmp[255][31:0] = 'h73; 
+    //:for($i = 0; $i < 256;$i++){    
+    force harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[{$i}] = ram_tmp[{$i}];
+    //:}
    	`uvm_info(get_type_name(), "RTYPE IMEM INIT FINISH", UVM_NONE)
 endtask
 `endif
