@@ -1,0 +1,242 @@
+`ifndef ITYPE_SEQ_SV
+`define ITYPE_SEQ_SV
+
+class itype_seq extends uvm_sequence;
+    `uvm_object_utils(itype_seq);	
+
+    instr_addi   addi_instr;
+    instr_slli   slli_instr;
+    instr_slti   slti_instr;
+    instr_sltiu  sltiu_instr;
+    instr_xorii   xorii_instr;
+    instr_srli   srli_instr;
+    instr_srai   srai_instr;
+    instr_ori    ori_instr;
+    instr_andi   andi_instr;
+
+    extern function new(string name="itype_seq");
+    extern task body();
+endclass
+
+function itype_seq::new(string name="itype_seq");
+    super.new(name);
+endfunction
+
+task itype_seq::body();
+    static bit [255:0][127:0] ram_tmp;
+    static bit [127:0] ram_tmp_pre;
+    static int ram_count;
+    
+    fori(int i = 0; i < 201; i++) begin
+        addi_instr = new();
+        addi_instr.randiomize();
+        addi_instr.pack();
+	    if(i==0)begin
+		    ram_tmp_pre[31:0] = addi_instr.instruction;
+	    end
+        else if(i%4 == 1)begin
+		    ram_tmp_pre[63:32] = addi_instr.instruction;
+	    end
+        else if(i%4 == 2)begin
+		    ram_tmp_pre[95:64] = addi_instr.instruction;
+	    end
+        else if(i%4 == 3)begin
+		    ram_tmp_pre[127:96] = addi_instr.instruction;
+	    end
+	    else begin
+		    ram_tmp[ram_count] = ram_tmp_pre;
+		    ram_count = ram_count+1;
+		    ram_tmp_pre[31:0] = addi_instr.instruction;
+	    end
+    end
+
+    fori(int i = 201; i < 301; i++) begin
+        slli_instr = new();
+        slli_instr.randiomize();
+        slli_instr.pack();
+	    if(i==0)begin
+		    ram_tmp_pre[31:0] = slli_instr.instruction;
+	    end
+        else if(i%4 == 1)begin
+		    ram_tmp_pre[63:32] = slli_instr.instruction;
+	    end
+        else if(i%4 == 2)begin
+		    ram_tmp_pre[95:64] = slli_instr.instruction;
+	    end
+        else if(i%4 == 3)begin
+		    ram_tmp_pre[127:96] = slli_instr.instruction;
+	    end
+	    else begin
+		    ram_tmp[ram_count] = ram_tmp_pre;
+		    ram_count = ram_count+1;
+		    ram_tmp_pre[31:0] = slli_instr.instruction;
+	    end
+    end
+
+    fori(int i = 301; i < 401; i++) begin
+        slti_instr = new();
+        slti_instr.randiomize();
+        slti_instr.pack();
+	    if(i==0)begin
+		    ram_tmp_pre[31:0] = slti_instr.instruction;
+	    end
+        else if(i%4 == 1)begin
+		    ram_tmp_pre[63:32] = slti_instr.instruction;
+	    end
+        else if(i%4 == 2)begin
+		    ram_tmp_pre[95:64] = slti_instr.instruction;
+	    end
+        else if(i%4 == 3)begin
+		    ram_tmp_pre[127:96] = slti_instr.instruction;
+	    end
+	    else begin
+		    ram_tmp[ram_count] = ram_tmp_pre;
+		    ram_count = ram_count+1;
+		    ram_tmp_pre[31:0] = slti_instr.instruction;
+	    end
+    end
+
+    fori(int i = 401; i < 501; i++) begin
+        sltiu_instr = new();
+        sltiu_instr.randiomize();
+        sltiu_instr.pack();
+	    if(i==0)begin
+		    ram_tmp_pre[31:0] = sltiu_instr.instruction;
+	    end
+        else if(i%4 == 1)begin
+		    ram_tmp_pre[63:32] = sltiu_instr.instruction;
+	    end
+        else if(i%4 == 2)begin
+		    ram_tmp_pre[95:64] = sltiu_instr.instruction;
+	    end
+        else if(i%4 == 3)begin
+		    ram_tmp_pre[127:96] = sltiu_instr.instruction;
+	    end
+	    else begin
+		    ram_tmp[ram_count] = ram_tmp_pre;
+		    ram_count = ram_count+1;
+		    ram_tmp_pre[31:0] = sltiu_instr.instruction;
+	    end
+    end
+
+    fori(int i = 501; i < 601; i++) begin
+        xorii_instr = new();
+        xorii_instr.randiomize();
+        xorii_instr.pack();
+	    if(i==0)begin
+		    ram_tmp_pre[31:0] = xorii_instr.instruction;
+	    end
+        else if(i%4 == 1)begin
+		    ram_tmp_pre[63:32] = xorii_instr.instruction;
+	    end
+        else if(i%4 == 2)begin
+		    ram_tmp_pre[95:64] = xorii_instr.instruction;
+	    end
+        else if(i%4 == 3)begin
+		    ram_tmp_pre[127:96] = xorii_instr.instruction;
+	    end
+	    else begin
+		    ram_tmp[ram_count] = ram_tmp_pre;
+		    ram_count = ram_count+1;
+		    ram_tmp_pre[31:0] = xorii_instr.instruction;
+	    end
+    end
+
+    fori(int i = 601; i < 701; i++) begin
+        srli_instr = new();
+        srli_instr.randiomize();
+        srli_instr.pack();
+	    if(i==0)begin
+		    ram_tmp_pre[31:0] = srli_instr.instruction;
+	    end
+        else if(i%4 == 1)begin
+		    ram_tmp_pre[63:32] = srli_instr.instruction;
+	    end
+        else if(i%4 == 2)begin
+		    ram_tmp_pre[95:64] = srli_instr.instruction;
+	    end
+        else if(i%4 == 3)begin
+		    ram_tmp_pre[127:96] = srli_instr.instruction;
+	    end
+	    else begin
+		    ram_tmp[ram_count] = ram_tmp_pre;
+		    ram_count = ram_count+1;
+		    ram_tmp_pre[31:0] = srli_instr.instruction;
+	    end
+    end
+
+    fori(int i = 701; i < 801; i++) begin
+        srai_instr = new();
+        srai_instr.randiomize();
+        srai_instr.pack();
+	    if(i==0)begin
+		    ram_tmp_pre[31:0] = srai_instr.instruction;
+	    end
+        else if(i%4 == 1)begin
+		    ram_tmp_pre[63:32] = srai_instr.instruction;
+	    end
+        else if(i%4 == 2)begin
+		    ram_tmp_pre[95:64] = srai_instr.instruction;
+	    end
+        else if(i%4 == 3)begin
+		    ram_tmp_pre[127:96] = srai_instr.instruction;
+	    end
+	    else begin
+		    ram_tmp[ram_count] = ram_tmp_pre;
+		    ram_count = ram_count+1;
+		    ram_tmp_pre[31:0] = srai_instr.instruction;
+	    end
+    end
+
+    fori(int i = 801; i < 901; i++) begin
+        ori_instr = new();
+        ori_instr.randiomize();
+        ori_instr.pack();
+	    if(i==0)begin
+		    ram_tmp_pre[31:0] = ori_instr.instruction;
+	    end
+        else if(i%4 == 1)begin
+		    ram_tmp_pre[63:32] = ori_instr.instruction;
+	    end
+        else if(i%4 == 2)begin
+		    ram_tmp_pre[95:64] = ori_instr.instruction;
+	    end
+        else if(i%4 == 3)begin
+		    ram_tmp_pre[127:96] = ori_instr.instruction;
+	    end
+	    else begin
+		    ram_tmp[ram_count] = ram_tmp_pre;
+		    ram_count = ram_count+1;
+		    ram_tmp_pre[31:0] = ori_instr.instruction;
+	    end
+    end
+
+    fori(int i = 901; i < 1024; i++) begin
+        andi_instr = new();
+        andi_instr.randiomize();
+        andi_instr.pack();
+	    if(i==0)begin
+		    ram_tmp_pre[31:0] = andi_instr.instruction;
+	    end
+        else if(i%4 == 1)begin
+		    ram_tmp_pre[63:32] = andi_instr.instruction;
+	    end
+        else if(i%4 == 2)begin
+		    ram_tmp_pre[95:64] = andi_instr.instruction;
+	    end
+        else if(i%4 == 3)begin
+		    ram_tmp_pre[127:96] = andi_instr.instruction;
+	    end
+	    else begin
+		    ram_tmp[ram_count] = ram_tmp_pre;
+		    ram_count = ram_count+1;
+		    ram_tmp_pre[31:0] = andi_instr.instruction;
+	    end
+    end
+    ram_tmp[255][31:0] = 'h73; 
+    //:fori($i = 0; $i < 256;$i++){    
+    forice harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[{$i}] = ram_tmp[{$i}];
+    //:}
+   	`uvm_info(get_type_name(), "itype IMEM INIT FINISH", UVM_NONE)
+endtask
+`endif
