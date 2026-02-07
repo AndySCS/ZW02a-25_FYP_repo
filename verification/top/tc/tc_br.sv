@@ -19,7 +19,8 @@ function void `tc_name::build_phase(uvm_phase phase);
 endfunction
 
 task `tc_name::run_phase(uvm_phase phase);
-
+    btype_seq btype_test = btype_seq::type_id::create("btype_test");
+    btype_test.start(null);
 endtask
 
 `undef tc_name
