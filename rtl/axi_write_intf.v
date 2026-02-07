@@ -101,6 +101,7 @@ module AXI_WRITE_INFT(
     wire [15:0] axi_vld_nxt;
     wire [15:0] axi_alloc_en;
     wire [15:0] axi_alloc_ptr;
+    wire        axi_alloc_ptr_en;
     wire [15:0] axi_alloc_ptr_nxt;
     wire [15:0] axi_invld;
     wire [15:0] axi_recv;
@@ -177,6 +178,7 @@ module AXI_WRITE_INFT(
     assign axi_recv_nxt = {16{BVALID_qual}} & BID_16 | axi_recv & ~axi_alloc_en; 
     assign axi_sent_ptr_nxt = {axi_sent_ptr[14:0], axi_sent_ptr[15]};
     assign axi_alloc_ptr_nxt = {axi_alloc_ptr[14:0], axi_alloc_ptr[15]};
+    assign axi_alloc_ptr_en = |axi_alloc_en;
     assign axi_sent_en = axi_alloc_vld | AWVALID_sent;
     assign axi_recv_en = axi_alloc_vld | BVALID_qual;
     assign oram_addr_nxt = lsu_axi_awvld_qual ? lsu_axi_oram_addr: oram_addr_cur + 12'b1;
@@ -203,7 +205,7 @@ module AXI_WRITE_INFT(
     ff_axi_alloc_ptr_lo(
         .clk(clk),
         .rst_n(rst_n),
-        .en(lsu_axi_awvld_qual),
+        .en(axi_alloc_ptr_en),
         .d(axi_alloc_ptr_nxt[0]),
         .q(axi_alloc_ptr[0])
     );
@@ -211,7 +213,7 @@ module AXI_WRITE_INFT(
     ff_axi_alloc_ptr_hi(
         .clk(clk),
         .rst_n(rst_n),
-        .en(lsu_axi_awvld_qual),
+        .en(axi_alloc_ptr_en),
         .d(axi_alloc_ptr_nxt[15:1]),
         .q(axi_alloc_ptr[15:1])
     );
