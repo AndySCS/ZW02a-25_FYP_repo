@@ -19,7 +19,6 @@ endfunction
 
 task `tc_name::run_phase(uvm_phase phase);
     utype_seq utype_test = utype_seq::type_id::create("utype_test");
-
     utype_test.start(null);
 endtask
 
