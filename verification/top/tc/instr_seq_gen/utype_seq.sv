@@ -22,10 +22,9 @@ task utype_seq::body();
     static bit [127:0] ram_tmp_pre;
     static int ram_count;
 
-    for(int i = 0; i < 256; i++) begin
+    for(int i = 0; i < 512; i++) begin
         lui = new();
         lui.randomize();
-	`uvm_info("LUI", $sformatf("The integer value is: %0h", lui), UVM_NONE);
 	lui.pack();
 	if(i==0)begin
 		ram_tmp_pre[31:0] = lui.instruction;
@@ -46,26 +45,43 @@ task utype_seq::body();
 		ram_count = ram_count+1;
 		ram_tmp_pre[31:0] = lui.instruction;
 	end
-	
-
-	`uvm_info("LUI_op", $sformatf("The integer value is: %0h", lui.instr_opcode), UVM_NONE);
-	`uvm_info("LUI_imm", $sformatf("The integer value is: %0h", lui.instr_imm), UVM_NONE);
-	`uvm_info("LUI_rd", $sformatf("The integer value is: %0h", lui.instr_rd), UVM_NONE);
-	`uvm_info("LUI_instr", $sformatf("The integer value is: %0h", lui.instruction), UVM_NONE);
-	`uvm_info("LUI_pack", $sformatf("The integer value is: %0h", lui.randomize()), UVM_NONE);
-	`uvm_info("RAM_TMP", $sformatf("The integer value is: %0h", ram_tmp[i]), UVM_NONE);
+	//`uvm_info("LUI_op", $sformatf("The integer value is: %0h", lui.instr_opcode), UVM_NONE);
+	//`uvm_info("LUI_imm", $sformatf("The integer value is: %0h", lui.instr_imm), UVM_NONE);
+	//`uvm_info("LUI_rd", $sformatf("The integer value is: %0h", lui.instr_rd), UVM_NONE);
+	//`uvm_info("LUI_instr", $sformatf("The integer value is: %0h", lui.instruction), UVM_NONE);
+	//`uvm_info("LUI_pack", $sformatf("The integer value is: %0h", lui.randomize()), UVM_NONE);
+	//`uvm_info("RAM_TMP", $sformatf("The integer value is: %0h", ram_tmp[i]), UVM_NONE);
     end
-    ram_tmp[63][31:0] = 'h73; 
-
-    //:for($i = 0; $i < 256;$i++){    
-    force harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[{$i}] = ram_tmp[{$i}];
-    //:}
-
 
     for(int i = 512; i < 1024; i++) begin
         auipc = new();
         auipc.randomize();
+	auipc.pack();
+	if(i==0)begin
+		ram_tmp_pre[31:0] = auipc.instruction;
+	end
+        else if(i%4 == 1)begin
+		ram_tmp_pre[63:32] = auipc.instruction;
+	end
+
+        else if(i%4 == 2)begin
+		ram_tmp_pre[95:64] = auipc.instruction;
+	end
+
+        else if(i%4 == 3)begin
+		ram_tmp_pre[127:96] = auipc.instruction;
+	end
+	else begin
+		ram_tmp[ram_count] = ram_tmp_pre;
+		ram_count = ram_count+1;
+		ram_tmp_pre[31:0] = auipc.instruction;
+	end
     end
+
+    ram_tmp[255][31:0] = 'h73; 
+    //:for($i = 0; $i < 256;$i++){    
+    force harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[{$i}] = ram_tmp[{$i}];
+    //:}
    	`uvm_info(get_type_name(), "LUI IMEM INIT FINISH", UVM_NONE)
 endtask
 

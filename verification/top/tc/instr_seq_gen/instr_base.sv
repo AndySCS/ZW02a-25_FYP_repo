@@ -749,7 +749,6 @@ endclass
 
 function instr_lui::new();
     super.new();
-    $display("TEST");
 endfunction;
 
 constraint instr_lui::cons_opcode{
