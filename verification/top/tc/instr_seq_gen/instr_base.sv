@@ -198,7 +198,7 @@ endclass
 function instr_utype::pack();
     instruction[6:0]   = instr_opcode;
     instruction[11:7]  = instr_rd;
-    instruction[31:12] = instr_imm   ;
+    instruction[31:12] = instr_imm;
 endfunction
 
 constraint instr_utype::utype_cons_opcode{
@@ -749,6 +749,7 @@ endclass
 
 function instr_lui::new();
     super.new();
+    $display("TEST");
 endfunction;
 
 constraint instr_lui::cons_opcode{
