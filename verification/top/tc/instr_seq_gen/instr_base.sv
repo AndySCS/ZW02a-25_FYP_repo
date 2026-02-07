@@ -19,13 +19,14 @@ class instr_rtype extends instr_base;
     rand bit [4:0] instr_rs2;
     rand bit [6:0] instr_funct7;
 
-    function new();
-        super.new();
-    endfunction
-
+    extern function new();
     extern function pack();
     extern constraint rtype_cons_opcode; 
 endclass
+
+function instr_rtype::new();
+    super.new();
+endfunction;
 
 function instr_rtype::pack();
     instruction[6:0]   = instr_opcode;
@@ -33,7 +34,7 @@ function instr_rtype::pack();
     instruction[14:12] = instr_funct3;
     instruction[19:15] = instr_rs1;
     instruction[24:20] = instr_rs2;
-    isntruction[31:25] = instr_funct7;
+    instruction[31:25] = instr_funct7;
 endfunction
 
 constraint instr_rtype::rtype_cons_opcode{
@@ -46,12 +47,13 @@ constraint instr_rtype::rtype_cons_opcode{
                          3'b101,
                          3'b110,
                          3'b111};
-    if ((instr_funct3 == 3'b000) | (instr_funct3 == 3'b101))begin
+
+    if ((instr_funct3 == 3'b000) | (instr_funct3 == 3'b101)){
         instr_funct7 inside {7'b0000000,7'b0100000};
-    end
-    else begin
-        instr_funct7 = 7'b0000000;
-    end
+    }
+    else {
+        instr_funct7 inside {7'b0000000};
+    }
 }
 
 ///////////////////////////////////////////////////////////////////
@@ -77,12 +79,12 @@ function instr_itype::pack();
     instruction[11:7]  = instr_rd;
     instruction[14:12] = instr_funct3;
     instruction[19:15] = instr_rs1;
-    isntruction[31:20] = instr_imm;
+    instruction[31:20] = instr_imm;
 endfunction
 
 constraint instr_itype::itype_cons_opcode{
     instr_opcode inside {7'b0010011, 7'b0000011, 7'b1100111};
-    if(instr_opcode == 7'b0010011)begin
+    if(instr_opcode == 7'b0010011){
         instr_funct3 inside {3'b000,
                             3'b001,
                             3'b010,
@@ -91,20 +93,20 @@ constraint instr_itype::itype_cons_opcode{
                             3'b101,
                             3'b110,
                             3'b111};
-        if ((instr_funct3 == 3'b001) | (instr_funct3 == 3'b101))begin
-            instr_imm[11:5] = 7'b0000000;
-        end
-    end
-    else if(instr_opcode == 7'b0000011)begin
+        if ((instr_funct3 == 3'b001) | (instr_funct3 == 3'b101)){
+            instr_imm[11:5] inside {7'b0000000};
+        }
+    }
+    else if(instr_opcode == 7'b0000011){
         instr_funct3 inside {3'b000,
                              3'b001,
                              3'b010,
                              3'b100,
                              3'b101};
-    end
-    else begin
-        instr_funct3 = 3'b000;
-    end
+    }
+    else {
+        instr_funct3 inside {3'b000};
+    }
 }
 
 ///////////////////////////////////////////////////////////////////
@@ -115,7 +117,7 @@ class instr_stype extends instr_base;
     rand bit [2:0] instr_funct3;
     rand bit [4:0] instr_rs1;
     rand bit [4:0] instr_rs2;
-    rand bit [11:1] instr_imm;
+    rand bit [12:1] instr_imm;
 
     function new();
         super.new();
@@ -127,11 +129,11 @@ endclass
 
 function instr_stype::pack();
     instruction[6:0]   = instr_opcode;
-    instriction[11:7]  = instr_imm[4:0];
-    instriction[14:12] = instr_funct3;
-    instriction[19:15] = instr_rs1;
-    instriction[24:20] = instr_rs2;
-    instriction[31:25] = instr_imm[11:5];
+    instruction[11:7]  = instr_imm[5:1];
+    instruction[14:12] = instr_funct3;
+    instruction[19:15] = instr_rs1;
+    instruction[24:20] = instr_rs2;
+    instruction[31:25] = instr_imm[12:6];
 endfunction
 
 constraint instr_stype::stype_cons_opcode{
@@ -165,7 +167,7 @@ function instr_btype::pack();
     instruction[14:12] = instr_funct3;
     instruction[19:15] = instr_rs1;
     instruction[24:20] = instr_rs2;
-    isntruction[31:25] = {instr_imm[12],instr_imm[10:5]};
+    instruction[31:25] = {instr_imm[12],instr_imm[10:5]};
 endfunction
 
 constraint instr_btype::btype_cons_opcode{
@@ -473,7 +475,7 @@ endfunction;
 constraint instr_srli::cons_opcode{
     instr_opcode == 7'b0010011;
     instr_funct3 == 3'b101;
-    instr_funct7 == 7'b0000000;
+    instr_imm[11:5] == 7'b0000000;
 }
 
 //SRAI
