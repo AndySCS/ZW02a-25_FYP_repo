@@ -9,11 +9,11 @@ class rtype_seq extends uvm_sequence;
     instr_sll   sll;
     instr_slt   slt;
     instr_sltu  sltu;
-    instr_xor   xor;
+    //instr_xor   xor;
     instr_srl   srl;
     instr_sra   sra;
-    instr_or    or;
-    instr_and   and; 
+    //instr_or    or;
+    //instr_and   and; 
 
     extern function new(string name="rtype_seq");
     extern task body();
@@ -49,10 +49,10 @@ task rtype_seq::body();
         sltu.randomize();
     end
 
-    for(int i = 501; i < 600; i++) begin
-        xor = new();
-        xor.randomize();
-    end
+    //for(int i = 501; i < 600; i++) begin
+    //    xor = new();
+    //    xor.randomize();
+    //end
 
     for(int i = 601; i < 700; i++) begin
         srl = new();
@@ -64,15 +64,15 @@ task rtype_seq::body();
         sra.randomize();
     end
 
-    for(int i = 801; i < 900; i++) begin
-        or = new();
-        or.randomize();
-    end
+    //for(int i = 801; i < 900; i++) begin
+    //    or = new();
+    //    or.randomize();
+    //end
 
-    for(int i = 901; i < 1000; i++) begin
-        and = new();
-        and.randomize();
-    end
+    //for(int i = 901; i < 1000; i++) begin
+    //    and = new();
+    //    and.randomize();
+    //end
 
    	`uvm_info(get_type_name(), "RTYPE IMEM INIT FINISH", UVM_NONE)
 endtask

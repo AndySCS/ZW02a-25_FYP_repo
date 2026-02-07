@@ -1,6 +1,5 @@
 `ifndef TC_SANITY_SV
 `define TC_SANITY_SV
-
 `define tc_name tc_sanity
 
 class `tc_name extends tc_base;
@@ -19,7 +18,9 @@ function void `tc_name::build_phase(uvm_phase phase);
 endfunction
 
 task `tc_name::run_phase(uvm_phase phase);
+    utype_seq utype_test = utype_seq::type_id::create("utype_test");
 
+    utype_test.start(null);
 endtask
 
 `undef tc_name
