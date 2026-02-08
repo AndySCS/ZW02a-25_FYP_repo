@@ -284,6 +284,7 @@ module alu(
     wire [31:0] shift_right_logic;
     wire [31:0] shift_right_arith;
     wire [31:0] u_rlt;
+    wire [31:0] auipc_sum;
     wire [31:0] pc_cont_sum;
     wire [31:0] diff;
     wire [31:0] pc_jump_sum;
