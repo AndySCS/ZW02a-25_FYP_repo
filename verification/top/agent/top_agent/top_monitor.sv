@@ -3,6 +3,7 @@ class top_monitor extends uvm_monitor;
     virtual top_intf top_if;
     uvm_analysis_port #(model_output_transaction) ap;
     uvm_analysis_port #(rf_output_transaction) rf_ap;
+    uvm_analysis_port #(rf_output_transaction) rf_ap_test;
 
     `uvm_component_utils(top_monitor)
     function new(string name = "top_monitor", uvm_component parent = null);
@@ -21,6 +22,7 @@ function void top_monitor::build_phase(uvm_phase phase);
     end
     ap = new("ap", this);	
     rf_ap = new("rf_ap", this);
+    rf_ap_test = new("rf_ap_test", this);
 endfunction
 
 task top_monitor::main_phase(uvm_phase phase);
@@ -55,6 +57,7 @@ task top_monitor::main_phase(uvm_phase phase);
 	        `uvm_info("wb_addr", $sformatf("wb_addr: %0h", wb_addr_ff), UVM_NONE);
 	        `uvm_info("wb_data", $sformatf("wb_data: %0h", wb_data_ff), UVM_NONE);
 	        `uvm_info("rf_tr_output", $sformatf("rf_tr: %0h", rf_tr.rf_output), UVM_NONE);
+	        `uvm_info("rf_tr_output2", $sformatf("rf_tr2: %0h", rf_ap), UVM_NONE);
 	    end
 
 	    if(harness.u_tpu.u_rf.lsu_rf_wb_vld)begin

@@ -11,8 +11,8 @@ class env extends uvm_env;
     uvm_tlm_analysis_fifo #(model_output_transaction) rm_sc_fifo;
 
     uvm_tlm_analysis_fifo #(rf_output_transaction) rf_agt_rm_fifo;
-    //uvm_tlm_analysis_fifo #(rf_output_transaction) rf_agt_sc_fifo;
-    //uvm_tlm_analysis_fifo #(rf_output_transaction) rf_rm_sc_fifo;
+    uvm_tlm_analysis_fifo #(rf_output_transaction) rf_agt_sc_fifo;
+    uvm_tlm_analysis_fifo #(rf_output_transaction) rf_rm_sc_fifo;
 
     function new(string name = "env", uvm_component parent);
         super.new(name, parent);
@@ -41,6 +41,9 @@ function void env::build_phase(uvm_phase phase);
     rm_sc_fifo = new("rm_sc_fifo",this);
 
     rf_agt_rm_fifo = new("rf_agt_rm_fifo",this);
+    rf_agt_sc_fifo = new("rf_agt_sc_fifo",this);
+    rf_rm_sc_fifo = new("rf_rm_sc_fifo",this);
+
     `uvm_info(get_name(), "build phase ends", UVM_LOW);
 
 endfunction
@@ -61,8 +64,13 @@ function void env::connect_phase(uvm_phase phase);
     //For riscv
     top_agt.rf_ap.connect(rf_agt_rm_fifo.analysis_export);
     rm.rf_port.connect(rf_agt_rm_fifo.blocking_get_export);
+ 
+    rm.rf_ap.connect(rf_rm_sc_fifo.analysis_export);
+    sc.rf_exp_port.connect(rf_rm_sc_fifo.blocking_get_export);
 
-    
+    top_agt.rf_ap_test.connect(rf_agt_sc_fifo.analysis_export);
+    sc.rf_act_port.connect(rf_agt_sc_fifo.blocking_get_export);
+
     `uvm_info(get_name(), "connect phase ends", UVM_LOW);
 
 endfunction
