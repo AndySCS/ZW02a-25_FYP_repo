@@ -351,10 +351,10 @@ module idu (
     assign idu_alu_ld_iram = inst_type_is_ld & sram_type_iram;
     assign idu_alu_ld_wram = inst_type_is_ld & sram_type_wram;
    
-    assign idu_alu_st_iram = inst_type_is_st & sram_type_iram;
-    assign idu_alu_st_wram = inst_type_is_st & sram_type_wram;
-    assign idu_alu_st_oram = inst_type_is_st & sram_type_oram;
-    assign idu_alu_st_dram = inst_type_is_stm;
+    assign idu_alu_st_iram = inst_type_is_stm & sram_type_iram;
+    assign idu_alu_st_wram = inst_type_is_stm & sram_type_wram;
+    assign idu_alu_st_oram = inst_type_is_stm & sram_type_oram;
+    assign idu_alu_st_dram = inst_type_is_st;
 
     assign idu_alu_conv = inst_type_is_mm;
     assign idu_alu_act  = inst_type_is_act;

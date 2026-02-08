@@ -368,7 +368,7 @@ module alu(
 
     assign alu_lsu_ld_st_addr_nxt = {`SRAM_ADDR_SIZE{ld_op}}       & sum[`SRAM_ADDR_RNG]
                                   | {`SRAM_ADDR_SIZE{st_op}}       & st_addr_sum[`SRAM_ADDR_RNG]
-                                  | {`SRAM_ADDR_SIZE{mm_ld_st_op}} & sum[`SRAM_ADDR_RNG];
+                                  | {`SRAM_ADDR_SIZE{mm_ld_st_op}} & idu_alu_src1[`SRAM_ADDR_RNG];
 
     assign alu_lsu_ld_iram_nxt = ((sum[`SRAM_TYPE_RNG]         == 2'b00) & ld_op) | idu_alu_ld_iram;
     assign alu_lsu_ld_wram_nxt = ((sum[`SRAM_TYPE_RNG]         == 2'b10) & ld_op) | idu_alu_ld_wram;

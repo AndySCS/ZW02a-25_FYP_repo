@@ -83,7 +83,7 @@ layer_network_loop:
 	    lui x4, 4 //set wram addr
             load_weight_else_for_loop: // load weight loop
                 addi x29, x29, 1 // update iter
-                LDT x4, x6, 15, 0, 0  //load weight to wram
+                LDT x4, x6, 0, 4, 0  //load weight to wram
                 addi x6, x6, 785 //update next load dram addr
                 addi x4, x4, 16 //update next load wram addr
                 blt x29, x28, load_weight_else_for_loop
@@ -223,6 +223,6 @@ STMT x3, x0, 0, 9, 1 //store result oram
 addi x5, x0, 0
 lui x5, 12
 addi x5, x5, 1520
-STT x3, x5,  0, 0, 5, 1 // store result to dram
+STT x3, x5,  9, 0, 0, 1 // store result to dram
 
 WFI

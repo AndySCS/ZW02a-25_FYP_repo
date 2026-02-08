@@ -26,18 +26,21 @@ task axi_wr_monitor::main_phase(uvm_phase phase);
     int wdata_len;
     int alloc_ptr;
     int output_num = 10;
+    bit mon_begin;
 
     super.main_phase(phase);   
     
     while(1)begin
         @(posedge axi_wr_if.clk);
-        if(axi_wr_if.AWVALID & axi_wr_if.AWREADY)begin
+        if(axi_wr_if.AWVALID & axi_wr_if.AWREADY & ~mon_begin)begin
             tr = new();
+	    mon_begin = 1;
             wdata_len = axi_wr_if.AWLEN + 1;
         end
         if(axi_wr_if.WVALID & axi_wr_if.WREADY)begin
+            `uvm_info(get_name(),$sformatf("received axi wr, output_num = %d", output_num), UVM_LOW);
             tr.model_output[alloc_ptr] = axi_wr_if.WDATA;
-            output_num -= wdata_len;
+            output_num--;
             alloc_ptr += wdata_len;
             if(output_num == 0) ap.write(tr);
         end
