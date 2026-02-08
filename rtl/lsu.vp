@@ -1717,15 +1717,15 @@ module lsu(
     wire [127:0] lsu_ld_wram_din;
     wire [7:0] lsu_ld_wram_addr;
 
-    assign lsu_ld_iram_ce = ~lsu_ld_type & lsu_ld_sram_ce & lsu_ld_rd_qual; 
-    assign lsu_ld_iram_we = {16{~lsu_ld_type}} & lsu_ld_sram_we & {16{lsu_ld_rd_qual}};
-    assign lsu_ld_iram_din = {128{~lsu_ld_type}} & lsu_ld_sram_din & {128{lsu_ld_rd_qual}};
-    assign lsu_ld_iram_addr = {8{~lsu_ld_type}} & (lsu_ld_sram_addr_cnt+lsu_ld_st_addr[11:4]) & {8{lsu_ld_rd_qual}};
+    assign lsu_ld_iram_ce   = ~lsu_ld_type & lsu_ld_sram_ce & lsu_ld_rd_qual; 
+    assign lsu_ld_iram_we   = {16{~lsu_ld_type}} & lsu_ld_sram_we & {16{lsu_ld_rd_qual}};
+    assign lsu_ld_iram_din  = {128{~lsu_ld_type}} & lsu_ld_sram_din & {128{lsu_ld_rd_qual}};
+    assign lsu_ld_iram_addr = (axi_lsu_sram_addr[11:4]) & {8{lsu_ld_rd_qual}};
     
-    assign lsu_ld_wram_ce = lsu_ld_type & lsu_ld_sram_ce & lsu_ld_rd_qual;
-    assign lsu_ld_wram_we = {16{lsu_ld_type}} & lsu_ld_sram_we & {16{lsu_ld_rd_qual}};
-    assign lsu_ld_wram_din = {128{lsu_ld_type}} & lsu_ld_sram_din & {128{lsu_ld_rd_qual}};
-    assign lsu_ld_wram_addr = {8{lsu_ld_type}} & (lsu_ld_sram_addr_cnt+lsu_ld_st_addr[11:4]) & {8{lsu_ld_rd_qual}};
+    assign lsu_ld_wram_ce   = lsu_ld_type & lsu_ld_sram_ce & lsu_ld_rd_qual;
+    assign lsu_ld_wram_we   = {16{lsu_ld_type}} & lsu_ld_sram_we & {16{lsu_ld_rd_qual}};
+    assign lsu_ld_wram_din  = {128{lsu_ld_type}} & lsu_ld_sram_din & {128{lsu_ld_rd_qual}};
+    assign lsu_ld_wram_addr = (axi_lsu_sram_addr[11:4]) & {8{lsu_ld_rd_qual}};
 
     DFFR #(.WIDTH(8))
     ff_lsu_ld_sram_addr_cnt(
