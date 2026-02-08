@@ -26,6 +26,9 @@ endfunction
 task top_monitor::main_phase(uvm_phase phase);
     
     model_output_transaction tr;
+    bit wb_vld_ff;
+    bit[4:0] wb_addr_ff;
+    bit[31:0] wb_data_ff;
     rf_output_transaction rf_tr;
    // top_tr tr_send;
 
@@ -43,21 +46,30 @@ task top_monitor::main_phase(uvm_phase phase);
             //break;
         end
         //end
-
-        @(posedge top_if.clk)
-	    if(harness.u_tpu.u_rf.lsu_rf_wb_vld)begin
-    	    `uvm_info(get_name(), "wb_vld", UVM_NONE);
-	        `uvm_info("wb_addr", $sformatf("wb_addr: %0h", harness.u_tpu.u_rf.lsu_rf_wb_addr), UVM_NONE);
-	        `uvm_info("wb_data", $sformatf("wb_data: %0h", harness.u_tpu.u_rf.lsu_rf_wb_data), UVM_NONE);
- 	        rf_tr.rf_output[harness.u_tpu.u_rf.lsu_rf_wb_addr] = harness.u_tpu.u_rf.lsu_rf_wb_data;
+	    if(wb_vld_ff)begin
+		    for(int i; i<32; i++)begin
+ 	            rf_tr.rf_output[i] = harness.u_tpu.u_rf.rf_data[i];
+		    end
 	        rf_ap.write(rf_tr);
-	        `uvm_info("rf_ap", $sformatf("rf_ap: %0h", rf_ap), UVM_NONE);
-	        `uvm_info("rf_tr", $sformatf("rf_tr: %0h", rf_tr.rf_output), UVM_NONE);
+    	    `uvm_info(get_name(), "wb_vld_ff", UVM_NONE);
+	        `uvm_info("wb_addr", $sformatf("wb_addr: %0h", wb_addr_ff), UVM_NONE);
+	        `uvm_info("wb_data", $sformatf("wb_data: %0h", wb_data_ff), UVM_NONE);
+	        `uvm_info("rf_tr_output", $sformatf("rf_tr: %0h", rf_tr.rf_output), UVM_NONE);
+	    end
+
+	    if(harness.u_tpu.u_rf.lsu_rf_wb_vld)begin
+	    	wb_vld_ff = harness.u_tpu.u_rf.lsu_rf_wb_vld;
+		wb_addr_ff = harness.u_tpu.u_rf.lsu_rf_wb_addr;
+		wb_data_ff = harness.u_tpu.u_rf.lsu_rf_wb_data;	
+ 	        //rf_tr.rf_output[harness.u_tpu.u_rf.lsu_rf_wb_addr] = harness.u_tpu.u_rf.lsu_rf_wb_data;
 	    end
 	    else if(harness.u_tpu.u_lsu.alu_lsu_wfi)begin	
     	    `uvm_info(get_name(), "reach wfi", UVM_NONE);
 	        `uvm_info("rf_ap", $sformatf("rf_ap: %0h", rf_ap), UVM_NONE);
 	    break;
+	    end
+	    else begin
+		    wb_vld_ff = 0;
 	    end
         ap.write(tr);
 

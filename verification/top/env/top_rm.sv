@@ -3,6 +3,9 @@ class top_rm extends uvm_component;
     uvm_blocking_get_port #(model_output_transaction) port;
     uvm_analysis_port #(model_output_transaction) ap;
 
+    uvm_blocking_get_port #(rf_output_transaction) rf_port;
+    uvm_analysis_port #(rf_output_transaction) rf_ap;
+
     model_read_transaction model_rd_tr;
 
     function new(string name = "top_rm", uvm_component parent = null);
@@ -15,6 +18,7 @@ class top_rm extends uvm_component;
     extern virtual task main_phase(uvm_phase phase);
 
     extern function bit[9:0][7:0] cal_data();
+    extern function bit[31:0][31:0] riscv_rf_cal();
 
 endclass //className extends superClass
 
@@ -23,12 +27,17 @@ function void top_rm::build_phase(uvm_phase phase);
     port = new("port", this);
     ap = new("ap", this);
     model_rd_tr = new();
+
+    rf_port = new("rf_port", this);
+    rf_ap = new("rf_ap", this);
 endfunction
 
 task top_rm::main_phase(uvm_phase phase);
     
     model_output_transaction tr;
+    rf_output_transaction rf_tr;
     bit [9:0][7:0] model_output;
+    bit [31:0][31:0] rf_output;
 
     super.main_phase(phase);
 
@@ -36,6 +45,10 @@ task top_rm::main_phase(uvm_phase phase);
         port.get(tr);
         tr.model_output = cal_data();
         ap.write(tr);
+
+        rf_port.get(rf_tr);
+        rf_tr.rf_output = riscv_rf_cal();
+        rf_ap.write(rf_tr);
     end
 
 endtask
@@ -83,4 +96,14 @@ function bit[9:0][7:0] top_rm::cal_data();
 
 endfunction
 
+function bit[31:0][31:0] top_rm::riscv_rf_cal();
+	
+    	bit [31:0][31:0] rf_output;
+	
+    	for(int i = 0; i < 32; i++)begin
+		rf_output[i] = 'b0;
+	end 
+	//`uvm_info("rf_output", $sformatf("rf_output: %0h", rf_output), UVM_NONE);
+	return rf_output;
 
+endfunction

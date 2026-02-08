@@ -1,8 +1,14 @@
 class top_sc extends uvm_scoreboard;
 
     model_output_transaction exp_result_q[$];
+    rf_output_transaction rf_exp_result_q[$];
+
     uvm_blocking_get_port #(model_output_transaction) exp_port;
     uvm_blocking_get_port #(model_output_transaction) act_port;
+
+    rf_output_transaction exp_rf_result_q[$];
+    //uvm_blocking_get_port #(rf_output_transaction) rf_exp_port;
+    //uvm_blocking_get_port #(rf_output_transaction) rf_act_port;
 
     function new(string name = "top_sc", uvm_component parent);
         super.new(name, parent);
@@ -23,12 +29,19 @@ function void top_sc::build_phase(uvm_phase phase);
     super.build_phase(phase);
     exp_port = new("exp_port", this);
     act_port = new("act_port", this);
+
+    //rf_exp_port = new("rf_exp_port", this);
+    //rf_act_port = new("rf_act_port", this);
 endfunction
 
 task top_sc::main_phase(uvm_phase phase);
     model_output_transaction exp_tr;
     model_output_transaction act_tr;
     model_output_transaction tmp_tr;
+
+    //rf_output_transaction rf_exp_tr;
+    //rf_output_transaction rf_act_tr;
+    //rf_output_transaction rf_tmp_tr;
 
     int softmax_output;
 	int fd;
@@ -41,6 +54,11 @@ task top_sc::main_phase(uvm_phase phase);
     		`uvm_info("top_sc", "received exp matrix from rm", UVM_MEDIUM);
 		this.exp_result_q.push_back(exp_tr);
 	end
+	//while(1)begin
+	//	this.rf_exp_port.get(rf_exp_tr);
+    	//	`uvm_info("top_sc", "received rf_exp from rm", UVM_NONE);
+	//	this.rf_exp_result_q.push_back(rf_exp_tr);
+	//end
 	while(1)begin
 		this.act_port.get(act_tr);
     	`uvm_info("top_sc", "received act matrix from mon", UVM_MEDIUM);
