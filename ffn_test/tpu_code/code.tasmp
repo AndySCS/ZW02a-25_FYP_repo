@@ -15,8 +15,8 @@ load_input: //
     load_input_else:
         LDT x3, x6, 255, 000, 000  //LDT rs1, rs2, <num>, <len>, <stride>
     load_input_end:
-        addi x3, x0, 1  //add dest addr
-        addi x6, x0, 256  //addi dram addr
+        addi x3, x3, 1  //add dest addr
+        addi x6, x6, 256  //addi dram addr
         //for loop: for i=0; i < 4;i++
         blt x1, x2, load_input //beq/bne/blt/bltu/bge/bgeu rs1, rs2, simm13
     addi x31, x0, 1
@@ -138,7 +138,7 @@ layer_network_loop:
     ACT, 0
 
     STMT x3, x0, 0, 15, 1 //store result back to iram
-    addi x3, x0, 256 // update store addr 
+    addi x3, x3, 16 // update store addr 
     
     add x10, x10, x11 //update dram addr
     addi x22, x22, 1 //update iter
@@ -176,10 +176,10 @@ second_layer_loop:
     sl_load_weight_if: // iter == 50
         addi x29, x0, 0 // init loop iter
         addi x4, x0, 0
-	lui x4, 4 //set wram addr
+	    lui x4, 4 //set wram addr
         sl_load_weight_else_for_loop: // load weight loop
             addi x29, x29, 1 // update iter
-            LDT x4, x6, 8, 0, 0  //load weight to wram
+            LDT x4, x6, 0, 0, 0  //load weight to wram
             addi x6, x6, 57 //update next load dram addr
             addi x4, x4, 16 //update next load wram addr
             blt x29, x28, sl_load_weight_else_for_loop
@@ -189,7 +189,7 @@ second_layer_loop:
     sl_load_weight_else: //iter is < 50, load bias only
         addi x29, x0, 0 // init loop iter
         addi x4, x0, 0
-	lui x4, 4 //set wram addr
+	    lui x4, 4 //set wram addr
         sl_load_weight_else_for_loop: // load weight loop
             addi x29, x29, 1 // update iter
             LDT x4, x6, 15, 0, 0  //load weight to wram
