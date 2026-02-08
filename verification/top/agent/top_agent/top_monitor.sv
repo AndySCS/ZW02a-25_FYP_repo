@@ -52,6 +52,7 @@ task top_monitor::main_phase(uvm_phase phase);
  	        rf_tr.rf_output[harness.u_tpu.u_rf.lsu_rf_wb_addr] = harness.u_tpu.u_rf.lsu_rf_wb_data;
 	        rf_ap.write(rf_tr);
 	        `uvm_info("rf_ap", $sformatf("rf_ap: %0h", rf_ap), UVM_NONE);
+	        `uvm_info("rf_tr", $sformatf("rf_tr: %0h", rf_tr.rf_output), UVM_NONE);
 	    end
 	    else if(harness.u_tpu.u_lsu.alu_lsu_wfi)begin	
     	    `uvm_info(get_name(), "reach wfi", UVM_NONE);
