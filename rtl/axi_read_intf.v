@@ -244,19 +244,21 @@ module AXI_READ_INFT(
     assign axi_doing_ld = arcnt < arnum;
 
     assign ram_ptr_nxt = ram_ptr + 4'b1;
-    assign sram_addr_nxt = lsu_axi_arvld_qual ? lsu_axi_sram_addr : sram_addr_cur + 12'b1;
-    assign dram_addr_nxt = ARADDR;
+    assign sram_addr_nxt = lsu_axi_arvld_qual ? lsu_axi_sram_addr : sram_addr_cur + 12'd16;
+    assign dram_addr_nxt = lsu_axi_arvld_qual ? lsu_axi_araddr : ARADDR_add_str;
+    assign ram_addr_en = axi_alloc_en;
 
     genvar i;
     generate;
         for(i = 0; i < 16; i++)begin
-            assign ram_addr_en[i] = ARVALID_sent & (ram_ptr == i);
+
+            //assign ram_addr_en[i] = (ARVALID_sent) & (ram_ptr == i);
 
             DFFE #(.WIDTH(12))
             ff_sram_addr (
                 .clk(clk),
                 .en(ram_addr_en[i]),
-                .d(sram_addr_cur),
+                .d(sram_addr_nxt),
                 .q(sram_addr[i])
             );
             
@@ -271,7 +273,7 @@ module AXI_READ_INFT(
         end
     endgenerate
    
-    assign sram_en = lsu_axi_arvld_qual | ARVALID_sent;
+    assign sram_en = |ram_addr_en;
     assign ram_nxt = lsu_axi_arvld_qual ? 4'b0 : ram_ptr + 4'b1;
 
     DFFE #(.WIDTH(12))
