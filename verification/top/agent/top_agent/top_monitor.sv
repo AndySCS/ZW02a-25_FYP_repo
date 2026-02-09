@@ -50,7 +50,10 @@ task top_monitor::main_phase(uvm_phase phase);
             start_tr = new();
             start_tr.start_vld = top_if.start_vld;
             start_tr.start_addr = top_if.start_addr;
-            start_tr.start_imem = harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem;
+
+	    for(int i; i<256; i++)begin
+            start_tr.start_imem[i] = harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[i];
+	    end
             start_ap.write(start_tr);
             //break;
         end

@@ -73,8 +73,8 @@ function void env::connect_phase(uvm_phase phase);
     rm.rf_ap.connect(rf_rm_sc_fifo.analysis_export);
     sc.rf_exp_port.connect(rf_rm_sc_fifo.blocking_get_export);
 
-    top_agt.rf_ap_test.connect(rf_agt_sc_fifo.analysis_export);
-    sc.rf_act_port.connect(rf_agt_sc_fifo.blocking_get_export);
+    //top_agt.rf_ap_test.connect(rf_agt_sc_fifo.analysis_export);
+    //sc.rf_act_port.connect(rf_agt_sc_fifo.blocking_get_export);
 
     top_agt.start_ap.connect(start_agt_rm_fifo.analysis_export);
     rm.start_port.connect(start_agt_rm_fifo.blocking_get_export);
