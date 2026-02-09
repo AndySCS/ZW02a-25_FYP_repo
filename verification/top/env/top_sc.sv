@@ -7,7 +7,7 @@ class top_sc extends uvm_scoreboard;
     uvm_blocking_get_port #(model_output_transaction) act_port;
 
     uvm_blocking_get_port #(rf_output_transaction) rf_exp_port;
-    uvm_blocking_get_port #(rf_output_transaction) rf_act_port;
+    //uvm_blocking_get_port #(rf_output_transaction) rf_act_port;
 
     function new(string name = "top_sc", uvm_component parent);
         super.new(name, parent);
@@ -30,7 +30,7 @@ function void top_sc::build_phase(uvm_phase phase);
     act_port = new("act_port", this);
 
     rf_exp_port = new("rf_exp_port", this);
-    rf_act_port = new("rf_act_port", this);
+    //rf_act_port = new("rf_act_port", this);
 endfunction
 
 task top_sc::main_phase(uvm_phase phase);
@@ -39,7 +39,7 @@ task top_sc::main_phase(uvm_phase phase);
     model_output_transaction tmp_tr;
 
     rf_output_transaction rf_exp_tr;
-    rf_output_transaction rf_act_tr;
+    //rf_output_transaction rf_act_tr;
     //rf_output_transaction rf_tmp_tr;
 
     int softmax_output;
