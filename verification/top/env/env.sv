@@ -14,6 +14,9 @@ class env extends uvm_env;
     uvm_tlm_analysis_fifo #(rf_output_transaction) rf_agt_sc_fifo;
     uvm_tlm_analysis_fifo #(rf_output_transaction) rf_rm_sc_fifo;
 
+
+    uvm_tlm_analysis_fifo #(start_preload_transaction) start_agt_rm_fifo;
+
     function new(string name = "env", uvm_component parent);
         super.new(name, parent);
     endfunction
@@ -44,6 +47,8 @@ function void env::build_phase(uvm_phase phase);
     rf_agt_sc_fifo = new("rf_agt_sc_fifo",this);
     rf_rm_sc_fifo = new("rf_rm_sc_fifo",this);
 
+    start_agt_rm_fifo = new("start_agt_rm_fifo",this);
+
     `uvm_info(get_name(), "build phase ends", UVM_LOW);
 
 endfunction
@@ -70,6 +75,9 @@ function void env::connect_phase(uvm_phase phase);
 
     top_agt.rf_ap_test.connect(rf_agt_sc_fifo.analysis_export);
     sc.rf_act_port.connect(rf_agt_sc_fifo.blocking_get_export);
+
+    top_agt.start_ap.connect(start_agt_rm_fifo.analysis_export);
+    rm.start_port.connect(start_agt_rm_fifo.blocking_get_export);
 
     `uvm_info(get_name(), "connect phase ends", UVM_LOW);
 

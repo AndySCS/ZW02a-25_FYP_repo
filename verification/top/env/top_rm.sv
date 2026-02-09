@@ -6,6 +6,8 @@ class top_rm extends uvm_component;
     uvm_blocking_get_port #(rf_output_transaction) rf_port;
     uvm_analysis_port #(rf_output_transaction) rf_ap;
 
+    uvm_blocking_get_port #(start_output_transaction) start_port;
+
     model_read_transaction model_rd_tr;
 
     function new(string name = "top_rm", uvm_component parent = null);
@@ -30,12 +32,15 @@ function void top_rm::build_phase(uvm_phase phase);
 
     rf_port = new("rf_port", this);
     rf_ap = new("rf_ap", this);
+
+    start_port = new("start_port", this);    
 endfunction
 
 task top_rm::main_phase(uvm_phase phase);
     
     model_output_transaction tr;
     rf_output_transaction rf_tr;
+    start_preload_transaction start_tr;
     bit [9:0][7:0] model_output;
     bit [31:0][31:0] rf_output;
 
@@ -108,15 +113,17 @@ function bit[31:0][31:0] top_rm::riscv_rf_cal();
     bit [31:0] rs1_data;
     bit [31:0] rs2_data;
     bit [31:0] rd_data;
+    bit [31:0] imm_data;
 
+    start_port.get(start_tr);
     //pc 
-    if(start_vld_tr.start_vld)begin
-        pc = start_addr_tr.start_addr;
+    if(start_tr.start_vld)begin
+        pc = start_tr.start_addr;
     end
     else begin
         pc = pc+4;
     end 
-    instruction = imem_tr.imem[pc[31:4]][pc[3:2]];
+    instruction = start_tr.imem[pc[31:4]][pc[3:2]];
 
     //decode
     //rtype
@@ -235,23 +242,30 @@ function bit[31:0][31:0] top_rm::riscv_rf_cal();
     end
     //itype ld 
     else if (instruction[6:0] == 'b0000011)begin
-        
     end
     //stype
     else if (instruction[6:0] == 'b0100011)begin
-        
+        rs1 = instruction[19:15];
+        rs2 = instruction[24:20];
+        rd = instruction[11:7];
+        rs1_data = rf_tr.rf_output[rs1];
+        rs2_data = {{24{1'b0}},{rs2}};
+        rd_data = 'b0;
     end
     //utype
-    else if (instruction[6:0] == 'b0110111 | instruction[6:0] == 'b0010111)begin
+    else if (instruction[6:0] == 'b0110111)begin
+        rd = instruction[11:7];
+        rd_data = {instruction[31:12],{12{1'b0}}};
+    end
+    //auipc
+    else if (instruction[6:0] == 'b0010111)begin
         
     end
     //btype
     else if (instruction[6:0] == 'b1100011)begin
         
     end
-    //jtype
-
-        
+    //jtype 
 
 	//`uvm_info("rf_output", $sformatf("rf_output: %0h", rf_output), UVM_NONE);
 	return rf_output;
