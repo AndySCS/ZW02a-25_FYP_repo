@@ -284,6 +284,7 @@ module alu(
     wire [31:0] shift_right_logic;
     wire [31:0] shift_right_arith;
     wire [31:0] u_rlt;
+    wire [31:0] auipc_sum;
     wire [31:0] pc_cont_sum;
     wire [31:0] diff;
     wire [31:0] pc_jump_sum;
@@ -312,7 +313,7 @@ module alu(
     assign alu_idu_flush_vld = alu_ifu_br_vld;
 
     assign sum                  = idu_alu_src1 + idu_alu_src2;
-    assign less_than_signed     = (idu_alu_src1 < idu_alu_src2) & ~(idu_alu_src1[31] ^ idu_alu_src2[31]);
+    assign less_than_signed     = ((idu_alu_src1 < idu_alu_src2) & ~(idu_alu_src1[31] ^ idu_alu_src2[31])) | (idu_alu_src1[31] & ~idu_alu_src2[31]);
     assign less_than_unsigned   = idu_alu_src1 < idu_alu_src2;
     assign and_rlt              = idu_alu_src1 & idu_alu_src2;
     assign or_rlt               = idu_alu_src1 | idu_alu_src2;  
