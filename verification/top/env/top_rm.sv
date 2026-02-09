@@ -109,7 +109,8 @@ endfunction
 function bit[31:0][31:0] top_rm::riscv_rf_cal();
 	
     bit [31:0][31:0] rf_output;
-	bit [31:0] pc;
+    bit [31:0] pc;
+    bit [31:0] new_pc;
     bit [31:0] instruction;
     bit [4:0] rs1;
     bit [4:0] rs2;
@@ -119,105 +120,129 @@ function bit[31:0][31:0] top_rm::riscv_rf_cal();
     bit [31:0] rd_data;
     bit [31:0] imm_data;
     bit [31:0] shift_data;
+    bit pc_count;
 
-    //pc 
-    if(start_cal_tr.start_vld)begin
-        pc = start_cal_tr.start_addr;
-    end
-    else begin
-        pc = pc+4;
-    end 
-    instruction = start_cal_tr.start_imem[pc[31:4]][pc[3:2]];
-
-    //decode
-    //rtype
-    if (instruction[6:0] == 'b0110011)begin
-
-        rs1 = instruction[19:15];
-        rs2 = instruction[24:20];
-        rd = instruction[11:7];
-        rs1_data = rf_output[rs1];
-        rs2_data = rf_output[rs2];
-        //add & sub
-        if (instruction[14:12] == 'b000)begin
-            if(instruction[31:25] == 'b0000000)begin
-                rd_data = rs1_data + rs2_data;
-            end
-            else begin
-                rd_data = rs1_data - rs2_data;
-            end
+    while(1)begin 
+        //pc 
+        if(start_cal_tr.start_vld & ~pc_count)begin
+            pc = start_cal_tr.start_addr;
         end
-        //sll
-        if (instruction[14:12] == 'b001)begin
-            rd_data = rs1 << rs2;
+        else begin
+            pc = new_pc;
         end
-        //slt 
-        if (instruction[14:12] == 'b010)begin
-            if(rs1_data[31] > rs2_data[31])begin
-                rd_data = 0;
+        if(pc[3:2] == 2'b00)begin
+   	    instruction = start_cal_tr.start_imem[pc[31:4]][31:0];
+        end
+        else if(pc[3:2] == 2'b01)begin
+   	    instruction = start_cal_tr.start_imem[pc[31:4]][63:32];
+        end
+        else if(pc[3:2] == 2'b10)begin
+   	    instruction = start_cal_tr.start_imem[pc[31:4]][95:64];
+        end
+        else begin
+   	    instruction = start_cal_tr.start_imem[pc[31:4]][127:96];
+        end
+        `uvm_info("pc", $sformatf("pc: %0h", pc), UVM_NONE);
+        `uvm_info("instr", $sformatf("instr: %0h", instruction), UVM_NONE);
+        //decode
+        //rtype
+        if (instruction[6:0] == 'b0110011)begin
+
+            rs1 = instruction[19:15];
+            rs2 = instruction[24:20];
+            rd = instruction[11:7];
+            rs1_data = rf_output[rs1];
+            rs2_data = rf_output[rs2];
+            //add & sub
+            if (instruction[14:12] == 'b000)begin
+                if(instruction[31:25] == 'b0000000)begin
+                    rd_data = rs1_data + rs2_data;
+                end
+                else begin
+                    rd_data = rs1_data - rs2_data;
+                end
             end
-            else if (rs1_data[31] < rs2_data[31])begin
-                rd_data = 1;
+            //sll
+            if (instruction[14:12] == 'b001)begin
+                rd_data = rs1 << rs2;
             end
-            else begin
+            //slt 
+            if (instruction[14:12] == 'b010)begin
+                if(rs1_data[31] > rs2_data[31])begin
+                    rd_data = 0;
+                end
+                else if (rs1_data[31] < rs2_data[31])begin
+                    rd_data = 1;
+                end
+                else begin
+                    rd_data = rs1_data < rs2_data;
+                end
+            end
+            //sltu
+            if (instruction[14:12] == 'b011)begin
                 rd_data = rs1_data < rs2_data;
             end
-        end
-        //sltu
-        if (instruction[14:12] == 'b011)begin
-            rd_data = rs1_data < rs2_data;
-        end
-        //xor
-        if (instruction[14:12] == 'b100)begin
-            rd_data = rs1_data ^ rs2_data;
-        end
-        //srl & sra
-        if (instruction[14:12] == 'b101)begin
-            if (instruction[31:15] == 'b0000000)begin
-                rd_data = rs1_data >> rs2_data;
+            //xor
+            if (instruction[14:12] == 'b100)begin
+                rd_data = rs1_data ^ rs2_data;
             end
-            else begin
-                shift_data = rs1_data >> rs2_data;
-		rd_data = 'b0;
+            //srl & sra
+            if (instruction[14:12] == 'b101)begin
+                if (instruction[31:15] == 'b0000000)begin
+                    rd_data = rs1_data >> rs2_data;
+                end
+                else begin
+                    shift_data = rs1_data >> rs2_data;
+		    rd_data = 'b0;
+                end
+            end
+            //or
+            if (instruction[14:12] == 'b110)begin
+                rd_data = rs1_data | rs2_data;
+            end
+            //and
+            if (instruction[14:12] == 'b111)begin
+                rd_data = rs1_data & rs2_data;
             end
         end
-        //or
-        if (instruction[14:12] == 'b110)begin
-            rd_data = rs1_data | rs2_data;
+        //itype ld 
+        else if (instruction[6:0] == 'b0000011)begin
         end
-        //and
-        if (instruction[14:12] == 'b111)begin
-            rd_data = rs1_data & rs2_data;
+        //stype
+        else if (instruction[6:0] == 'b0100011)begin
+            rs1 = instruction[19:15];
+            rs2 = instruction[24:20];
+            rd = instruction[11:7];
+            rs1_data = rf_output[rs1];
+            rs2_data = {{24{1'b0}},{rs2}};
+            rd_data = 'b0;
         end
-    end
-    //itype ld 
-    else if (instruction[6:0] == 'b0000011)begin
-    end
-    //stype
-    else if (instruction[6:0] == 'b0100011)begin
-        rs1 = instruction[19:15];
-        rs2 = instruction[24:20];
-        rd = instruction[11:7];
-        rs1_data = rf_output[rs1];
-        rs2_data = {{24{1'b0}},{rs2}};
-        rd_data = 'b0;
-    end
-    //utype
-    else if (instruction[6:0] == 'b0110111)begin
-        rd = instruction[11:7];
-        rd_data = {instruction[31:12],{12{1'b0}}};
-    end
-    //auipc
-    else if (instruction[6:0] == 'b0010111)begin
+        //utype
+        else if (instruction[6:0] == 'b0110111)begin
+            rd = instruction[11:7];
+            rd_data = {instruction[31:12],{12{1'b0}}};
+	        new_pc = pc+4;	
+    	    `uvm_info("utype rd", $sformatf("rd: %0h", rd), UVM_NONE);
+    	    `uvm_info("utype result", $sformatf("rd_data: %0h", rd_data), UVM_NONE);
+        end
+        //auipc
+        else if (instruction[6:0] == 'b0010111)begin
+            new_pc = pc + 4; 
+        end
+        //btype
+        else if (instruction[6:0] == 'b1100011)begin
         
-    end
-    //btype
-    else if (instruction[6:0] == 'b1100011)begin
-        
-    end
-    //jtype 
+        end
+        //jtype 
+        else begin
+    	    `uvm_info("wfi", $sformatf("wfi: %0h", instruction), UVM_NONE);
+	        break;
+    	    //`uvm_info("rf_output", $sformatf("rf_output: %0h", rf_output), UVM_NONE);
 
-	//`uvm_info("rf_output", $sformatf("rf_output: %0h", rf_output), UVM_NONE);
-	return rf_output;
+        end
+	pc_count = 1;
+    end
 
+    return rf_output;
 endfunction
+
