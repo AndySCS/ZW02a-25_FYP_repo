@@ -1,28 +1,28 @@
-    module mm_ctrl_buffer(
-        clk,
-        rst_n,
-        //ram wire
-        lsu_mm_buff_ram_alloc_vld,
-        lsu_mm_buff_ram_alloc_addr,
-        lsu_mm_buff_ram_alloc_data,
+module mm_ctrl_buffer(
+    clk,
+    rst_n,
+    //ram wire
+    lsu_mm_buff_ram_alloc_vld,
+    lsu_mm_buff_ram_alloc_addr,
+    lsu_mm_buff_ram_alloc_data,
 
-        //ctrl wirelsu
-        lsu_mm_buff_ctrl_start,
-        lsu_mm_buff_ctrl_vld,
-        lsu_mm_buff_ctrl_row_len,
-        lsu_mm_buff_ctrl_col_len,
-        lsu_mm_buff_ctrl_start_addr,
-        lsu_mm_buff_ctrl_ram_type,
+    //ctrl wirelsu
+    lsu_mm_buff_ctrl_start,
+    lsu_mm_buff_ctrl_vld,
+    lsu_mm_buff_ctrl_row_len,
+    lsu_mm_buff_ctrl_col_len,
+    lsu_mm_buff_ctrl_start_addr,
+    lsu_mm_buff_ctrl_ram_type,
 
-        //to ram
-        lsu_mm_buff_ram_read_vld,
-        lsu_mm_buff_ram_read_addr,
+    //to ram
+    lsu_mm_buff_ram_read_vld,
+    lsu_mm_buff_ram_read_addr,
 
-        //to mxu
-        lsu_mm_buff_mxu_vld,
-        lsu_mm_buff_mxu_data,
-        lsu_mm_buff_mxu_end
-    ); 
+    //to mxu
+    lsu_mm_buff_mxu_vld,
+    lsu_mm_buff_mxu_data,
+    lsu_mm_buff_mxu_end
+); 
 
     input clk;
     input rst_n;
@@ -54,7 +54,19 @@
    
     wire [3:0] lsu_mm_buff_ctrl_row;
     wire [3:0] lsu_mm_buff_ctrl_col;
-
+ 
+    wire [5:0]lsu_mm_buff_cycle_need;
+    wire [5:0]lsu_mm_buff_cycle_cnt;
+    wire [5:0]lsu_mm_buff_cycle_cnt_ff;
+    wire lsu_mm_buff_ent_cnt;
+    wire [127:0] lsu_mm_buff_ent_data_raw [15:0];
+    wire [127:0] lsu_mm_buff_ent_data_raw_ff [15:0];
+    wire [127:0] lsu_mm_buff_ent_data [15:0];
+    wire [15:0] lsu_mm_buff_ent_vld [15:0];
+    wire [5:0] lsu_mm_buff_offset;
+    wire [15:0] lsu_mm_buff_mxu_vld_ff;
+    wire lsu_mm_buff_cycle_cnt_end;
+    wire lsu_mm_buff_mxu_end_ff;
     assign lsu_mm_buff_start_pulse = lsu_mm_buff_ctrl_start;
     assign lsu_mm_buff_ram_read_vld = lsu_mm_buff_ctrl_vld & (~lsu_mm_buff_addr_cnt_end | lsu_mm_buff_start_pulse);
 
@@ -90,19 +102,6 @@
 
     assign lsu_mm_buff_ram_read_addr = lsu_mm_buff_ctrl_vld ? lsu_mm_buff_ctrl_start_addr[11:4] + lsu_mm_buff_addr_cnt 
                                      : lsu_mm_buff_ctrl_start_addr[11:4] + lsu_mm_buff_addr_cnt_ff;
-   
-    wire [5:0]lsu_mm_buff_cycle_need;
-    wire [5:0]lsu_mm_buff_cycle_cnt;
-    wire [5:0]lsu_mm_buff_cycle_cnt_ff;
-    wire lsu_mm_buff_ent_cnt;
-    wire [127:0] lsu_mm_buff_ent_data_raw [15:0];
-    wire [127:0] lsu_mm_buff_ent_data_raw_ff [15:0];
-    wire [127:0] lsu_mm_buff_ent_data [15:0];
-    wire [15:0] lsu_mm_buff_ent_vld [15:0];
-    wire [5:0] lsu_mm_buff_offset;
-    wire [15:0] lsu_mm_buff_mxu_vld_ff;
-    wire lsu_mm_buff_cycle_cnt_end;
-    wire lsu_mm_buff_mxu_end_ff;
 
     assign lsu_mm_buff_cycle_need = (lsu_mm_buff_ctrl_col_len + lsu_mm_buff_ctrl_row_len);
     assign lsu_mm_buff_cycle_cnt = (lsu_mm_buff_start_pulse_ff | lsu_mm_buff_start_pulse) ? 1'b0 
