@@ -73,7 +73,7 @@ task utype_seq::body();
 		    ram_tmp_pre[31:0] = auipc.instruction;
 	    end
     end
-    ram_tmp[255][31:0] = 'h73; 
+    ram_tmp[255][31:0] = 'h7f; 
     //:for($i = 0; $i < 256;$i++){    
     force harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[{$i}] = ram_tmp[{$i}];
     //:}
