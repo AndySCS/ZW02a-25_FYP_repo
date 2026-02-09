@@ -255,7 +255,7 @@ module tpu(
     wire [1:0] lsu_axi_awburst;
     wire [2:0] lsu_axi_awstr;
     wire lsu_axi_awvld;
-    wire [11:0] lsu_axi_oram_addr;
+    wire [12:0] lsu_axi_oram_addr;
     wire [63:0] lsu_axi_wdata;
     wire [7:0] lsu_axi_wstrb;
     wire lsu_axi_wlast;
@@ -298,7 +298,7 @@ module tpu(
     wire axi_lsu_bid;
     wire [1:0] axi_lsu_bresp;
     wire axi_lsu_bvld;
-    wire [11:0] axi_lsu_resp_oram_addr;
+    wire [12:0] axi_lsu_resp_oram_addr;
 
     //mxu outpu
     //:for($i=0;$i<16;$i++){

@@ -39,6 +39,7 @@ my %base_type_dict = (
     2 => "Verification",
     3 => "Script",
     4 => "Project",
+    5 => "FFN",
 );
 
 my %type_connector = (
