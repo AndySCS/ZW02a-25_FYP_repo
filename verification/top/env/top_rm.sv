@@ -248,7 +248,7 @@ function rf_rlt_q top_rm::riscv_rf_cal();
             end
             //slli
             if (instruction[14:12] == 'b001)begin
-                rd_data = rs1 << sharm;
+                rd_data = rs1 << shamt;
             end
             //slit 
             if (instruction[14:12] == 'b010)begin
