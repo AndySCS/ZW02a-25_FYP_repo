@@ -124,10 +124,10 @@ layer_network_loop:
 
         bge x27, x19, matirx_iram_update_else
         matirx_iram_update_if:
-            addi x27, x27, 16 //update iram addr
+            addi x26, x26, 256 //update iram addr
             jal x0, matirx_iram_update_end
         matirx_iram_update_else:
-            addi x27, x20, 1 //update iram addr
+            addi x26, x20, 1 //update iram addr
             addi x20, x20, 1 //update iram col
         matirx_iram_update_end:
 
