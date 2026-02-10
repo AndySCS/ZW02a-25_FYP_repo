@@ -7,6 +7,7 @@ class top_sc extends uvm_scoreboard;
     uvm_blocking_get_port #(model_output_transaction) act_port;
 
     uvm_blocking_get_port #(rf_output_transaction) rf_exp_port;
+    uvm_blocking_get_port #(rf_output_q_transaction) rf_q_exp_port;
     //uvm_blocking_get_port #(rf_output_transaction) rf_act_port;
 
     function new(string name = "top_sc", uvm_component parent);
@@ -30,6 +31,7 @@ function void top_sc::build_phase(uvm_phase phase);
     act_port = new("act_port", this);
 
     rf_exp_port = new("rf_exp_port", this);
+    rf_q_exp_port = new("rf_q_exp_port", this);
     //rf_act_port = new("rf_act_port", this);
 endfunction
 
@@ -39,6 +41,7 @@ task top_sc::main_phase(uvm_phase phase);
     model_output_transaction tmp_tr;
 
     rf_output_transaction rf_exp_tr;
+    rf_output_q_transaction rf_q_exp_tr;
     //rf_output_transaction rf_act_tr;
     //rf_output_transaction rf_tmp_tr;
 
@@ -55,6 +58,11 @@ task top_sc::main_phase(uvm_phase phase);
 	end
 	while(1)begin
 		this.rf_exp_port.get(rf_exp_tr);
+		this.rf_q_exp_port.get(rf_q_exp_tr);
+		//for(int i; i<32; i++)begin
+	    	//	`uvm_info("sc test", $sformatf("rf [i]: %0h", rf_q_exp_tr.rf_output[0][i]), UVM_NONE);	
+		//end		
+
     		`uvm_info("top_sc", "received rf_exp from rm", UVM_NONE);
 		`uvm_info("rm_rf_data2", $sformatf("sc_rm_output2: %0h", rf_exp_tr.rf_output), UVM_NONE);
 		this.rf_exp_result_q.push_back(rf_exp_tr);
