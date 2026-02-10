@@ -138,7 +138,7 @@ module mm_ctrl_buffer(
 
     assign lsu_ram_buff_read_vld_nxt  = lsu_mm_buff_ram_read_vld & ~(lsu_mm_buff_ram_read_end);
     assign lsu_ram_buff_read_addr_en  = lsu_mm_buff_ram_read_vld;
-    assign lsu_ram_buff_read_addr_nxt = lsu_mm_buff_ram_read_vld ? lsu_mm_buff_ctrl_start_addr + 12'h10
+    assign lsu_ram_buff_read_addr_nxt = lsu_mm_buff_ctrl_vld ? lsu_mm_buff_ctrl_start_addr + 12'h10
                                       : lsu_ram_buff_read_addr_raw + 12'h10;
 
     assign lsu_mm_buff_ram_read_vld  = lsu_ram_buff_read_vld_raw | lsu_mm_buff_ctrl_vld;
