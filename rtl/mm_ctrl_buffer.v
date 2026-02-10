@@ -22,7 +22,7 @@ module mm_ctrl_buffer(
     lsu_mm_buff_mxu_end
 ); 
 
-    local parameter           STR_LEN  = 4;
+    localparam                STR_LEN  = 4;
     parameter [STR_LEN*8-1:0] RAM_TYPE = "WRAM";
 
     input clk;
@@ -62,6 +62,11 @@ module mm_ctrl_buffer(
     wire [3:0] lsu_mm_buff_addr_cnt;
     wire       lsu_mm_buff_addr_cnt_en;
     wire lsu_mm_buff_addr_cnt_end;
+    
+    wire [3:0] lsu_mm_buff_fetch_cnt_nxt;
+    wire [3:0] lsu_mm_buff_fetch_cnt;
+    wire       lsu_mm_buff_fetch_cnt_en;
+    wire lsu_mm_buff_fetch_cnt_end;
    
     wire [3:0] lsu_mm_buff_ctrl_row;
     wire [3:0] lsu_mm_buff_ctrl_col;
@@ -75,34 +80,41 @@ module mm_ctrl_buffer(
     wire [15:0]  lsu_mm_buff_mxu_vld_ff;
 
     wire [15:0] lsu_mm_buff_mxu_vld_nxt;
-    wire lsu_mm_buff_mxu_end;
 
-    wire lsu_mm_buff_mxu_cycle_cnt_doing;
-    wire lsu_mm_buff_mxu_cycle_cnt_doing_nxt;
+    wire lsu_mm_buff_mxu_doing_cnt_end;
+    wire lsu_mm_buff_mxu_doing_cnt_doing;
+    wire lsu_mm_buff_mxu_doing_cnt_doing_nxt;
 
-    wire [3:0] lsu_mm_buff_cycle_cnt;
-    wire [3:0] lsu_mm_buff_cycle_cnt_nxt;
-    wire       lsu_mm_buff_cycle_cnt_en;
+    wire [3:0] lsu_mm_buff_doing_cnt;
+    wire [3:0] lsu_mm_buff_doing_cnt_nxt;
+    wire       lsu_mm_buff_doing_cnt_en;
+   
+    wire [3:0]  lsu_mm_buff_cycle_cnt     [15:0];
+    wire [3:0]  lsu_mm_buff_cycle_cnt_nxt [15:0];
+    wire [15:0] lsu_mm_buff_cycle_cnt_en;
+    wire [15:0] lsu_mm_buff_cycle_cnt_end;
 
-    assign lsu_mm_buff_cycle_cnt_en  = lsu_mm_buff_ctrl_vld | lsu_mm_buff_ram_alloc_vld | lsu_mm_buff_mxu_cycle_cnt_doing;
-    assign lsu_mm_buff_cycle_cnt_nxt = (lsu_mm_buff_ctrl_vld | lsu_mm_buff_ram_alloc_vld) ? 4'b0 : (lsu_mm_buff_cycle_cnt + 4'b1);
+    wire lsu_mm_buff_mxu_end_nxt;
+
+    assign lsu_mm_buff_doing_cnt_en  = lsu_mm_buff_ctrl_vld | lsu_mm_buff_ram_alloc_vld | lsu_mm_buff_mxu_doing_cnt_doing;
+    assign lsu_mm_buff_doing_cnt_nxt = (lsu_mm_buff_ctrl_vld | lsu_mm_buff_ram_alloc_vld) ? 4'b0 : (lsu_mm_buff_doing_cnt + 4'b1);
 
     DFFE #(.WIDTH(4))
-    ff_lsu_mm_buff_cycle_cnt(
+    ff_lsu_mm_buff_doing_cnt(
         .clk(clk),
-        .en(lsu_mm_buff_cycle_cnt_en),
-        .d(lsu_mm_buff_cycle_cnt_nxt),
-        .q(lsu_mm_buff_cycle_cnt)
+        .en(lsu_mm_buff_doing_cnt_en),
+        .d(lsu_mm_buff_doing_cnt_nxt),
+        .q(lsu_mm_buff_doing_cnt)
     );
 
-    assign lsu_mm_buff_mxu_cycle_cnt_doing_nxt = lsu_mm_buff_ctrl_vld | lsu_mm_buff_mxu_doing & ~lsu_mm_buff_mxu_end;
+    assign lsu_mm_buff_mxu_doing_cnt_doing_nxt = lsu_mm_buff_ctrl_vld | lsu_mm_buff_mxu_doing_cnt_doing & ~lsu_mm_buff_mxu_doing_cnt_end;
     
     DFFR #(.WIDTH(1))
-    ff_lsu_mm_buff_mxu_cycle_cnt_doing(
+    ff_lsu_mm_buff_mxu_doing_cnt_doing(
         .clk(clk),
         .rst_n(rst_n),
-        .d(lsu_mm_buff_mxu_cycle_cnt_doing_nxt),
-        .q(lsu_mm_buff_mxu_cycle_cnt_doing)
+        .d(lsu_mm_buff_mxu_doing_cnt_doing_nxt),
+        .q(lsu_mm_buff_mxu_doing_cnt_doing)
     );    
     
     DFFR #(.WIDTH(1))
@@ -122,7 +134,8 @@ module mm_ctrl_buffer(
     );   
     
     assign lsu_mm_buff_ram_read_end   = lsu_mm_buff_ctrl_vld ? ~(|lsu_mm_buff_ctrl_row_len) 
-                                      : (lsu_mm_buff_addr_cnt == lsu_mm_buff_ctrl_row_len_ff);
+                                      : lsu_mm_buff_fetch_cnt_end;
+
     assign lsu_ram_buff_read_vld_nxt  = lsu_mm_buff_ram_read_vld & ~(lsu_mm_buff_ram_read_end);
     assign lsu_ram_buff_read_addr_en  = lsu_mm_buff_ram_read_vld;
     assign lsu_ram_buff_read_addr_nxt = lsu_mm_buff_ram_read_vld ? lsu_mm_buff_ctrl_start_addr + 12'h10
@@ -159,7 +172,19 @@ module mm_ctrl_buffer(
     assign lsu_mm_buff_addr_cnt_en = lsu_mm_buff_ctrl_vld | lsu_mm_buff_ram_alloc_vld;
     assign lsu_mm_buff_addr_cnt_nxt = lsu_mm_buff_ctrl_vld ? 4'b0 : (lsu_mm_buff_addr_cnt + 4'b1);
 
-    DFFE #(.WIDTH(12))
+    assign lsu_mm_buff_fetch_cnt_en   = lsu_mm_buff_ram_read_vld;
+    assign lsu_mm_buff_fetch_cnt_nxt  = lsu_mm_buff_ctrl_vld ? 4'b1 : (lsu_mm_buff_fetch_cnt + 4'b1);
+    assign lsu_mm_buff_fetch_cnt_end  = lsu_mm_buff_fetch_cnt == lsu_mm_buff_ctrl_row_len_ff;
+
+    DFFE #(.WIDTH(4))
+    ff_lsu_mm_buff_fetch_cnt(
+        .clk(clk),
+        .en(lsu_mm_buff_fetch_cnt_en),
+        .d(lsu_mm_buff_fetch_cnt_nxt),
+        .q(lsu_mm_buff_fetch_cnt)
+    );   
+    
+    DFFE #(.WIDTH(4))
     ff_lsu_mm_buff_ctrl_addr_cnt(
         .clk(clk),
         .en(lsu_mm_buff_addr_cnt_en),
@@ -176,16 +201,6 @@ module mm_ctrl_buffer(
     genvar i;
     generate
 
-    if (RAM_TYPE == "WRAM") begin
-        wire [3:0]  lsu_mm_buff_cycle_cnt     [15:0];
-        wire [3:0]  lsu_mm_buff_cycle_cnt_nxt [15:0];
-        wire [15:0] lsu_mm_buff_cycle_cnt_en;
-        wire [15:0] lsu_mm_buff_cycle_cnt_end;
-
-    end
-    else if(RAM_TYPE == "IRAM") begin
-    end
-
     for (i = 0; i < 16 ; i=i+1) begin
 
         if (RAM_TYPE == "WRAM") begin
@@ -200,10 +215,10 @@ module mm_ctrl_buffer(
     	    DFFE #(.WIDTH(4))
     	    ff_lsu_mm_buff_cycle_cnt(
             	.clk(clk),
-	        	.en(lsu_mm_buff_cycle_cnt_en[i]),
+	        .en(lsu_mm_buff_cycle_cnt_en[i]),
             	.d(lsu_mm_buff_cycle_cnt_nxt[i]),
             	.q(lsu_mm_buff_cycle_cnt[i])
-   	        );
+   	    );
 
             assign lsu_mm_buff_ent_alloc_en[i] = lsu_mm_buff_ram_alloc_vld & (lsu_mm_buff_addr_cnt == i) 
                                                | lsu_mm_buff_mxu_vld[i] & ~lsu_mm_buff_cycle_cnt_end[i];
@@ -214,13 +229,13 @@ module mm_ctrl_buffer(
         end
         else if(RAM_TYPE == "IRAM") begin
             if (i == 0) begin
-                assign lsu_mm_buff_ent_alloc_en[i] = lsu_mm_buff_ctrl_vld;
-                assign lsu_mm_buff_mxu_vld_nxt[i]  = lsu_mm_buff_ctrl_vld;
+                assign lsu_mm_buff_ent_alloc_en[i] = lsu_mm_buff_ram_alloc_vld;
+                assign lsu_mm_buff_mxu_vld_nxt[i]  = lsu_mm_buff_ram_alloc_vld;
                 assign lsu_mm_buff_ent_data_raw[i] = lsu_mm_buff_ram_alloc_data_shifted;
             end
             else begin
-                assign lsu_mm_buff_ent_alloc_en[i] = lsu_mm_buff_mxu_vld[i-1] & ~(i <= lsu_mm_buff_ctrl_row_len_ff);
-                assign lsu_mm_buff_mxu_vld_nxt[i]  = lsu_mm_buff_mxu_vld[i-1] & ~(i <= lsu_mm_buff_ctrl_col_len_ff);
+                assign lsu_mm_buff_ent_alloc_en[i] = lsu_mm_buff_mxu_vld[i-1] & (i <= lsu_mm_buff_ctrl_row_len_ff);
+                assign lsu_mm_buff_mxu_vld_nxt[i]  = lsu_mm_buff_mxu_vld[i-1] & (i <= lsu_mm_buff_ctrl_col_len_ff);
                 assign lsu_mm_buff_ent_data_raw[i] = lsu_mm_buff_ent_data_raw_ff[i-1];
             end
 
@@ -229,17 +244,18 @@ module mm_ctrl_buffer(
         
     	DFFE #(.WIDTH(128))
     	ff_lsu_mm_buff_ent_data_raw(
-        	.clk(clk),
-	    	.en(lsu_mm_buff_ent_alloc_en[i]),
-        	.d(lsu_mm_buff_ent_data_raw[i]),
-        	.q(lsu_mm_buff_ent_data_raw_ff[i])
-   	    );
+              .clk(clk),
+              .en(lsu_mm_buff_ent_alloc_en[i]),
+              .d(lsu_mm_buff_ent_data_raw[i]),
+              .q(lsu_mm_buff_ent_data_raw_ff[i])
+        );
 
     end
 
     endgenerate
     
-    assign lsu_mm_buff_mxu_end = ~lsu_mm_buff_ram_alloc_vld & (lsu_mm_buff_cycle_cnt == lsu_mm_buff_ctrl_col_len_ff);
+    assign lsu_mm_buff_mxu_doing_cnt_end = ~lsu_mm_buff_ram_alloc_vld & (lsu_mm_buff_doing_cnt == lsu_mm_buff_ctrl_col_len_ff) & lsu_mm_buff_mxu_doing_cnt_doing;
+    assign lsu_mm_buff_mxu_end_nxt = lsu_mm_buff_mxu_doing_cnt_end | lsu_mm_buff_mxu_end & ~lsu_mm_buff_ctrl_vld;
 
     DFFR #(.WIDTH(16))
     ff_lsu_mm_buff_mxu_vld(
@@ -247,6 +263,14 @@ module mm_ctrl_buffer(
         .rst_n(rst_n),
         .d(lsu_mm_buff_mxu_vld_nxt),
         .q(lsu_mm_buff_mxu_vld)
+    ); 
+
+    DFFR #(.WIDTH(1))
+    ff_lsu_mm_buff_mxu_end(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(lsu_mm_buff_mxu_end_nxt),
+        .q(lsu_mm_buff_mxu_end)
     ); 
 
 endmodule
