@@ -2027,7 +2027,8 @@ module lsu(
     wire lsu_mm_buff_ctrl_start;
     assign lsu_mm_buff_ctrl_start = alu_lsu_conv & lsu_vld_qual;
 
-    mm_ctrl_buffer matrix_iram_load_buffer (
+    mm_ctrl_buffer matrix_iram_load_buffer #(.RAM_TYPE("IRAM"))
+    (
         .clk(clk),
         .rst_n(rst_n),
 
@@ -2037,12 +2038,10 @@ module lsu(
         .lsu_mm_buff_ram_alloc_data    (lsu_mm_buff_iram_alloc_data),
 
         //from lsu ctrl input
-	    .lsu_mm_buff_ctrl_start        (lsu_mm_buff_ctrl_start),
-        .lsu_mm_buff_ctrl_vld          (lsu_mm_buff_iram_ctrl_vld | lsu_mm_buff_iram_ctrl_vld_ff),
-        .lsu_mm_buff_ctrl_row_len      (lsu_mm_buff_iram_ctrl_row_len | lsu_mm_buff_iram_ctrl_row_len_ff),
-        .lsu_mm_buff_ctrl_col_len      (lsu_mm_buff_iram_ctrl_col_len | lsu_mm_buff_iram_ctrl_col_len_ff),
-        .lsu_mm_buff_ctrl_start_addr   (lsu_mm_buff_iram_ctrl_start_addr | lsu_mm_buff_iram_ctrl_start_addr_ff),
-        .lsu_mm_buff_ctrl_ram_type     (lsu_mm_buff_iram_ctrl_type),
+        .lsu_mm_buff_ctrl_vld          (lsu_mm_buff_iram_ctrl_vld),
+        .lsu_mm_buff_ctrl_row_len      (lsu_mm_buff_iram_ctrl_row_len),
+        .lsu_mm_buff_ctrl_col_len      (lsu_mm_buff_iram_ctrl_col_len),
+        .lsu_mm_buff_ctrl_start_addr   (lsu_mm_buff_iram_ctrl_start_addr),
 
         //to ram output
         .lsu_mm_buff_ram_read_vld      (lsu_mm_buff_iram_read_vld),
@@ -2054,7 +2053,8 @@ module lsu(
         .lsu_mm_buff_mxu_end	       (lsu_mm_buff_iram_mxu_end) 
     );  
 
-    mm_ctrl_buffer matrix_wram_load_buffer (
+    mm_ctrl_buffer matrix_wram_load_buffer #(.RAM_TYPE("WRAM"))
+    (
         .clk(clk),
         .rst_n(rst_n),
 
@@ -2064,12 +2064,10 @@ module lsu(
         .lsu_mm_buff_ram_alloc_data    (lsu_mm_buff_wram_alloc_data),
 
         //ctrl wire
-	    .lsu_mm_buff_ctrl_start        (lsu_mm_buff_ctrl_start),
-        .lsu_mm_buff_ctrl_vld          (lsu_mm_buff_wram_ctrl_vld | lsu_mm_buff_wram_ctrl_vld_ff),
-        .lsu_mm_buff_ctrl_row_len      (lsu_mm_buff_wram_ctrl_row_len | lsu_mm_buff_wram_ctrl_row_len_ff),
-        .lsu_mm_buff_ctrl_col_len      (lsu_mm_buff_wram_ctrl_col_len | lsu_mm_buff_wram_ctrl_col_len_ff),
-        .lsu_mm_buff_ctrl_start_addr   (lsu_mm_buff_wram_ctrl_start_addr | lsu_mm_buff_wram_ctrl_start_addr_ff),
-        .lsu_mm_buff_ctrl_ram_type     (lsu_mm_buff_wram_ctrl_type),
+        .lsu_mm_buff_ctrl_vld          (lsu_mm_buff_wram_ctrl_vld),
+        .lsu_mm_buff_ctrl_row_len      (lsu_mm_buff_wram_ctrl_row_len),
+        .lsu_mm_buff_ctrl_col_len      (lsu_mm_buff_wram_ctrl_col_len),
+        .lsu_mm_buff_ctrl_start_addr   (lsu_mm_buff_wram_ctrl_start_addr),
 
         //to ram output
         .lsu_mm_buff_ram_read_vld      (lsu_mm_buff_wram_read_vld),
