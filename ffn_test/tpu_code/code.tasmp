@@ -20,7 +20,7 @@ load_input: //
         //for loop: for i=0; i < 4;i++
         blt x1, x2, load_input //beq/bne/blt/bltu/bge/bgeu rs1, rs2, simm13
     addi x31, x0, 1
-    sb x31, x0, 243//store 1 for bias to iram
+    sb x31, x0, 259//store 1 for bias to iram
 
 // clr dram addr
 addi x6, x0, 0  
@@ -42,6 +42,7 @@ addi x22, x0, 0 // number of iter for layer
 addi x21, x0, 3 //last iter for layer
 
 // set iram update thd
+//cast x19 to pos
 addi x19, x0, 3840
 lui x19, 0
 
@@ -122,20 +123,20 @@ layer_network_loop:
             MM x26, x27, 15, 0, 7, 0
         matrix_multi_end:
 
-        bge x27, x19, matirx_iram_update_else
-        matirx_iram_update_if:
+        bge x27, x19, matrix_iram_update_else
+        matrix_iram_update_if:
             addi x26, x26, 256 //update iram addr
-            jal x0, matirx_iram_update_end
-        matirx_iram_update_else:
+            jal x0, matrix_iram_update_end
+        matrix_iram_update_else:
             addi x26, x20, 1 //update iram addr
             addi x20, x20, 1 //update iram col
-        matirx_iram_update_end:
+        matrix_iram_update_end:
 
         blt x25, x24, load_and_mult_loop
     
     //finish 16 perceptrons, next iter
 
-    ACT, 0
+    ACT 0
 
     STMT x3, x0, 0, 15, 1 //store result back to iram
     addi x3, x3, 16 // update store addr 
