@@ -10,14 +10,12 @@ class env extends uvm_env;
     uvm_tlm_analysis_fifo #(model_output_transaction) agt_sc_fifo;
     uvm_tlm_analysis_fifo #(model_output_transaction) rm_sc_fifo;
 
-    uvm_tlm_analysis_fifo #(rf_output_transaction) rf_agt_rm_fifo;
-    uvm_tlm_analysis_fifo #(rf_output_transaction) rf_agt_sc_fifo;
+    //rsicv_new	
     uvm_tlm_analysis_fifo #(rf_output_transaction) rf_rm_sc_fifo;
-
-    uvm_tlm_analysis_fifo #(rf_output_q_transaction) rf_q_rm_sc_fifo;
-
-
-    uvm_tlm_analysis_fifo #(start_preload_transaction) start_agt_rm_fifo;
+    uvm_tlm_analysis_fifo #(rf_output_transaction) rf_mon_sc_fifo;
+    uvm_tlm_analysis_fifo #(rf_output_q_transaction) rf_mon_sc_q_fifo;
+    uvm_tlm_analysis_fifo #(start_preload_transaction) rf_mon_rm_fifo;
+    uvm_tlm_analysis_fifo #(rf_output_q_transaction) rf_rm_sc_q_fifo;
 
     function new(string name = "env", uvm_component parent);
         super.new(name, parent);
@@ -45,14 +43,12 @@ function void env::build_phase(uvm_phase phase);
     agt_sc_fifo = new("agt_sc_fifo",this);
     rm_sc_fifo = new("rm_sc_fifo",this);
 
-    rf_agt_rm_fifo = new("rf_agt_rm_fifo",this);
-    rf_agt_sc_fifo = new("rf_agt_sc_fifo",this);
+    //new_riscv
     rf_rm_sc_fifo = new("rf_rm_sc_fifo",this);
-
-    rf_q_rm_sc_fifo = new("rf_q_rm_sc_fifo",this);
-
-    start_agt_rm_fifo = new("start_agt_rm_fifo",this);
-
+    rf_mon_sc_fifo = new("rf_mon_sc_fifo",this);
+    rf_mon_sc_q_fifo = new("rf_mon_sc_q_fifo",this);
+    rf_mon_rm_fifo = new("rf_mon_rm_fifo",this);
+    rf_rm_sc_q_fifo = new("rf_rm_sc_q_fifo",this);
     `uvm_info(get_name(), "build phase ends", UVM_LOW);
 
 endfunction
@@ -70,21 +66,21 @@ function void env::connect_phase(uvm_phase phase);
     rm.ap.connect(rm_sc_fifo.analysis_export);
     sc.exp_port.connect(rm_sc_fifo.blocking_get_export);
 
-    //For riscv
-    top_agt.rf_ap.connect(rf_agt_rm_fifo.analysis_export);
-    rm.rf_port.connect(rf_agt_rm_fifo.blocking_get_export);
- 
+    // riscv_new
     rm.rf_ap.connect(rf_rm_sc_fifo.analysis_export);
-    sc.rf_exp_port.connect(rf_rm_sc_fifo.blocking_get_export);
+    sc.rf_act_port.connect(rf_rm_sc_fifo.blocking_get_export);
 
-    rm.rf_q_ap.connect(rf_q_rm_sc_fifo.analysis_export);
-    sc.rf_q_exp_port.connect(rf_q_rm_sc_fifo.blocking_get_export);
+    top_agt.rf_ap.connect(rf_mon_sc_fifo.analysis_export);
+    sc.rf_mon_act_port.connect(rf_mon_sc_fifo.blocking_get_export);
 
-    //top_agt.rf_ap_test.connect(rf_agt_sc_fifo.analysis_export);
-    //sc.rf_act_port.connect(rf_agt_sc_fifo.blocking_get_export);
+    top_agt.rf_q_ap.connect(rf_mon_sc_q_fifo.analysis_export);
+    sc.rf_q_mon_act_port.connect(rf_mon_sc_q_fifo.blocking_get_export);
 
-    top_agt.start_ap.connect(start_agt_rm_fifo.analysis_export);
-    rm.start_port.connect(start_agt_rm_fifo.blocking_get_export);
+    top_agt.start_ap.connect(rf_mon_rm_fifo.analysis_export);
+    rm.start_port.connect(rf_mon_rm_fifo.blocking_get_export);
+
+    rm.rf_q_ap.connect(rf_rm_sc_q_fifo.analysis_export);
+    sc.rf_q_rm_exp_port.connect(rf_rm_sc_q_fifo.blocking_get_export);
 
     `uvm_info(get_name(), "connect phase ends", UVM_LOW);
 

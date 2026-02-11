@@ -73,10 +73,10 @@ task top_driver::main_phase(uvm_phase phase);
         @(posedge top_if.clk);
         if(val_begin & top_if.wfi)begin
     	   `uvm_info(get_name(), $sformatf("begin top cnt down main phase, phase_cnt = %d", phase_cnt), UVM_MEDIUM);
-	        phase_cnt++;
+	    phase_cnt++;
         end
-	if(phase_cnt > 1000) begin
-    	   `uvm_info(get_name(), "main phase ends", UVM_MEDIUM);
+	if(phase_cnt > 100000) begin
+    	   `uvm_info(get_name(), "main phase ends", UVM_NONE);
 	    phase.drop_objection(this);
 	end
     end
@@ -88,4 +88,5 @@ function void top_driver::final_phase(uvm_phase phase);
     super.final_phase(phase);
     `uvm_info("top_drv", $sformatf("enter fianl phase, top_drv send cnt is %d", send_cnt), UVM_LOW);
 endfunction
+
 
