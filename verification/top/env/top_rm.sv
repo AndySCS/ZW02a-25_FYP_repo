@@ -49,6 +49,7 @@ task top_rm::main_phase(uvm_phase phase);
     bit [9:0][7:0] model_output;
     rf_rlt_q rf_exp_rlt;
     int rf_exp_rlt_size;
+    bit[31:0] rf_pc;
 
     rf_output_q_transaction rf_q_tr;
     rf_tr = rf_output_transaction::type_id::create();
@@ -66,9 +67,11 @@ task top_rm::main_phase(uvm_phase phase);
     	start_port.get(start_tr);
 	    rf_exp_rlt =  riscv_rf_cal();
 	    rf_exp_rlt_size = rf_exp_rlt.size();
-	    `uvm_info("size", $sformatf("rf_port test: %0h", rf_exp_rlt_size), UVM_NONE);
-	    for (int i=0; i<rf_exp_rlt_size; i++)begin
+	    `uvm_info("top_rm", $sformatf("rf_port test: %0h", rf_exp_rlt_size/2), UVM_NONE);
+	    for (int i=0; i<(rf_exp_rlt_size/2); i++)begin
 		    rf_q_tr.rf_output.push_back(rf_exp_rlt[i]);
+            rf_pc = rf_exp_rlt[i].pop_out();
+	        `uvm_info("top_rm", $sformatf("rf pc: %0h", rf_pc), UVM_NONE);
 	    end	
 	    rf_q_ap.write(rf_q_tr);	
     end
@@ -138,6 +141,11 @@ function rf_rlt_q top_rm::riscv_rf_cal();
     bit [31:0] pc_count_num;
     bit [31:0] [31:0] rm_rf ;
     bit [31:0] [31:0] rm_rf_q [$];
+    bit [31:0] pc [$];
+    bit [127:0] [255:0] iram [$];
+    bit [127:0] [255:0] wram [$];
+    bit [127:0] [255:0] oram_lo [$];
+    bit [127:0] [255:0] oram_hi [$];
 
     while(1)begin 
         //pc 
@@ -325,10 +333,14 @@ function rf_rlt_q top_rm::riscv_rf_cal();
         else if (instruction[6:0] == 'b1101111)begin
             
         end
+        else if (instruction[6:0] == 'b1111111)begin       
+	        `uvm_info("wfi reach", $sformatf("q_size: %0h", rm_rf_q.size()), UVM_NONE);
+            break;
+        end
         else begin
-    	    //`uvm_info("wfi", $sformatf("wfi: %0h", instruction), UVM_NONE);
+    	    `uvm_info("wfi", $sformatf("self define instruction: %0h", instruction), UVM_NONE);
 	        //`uvm_info("queue final size", $sformatf("q_size: %0h", rm_rf_q.size()), UVM_NONE);
-	        break;
+            new_pc = pc + 4; 
     	    //`uvm_info("rf_output", $sformatf("rf_output: %0h", rf_output), UVM_NONE);
 
         end
@@ -340,12 +352,13 @@ function rf_rlt_q top_rm::riscv_rf_cal();
 		    rm_rf[rd] = 'b0;
             	    rf_output[rd] = 'b0;
 	    end
-	        rm_rf_q.push_back(rm_rf);
+	    rm_rf_q.push_back(rm_rf);
+        rm_rf_q.push_back(pc);
 
-    	    	//`uvm_info("top_rm", $sformatf("pc_count_num: %0h", pc_count_num), UVM_NONE);
-	        pc_count_num = pc_count_num+1;
-	        pc_count = 1;
-        end
+    	//`uvm_info("top_rm", $sformatf("pc_count_num: %0h", pc_count_num), UVM_NONE);
+	    pc_count_num = pc_count_num+1;
+	    pc_count = 1;
+    end
 
     return rm_rf_q;
     //return rm_rf_q;
