@@ -42,23 +42,23 @@ task top_sc::main_phase(uvm_phase phase);
 		this.exp_result_q.push_back(exp_tr);
 	end
 	while(1)begin
-		this.act_port.get(act_tr);
-    	`uvm_info("top_sc", "received act matrix from mon", UVM_MEDIUM);
-		if(this.exp_result_q.size() > 0)begin
-			tmp_tr = this.exp_result_q.pop_front();
-			if(tmp_tr.model_output	 != act_tr.model_output) begin
-				`uvm_error(get_name(), $sformatf("exp and act model output is not the same, act output = %h, exp output = %h", act_tr.model_output, tmp_tr.model_output))
-			end
+	    this.act_port.get(act_tr);
+    	    `uvm_info("top_sc", "received act matrix from mon", UVM_MEDIUM);
+	    if(this.exp_result_q.size() > 0)begin
+	        tmp_tr = this.exp_result_q.pop_front();
 
-            softmax_output = softmax(tmp_tr.model_output);
-	        fd = $fopen("model_output.txt", "w");
-	        $fdisplay(fd, $sformatf("%d", softmax_output));
-	        $fclose(fd);
+	        if(tmp_tr.model_output != act_tr.model_output) begin
+	            `uvm_error(get_name(), $sformatf("exp and act model output is not the same, act output = %h, exp output = %h", act_tr.model_output, tmp_tr.model_output))
+                end
 
-		end
-		else begin
-			`uvm_error("top_sc", "exp_result_q is empty")
-		end
+                softmax_output = softmax(tmp_tr.model_output);
+                fd = $fopen("model_output.txt", "w");
+                $fdisplay(fd, $sformatf("%d", softmax_output));
+                $fclose(fd);
+            end
+            else begin
+                `uvm_error("top_sc", "exp_result_q is empty")
+            end
 	end
     join
 

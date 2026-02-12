@@ -37,6 +37,7 @@ $(shell $(MINITPU_SCRIPT)/linux/file_extend -dir $(MINITPU_VER))
 $(shell $(MINITPU_SCRIPT)/linux/file_extend -dir $(MINITPU_RTL))
 $(shell $(MINITPU_FOLDER)/ffn_test/tpu_code/cmp_linux -srcDir $(MINITPU_FOLDER)/ffn_test/tpu_code/code.tasmp -binDir code.txt)
 $(shell cp $(MINITPU_FOLDER)/ffn_test/mnist_data/csv/img$(img_seed).csv sample.csv)
+$(shell cp $(MINITPU_FOLDER)/ffn_test/mnist_data/label/label$(img_seed).txt sample_label.txt)
 
 GEN_MODE = mkdir -p $(mode) $(mode)/log $(mode)/wave $(mode)/cov
 VCS = vcs -sverilog 	 		          \
