@@ -45,6 +45,7 @@ task top_monitor::main_phase(uvm_phase phase);
     bit[31:0] wb_data_ff;
     bit[31:0][31:0] rf_data;
     bit[31:0][31:0] rf_data_q[$];
+    int cycle_count;
     int dut_size;
    // top_tr tr_send;
 
@@ -80,8 +81,9 @@ task top_monitor::main_phase(uvm_phase phase);
 				    rf_tr.rf_output = rf_data;
 				    rf_ap.write(rf_tr);
     	    			    //`uvm_info(get_name(), "pushing data back", UVM_NONE);
+				    count = count+1;
 			    end
-	    		if(harness.u_tpu.u_rf.lsu_rf_wb_vld)begin
+	    		if(harness.u_tpu.u_rf.lsu_rf_wb_vld & count <= 2000)begin
 	    			wb_vld_ff = harness.u_tpu.u_rf.lsu_rf_wb_vld;
 		    		wb_addr_ff = harness.u_tpu.u_rf.lsu_rf_wb_addr;
 		    		wb_data_ff = harness.u_tpu.u_rf.lsu_rf_wb_data;	
@@ -91,7 +93,7 @@ task top_monitor::main_phase(uvm_phase phase);
  	        		//rf_tr.rf_output[harness.u_tpu.u_rf.lsu_rf_wb_addr] = harness.u_tpu.u_rf.lsu_rf_wb_data;
 	    		end
 
-			else if(harness.u_tpu.u_lsu.alu_lsu_wfi)begin	
+			else if(harness.u_tpu.u_lsu.alu_lsu_wfi | count >= 2000)begin	
 				    //rf_tr.rf_output = 'b0;
     	    			    `uvm_info(get_name(), "reach wfi2", UVM_NONE);
 				    rf_q_ap.write(rf_q_tr);

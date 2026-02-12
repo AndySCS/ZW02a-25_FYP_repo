@@ -154,7 +154,7 @@ function rf_rlt_q top_rm::riscv_rf_cal();
         if(start_tr.start_vld & ~pc_count)begin
 	    pc_count_num = 0;
             pc = start_tr.start_addr;
-	    for (int i; i <32; i++)begin
+	    for (int i=0; i <32; i++)begin
 		rm_rf[i] = 'b0;
     	    //`uvm_info("rm_rf_init", $sformatf("rf:%0h ,%0h", i,rm_rf[i]), UVM_NONE);
 	    end 
@@ -301,6 +301,14 @@ function rf_rlt_q top_rm::riscv_rf_cal();
     		    `uvm_info("top_rm", "decode error found in Rtype", UVM_NONE);
             end
             new_pc = pc+4;
+        end
+	//itype jalr
+	else if (instruction[6:0] == 'b1100111)begin	
+            rd = instruction[11:7];
+            imm = instruction[31:20];
+            imm_data = {{20{imm[11]}}, imm};
+            rd_data = pc+4;
+            new_pc = pc+imm_data;
         end
 
         //itype ld 
@@ -463,13 +471,13 @@ function rf_rlt_q top_rm::riscv_rf_cal();
         else if (instruction[6:0] == 'b1101111)begin
             rd = instruction[11:7];
             imm = {instruction[31],instruction[19:12],{instruction[20]},{instruction[30:21]},{1'b0}};
-            imm_data = {{11{imm[11]}}, imm};
+            imm_data = {{12{imm[11]}}, imm};
             rd_data = pc+4;
             new_pc = pc+imm_data;
         end
 
         //wfi
-        else if (instruction[6:0] == 'b1111111)begin       
+        else if ((instruction[6:0] == 'b1111111) | pc_count_num == 2000)begin       
 	        `uvm_info("wfi reach", $sformatf("q_size: %0h", rm_rf_q.size()), UVM_NONE);
             break;
         end
@@ -502,7 +510,7 @@ function rf_rlt_q top_rm::riscv_rf_cal();
             	    rf_output[rd] = 'b0;
 	    end
 	    rm_rf_q.push_back(rm_rf);
-        rm_rf_q.push_back(pc);
+            rm_rf_q.push_back(pc);
 
     	//`uvm_info("top_rm", $sformatf("pc_count_num: %0h", pc_count_num), UVM_NONE);
 	    pc_count_num = pc_count_num+1;
