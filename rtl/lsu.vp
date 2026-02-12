@@ -549,8 +549,8 @@ module lsu(
         .q(lsu_vld_qual_ff)
     );
 
-    assign lsu_alu_rdy = ~lsu_vld | lsu_riscv_finish | lsu_instr_finish_ff | lsu_act_finish;
-    assign lsu_act_finish = lsu_mxu_vld & mxu_lsu_data_rdy & lsu_mxu_act_vld;
+    assign lsu_alu_rdy = (~lsu_vld | lsu_riscv_finish | lsu_instr_finish_ff | lsu_act_finish) & mxu_lsu_rdy;
+    assign lsu_act_finish = lsu_mxu_vld & lsu_mxu_act_vld;
 
     DFFRE #(.WIDTH(1))
     ff_lsu_mm_finish(
