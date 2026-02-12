@@ -63,36 +63,38 @@ task top_sc::main_phase(uvm_phase phase);
     fork
 	while(1)begin
 		this.rf_q_rm_exp_port.get(rf_exp_result_q);
-	       	 `uvm_info("top_sc", $sformatf("exp_data: data[%0h]", rf_exp_result_q.rf_output[0]), UVM_NONE);
+	    `uvm_info("top_sc", $sformatf("exp_data: data[%0h]", rf_exp_result_q.rf_output[0]), UVM_NONE);
 	end
 	while(1)begin
 		this.rf_q_mon_act_port.get(rf_act_result_q);
-	       	 `uvm_info("top_sc", $sformatf("act_data: data[%0h]", rf_act_result_q.rf_output[0]), UVM_NONE);
+	    `uvm_info("top_sc", $sformatf("act_data: data[%0h]", rf_act_result_q.rf_output[0]), UVM_NONE);
 		count = 0;
 		while(1)begin
-		if(count<10000)begin
-		   for (int i=0; i<32; i++)begin
-			if(rf_act_result_q.rf_output[count][i] != rf_exp_result_q.rf_output[count][i])begin
-    				`uvm_info("top_sc", "error found", UVM_NONE);
-	       	 		`uvm_info("top_sc", $sformatf("rd:  %0h", i), UVM_NONE);
-	       	 		`uvm_info("top_sc", $sformatf("act_data:  data[%0h]", rf_act_result_q.rf_output[count][i]), UVM_NONE);
-	       	 		`uvm_info("top_sc", $sformatf("exp_data:  data[%0h]", rf_exp_result_q.rf_output[count][i]), UVM_NONE);
-			end
-			
-	       	 	//`uvm_info("top_sc", $sformatf("act_data from mon: [%d], data[%0h]",i, rf_mon_act_tr.rf_output), UVM_NONE);
-		    end
-
+			if(count<10000)begin
+		   		for (int i=0; i<32; i++)begin
+					//if(rf_act_result_q.pc[count][i] !=  rf_exp_result_q.rf_output[count][i])begin
+						if(rf_act_result_q.rf_output[count][i] != rf_exp_result_q.rf_output[count][i])begin
+    						`uvm_info("top_sc", "error found", UVM_NONE);
+	       	 				`uvm_info("top_sc", $sformatf("rd:  %0h", i), UVM_NONE);
+	       	 				`uvm_info("top_sc", $sformatf("act_data:  data[%0h]", rf_act_result_q.rf_output[count][i]), UVM_NONE);
+	       	 				`uvm_info("top_sc", $sformatf("exp_data:  data[%0h]", rf_exp_result_q.rf_output[count][i]), UVM_NONE);
+						end
+					//end
+					//`uvm_info("top_sc", $sformatf("act_data from mon: [%d], data[%0h]",i, rf_mon_act_tr.rf_output), UVM_NONE);
+		    	end
     		    `uvm_info("top_sc", "it pass", UVM_NONE);
+	       	    //`uvm_info("top_sc", $sformatf("act_pc:  data[%0h]",rf_act_result_q.pc[count]), UVM_NONE);
 	       	    `uvm_info("top_sc", $sformatf("act_data:  data[%0h]",rf_act_result_q.rf_output[count]), UVM_NONE);
+	       	    //`uvm_info("top_sc", $sformatf("exp_pc:  data[%0h]", rf_exp_result_q.pc[count]), UVM_NONE);
 	       	    `uvm_info("top_sc", $sformatf("exp_data:  data[%0h]", rf_exp_result_q.rf_output[count]), UVM_NONE);
-		    if(rf_act_result_q.rf_output[count] == rf_act_result_q.rf_output[$])begin
-    			`uvm_info("top_sc", "reach end", UVM_NONE);
-			break;
-		    end
-		end
+		    	if(rf_act_result_q.rf_output[count] == rf_act_result_q.rf_output[$])begin
+    				`uvm_info("top_sc", "reach end", UVM_NONE);
+					break;
+		    	end
+			end
 	       	`uvm_info("top_sc", $sformatf("count:  %0d",count), UVM_NONE);
     		`uvm_info("top_sc", "pass", UVM_NONE);
-		count = count+1;
+			count = count+1;
 		end		
 	end
 	while(1)begin

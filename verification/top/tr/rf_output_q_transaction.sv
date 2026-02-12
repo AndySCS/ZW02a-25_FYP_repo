@@ -1,6 +1,7 @@
 class rf_output_q_transaction extends uvm_sequence_item;
 
     bit [31:0][31:0] rf_output[$];
+    //bit [31:0] pc[$];
 
     function new(string name = "rf_output_q_transaction");
        super.new(name);

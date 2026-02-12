@@ -60,17 +60,17 @@ task top_rm::main_phase(uvm_phase phase);
         tr.model_output = cal_data();
         ap.write(tr);
 
-	//riscv_new
-	rf_tr.rf_output = 'b0;
-	rf_ap.write(rf_tr);
+	    //riscv_new
+	    rf_tr.rf_output = 'b0;
+	    rf_ap.write(rf_tr);
     	start_port.get(start_tr);
-	rf_exp_rlt =  riscv_rf_cal();
-	rf_exp_rlt_size = rf_exp_rlt.size();
-	`uvm_info("size", $sformatf("rf_port test: %0h", rf_exp_rlt_size), UVM_NONE);
-	for (int i=0; i<rf_exp_rlt_size; i++)begin
-		rf_q_tr.rf_output.push_back(rf_exp_rlt[i]);
-	end	
-	rf_q_ap.write(rf_q_tr);	
+	    rf_exp_rlt =  riscv_rf_cal();
+	    rf_exp_rlt_size = rf_exp_rlt.size();
+	    `uvm_info("size", $sformatf("rf_port test: %0h", rf_exp_rlt_size), UVM_NONE);
+	    for (int i=0; i<rf_exp_rlt_size; i++)begin
+		    rf_q_tr.rf_output.push_back(rf_exp_rlt[i]);
+	    end	
+	    rf_q_ap.write(rf_q_tr);	
     end
 
 endtask
