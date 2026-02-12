@@ -47,7 +47,8 @@ task top_driver::main_phase(uvm_phase phase);
     for (int i=0;i<256;i++) begin
      	  harness.u_tpu.u_lsu.iram.mem[i] = 'h0;
      	  harness.u_tpu.u_lsu.wram.mem[i] = 'h0;
-     	  //harness.u_tpu.u_lsu.oram.mem[i] = 'h0;
+     	  harness.u_tpu.u_lsu.oram_lo.mem[i] = 'h0;
+     	  harness.u_tpu.u_lsu.oram_hi.mem[i] = 'h0;
     end
     super.main_phase(phase);
     phase.raise_objection(this);
@@ -88,5 +89,3 @@ function void top_driver::final_phase(uvm_phase phase);
     super.final_phase(phase);
     `uvm_info("top_drv", $sformatf("enter fianl phase, top_drv send cnt is %d", send_cnt), UVM_LOW);
 endfunction
-
-

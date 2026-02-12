@@ -4,6 +4,7 @@
 class rtype_seq extends uvm_sequence;
     `uvm_object_utils(rtype_seq);	
 
+    instr_addi  addi_instr;
     instr_add   add_instr;
     instr_sub   sub_instr;
     instr_sll   sll_instr;
@@ -27,8 +28,31 @@ task rtype_seq::body();
     static bit [255:0][127:0] ram_tmp;
     static bit [127:0] ram_tmp_pre;
     static int ram_count;
-    
+
+    //data init
     for(int i = 0; i < 101; i++) begin
+        addi_instr = new();
+        addi_instr.randomize();
+        addi_instr.pack();
+	    if(i==0)begin
+		    ram_tmp_pre[31:0] = addi_instr.instruction;
+	    end
+        else if(i%4 == 1)begin
+		    ram_tmp_pre[63:32] = addi_instr.instruction;
+	    end
+        else if(i%4 == 2)begin
+		    ram_tmp_pre[95:64] = addi_instr.instruction;
+	    end
+        else if(i%4 == 3)begin
+		    ram_tmp_pre[127:96] = addi_instr.instruction;
+	    end
+	    else begin
+		    ram_tmp[ram_count] = ram_tmp_pre;
+		    ram_count = ram_count+1;
+		    ram_tmp_pre[31:0] = addi_instr.instruction;
+	    end
+    end
+    for(int i = 101; i < 151; i++) begin
         add_instr = new();
         add_instr.randomize();
         add_instr.pack();
@@ -51,7 +75,7 @@ task rtype_seq::body();
 	    end
     end
 
-    for(int i = 101; i < 201; i++) begin
+    for(int i = 151; i < 201; i++) begin
         sub_instr = new();
         sub_instr.randomize();
         sub_instr.pack();

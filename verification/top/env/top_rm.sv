@@ -196,14 +196,14 @@ function rf_rlt_q top_rm::riscv_rf_cal();
             end
             //sll
             else if (instruction[14:12] == 'b001)begin
-                rd_data = rs1_data << rs2_data;
+                rd_data = rs1_data << rs2_data[4:0];
             end
             //slt 
             else if (instruction[14:12] == 'b010)begin
-                if(rs1_data[31] > rs2_data[31])begin
+                if(rs1_data[31] < rs2_data[31])begin
                     rd_data = 0;
                 end
-                else if (rs1_data[31] < rs2_data[31])begin
+                else if (rs1_data[31] > rs2_data[31])begin
                     rd_data = 1;
                 end
                 else begin
@@ -221,11 +221,11 @@ function rf_rlt_q top_rm::riscv_rf_cal();
             //srl & sra
             else if (instruction[14:12] == 'b101)begin
                 if (instruction[31:15] == 'b0000000)begin
-                    rd_data = rs1_data >> rs2_data;
+                    rd_data = rs1_data >> rs2_data[4:0];
                 end
                 else begin
-                    shift_data = rs1_data >> rs2_data;
-		    rd_data = 'b0;
+                    shift_data = {32{rs1_data[31]}} << (32-rs2_data[4:0]);	
+		    rd_data = shift_data | (rs1_data >> rs2_data[4:0]);
                 end
             end
             //or
@@ -250,7 +250,7 @@ function rf_rlt_q top_rm::riscv_rf_cal();
             rd = instruction[11:7];
             shamt = instruction[24:20];
             rs1_data = rf_output[rs1];
-            imm_data = {{12{imm[11]}}, imm};
+            imm_data = {{20{imm[11]}}, imm};
             //addi
             if (instruction[14:12] == 'b000)begin
                     rd_data = rs1_data + imm_data;
@@ -481,16 +481,17 @@ function rf_rlt_q top_rm::riscv_rf_cal();
 
         end
         //debug use
-    	//`uvm_info("top_rm", "instrutcion finish", UVM_NONE);
-    	//`uvm_info("top_rm", $sformatf("instruction_type: %0h", instruction[14:12]), UVM_NONE);
-    	//`uvm_info("top_rm", $sformatf("pc: %0h", pc), UVM_NONE);
-    	//`uvm_info("top_rm", $sformatf("rd: %0h", rd), UVM_NONE);
-    	//`uvm_info("top_rm", $sformatf("rd_data: %0h", rd_data), UVM_NONE);
-    	//`uvm_info("top_rm", $sformatf("rs1: %0h", rs1), UVM_NONE);
-    	//`uvm_info("top_rm", $sformatf("rs1_data: %0h", rs1_data), UVM_NONE);
-    	//`uvm_info("top_rm", $sformatf("rs2: %0h", rs2), UVM_NONE);
-    	//`uvm_info("top_rm", $sformatf("rs2_data: %0h", rs2_data), UVM_NONE);
-    	//`uvm_info("top_rm", "\n===================================================================================\n", UVM_NONE);
+    	`uvm_info("top_rm", "instrutcion finish", UVM_NONE);
+    	`uvm_info("top_rm", $sformatf("instruction_type: %0h", instruction[14:12]), UVM_NONE);
+    	`uvm_info("top_rm", $sformatf("pc: %0h", pc), UVM_NONE);
+    	`uvm_info("top_rm", $sformatf("rd: %0h", rd), UVM_NONE);
+    	`uvm_info("top_rm", $sformatf("rd_data: %0h", rd_data), UVM_NONE);
+    	`uvm_info("top_rm", $sformatf("rs1: %0h", rs1), UVM_NONE);
+    	`uvm_info("top_rm", $sformatf("rs1_data: %0h", rs1_data), UVM_NONE);
+    	`uvm_info("top_rm", $sformatf("rs2: %0h", rs2), UVM_NONE);
+    	`uvm_info("top_rm", $sformatf("rs2_data: %0h", rs2_data), UVM_NONE);
+    	`uvm_info("top_rm", $sformatf("imm_data: %0h", imm_data), UVM_NONE);
+    	`uvm_info("top_rm", "\n===================================================================================\n", UVM_NONE);
 	    if(|rd)begin
 		    rm_rf[rd] = rd_data;
             rf_output[rd] = rd_data;
