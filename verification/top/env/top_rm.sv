@@ -259,12 +259,12 @@ function rf_rlt_q top_rm::riscv_rf_cal();
             else if (instruction[14:12] == 'b001)begin
                 rd_data = rs1_data << shamt;
             end
-            //slit 
+            //slti 
             else if (instruction[14:12] == 'b010)begin
-                if(rs1_data[31] > imm_data[31])begin
+                if(rs1_data[31] < imm_data[31])begin
                     rd_data = 0;
                 end
-                else if (rs1_data[31] < imm_data[31])begin
+                else if (rs1_data[31] > imm_data[31])begin
                     rd_data = 1;
                 end
                 else begin
@@ -281,12 +281,12 @@ function rf_rlt_q top_rm::riscv_rf_cal();
             end
             //srl & sra
             else if (instruction[14:12] == 'b101)begin
-                if (instruction[31:15] == 'b0000000)begin
+                if (instruction[31:25] == 'b0000000)begin
                     rd_data = rs1_data >> shamt;
                 end
                 else begin
-                    shift_data = rs1_data >> shamt;
-		            rd_data = 'b0;
+                    shift_data = {32{rs1_data[31]}} << (32-shamt);	
+		    rd_data = shift_data | (rs1_data >> shamt);
                 end
             end
             //or
@@ -482,6 +482,7 @@ function rf_rlt_q top_rm::riscv_rf_cal();
         end
         //debug use
     	`uvm_info("top_rm", "instrutcion finish", UVM_NONE);
+    	`uvm_info("top_rm", $sformatf("instruction: %0h", instruction), UVM_NONE);
     	`uvm_info("top_rm", $sformatf("instruction_type: %0h", instruction[14:12]), UVM_NONE);
     	`uvm_info("top_rm", $sformatf("pc: %0h", pc), UVM_NONE);
     	`uvm_info("top_rm", $sformatf("rd: %0h", rd), UVM_NONE);
@@ -511,5 +512,3 @@ function rf_rlt_q top_rm::riscv_rf_cal();
     return rm_rf_q;
     //return rm_rf_q;
 endfunction
-
-
