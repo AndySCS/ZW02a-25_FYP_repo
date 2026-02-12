@@ -191,14 +191,15 @@ function rf_rlt_q top_rm::riscv_rf_cal();
                 end
                 else begin
                     rd_data = rs1_data - rs2_data;
+
                 end
             end
             //sll
-            if (instruction[14:12] == 'b001)begin
-                rd_data = rs1 << rs2;
+            else if (instruction[14:12] == 'b001)begin
+                rd_data = rs1_data << rs2_data;
             end
             //slt 
-            if (instruction[14:12] == 'b010)begin
+            else if (instruction[14:12] == 'b010)begin
                 if(rs1_data[31] > rs2_data[31])begin
                     rd_data = 0;
                 end
@@ -210,15 +211,15 @@ function rf_rlt_q top_rm::riscv_rf_cal();
                 end
             end
             //sltu
-            if (instruction[14:12] == 'b011)begin
+            else if (instruction[14:12] == 'b011)begin
                 rd_data = rs1_data < rs2_data;
             end
             //xor
-            if (instruction[14:12] == 'b100)begin
+            else if (instruction[14:12] == 'b100)begin
                 rd_data = rs1_data ^ rs2_data;
             end
             //srl & sra
-            if (instruction[14:12] == 'b101)begin
+            else if (instruction[14:12] == 'b101)begin
                 if (instruction[31:15] == 'b0000000)begin
                     rd_data = rs1_data >> rs2_data;
                 end
@@ -228,14 +229,20 @@ function rf_rlt_q top_rm::riscv_rf_cal();
                 end
             end
             //or
-            if (instruction[14:12] == 'b110)begin
+            else if (instruction[14:12] == 'b110)begin
                 rd_data = rs1_data | rs2_data;
             end
             //and
-            if (instruction[14:12] == 'b111)begin
+            else if (instruction[14:12] == 'b111)begin
                 rd_data = rs1_data & rs2_data;
             end
+	    else begin
+    		`uvm_info("top_rm", "decode error found in Rtype", UVM_NONE);
+	    end
+
+	    new_pc = pc+4;
         end
+
         //itype normal operation
         else if (instruction[6:0] == 'b0010011)begin
             rs1 = instruction[19:15];
@@ -249,11 +256,11 @@ function rf_rlt_q top_rm::riscv_rf_cal();
                     rd_data = rs1_data + imm_data;
             end
             //slli
-            if (instruction[14:12] == 'b001)begin
-                rd_data = rs1 << shamt;
+            else if (instruction[14:12] == 'b001)begin
+                rd_data = rs1_data << shamt;
             end
             //slit 
-            if (instruction[14:12] == 'b010)begin
+            else if (instruction[14:12] == 'b010)begin
                 if(rs1_data[31] > imm_data[31])begin
                     rd_data = 0;
                 end
@@ -265,15 +272,15 @@ function rf_rlt_q top_rm::riscv_rf_cal();
                 end
             end
             //sltu
-            if (instruction[14:12] == 'b011)begin
+            else if (instruction[14:12] == 'b011)begin
                 rd_data = rs1_data < imm_data;
             end
             //xor
-            if (instruction[14:12] == 'b100)begin
+            else if (instruction[14:12] == 'b100)begin
                 rd_data = rs1_data ^ imm_data;
             end
             //srl & sra
-            if (instruction[14:12] == 'b101)begin
+            else if (instruction[14:12] == 'b101)begin
                 if (instruction[31:15] == 'b0000000)begin
                     rd_data = rs1_data >> shamt;
                 end
@@ -283,12 +290,15 @@ function rf_rlt_q top_rm::riscv_rf_cal();
                 end
             end
             //or
-            if (instruction[14:12] == 'b110)begin
+            else if (instruction[14:12] == 'b110)begin
                 rd_data = rs1_data | imm_data;
             end
             //and
-            if (instruction[14:12] == 'b111)begin
+            else if (instruction[14:12] == 'b111)begin
                 rd_data = rs1_data & imm_data;
+            end
+            else begin
+    		    `uvm_info("top_rm", "decode error found in Rtype", UVM_NONE);
             end
             new_pc = pc+4;
         end
@@ -416,6 +426,7 @@ function rf_rlt_q top_rm::riscv_rf_cal();
             end
             new_pc = pc+4;
         end
+
         //stype
         else if (instruction[6:0] == 'b0100011)begin
             rs1 = instruction[19:15];
@@ -426,6 +437,7 @@ function rf_rlt_q top_rm::riscv_rf_cal();
             rd_data = 'b0;
             new_pc = pc+4;
         end
+
         //utype
         else if (instruction[6:0] == 'b0110111)begin
             rd = instruction[11:7];
@@ -434,16 +446,19 @@ function rf_rlt_q top_rm::riscv_rf_cal();
     	    //`uvm_info("utype rd", $sformatf("rd: %0h", rd), UVM_NONE);
     	    //`uvm_info("utype result", $sformatf("rd_data: %0h", rd_data), UVM_NONE);
         end
+
         //auipc
         else if (instruction[6:0] == 'b0010111)begin
             rd = instruction[11:7];
             rd_data = {instruction[31:12],{12{1'b0}}}+pc;
             new_pc = pc + 4; 
         end
+
         //btype
         else if (instruction[6:0] == 'b1100011)begin
             
         end
+
         //jtype 
         else if (instruction[6:0] == 'b1101111)begin
             rd = instruction[11:7];
@@ -452,6 +467,7 @@ function rf_rlt_q top_rm::riscv_rf_cal();
             rd_data = pc+4;
             new_pc = pc+imm_data;
         end
+
         //wfi
         else if (instruction[6:0] == 'b1111111)begin       
 	        `uvm_info("wfi reach", $sformatf("q_size: %0h", rm_rf_q.size()), UVM_NONE);
@@ -464,6 +480,17 @@ function rf_rlt_q top_rm::riscv_rf_cal();
     	    //`uvm_info("rf_output", $sformatf("rf_output: %0h", rf_output), UVM_NONE);
 
         end
+        //debug use
+    	//`uvm_info("top_rm", "instrutcion finish", UVM_NONE);
+    	//`uvm_info("top_rm", $sformatf("instruction_type: %0h", instruction[14:12]), UVM_NONE);
+    	//`uvm_info("top_rm", $sformatf("pc: %0h", pc), UVM_NONE);
+    	//`uvm_info("top_rm", $sformatf("rd: %0h", rd), UVM_NONE);
+    	//`uvm_info("top_rm", $sformatf("rd_data: %0h", rd_data), UVM_NONE);
+    	//`uvm_info("top_rm", $sformatf("rs1: %0h", rs1), UVM_NONE);
+    	//`uvm_info("top_rm", $sformatf("rs1_data: %0h", rs1_data), UVM_NONE);
+    	//`uvm_info("top_rm", $sformatf("rs2: %0h", rs2), UVM_NONE);
+    	//`uvm_info("top_rm", $sformatf("rs2_data: %0h", rs2_data), UVM_NONE);
+    	//`uvm_info("top_rm", "\n===================================================================================\n", UVM_NONE);
 	    if(|rd)begin
 		    rm_rf[rd] = rd_data;
             rf_output[rd] = rd_data;
