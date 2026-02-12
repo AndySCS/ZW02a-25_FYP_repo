@@ -60,7 +60,7 @@ layer_network_loop:
     load_and_mult_loop: //loop for matrix multiplication for 16 perceptrons
 
         add x6, x10, x0 //init dram addr
-        add x10, x10, x11 //update dram init addr
+        addi x10, x10, 256 //update dram init addr
 
         addi x25, x25, 1 //update iter
         blt x25, x24, load_weight_else
