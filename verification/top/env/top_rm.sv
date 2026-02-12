@@ -163,16 +163,16 @@ function rf_rlt_q top_rm::riscv_rf_cal();
             pc = new_pc;
         end
         if(pc[3:2] == 2'b00)begin
-   	    instruction = start_tr.start_imem[pc[31:4]][31:0];
+   	        instruction = start_tr.start_imem[pc[31:4]][31:0];
         end
         else if(pc[3:2] == 2'b01)begin
-   	    instruction = start_tr.start_imem[pc[31:4]][63:32];
+   	        instruction = start_tr.start_imem[pc[31:4]][63:32];
         end
         else if(pc[3:2] == 2'b10)begin
-   	    instruction = start_tr.start_imem[pc[31:4]][95:64];
+   	        instruction = start_tr.start_imem[pc[31:4]][95:64];
         end
         else begin
-   	    instruction = start_tr.start_imem[pc[31:4]][127:96];
+   	        instruction = start_tr.start_imem[pc[31:4]][127:96];
         end
         //`uvm_info("pc", $sformatf("pc: %0h", pc), UVM_NONE);
         //`uvm_info("instr", $sformatf("instr: %0h", instruction), UVM_NONE);
@@ -237,7 +237,7 @@ function rf_rlt_q top_rm::riscv_rf_cal();
             end
         end
         //itype normal operation
-        if (instruction[6:0] == 'b0010011)begin
+        else if (instruction[6:0] == 'b0010011)begin
             rs1 = instruction[19:15];
             imm = instruction[31:20];
             rd = instruction[11:7];
@@ -319,7 +319,7 @@ function rf_rlt_q top_rm::riscv_rf_cal();
                 else begin         
     			    `uvm_info("top_rm", "decode error found in LB", UVM_NONE);
                 end
-		ram_data = ram_data >> (ram_addr[3:0]*8);
+		        ram_data = ram_data >> (ram_addr[3:0]*8);
                 rd_data = {{24{ram_data[ram_addr[7]]}},{ram_data[7:0]}};
 
             end
@@ -342,7 +342,7 @@ function rf_rlt_q top_rm::riscv_rf_cal();
                 else begin         
     			    `uvm_info("top_rm", "decode error found in LB", UVM_NONE);
                 end
-		ram_data = ram_data >> (ram_addr[3:1]*16);
+		        ram_data = ram_data >> (ram_addr[3:1]*16);
                 rd_data = {{16{ram_data[ram_addr[15]]}},{ram_data[15:0]}};
             end
             //LW
@@ -364,7 +364,7 @@ function rf_rlt_q top_rm::riscv_rf_cal();
                 else begin         
     			    `uvm_info("top_rm", "decode error found in LB", UVM_NONE);
                 end
-		ram_data = ram_data >> (ram_addr[3:2]*32);
+		        ram_data = ram_data >> (ram_addr[3:2]*32);
                 rd_data = ram_data[31:0];
             end
             //LBU
@@ -386,7 +386,7 @@ function rf_rlt_q top_rm::riscv_rf_cal();
                 else begin         
     			    `uvm_info("top_rm", "decode error found in LB", UVM_NONE);
                 end
-		ram_data = ram_data >> (ram_addr[3:0]*8);
+		        ram_data = ram_data >> (ram_addr[3:0]*8);
                 rd_data = {{24{1'b0}},ram_data[7:0]};
             end
             //LBH
@@ -408,7 +408,7 @@ function rf_rlt_q top_rm::riscv_rf_cal();
                 else begin         
     			    `uvm_info("top_rm", "decode error found in LB", UVM_NONE);
                 end
-		ram_data = ram_data >> (ram_addr[3:1]*16);
+		        ram_data = ram_data >> (ram_addr[3:1]*16);
                 rd_data = {{16{1'b0}},ram_data[15:0]};
             end
             else begin
