@@ -67,11 +67,11 @@ task top_rm::main_phase(uvm_phase phase);
     	start_port.get(start_tr);
 	    rf_exp_rlt =  riscv_rf_cal();
 	    rf_exp_rlt_size = rf_exp_rlt.size();
-	    `uvm_info("top_rm", $sformatf("rf_port test: %0h", rf_exp_rlt_size/2), UVM_NONE);
+	    //`uvm_info("top_rm", $sformatf("rf_port test: %0h", rf_exp_rlt_size/2), UVM_NONE);
 	    for (int i=0; i<(rf_exp_rlt_size/2); i++)begin
-		    rf_q_tr.rf_output.push_back(rf_exp_rlt[i]);
-            rf_pc = rf_exp_rlt[i].pop_out();
-	        `uvm_info("top_rm", $sformatf("rf pc: %0h", rf_pc), UVM_NONE);
+		    rf_q_tr.rf_output.push_back(rf_exp_rlt.pop_front());
+            	    rf_pc = rf_exp_rlt.pop_front();
+	            //`uvm_info("top_rm", $sformatf("rf pc: %0h", rf_pc), UVM_NONE);
 	    end	
 	    rf_q_ap.write(rf_q_tr);	
     end
@@ -319,7 +319,8 @@ function rf_rlt_q top_rm::riscv_rf_cal();
                 else begin         
     			    `uvm_info("top_rm", "decode error found in LB", UVM_NONE);
                 end
-                rd_data = {{24{ram_data[ram_addr[3:0]+7]}},{ram_data[ram_addr[3:0]+7:ram_addr[3:0]]}};
+		ram_data = ram_data >> (ram_addr[3:0]*8);
+                rd_data = {{24{ram_data[ram_addr[7]]}},{ram_data[7:0]}};
 
             end
             //LH
@@ -341,7 +342,8 @@ function rf_rlt_q top_rm::riscv_rf_cal();
                 else begin         
     			    `uvm_info("top_rm", "decode error found in LB", UVM_NONE);
                 end
-                rd_data = {{16{ram_data[ram_addr[3:0]+15]}},{ram_data[ram_addr[3:0]+15:ram_addr[3:0]]}};
+		ram_data = ram_data >> (ram_addr[3:1]*16);
+                rd_data = {{16{ram_data[ram_addr[15]]}},{ram_data[15:0]}};
             end
             //LW
             else if(instruction[14:12] == 3'b010)begin
@@ -362,7 +364,8 @@ function rf_rlt_q top_rm::riscv_rf_cal();
                 else begin         
     			    `uvm_info("top_rm", "decode error found in LB", UVM_NONE);
                 end
-                rd_data = ram_data[ram_addr[3:0]+31:ram_addr[3:0]];
+		ram_data = ram_data >> (ram_addr[3:2]*32);
+                rd_data = ram_data[31:0];
             end
             //LBU
             else if(instruction[14:12] == 3'b100)begin
@@ -383,7 +386,8 @@ function rf_rlt_q top_rm::riscv_rf_cal();
                 else begin         
     			    `uvm_info("top_rm", "decode error found in LB", UVM_NONE);
                 end
-                rd_data = {{24{1'b0}},{ram_data[ram_addr[3:0]+7:ram_addr[3:0]]}};
+		ram_data = ram_data >> (ram_addr[3:0]*8);
+                rd_data = {{24{1'b0}},ram_data[7:0]};
             end
             //LBH
             else if(instruction[14:12] == 3'b101)begin
@@ -404,12 +408,13 @@ function rf_rlt_q top_rm::riscv_rf_cal();
                 else begin         
     			    `uvm_info("top_rm", "decode error found in LB", UVM_NONE);
                 end
-                rd_data = {{16{1'b0}},{ram_data[ram_addr[3:0]+15:ram_addr[3:0]]}};
+		ram_data = ram_data >> (ram_addr[3:1]*16);
+                rd_data = {{16{1'b0}},ram_data[15:0]};
             end
             else begin
     			`uvm_info("top_rm", "decode error found in Load", UVM_NONE);
             end
-            new_pc = pc+4i;
+            new_pc = pc+4;
         end
         //stype
         else if (instruction[6:0] == 'b0100011)begin
@@ -443,7 +448,7 @@ function rf_rlt_q top_rm::riscv_rf_cal();
         else if (instruction[6:0] == 'b1101111)begin
             rd = instruction[11:7];
             imm = {instruction[31],instruction[19:12],{instruction[20]},{instruction[30:21]},{1'b0}};
-            imm_data = {{11{imm[20]}}, imm};
+            imm_data = {{11{imm[11]}}, imm};
             rd_data = pc+4;
             new_pc = pc+imm_data;
         end
@@ -453,7 +458,7 @@ function rf_rlt_q top_rm::riscv_rf_cal();
             break;
         end
         else begin
-    	    `uvm_info("wfi", $sformatf("self define instruction: %0h", instruction), UVM_NONE);
+    	    `uvm_info("top_rm", $sformatf("self define instruction: %0h", instruction[6:0]), UVM_NONE);
 	        //`uvm_info("queue final size", $sformatf("q_size: %0h", rm_rf_q.size()), UVM_NONE);
             new_pc = pc + 4; 
     	    //`uvm_info("rf_output", $sformatf("rf_output: %0h", rf_output), UVM_NONE);
