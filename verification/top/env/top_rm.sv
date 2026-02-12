@@ -135,17 +135,19 @@ function rf_rlt_q top_rm::riscv_rf_cal();
     bit [31:0] rs2_data;
     bit [31:0] rd_data;
     bit [31:0] imm_data;
-    bit [4:0] shamt;
+    bit [4:0]  shamt;
     bit [31:0] shift_data;
+    bit [31:0] offset;
+    bit [31:0] ram_addr;
+    bit [127:0] ram_data;
     bit pc_count;
     bit [31:0] pc_count_num;
     bit [31:0] [31:0] rm_rf ;
     bit [31:0] [31:0] rm_rf_q [$];
-    bit [31:0] pc [$];
-    bit [127:0] [255:0] iram [$];
-    bit [127:0] [255:0] wram [$];
-    bit [127:0] [255:0] oram_lo [$];
-    bit [127:0] [255:0] oram_hi [$];
+    bit [127:0] [255:0] iram;
+    bit [127:0] [255:0] wram;
+    bit [127:0] [255:0] oram_lo;
+    bit [127:0] [255:0] oram_hi;
 
     while(1)begin 
         //pc 
@@ -294,12 +296,120 @@ function rf_rlt_q top_rm::riscv_rf_cal();
         //itype ld 
         else if (instruction[6:0] == 'b0000011)begin
             rs1 = instruction[19:15];
-            rs2 = instruction[24:20];
             rd = instruction[11:7];
             rs1_data = rf_output[rs1];
-            rs2_data = {{24{1'b0}},{rs2}};
-            rd_data = 'b0;
-            new_pc = pc+4;
+            offset = {{20{instruction[31]}},{instruction[31:20]}};
+            ram_addr = rs1_data + offset;
+            //LB
+            if(instruction[14:12] == 3'b000)begin
+                if(ram_addr[14:13]=='b00) begin
+                    ram_data = iram[ram_addr[11:4]];
+                end
+                else if (ram_addr[14:13]=='b10)begin
+                    ram_data = wram[ram_addr[11:4]];
+                end
+                else if (ram_addr[14:13]=='b01)begin
+                    if(ram_addr[12]=='b0)begin
+                        ram_data = oram_lo[ram_addr[11:4]];
+                    end
+                    else begin
+                        ram_data = oram_hi[ram_addr[11:4]];
+                    end
+                end
+                else begin         
+    			    `uvm_info("top_rm", "decode error found in LB", UVM_NONE);
+                end
+                rd_data = {{24{ram_data[ram_addr[3:0]+7]}},{ram_data[ram_addr[3:0]+7:ram_addr[3:0]]}};
+
+            end
+            //LH
+            else if(instruction[14:12] == 3'b001)begin
+                if(ram_addr[14:13]=='b00) begin
+                    ram_data = iram[ram_addr[11:4]];
+                end
+                else if (ram_addr[14:13]=='b10)begin
+                    ram_data = wram[ram_addr[11:4]];
+                end
+                else if (ram_addr[14:13]=='b01)begin
+                    if(ram_addr[12]=='b0)begin
+                        ram_data = oram_lo[ram_addr[11:4]];
+                    end
+                    else begin
+                        ram_data = oram_hi[ram_addr[11:4]];
+                    end
+                end
+                else begin         
+    			    `uvm_info("top_rm", "decode error found in LB", UVM_NONE);
+                end
+                rd_data = {{16{ram_data[ram_addr[3:0]+15]}},{ram_data[ram_addr[3:0]+15:ram_addr[3:0]]}};
+            end
+            //LW
+            else if(instruction[14:12] == 3'b010)begin
+                if(ram_addr[14:13]=='b00) begin
+                    ram_data = iram[ram_addr[11:4]];
+                end
+                else if (ram_addr[14:13]=='b10)begin
+                    ram_data = wram[ram_addr[11:4]];
+                end
+                else if (ram_addr[14:13]=='b01)begin
+                    if(ram_addr[12]=='b0)begin
+                        ram_data = oram_lo[ram_addr[11:4]];
+                    end
+                    else begin
+                        ram_data = oram_hi[ram_addr[11:4]];
+                    end
+                end
+                else begin         
+    			    `uvm_info("top_rm", "decode error found in LB", UVM_NONE);
+                end
+                rd_data = ram_data[ram_addr[3:0]+31:ram_addr[3:0]];
+            end
+            //LBU
+            else if(instruction[14:12] == 3'b100)begin
+                if(ram_addr[14:13]=='b00) begin
+                    ram_data = iram[ram_addr[11:4]];
+                end
+                else if (ram_addr[14:13]=='b10)begin
+                    ram_data = wram[ram_addr[11:4]];
+                end
+                else if (ram_addr[14:13]=='b01)begin
+                    if(ram_addr[12]=='b0)begin
+                        ram_data = oram_lo[ram_addr[11:4]];
+                    end
+                    else begin
+                        ram_data = oram_hi[ram_addr[11:4]];
+                    end
+                end
+                else begin         
+    			    `uvm_info("top_rm", "decode error found in LB", UVM_NONE);
+                end
+                rd_data = {{24{1'b0}},{ram_data[ram_addr[3:0]+7:ram_addr[3:0]]}};
+            end
+            //LBH
+            else if(instruction[14:12] == 3'b101)begin
+                if(ram_addr[14:13]=='b00) begin
+                    ram_data = iram[ram_addr[11:4]];
+                end
+                else if (ram_addr[14:13]=='b10)begin
+                    ram_data = wram[ram_addr[11:4]];
+                end
+                else if (ram_addr[14:13]=='b01)begin
+                    if(ram_addr[12]=='b0)begin
+                        ram_data = oram_lo[ram_addr[11:4]];
+                    end
+                    else begin
+                        ram_data = oram_hi[ram_addr[11:4]];
+                    end
+                end
+                else begin         
+    			    `uvm_info("top_rm", "decode error found in LB", UVM_NONE);
+                end
+                rd_data = {{16{1'b0}},{ram_data[ram_addr[3:0]+15:ram_addr[3:0]]}};
+            end
+            else begin
+    			`uvm_info("top_rm", "decode error found in Load", UVM_NONE);
+            end
+            new_pc = pc+4i;
         end
         //stype
         else if (instruction[6:0] == 'b0100011)begin
@@ -327,12 +437,17 @@ function rf_rlt_q top_rm::riscv_rf_cal();
         end
         //btype
         else if (instruction[6:0] == 'b1100011)begin
-        
+            
         end
         //jtype 
         else if (instruction[6:0] == 'b1101111)begin
-            
+            rd = instruction[11:7];
+            imm = {instruction[31],instruction[19:12],{instruction[20]},{instruction[30:21]},{1'b0}};
+            imm_data = {{11{imm[20]}}, imm};
+            rd_data = pc+4;
+            new_pc = pc+imm_data;
         end
+        //wfi
         else if (instruction[6:0] == 'b1111111)begin       
 	        `uvm_info("wfi reach", $sformatf("q_size: %0h", rm_rf_q.size()), UVM_NONE);
             break;
