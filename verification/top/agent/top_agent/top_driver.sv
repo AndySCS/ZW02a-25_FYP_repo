@@ -46,10 +46,14 @@ task top_driver::main_phase(uvm_phase phase);
     bit val_begin;
     int count;
     for (int i=0;i<256;i++) begin
-     	  harness.u_tpu.u_lsu.iram.mem[i] = 'h0;
-     	  harness.u_tpu.u_lsu.wram.mem[i] = 'h0;
-     	  harness.u_tpu.u_lsu.oram_lo.mem[i] = 'h0;
-     	  harness.u_tpu.u_lsu.oram_hi.mem[i] = 'h0;
+     	  //harness.u_tpu.u_lsu.iram.mem[i] = 'h0;
+     	  //harness.u_tpu.u_lsu.wram.mem[i] = 'h0;
+     	  //harness.u_tpu.u_lsu.oram_lo.mem[i] = 'h0;
+     	  //harness.u_tpu.u_lsu.oram_hi.mem[i] = 'h0;
+     	  harness.u_tpu.u_lsu.iram.mem[i] = $urandom();
+     	  harness.u_tpu.u_lsu.wram.mem[i] = $urandom();
+     	  harness.u_tpu.u_lsu.oram_lo.mem[i] = $urandom();
+     	  harness.u_tpu.u_lsu.oram_hi.mem[i] = $urandom();
     end
     super.main_phase(phase);
     phase.raise_objection(this);
@@ -62,12 +66,12 @@ task top_driver::main_phase(uvm_phase phase);
             if(top_if.wfi)begin
                 top_if.start_vld <= 1;
                 top_if.start_addr <= 0;
-		phase_cnt = 0;
-		val_begin = 1;
+		        phase_cnt = 0;
+		        val_begin = 1;
                 @(posedge top_if.clk);
                 top_if.start_vld <= 0;
                 seq_item_port.item_done();
-		break;
+		        break;
             end
         end
     end
@@ -75,17 +79,17 @@ task top_driver::main_phase(uvm_phase phase);
         @(posedge top_if.clk);
         if(val_begin & top_if.wfi)begin
     	   `uvm_info(get_name(), $sformatf("begin top cnt down main phase, phase_cnt = %d", phase_cnt), UVM_MEDIUM);
-	    phase_cnt++;
+	        phase_cnt++;
         end
-	if(phase_cnt > 100000) begin
-    	   `uvm_info(get_name(), "main phase ends", UVM_NONE);
-	    phase.drop_objection(this);
-	end
-	if(count > 150000)begin	
-    	   `uvm_info(get_name(), "main phase ends", UVM_NONE);
-	    phase.drop_objection(this);
-	end
-	count = count+1;
+	    if(phase_cnt > 100000) begin
+    	    `uvm_info(get_name(), "main phase ends", UVM_NONE);
+	        phase.drop_objection(this);
+	    end
+	    if(count > 150000)begin	
+    	    `uvm_info(get_name(), "main phase ends", UVM_NONE);
+	        phase.drop_objection(this);
+	    end
+	    count = count+1;
     end
     join
         

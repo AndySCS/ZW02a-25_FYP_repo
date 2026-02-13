@@ -61,10 +61,16 @@ task top_monitor::main_phase(uvm_phase phase);
             if(top_if.start_vld) begin
 
             @(posedge top_if.clk)
-            	start_tr.start_vld = top_if.start_vld;
+            	//start_tr.start_vld = top_if.start_vld;
+
+            	start_tr.start_vld = 1'b1;
             	start_tr.start_addr = top_if.start_addr;
 	    	    for(int i; i<256; i++)begin
             		start_tr.start_imem[i] = harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[i];
+            		start_tr.start_iram[i] = harness.u_tpu.u_lsu.iram.mem[i];
+            		start_tr.start_wram[i] = harness.u_tpu.u_lsu.wram.mem[i];
+            		start_tr.start_oram_lo[i] = harness.u_tpu.u_lsu.oram_lo.mem[i];
+            		start_tr.start_oram_hi[i] = harness.u_tpu.u_lsu.oram_hi.mem[i];
 	    	    end
            	    start_ap.write(start_tr);
         	    ap.write(tr);
@@ -89,22 +95,21 @@ task top_monitor::main_phase(uvm_phase phase);
 		    	wb_addr_ff = harness.u_tpu.u_rf.lsu_rf_wb_addr;
 		    	wb_data_ff = harness.u_tpu.u_rf.lsu_rf_wb_data;	
 				
-    	    		//`uvm_info("addr", $sformatf("addr:%0h", wb_addr_ff), UVM_NONE);
-    	    		//`uvm_info("data", $sformatf("data:%0h", wb_data_ff), UVM_NONE);
+    	    	//`uvm_info("addr", $sformatf("addr:%0h", wb_addr_ff), UVM_NONE);
+    	    	//`uvm_info("data", $sformatf("data:%0h", wb_data_ff), UVM_NONE);
  	        	//rf_tr.rf_output[harness.u_tpu.u_rf.lsu_rf_wb_addr] = harness.u_tpu.u_rf.lsu_rf_wb_data;
 	    	end
 
 			else if(harness.u_tpu.u_lsu.alu_lsu_wfi)begin	
-				    //rf_tr.rf_output = 'b0;
-    	    			    `uvm_info(get_name(), "reach wfi2", UVM_NONE);
-				    rf_q_ap.write(rf_q_tr);
-                		    break;
-			end
-			else if (limit_count >= 10000)begin
-				
-    	    			`uvm_info(get_name(), "reach 10000 limit count", UVM_NONE);
+				//rf_tr.rf_output = 'b0;
+    	    	`uvm_info(get_name(), "reach wfi2", UVM_NONE);
 				rf_q_ap.write(rf_q_tr);
-                		break;
+                break;
+			end
+			else if (limit_count >= 10000)begin	
+    	    	`uvm_info(get_name(), "reach 10000 limit count", UVM_NONE);
+				rf_q_ap.write(rf_q_tr);
+                break;
 			end
 			else begin
 				wb_vld_ff = 1'b0;
