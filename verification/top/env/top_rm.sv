@@ -469,18 +469,95 @@ function rf_rlt_q top_rm::riscv_rf_cal();
 
         //btype
         else if (instruction[6:0] == 'b1100011)begin
-            
+            rs1 = instruction[19:15];
+            rs2 = instruction[24:20];
+            imm = {{instruction[11:8]}, {instruction[30:25]}, {instruction[7]}, {instruction[31]}};
+            rs1_data = rf_output[rs1];
+            rs2_data = rf_output[rs2];
+            //BEQ
+            if(instruction[14:12] == 'b000)begin
+                if(rs1_data == rs2_data)begin
+                    new_pc = imm;
+                end  
+                else begin
+                    new_pc = pc+4;
+                end
+            end
+            //BNE
+            else if(instruction[14:12] == 'b001)begin
+                if(rs1_data != rs2_data)begin
+                    new_pc = imm;
+                end  
+                else begin
+                    new_pc = pc+4;
+                end
+            end
+            //BLT
+            else if(instruction[14:12] == 'b100)begin
+                if(rs1_data[31] > rs2_data[31])begin
+                    new_pc = imm;
+                end 
+                else if(rs1_data[31] < rs2_data[31])begin
+                    new_pc = pc+4;
+                end 
+                else begin
+                    if(rs1_data < rs2_data)begin
+                        new_pc = imm;
+                    end
+                    else begin
+                        new_pc = pc+4;
+                    end
+                end
+            end
+            //BGE
+            else if(instruction[14:12] == 'b101)begin
+                if(rs1_data[31] < rs2_data[31])begin
+                    new_pc = imm;
+                end 
+                else if(rs1_data[31] > rs2_data[31])begin
+                    new_pc = pc+4;
+                end 
+                else begin
+                    if(rs1_data >= rs2_data)begin
+                        new_pc = imm;
+                    end
+                    else begin
+                        new_pc = pc+4;
+                    end
+                end
+            end
+            //BLTU
+            else if(instruction[14:12] == 'b110)begin 
+                if(rs1_data < rs2_data)begin
+                    new_pc = imm;
+                end
+                else begin
+                    new_pc = pc+4;
+                end
+            end
+            //BGEU
+            else if(instruction[14:12] == 'b111)begin
+                if(rs1_data >= rs2_data)begin
+                    new_pc = imm;
+                end
+                else begin
+                    new_pc = pc+4;
+                end
+            end
+            else begin         
+    			`uvm_info("top_rm", "decode error found Branch", UVM_NONE);
+            end
         end
 
         //jtype
-	//jal 
+	    //jal 
         else if (instruction[6:0] == 'b1101111)begin
             rd = instruction[11:7];
             imm_20 = {instruction[31],instruction[19:12],{instruction[20]},{instruction[30:21]}};
             imm_data = {{12{imm[11]}}, {imm_20}, {1'b0}};
             rd_data = pc+4;
             new_pc_raw = pc+imm_data;
-	    new_pc = new_pc_raw[11:0];
+	        new_pc = new_pc_raw[11:0];
         end
 
         //wfi
@@ -495,11 +572,12 @@ function rf_rlt_q top_rm::riscv_rf_cal();
     	    //`uvm_info("rf_output", $sformatf("rf_output: %0h", rf_output), UVM_NONE);
 
         end
-	if(pc_count_num > 2000)begin
+	    if(pc_count_num > 2000)begin
 
     	    `uvm_info("top_rm", "instrutcion count reach 2000 limit", UVM_NONE);
             break;
-	end
+	    end
+
         //debug use
     	`uvm_info("top_rm", "instrutcion finish", UVM_NONE);
     	`uvm_info("top_rm", $sformatf("instruction: %0h", instruction), UVM_NONE);
