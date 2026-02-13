@@ -144,6 +144,7 @@ function rf_rlt_q top_rm::riscv_rf_cal();
     bit [127:0] ram_data;
     bit pc_count;
     bit [31:0] pc_count_num;
+    int limit_count;
     bit [31:0] [31:0] rm_rf ;
     bit [31:0] [31:0] rm_rf_q [$];
     bit [127:0] [255:0] iram;
@@ -612,7 +613,7 @@ function rf_rlt_q top_rm::riscv_rf_cal();
             |instruction[6:0] == 'b1101111 // jal
         )begin
 
-    	`uvm_info("top_rm", "data need push", UVM_NONE);
+    	    //`uvm_info("top_rm", "data need push", UVM_NONE);
 	        if(|rd)begin
 		        rm_rf[rd] = rd_data;
                 rf_output[rd] = rd_data;
@@ -623,9 +624,15 @@ function rf_rlt_q top_rm::riscv_rf_cal();
 	        end
 	        rm_rf_q.push_back(rm_rf);
             	rm_rf_q.push_back(pc);
+
+    	    //`uvm_info("top_rm", $sformatf("pc_count_num: %0h", pc_count_num), UVM_NONE);
+	        pc_count_num = pc_count_num+1;
 	    end
-    	//`uvm_info("top_rm", $sformatf("pc_count_num: %0h", pc_count_num), UVM_NONE);
-	    pc_count_num = pc_count_num+1;
+	    if(limit_count == 10000)begin	
+    	    `uvm_info("top_rm", "reach 10000 limit count", UVM_NONE);
+            break;
+	    end
+	    limit_count = limit_count+1;
 	    pc_count = 1;
     end
 
