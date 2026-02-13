@@ -44,6 +44,7 @@ task top_driver::main_phase(uvm_phase phase);
     model_output_transaction tr;
     int phase_cnt;
     bit val_begin;
+    int count;
     for (int i=0;i<256;i++) begin
      	  harness.u_tpu.u_lsu.iram.mem[i] = 'h0;
      	  harness.u_tpu.u_lsu.wram.mem[i] = 'h0;
@@ -80,6 +81,11 @@ task top_driver::main_phase(uvm_phase phase);
     	   `uvm_info(get_name(), "main phase ends", UVM_NONE);
 	    phase.drop_objection(this);
 	end
+	if(count > 100000)begin	
+    	   `uvm_info(get_name(), "main phase ends", UVM_NONE);
+	    phase.drop_objection(this);
+	end
+	count = count+1;
     end
     join
         

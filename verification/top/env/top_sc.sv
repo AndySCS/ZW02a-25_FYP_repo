@@ -82,14 +82,14 @@ task top_sc::main_phase(uvm_phase phase);
 		while(1)begin
 			if(this.sc_act_q.size() > 0)begin
 	         		`uvm_info("top_sc", $sformatf("pc[%0h]", (count*4)), UVM_NONE);
+	       	 		`uvm_info("top_sc", $sformatf("count_num:  %0h", count), UVM_NONE);
 		   		for (int i=0; i<32; i++)begin
 					if(rf_act_result_q.rf_output[count][i] != rf_exp_result_q.rf_output[count][i])begin
     					`uvm_info("top_sc", "ERROR act not macth with exp data", UVM_NONE);
-	       	 			`uvm_info("top_sc", $sformatf("rd:  %0h", i), UVM_NONE);
+					`uvm_error("top_sc", $sformatf("ERROR rd %h", i))					
 	       	 			`uvm_info("top_sc", $sformatf("act_data:  data[%0h]", rf_act_result_q.rf_output[count][i]), UVM_NONE);
 	       	 			`uvm_info("top_sc", $sformatf("exp_data:  data[%0h]", rf_exp_result_q.rf_output[count][i]), UVM_NONE);
     					`uvm_info("top_sc", "\n===================================================================\n", UVM_NONE);
-					`uvm_error("top_sc", $sformatf("ERROR %d", sc_exp_q.size()))					
 end
 					//`uvm_info("top_sc", $sformatf("act_data from mon: [%d], data[%0h]",i, rf_mon_act_tr.rf_output), UVM_NONE);
 		    	end

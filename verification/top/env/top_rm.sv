@@ -126,11 +126,13 @@ function rf_rlt_q top_rm::riscv_rf_cal();
     bit [31:0][31:0] rf_output;
     bit [31:0] pc;
     bit [31:0] new_pc;
+    bit [31:0] new_pc_raw;
     bit [31:0] instruction;
     bit [4:0] rs1;
     bit [4:0] rs2;
     bit [4:0] rd;
     bit [11:0] imm;
+    bit [20:1] imm_20;
     bit [31:0] rs1_data;
     bit [31:0] rs2_data;
     bit [31:0] rd_data;
@@ -305,10 +307,13 @@ function rf_rlt_q top_rm::riscv_rf_cal();
 	//itype jalr
 	else if (instruction[6:0] == 'b1100111)begin	
             rd = instruction[11:7];
+            rs1 = instruction[19:15];
+            rs1_data = rf_output[rs1];
             imm = instruction[31:20];
             imm_data = {{20{imm[11]}}, imm};
             rd_data = pc+4;
-            new_pc = pc+imm_data;
+            new_pc_raw = rs1_data+imm_data;
+            new_pc = new_pc_raw[11:0];
         end
 
         //itype ld 
@@ -467,17 +472,19 @@ function rf_rlt_q top_rm::riscv_rf_cal();
             
         end
 
-        //jtype 
+        //jtype
+	//jal 
         else if (instruction[6:0] == 'b1101111)begin
             rd = instruction[11:7];
-            imm = {instruction[31],instruction[19:12],{instruction[20]},{instruction[30:21]},{1'b0}};
-            imm_data = {{12{imm[11]}}, imm};
+            imm_20 = {instruction[31],instruction[19:12],{instruction[20]},{instruction[30:21]}};
+            imm_data = {{12{imm[11]}}, {imm_20}, {1'b0}};
             rd_data = pc+4;
-            new_pc = pc+imm_data;
+            new_pc_raw = pc+imm_data;
+	    new_pc = new_pc_raw[11:0];
         end
 
         //wfi
-        else if ((instruction[6:0] == 'b1111111) | pc_count_num == 2000)begin       
+        else if (instruction[6:0] == 'b1111111)begin       
 	        `uvm_info("wfi reach", $sformatf("q_size: %0h", rm_rf_q.size()), UVM_NONE);
             break;
         end
@@ -488,10 +495,16 @@ function rf_rlt_q top_rm::riscv_rf_cal();
     	    //`uvm_info("rf_output", $sformatf("rf_output: %0h", rf_output), UVM_NONE);
 
         end
+	if(pc_count_num > 2000)begin
+
+    	    `uvm_info("top_rm", "instrutcion count reach 2000 limit", UVM_NONE);
+            break;
+	end
         //debug use
     	`uvm_info("top_rm", "instrutcion finish", UVM_NONE);
     	`uvm_info("top_rm", $sformatf("instruction: %0h", instruction), UVM_NONE);
     	`uvm_info("top_rm", $sformatf("instruction_type: %0h", instruction[14:12]), UVM_NONE);
+    	`uvm_info("top_rm", $sformatf("pc_count_num: %0h", pc_count_num), UVM_NONE);
     	`uvm_info("top_rm", $sformatf("pc: %0h", pc), UVM_NONE);
     	`uvm_info("top_rm", $sformatf("rd: %0h", rd), UVM_NONE);
     	`uvm_info("top_rm", $sformatf("rd_data: %0h", rd_data), UVM_NONE);
