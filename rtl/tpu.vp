@@ -247,6 +247,7 @@ module tpu(
     wire lsu_mxu_act_vld;
     wire [1:0] lsu_mxu_act_type;
     wire lsu_mxu_wfi;
+    wire lsu_mxu_conv_vld;
 
     wire [7:0] lsu_axi_awid;
     wire [9:0] lsu_axi_awaddr;
@@ -617,6 +618,7 @@ module tpu(
         .lsu_alu_rdy                          (lsu_alu_rdy),
         .lsu_mxu_vld                          (lsu_mxu_vld),
         .lsu_mxu_clr                          (lsu_mxu_clr),
+        .lsu_mxu_conv_vld                     (lsu_mxu_conv_vld),
         .lsu_mxu_iram_vld                     (lsu_mxu_iram_vld),
         .lsu_mxu_iram_pld                     (lsu_mxu_iram_pld),
         .lsu_mxu_wram_vld                     (lsu_mxu_wram_vld),
@@ -681,7 +683,7 @@ module tpu(
         .lsu_axi_arburst                      (lsu_axi_arburst),
         .lsu_axi_arstr                        (lsu_axi_arstr),
         .lsu_axi_arnum                        (lsu_axi_arnum),
-	    .lsu_axi_sram_addr		              (lsu_axi_sram_addr),
+	 .lsu_axi_sram_addr		      (lsu_axi_sram_addr),
         .lsu_axi_arvld                        (lsu_axi_arvld),
         .lsu_axi_rrdy                         (lsu_axi_rrdy),
         .lsu_idu_wb_vld                       (lsu_idu_wb_vld),
@@ -699,6 +701,7 @@ module tpu(
         .start_vld(start_vld),
         .lsu_mxu_vld(lsu_mxu_vld),
         .lsu_mxu_clr(lsu_mxu_clr),
+        .lsu_mxu_conv_vld(lsu_mxu_conv_vld),
         .lsu_mxu_iram_vld(lsu_mxu_iram_vld),
         .lsu_mxu_iram_pld(lsu_mxu_iram_pld),
         .lsu_mxu_wram_vld(lsu_mxu_wram_vld),

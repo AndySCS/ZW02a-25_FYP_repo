@@ -3,6 +3,7 @@ module mxu (
     rst_n,
     start_vld,
     lsu_mxu_vld,
+    lsu_mxu_conv_vld,
     lsu_mxu_clr,
     lsu_mxu_iram_vld,
     lsu_mxu_iram_pld,
@@ -54,6 +55,7 @@ module mxu (
     input rst_n;
     input start_vld;
     input lsu_mxu_vld;
+    input lsu_mxu_conv_vld;
     input lsu_mxu_clr;
     input [15:0] lsu_mxu_iram_vld;
     input [127:0] lsu_mxu_iram_pld;
@@ -239,10 +241,10 @@ module mxu (
         .q(mxu_vld)
     );
 
-    assign acc_clr_qual = lsu_mxu_clr & lsu_mxu_vld_qual;
+    assign acc_clr_qual = lsu_mxu_clr & lsu_mxu_vld_qual & lsu_mxu_conv_vld;
     assign mxu_act_vld = lsu_mxu_act_vld & lsu_mxu_vld_qual;
 
-    assign mxu_conv_awake_cnt_en = (|mxu_conv_awake_cnt) | lsu_mxu_vld_qual;
+    assign mxu_conv_awake_cnt_en = (|mxu_conv_awake_cnt) | lsu_mxu_vld_qual & lsu_mxu_conv_vld;
     assign mxu_conv_awake_cnt_minus = mxu_conv_awake_cnt - 3'b1;
     assign mxu_conv_awake_cnt_nxt = (|({lsu_mxu_iram_vld, lsu_mxu_wram_vld}))? 3'b111 : mxu_conv_awake_cnt_minus;
 

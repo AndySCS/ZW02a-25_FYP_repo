@@ -76,6 +76,7 @@ module lsu(
     //to mxu
     lsu_mxu_vld,
     lsu_mxu_clr,
+    lsu_mxu_conv_vld,
     lsu_mxu_iram_vld,
     lsu_mxu_iram_pld,
     lsu_mxu_wram_vld,
@@ -289,6 +290,7 @@ module lsu(
 
     //to mxu
     output lsu_mxu_vld;
+    output lsu_mxu_conv_vld;
     output lsu_mxu_clr;
     output [15:0] lsu_mxu_iram_vld;
     output [127:0] lsu_mxu_iram_pld;
@@ -514,6 +516,18 @@ module lsu(
     
     wire lsu_ld_rd_qual;
     wire lsu_ld_rd_qual_ff;
+    
+    wire lsu_mxu_conv_vld_nxt;
+    
+    assign lsu_mxu_conv_vld_nxt = lsu_vld_qual ? alu_lsu_conv : lsu_mxu_conv_vld & ~mxu_lsu_rdy;
+
+    DFFR #(.WIDTH(1))
+    ff_lsu_mxu_conv_vld(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(lsu_mxu_conv_vld_nxt),
+        .q(lsu_mxu_conv_vld)
+    );
 
     assign lsu_vld_qual = alu_lsu_vld & lsu_alu_rdy;
     assign lsu_vld_qual_en = lsu_vld_qual | ~alu_lsu_vld;
