@@ -180,18 +180,8 @@
 `define WRAM_RLEN_MSB               (`WRAM_RLEN_LSB + `WRAM_RLEN_SIZE -1)
 `define WRAM_RLEN_RNG               `WRAM_RLEN_MSB : `WRAM_RLEN_LSB
 
-`define WRAM_DIR_SIZE               1
-`define WRAM_DIR_LSB                (`IRAM_RLEN_MSB + 1)
-`define WRAM_DIR_MSB                (`WRAM_DIR_LSB + `WRAM_DIR_SIZE -1)
-`define WRAM_DIR_RNG                `WRAM_DIR_MSB : `WRAM_DIR_LSB
-
-`define IRAM_DIR_SIZE               1
-`define IRAM_DIR_LSB                (`WRAM_DIR_MSB + 1)
-`define IRAM_DIR_MSB                (`IRAM_DIR_LSB + `IRAM_DIR_SIZE -1)
-`define IRAM_DIR_RNG                `IRAM_DIR_MSB : `IRAM_DIR_LSB
-
 `define CLR_SIZE                    1
-`define CLR_LSB                     (`IRAM_DIR_MSB + 1)
+`define CLR_LSB                     31//(`WRAM_RLEN_MSB + 1)
 `define CLR_MSB                     (`CLR_LSB + `CLR_SIZE -1)
 `define CLR_RNG                     `CLR_MSB : `CLR_LSB
 
