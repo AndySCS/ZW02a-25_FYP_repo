@@ -46,19 +46,22 @@ function bit[9:0][7:0] top_rm::cal_data();
     int second_layer_output[9:0];
     bit [784:0] [7:0] first_layer_input;
     bit [56:0]  [7:0] second_layer_input;
+    int test_tmp;
     
     bit [9:0]  [7:0] final_output;
 
     first_layer_input = {8'b1, model_rd_tr.img_array};
+ 
+    `uvm_info(get_name(), $sformatf("test_tmp before act = %16b", test_tmp[15:0]), UVM_NONE)
 
     for(int i = 0; i < 56; i++)begin
         for(int j = 0; j < 785; j++)begin
-            first_layer_ouput[i] += int'($signed(first_layer_input[j]) * $signed(model_rd_tr.first_layer_weight[j+i]));
+            first_layer_ouput[i] += int'($signed(first_layer_input[j]) * $signed(model_rd_tr.first_layer_weight[j+i*785]));
             if(first_layer_ouput[i] > 32767)  first_layer_ouput[i] = 32767;
             if(first_layer_ouput[i] < -32768) first_layer_ouput[i] = -32768;
         end
         
-        `uvm_info(get_name(), $sformatf("first_layer_ouput before act [%d] = %d", i, first_layer_ouput[i]), UVM_NONE)
+       // `uvm_info(get_name(), $sformatf("first_layer_ouput before act [%d] = %d", i, first_layer_ouput[i]), UVM_NONE)
 
         if(first_layer_ouput[i] < 0) first_layer_ouput[i] = 0;
 
@@ -66,7 +69,8 @@ function bit[9:0][7:0] top_rm::cal_data();
         if(first_layer_ouput[i] > 127)  second_layer_input[i] = 127;
         if(first_layer_ouput[i] < -128) second_layer_input[i] = -128;
 
-        `uvm_info(get_name(), $sformatf("second layer input[%d] = %8b, first_layer_output[%d] = %d", i, second_layer_input[i], i, first_layer_ouput[i]), UVM_NONE)
+        `uvm_info(get_name(), $sformatf("second layer input[%d] = %8b, first_layer_output[%d] = %16b", i, second_layer_input[i], i, first_layer_ouput[i]), UVM_NONE)
+
     end
 
 
