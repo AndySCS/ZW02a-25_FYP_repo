@@ -40,6 +40,7 @@ addi x11, x11, 272
 addi x23, x0, 4 //iter thd for layer
 addi x22, x0, 0 // number of iter for layer
 addi x21, x0, 3 //last iter for layer
+addi x2, x0, 1 //store 1 in x2, used for beq
 
 // set iram update thd
 addi x19, x0, 15
@@ -93,7 +94,7 @@ layer_network_loop:
 
 //        beq x22, x21, matrix_multi_branch_else
 //        matrix_multi_branch_if:
-            beq x25, x0, matrix_multi_case_first
+            beq x25, x2, matrix_multi_case_first
             blt x25, x24, matrix_multi_case_norm
             jal x0, matrix_multi_case_bias
 //        matrix_multi_branch_else:
