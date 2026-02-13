@@ -206,8 +206,7 @@ module mm_ctrl_buffer(
         if (RAM_TYPE == "WRAM") begin
             assign lsu_mm_buff_cycle_cnt_nxt[i] = lsu_mm_buff_ctrl_vld ? 4'b0 : lsu_mm_buff_cycle_cnt[i] + 4'b1;
             assign lsu_mm_buff_cycle_cnt_en[i]  = lsu_mm_buff_ctrl_vld 
-                                                | lsu_mm_buff_ram_alloc_vld & (lsu_mm_buff_addr_cnt == i) 
-                                                | (|lsu_mm_buff_cycle_cnt[i]) & ~lsu_mm_buff_cycle_cnt_end[i];
+                                                | lsu_mm_buff_mxu_vld[i]; 
             assign lsu_mm_buff_cycle_cnt_end[i] = (lsu_mm_buff_cycle_cnt[i] == lsu_mm_buff_ctrl_col_len_ff);
             assign lsu_mm_buff_mxu_vld_nxt[i]   = lsu_mm_buff_ram_alloc_vld & (lsu_mm_buff_addr_cnt == i)
                                                 | lsu_mm_buff_mxu_vld[i] & ~lsu_mm_buff_cycle_cnt_end[i];
@@ -222,7 +221,7 @@ module mm_ctrl_buffer(
 
             assign lsu_mm_buff_ent_alloc_en[i] = lsu_mm_buff_ram_alloc_vld & (lsu_mm_buff_addr_cnt == i) 
                                                | lsu_mm_buff_mxu_vld[i] & ~lsu_mm_buff_cycle_cnt_end[i];
-    	    assign lsu_mm_buff_ent_data_raw[i] = lsu_mm_buff_ram_alloc_vld ? lsu_mm_buff_ram_alloc_data_shifted 
+    	    assign lsu_mm_buff_ent_data_raw[i] = (lsu_mm_buff_addr_cnt == i) ? lsu_mm_buff_ram_alloc_data_shifted 
                                                : {lsu_mm_buff_ent_data_raw_ff[i][7:0], lsu_mm_buff_ent_data_raw_ff[i][127:8]};
 
             assign lsu_mm_buff_mxu_data[i*8+7:i*8] = {lsu_mm_buff_ent_data_raw_ff[i][7:0]};
