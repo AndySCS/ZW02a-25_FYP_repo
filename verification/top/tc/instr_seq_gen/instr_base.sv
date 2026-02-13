@@ -737,7 +737,7 @@ function instr_bgeu::new();
 endfunction;
 
 constraint instr_bgeu::cons_opcode{
-    instr_funct3 == 3'b11;
+    instr_funct3 == 3'b111;
 }
 
 //U Type instruction

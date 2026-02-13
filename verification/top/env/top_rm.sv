@@ -158,7 +158,7 @@ function rf_rlt_q top_rm::riscv_rf_cal();
             pc = start_tr.start_addr;
 	    for (int i=0; i <32; i++)begin
 		rm_rf[i] = 'b0;
-    	    //`uvm_info("rm_rf_init", $sformatf("rf:%0h ,%0h", i,rm_rf[i]), UVM_NONE);
+    	    `uvm_info("rm_rf_init", $sformatf("rf:%0h ,%0h", i,rm_rf[i]), UVM_NONE);
 	    end 
         end
         else begin
@@ -471,13 +471,15 @@ function rf_rlt_q top_rm::riscv_rf_cal();
         else if (instruction[6:0] == 'b1100011)begin
             rs1 = instruction[19:15];
             rs2 = instruction[24:20];
-            imm = {{instruction[11:8]}, {instruction[30:25]}, {instruction[7]}, {instruction[31]}};
+            imm = {{instruction[31]}, {instruction[7]}, {instruction[30:25]}, {instruction[11:8]}};
+            imm_data = {{20{imm[11]}}, {imm}, {1'b0}};
             rs1_data = rf_output[rs1];
             rs2_data = rf_output[rs2];
             //BEQ
             if(instruction[14:12] == 'b000)begin
                 if(rs1_data == rs2_data)begin
-                    new_pc = imm;
+		    new_pc_raw = imm_data+pc;
+                    new_pc = new_pc_raw[11:0];
                 end  
                 else begin
                     new_pc = pc+4;
@@ -486,7 +488,8 @@ function rf_rlt_q top_rm::riscv_rf_cal();
             //BNE
             else if(instruction[14:12] == 'b001)begin
                 if(rs1_data != rs2_data)begin
-                    new_pc = imm;
+		    new_pc_raw = imm_data+pc;
+                    new_pc = new_pc_raw[11:0];
                 end  
                 else begin
                     new_pc = pc+4;
@@ -495,14 +498,16 @@ function rf_rlt_q top_rm::riscv_rf_cal();
             //BLT
             else if(instruction[14:12] == 'b100)begin
                 if(rs1_data[31] > rs2_data[31])begin
-                    new_pc = imm;
+		    new_pc_raw = imm_data+pc;
+                    new_pc = new_pc_raw[11:0];
                 end 
                 else if(rs1_data[31] < rs2_data[31])begin
                     new_pc = pc+4;
                 end 
                 else begin
                     if(rs1_data < rs2_data)begin
-                        new_pc = imm;
+		    new_pc_raw = imm_data+pc;
+                    new_pc = new_pc_raw[11:0];
                     end
                     else begin
                         new_pc = pc+4;
@@ -512,14 +517,16 @@ function rf_rlt_q top_rm::riscv_rf_cal();
             //BGE
             else if(instruction[14:12] == 'b101)begin
                 if(rs1_data[31] < rs2_data[31])begin
-                    new_pc = imm;
+		    new_pc_raw = imm_data+pc;
+                    new_pc = new_pc_raw[11:0];
                 end 
                 else if(rs1_data[31] > rs2_data[31])begin
                     new_pc = pc+4;
                 end 
                 else begin
                     if(rs1_data >= rs2_data)begin
-                        new_pc = imm;
+		    new_pc_raw = imm_data+pc;
+                    new_pc = new_pc_raw[11:0];
                     end
                     else begin
                         new_pc = pc+4;
@@ -529,7 +536,8 @@ function rf_rlt_q top_rm::riscv_rf_cal();
             //BLTU
             else if(instruction[14:12] == 'b110)begin 
                 if(rs1_data < rs2_data)begin
-                    new_pc = imm;
+		    new_pc_raw = imm_data+pc;
+                    new_pc = new_pc_raw[11:0];
                 end
                 else begin
                     new_pc = pc+4;
@@ -538,7 +546,8 @@ function rf_rlt_q top_rm::riscv_rf_cal();
             //BGEU
             else if(instruction[14:12] == 'b111)begin
                 if(rs1_data >= rs2_data)begin
-                    new_pc = imm;
+		    new_pc_raw = imm_data+pc;
+                    new_pc = new_pc_raw[11:0];
                 end
                 else begin
                     new_pc = pc+4;
@@ -554,7 +563,7 @@ function rf_rlt_q top_rm::riscv_rf_cal();
         else if (instruction[6:0] == 'b1101111)begin
             rd = instruction[11:7];
             imm_20 = {instruction[31],instruction[19:12],{instruction[20]},{instruction[30:21]}};
-            imm_data = {{12{imm[11]}}, {imm_20}, {1'b0}};
+            imm_data = {{12{imm_20[19]}}, {imm_20}, {1'b0}};
             rd_data = pc+4;
             new_pc_raw = pc+imm_data;
 	        new_pc = new_pc_raw[11:0];
@@ -592,17 +601,29 @@ function rf_rlt_q top_rm::riscv_rf_cal();
     	`uvm_info("top_rm", $sformatf("rs2_data: %0h", rs2_data), UVM_NONE);
     	`uvm_info("top_rm", $sformatf("imm_data: %0h", imm_data), UVM_NONE);
     	`uvm_info("top_rm", "\n===================================================================================\n", UVM_NONE);
-	    if(|rd)begin
-		    rm_rf[rd] = rd_data;
-            rf_output[rd] = rd_data;
-	    end
-	    else begin
-		    rm_rf[rd] = 'b0;
-            	    rf_output[rd] = 'b0;
-	    end
-	    rm_rf_q.push_back(rm_rf);
-            rm_rf_q.push_back(pc);
+	    
+        //update rf
+        if((instruction[6:0] == 'b0110011) //rtype
+            |instruction[6:0] == 'b0010011 //itype_op
+            |instruction[6:0] == 'b1100111 //jalr
+            |instruction[6:0] == 'b0000011 //load
+            |instruction[6:0] == 'b0110111 //lui
+            |instruction[6:0] == 'b0010111 //auipc
+            |instruction[6:0] == 'b1101111 // jal
+        )begin
 
+    	`uvm_info("top_rm", "data need push", UVM_NONE);
+	        if(|rd)begin
+		        rm_rf[rd] = rd_data;
+                rf_output[rd] = rd_data;
+	        end
+	        else begin
+		        rm_rf[rd] = 'b0;
+            	rf_output[rd] = 'b0;
+	        end
+	        rm_rf_q.push_back(rm_rf);
+            	rm_rf_q.push_back(pc);
+	    end
     	//`uvm_info("top_rm", $sformatf("pc_count_num: %0h", pc_count_num), UVM_NONE);
 	    pc_count_num = pc_count_num+1;
 	    pc_count = 1;
@@ -611,3 +632,4 @@ function rf_rlt_q top_rm::riscv_rf_cal();
     return rm_rf_q;
     //return rm_rf_q;
 endfunction
+
