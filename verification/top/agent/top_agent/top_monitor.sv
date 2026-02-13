@@ -35,6 +35,7 @@ task top_monitor::main_phase(uvm_phase phase);
     
     model_output_transaction tr;
     int count;
+    int limit_count;
     //riscv_new
     rf_output_transaction rf_tr;
     rf_output_q_transaction rf_q_tr;
@@ -72,43 +73,40 @@ task top_monitor::main_phase(uvm_phase phase);
         
 		    //while(1)begin
 
-            	@(posedge top_if.clk)
-			    if(wb_vld_ff)begin
-				    if(wb_addr_ff != 'b0)begin
-				    	rf_data[wb_addr_ff] = wb_data_ff;
-				    end
-				    rf_q_tr.rf_output.push_back(rf_data);
-				    rf_tr.rf_output = rf_data;
-				    rf_ap.write(rf_tr);
-    	    			    //`uvm_info(get_name(), "pushing data back", UVM_NONE);
-				    count = count+1;
-			    end
-	    		if(harness.u_tpu.u_rf.lsu_rf_wb_vld & count <= 2000)begin
-	    			wb_vld_ff = harness.u_tpu.u_rf.lsu_rf_wb_vld;
-		    		wb_addr_ff = harness.u_tpu.u_rf.lsu_rf_wb_addr;
-		    		wb_data_ff = harness.u_tpu.u_rf.lsu_rf_wb_data;	
+            @(posedge top_if.clk)
+			if(wb_vld_ff)begin
+				if(wb_addr_ff != 'b0)begin
+				    rf_data[wb_addr_ff] = wb_data_ff;
+				end
+				rf_q_tr.rf_output.push_back(rf_data);
+				rf_tr.rf_output = rf_data;
+				rf_ap.write(rf_tr);
+    	    			//`uvm_info(get_name(), "pushing data back", UVM_NONE);
+				count = count+1;
+			end
+	    	if(harness.u_tpu.u_rf.lsu_rf_wb_vld & limit_count <= 2000)begin
+	    		wb_vld_ff = harness.u_tpu.u_rf.lsu_rf_wb_vld;
+		    	wb_addr_ff = harness.u_tpu.u_rf.lsu_rf_wb_addr;
+		    	wb_data_ff = harness.u_tpu.u_rf.lsu_rf_wb_data;	
 				
-    	    			//`uvm_info("addr", $sformatf("addr:%0h", wb_addr_ff), UVM_NONE);
-    	    			//`uvm_info("data", $sformatf("data:%0h", wb_data_ff), UVM_NONE);
- 	        		//rf_tr.rf_output[harness.u_tpu.u_rf.lsu_rf_wb_addr] = harness.u_tpu.u_rf.lsu_rf_wb_data;
-	    		end
+    	    		//`uvm_info("addr", $sformatf("addr:%0h", wb_addr_ff), UVM_NONE);
+    	    		//`uvm_info("data", $sformatf("data:%0h", wb_data_ff), UVM_NONE);
+ 	        	//rf_tr.rf_output[harness.u_tpu.u_rf.lsu_rf_wb_addr] = harness.u_tpu.u_rf.lsu_rf_wb_data;
+	    	end
 
-			else if(harness.u_tpu.u_lsu.alu_lsu_wfi | count >= 2000)begin	
+			else if(harness.u_tpu.u_lsu.alu_lsu_wfi | limit_count >= 2000)begin	
 				    //rf_tr.rf_output = 'b0;
     	    			    `uvm_info(get_name(), "reach wfi2", UVM_NONE);
 				    rf_q_ap.write(rf_q_tr);
                 		    break;
 			end
-			    else begin
-				    wb_vld_ff = 1'b0;
-			    end
-
+			else begin
+				wb_vld_ff = 1'b0;
+			end
+			limit_count = limit_count+1;
 		    //end
         end
    // end
 
 
 endtask
-
-
-

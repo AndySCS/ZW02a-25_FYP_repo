@@ -81,7 +81,7 @@ task top_driver::main_phase(uvm_phase phase);
     	   `uvm_info(get_name(), "main phase ends", UVM_NONE);
 	    phase.drop_objection(this);
 	end
-	if(count > 100000)begin	
+	if(count > 150000)begin	
     	   `uvm_info(get_name(), "main phase ends", UVM_NONE);
 	    phase.drop_objection(this);
 	end
