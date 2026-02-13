@@ -57,6 +57,9 @@ function bit[9:0][7:0] top_rm::cal_data();
             if(first_layer_ouput[i] > 32767)  first_layer_ouput[i] = 32767;
             if(first_layer_ouput[i] < -32768) first_layer_ouput[i] = -32768;
         end
+        
+        `uvm_info(get_name(), $sformatf("first_layer_ouput before act [%d] = %d", i, first_layer_ouput[i]), UVM_NONE)
+
         if(first_layer_ouput[i] < 0) first_layer_ouput[i] = 0;
 
         second_layer_input[i] = first_layer_ouput[i][7:0];
