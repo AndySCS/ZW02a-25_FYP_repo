@@ -120,13 +120,13 @@ layer_network_loop:
             jal x0, matrix_multi_end
         //8 perceptron case
         matrix_multi_case_last_perceptron_first:
-            MM x26, x27, 15, 0, 7, 0
+            MM x26, x27, 15, 0, 7, 1 //16 iram row, 1 iram col, 8 wram row, clr
             jal x0, matrix_multi_end
         matrix_multi_case_last_perceptron_norm: //iter == 50, only load bias
-            MM x26, x27, 0, 0, 7, 0
+            MM x26, x27, 15, 0, 7, 0 //16 iram row, 1 iram col, 8 wram row, no clr
             jal x0, matrix_multi_end
         matrix_multi_case_last_perceptron_bias:
-            MM x26, x27, 15, 0, 7, 0
+            MM x26, x27, 0, 0, 7, 0 //1 iram row, 1 iram col, 8 wram row, no clr
         matrix_multi_end:
 //
         beq x18, x19, matrix_iram_update_else
@@ -147,10 +147,11 @@ layer_network_loop:
     ACT 0
 
     STMT x3, x0, 0, 15, 1 //store result back to iram
-    addi x3, x3, 16 // update store addr 
+    addi x3, x3, 256 // update store addr 
     
     add x10, x10, x11 //update dram addr
     addi x22, x22, 1 //update iter
+    addi x18, x0, 0 // reset iram addr
 
     bge x22, x21, update_wram_load_iter_if
     jal x0, update_wram_load_iter_end
