@@ -48,6 +48,18 @@ task top_monitor::main_phase(uvm_phase phase);
     bit[31:0][31:0] rf_data_q[$];
     int cycle_count;
     int dut_size;
+    bit[127:0][255:0] iram_data;
+    bit[127:0][255:0] wram_data;
+    bit[127:0][255:0] oram_lo_data;
+    bit[127:0][255:0] oram_hi_data;
+    bit[127:0][255:0] iram_ff;
+    bit[127:0][255:0] wram_ff;
+    bit[127:0][255:0] oram_lo_ff;
+    bit[127:0][255:0] oram_hi_ff;
+
+    bit lsu_ram_check;
+    bit rf_ram_check;
+
    // top_tr tr_send;
 
     tr = model_output_transaction::type_id::create();
@@ -78,12 +90,16 @@ task top_monitor::main_phase(uvm_phase phase);
             end
         
 		    //while(1)begin
-
             @(posedge top_if.clk)
-			if(wb_vld_ff)begin
-				if(wb_addr_ff != 'b0)begin
-				    rf_data[wb_addr_ff] = wb_data_ff;
-				end
+			if(wb_vld_ff | rf_ram_check)begin
+				//if(wb_addr_ff != 'b0)begin
+				//    rf_data[wb_addr_ff] = wb_data_ff;
+				//end
+                iram_data    = iram_ff;
+                wram_data    = wram_ff;
+                oram_lo_data = oram_lo_ff;
+                oram_hi_data = oram_hi_ff;
+                rf_data = harness.u_tpu.u_rf.rf_data;
 				rf_q_tr.rf_output.push_back(rf_data);
 				rf_tr.rf_output = rf_data;
 				rf_ap.write(rf_tr);
@@ -114,6 +130,16 @@ task top_monitor::main_phase(uvm_phase phase);
 			else begin
 				wb_vld_ff = 1'b0;
 			end
+            if(lsu_ram_check)begin
+                rf_ram_check = 1'b1;
+                iram_ff = harness.u_tpu.u_lsu.iram.mem;
+                wram_ff = harness.u_tpu.u_lsu.wram.mem;
+                oram_lo_ff = harness.u_tpu.u_lsu.oram_lo.mem;
+                oram_hi_ff = harness.u_tpu.u_lsu.oram_hi.mem;
+            end
+            if((harness.u_tpu.u_rf.alu_lsu_wb_vld | harness.u_tpu.u_rf.alu_lsu_sb_op | harness.u_tpu.u_rf.alu_lsu_sh_op | harness.u_tpu.u_rf.alu_lsu_sw_op) & (count <= 2000))begin
+                lsu_ram_check = 1'b1;
+            end
 			limit_count = limit_count+1;
 		    //end
         end
