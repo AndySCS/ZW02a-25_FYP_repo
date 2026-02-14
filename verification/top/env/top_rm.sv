@@ -478,10 +478,126 @@ function rf_rlt_q top_rm::riscv_rf_cal();
         else if (instruction[6:0] == 'b0100011)begin
             rs1 = instruction[19:15];
             rs2 = instruction[24:20];
-            rd = instruction[11:7];
+            rs2_data = rf_output[rs2];
             rs1_data = rf_output[rs1];
-            rs2_data = {{24{1'b0}},{rs2}};
-            rd_data = 'b0;
+            offset = {{20{instruction[31]}},{instruction[31:20]}};
+            ram_addr = rs1_data + offset;
+            //SB
+            if(instruction[14:12] == 3'b000)begin
+                if(ram_addr[14:13]=='b00) begin
+                    ram_data = iram[ram_addr[11:4]];
+                    for (int i=ram_addr[3:0]*8; i>(ram_addr[3:0]*8)+8; i++)begin
+                        ram_data[i] = rs2_data[i-(ram_addr[3:0]*8)];
+                    end
+                    iram[ram_addr[11:4]] = ram_data;
+                end
+                else if (ram_addr[14:13]=='b10)begin
+                    ram_data = wram[ram_addr[11:4]];
+                    for (int i=ram_addr[3:0]*8; i>(ram_addr[3:0]*8)+8; i++)begin
+                        ram_data[i] = rs2_data[i-(ram_addr[3:0]*8)];
+                    end
+                    wram[ram_addr[11:4]] = ram_data;
+                end
+                else if (ram_addr[14:13]=='b01)begin
+                    if(ram_addr[12]=='b0)begin
+                        ram_data = oram_lo[ram_addr[11:4]];
+                        for (int i=ram_addr[3:0]*8; i>(ram_addr[3:0]*8)+8; i++)begin
+                            ram_data[i] = rs2_data[i-(ram_addr[3:0]*8)];
+                        end
+                        oram_lo[ram_addr[11:4]] = ram_data;
+                    end
+                    else begin
+                        ram_data = oram_hi[ram_addr[11:4]];
+                        for (int i=ram_addr[3:0]*8; i>(ram_addr[3:0]*8)+8; i++)begin
+                            ram_data[i] = rs2_data[i-(ram_addr[3:0]*8)];
+                        end
+                        oram_hi[ram_addr[11:4]] = ram_data;
+                    end
+                end
+                else begin         
+    			    `uvm_info("top_rm", "decode error found in SB", UVM_NONE);
+                    ram_data = 0;
+                end
+            end
+
+            //SH
+            else if(instruction[14:12] == 3'b001)begin 
+                if(ram_addr[14:13]=='b00) begin
+                    ram_data = iram[ram_addr[11:4]];
+                    for (int i=ram_addr[3:1]*16; i>(ram_addr[3:1]*16)+16; i++)begin
+                        ram_data[i] = rs2_data[i-(ram_addr[3:1]*16)];
+                    end
+                    iram[ram_addr[11:4]] = ram_data;
+                end
+                else if (ram_addr[14:13]=='b10)begin
+                    ram_data = wram[ram_addr[11:4]];
+                    for (int i=ram_addr[3:1]*16; i>(ram_addr[3:1]*16)+16; i++)begin
+                        ram_data[i] = rs2_data[i-(ram_addr[3:1]*16)];
+                    end
+                    wram[ram_addr[11:4]] = ram_data;
+                end
+                else if (ram_addr[14:13]=='b01)begin
+                    if(ram_addr[12]=='b0)begin
+                        ram_data = oram_lo[ram_addr[11:4]];
+                        for (int i=ram_addr[3:1]*16; i>(ram_addr[3:1]*16)+16; i++)begin
+                            ram_data[i] = rs2_data[i-(ram_addr[3:1]*16)];
+                        end
+                        oram_lo[ram_addr[11:4]] = ram_data;
+                    end
+                    else begin
+                        ram_data = oram_hi[ram_addr[11:4]];
+                        for (int i=ram_addr[3:1]*16; i>(ram_addr[3:1]*16)+16; i++)begin
+                            ram_data[i] = rs2_data[i-(ram_addr[3:1]*16)];
+                        end
+                        oram_hi[ram_addr[11:4]] = ram_data;
+                    end
+                end
+                else begin         
+    			    `uvm_info("top_rm", "decode error found in SH", UVM_NONE);
+                    ram_data = 0;
+                end
+            end
+
+            else if(instruction[14:12] == 3'b010)begin
+                if(ram_addr[14:13]=='b00) begin
+                    ram_data = iram[ram_addr[11:4]];
+                    for (int i=ram_addr[3:2]*32; i>(ram_addr[3:2]*32)+32; i++)begin
+                        ram_data[i] = rs2_data[i-(ram_addr[3:2]*32)];
+                    end
+                    iram[ram_addr[11:4]] = ram_data;
+                end
+                else if (ram_addr[14:13]=='b10)begin
+                    ram_data = wram[ram_addr[11:4]];
+                    for (int i=ram_addr[3:2]*32; i>(ram_addr[3:2]*32)+32; i++)begin
+                        ram_data[i] = rs2_data[i-(ram_addr[3:2]*32)];
+                    end
+                    wram[ram_addr[11:4]] = ram_data;
+                end
+                else if (ram_addr[14:13]=='b01)begin
+                    if(ram_addr[12]=='b0)begin
+                        ram_data = oram_lo[ram_addr[11:4]];
+                        for (int i=ram_addr[3:2]*32; i>(ram_addr[3:2]*32)+32; i++)begin
+                            ram_data[i] = rs2_data[i-(ram_addr[3:2]*32)];
+                        end
+                        oram_lo[ram_addr[11:4]] = ram_data;
+                    end
+                    else begin
+                        ram_data = oram_hi[ram_addr[11:4]];
+                        for (int i=ram_addr[3:2]*32; i>(ram_addr[3:2]*32)+32; i++)begin
+                            ram_data[i] = rs2_data[i-(ram_addr[3:2]*32)];
+                        end
+                        oram_hi[ram_addr[11:4]] = ram_data;
+                    end
+                end
+                else begin         
+    			    `uvm_info("top_rm", "decode error found in SW", UVM_NONE);
+                    ram_data = 0;
+                end
+            end
+            else begin         
+    			`uvm_info("top_rm", "decode error found in Store", UVM_NONE);
+            end
+            
             new_pc = pc+4;
         end
 
