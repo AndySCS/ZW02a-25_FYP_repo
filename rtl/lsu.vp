@@ -2413,9 +2413,9 @@ module lsu(
     assign lsu_riscv_dout_shift_raw = lsu_riscv_dout_raw >> (lsu_riscv_ld_data_shift*4'd8);
     assign lsu_riscv_dout = lsu_lb_op_ff ? {{24{lsu_riscv_dout_shift_raw[7]}},lsu_riscv_dout_shift_raw[7:0]}
                                          : lsu_lbu_op_ff ? {{24{1'b0}},lsu_riscv_dout_shift_raw[7:0]}
-                                         : lsu_lh_op_ff ? {{16{lsu_riscv_dout_shift_raw[7]}},lsu_riscv_dout_shift_raw[15:0]}
+                                         : lsu_lh_op_ff ? {{16{lsu_riscv_dout_shift_raw[15]}},lsu_riscv_dout_shift_raw[15:0]}
                                          : lsu_lhu_op_ff ? {{16{1'b0}},lsu_riscv_dout_shift_raw[15:0]}
-                                         : lsu_lw_op_ff ? {{16{lsu_riscv_dout_shift_raw[7]}},lsu_riscv_dout_shift_raw[31:0]} 
+                                         : lsu_lw_op_ff ? lsu_riscv_dout_shift_raw[31:0] 
                                          : {32{1'b0}};
 
     assign lsu_idu_wb_vld = ~lsu_riscv_ld_vld & alu_lsu_wb_vld & lsu_vld_qual;
@@ -2428,4 +2428,3 @@ module lsu(
     assign lsu_rf_wb_data = lsu_riscv_ld_vld_ff ? lsu_riscv_dout : lsu_wb_data_ff;
      
 endmodule   
-

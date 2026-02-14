@@ -538,6 +538,8 @@ endfunction;
 constraint instr_lb::cons_opcode{
     instr_opcode == 7'b0000011;
     instr_funct3 == 3'b000;
+    instr_rs1 == 'b0;
+    instr_imm <'h7ff;
 }
 //LH
 class instr_lh extends instr_itype;
@@ -552,6 +554,9 @@ endfunction;
 constraint instr_lh::cons_opcode{
     instr_opcode == 7'b0000011;
     instr_funct3 == 3'b001;
+
+    instr_rs1 == 'b0;
+    instr_imm <'h7ff;
 }
 //LW
 class instr_lw extends instr_itype;
@@ -566,6 +571,9 @@ endfunction;
 constraint instr_lw::cons_opcode{
     instr_opcode == 7'b0000011;
     instr_funct3 == 3'b010;
+
+    instr_rs1 == 'b0;
+    instr_imm <'h7ff;
 }
 //LBU
 class instr_lbu extends instr_itype;
@@ -580,6 +588,9 @@ endfunction;
 constraint instr_lbu::cons_opcode{
     instr_opcode == 7'b0000011;
     instr_funct3 == 3'b100;
+
+    instr_rs1 == 'b0;
+    instr_imm <'h7ff;
 }
 
 //LHU
@@ -595,6 +606,9 @@ endfunction;
 constraint instr_lhu::cons_opcode{
     instr_opcode == 7'b0000011;
     instr_funct3 == 3'b101;
+
+    instr_rs1 == 'b0;
+    instr_imm <'h7ff;
 }
 
 //JALR
