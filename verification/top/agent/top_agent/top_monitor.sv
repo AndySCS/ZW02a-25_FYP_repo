@@ -62,6 +62,9 @@ task top_monitor::main_phase(uvm_phase phase);
     bit[127:0] oram_lo [255:0];
     bit[127:0] oram_hi [255:0];
 
+    bit ld_invld;
+    bit st_vld;
+
     bit lsu_ram_check;
     bit rf_ram_check;
 
@@ -121,7 +124,7 @@ task top_monitor::main_phase(uvm_phase phase);
     	    			//`uvm_info(get_name(), "pushing data back", UVM_NONE);
 				count = count+1;
 			end
-	    	if(harness.u_tpu.u_rf.lsu_rf_wb_vld & count <= 2000)begin
+	    	if(harness.u_tpu.u_rf.lsu_rf_wb_vld & ~(ld_invld) & count <= 2000)begin
 	    		wb_vld_ff = harness.u_tpu.u_rf.lsu_rf_wb_vld;
 		    	wb_addr_ff = harness.u_tpu.u_rf.lsu_rf_wb_addr;
 		    	wb_data_ff = harness.u_tpu.u_rf.lsu_rf_wb_data;	
@@ -168,7 +171,27 @@ task top_monitor::main_phase(uvm_phase phase);
 	    else begin
 		rf_ram_check = 1'b0;
 	    end
-            if(((harness.u_tpu.u_lsu.alu_lsu_wb_vld & ~(&harness.u_top.u_lsu.alu_lsu_ld_st_addr[13:12])) | harness.u_tpu.u_lsu.alu_lsu_sb_op | harness.u_tpu.u_lsu.alu_lsu_sh_op | harness.u_tpu.u_lsu.alu_lsu_sw_op) & (count <= 2000))begin
+
+        //define invld ld
+        if(harness.u_tpu.u_lsu.alu_lsu_wb_vld
+            &(harness.u_tpu.u_lsu.alu_lsu_lb_op | harness.u_tpu.u_lsu.alu_lsu_lh_op | harness.u_tpu.u_lsu.alu_lsu_lw_op | harness.u_tpu.u_lsu.alu_lsu_lbu_op | harness.u_tpu.u_lsu.alu_lsu_lhu_op)
+            &~(harness.u_tpu.u_lsu.alu_lsu_ld_iram | harness.u_tpu.u_lsu.alu_lsu_ld_wram | harness.u_tpu.u_lsu.alu_lsu_ld_oram))begin
+            ld_invld = 1'b1;
+        end
+        else begin
+            ld_invld = 1'b0;
+        end
+
+        //define vld store
+        if((harness.u_tpu.u_lsu.alu_lsu_sb_op | harness.u_tpu.u_lsu.alu_lsu_sh_op | harness.u_tpu.u_lsu.alu_lsu_sw_op)
+            &(harness.u_tpu.u_lsu.alu_lsu_st_iram | harness.u_tpu.u_lsu.alu_lsu_st_wram | harness.u_tpu.u_lsu.alu_lsu_st_oram))begin
+            st_vld = 1'b1; 
+        end
+        else begin
+            st_vld = 1'b0;
+        end
+
+        if((harness.u_tpu.u_lsu.alu_lsu_wb_vld & (~ld_invld) | st_vld) & (count <= 2000))begin
                 lsu_ram_check = 1'b1;
             end
 	    else begin
@@ -181,3 +204,4 @@ task top_monitor::main_phase(uvm_phase phase);
 
 
 endtask
+
