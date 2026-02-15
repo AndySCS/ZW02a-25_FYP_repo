@@ -168,7 +168,7 @@ task top_monitor::main_phase(uvm_phase phase);
 	    else begin
 		rf_ram_check = 1'b0;
 	    end
-            if((harness.u_tpu.u_lsu.alu_lsu_wb_vld | harness.u_tpu.u_lsu.alu_lsu_sb_op | harness.u_tpu.u_lsu.alu_lsu_sh_op | harness.u_tpu.u_lsu.alu_lsu_sw_op) & (count <= 2000))begin
+            if(((harness.u_tpu.u_lsu.alu_lsu_wb_vld & ~(&harness.u_top.u_lsu.alu_lsu_ld_st_addr[13:12])) | harness.u_tpu.u_lsu.alu_lsu_sb_op | harness.u_tpu.u_lsu.alu_lsu_sh_op | harness.u_tpu.u_lsu.alu_lsu_sw_op) & (count <= 2000))begin
                 lsu_ram_check = 1'b1;
             end
 	    else begin

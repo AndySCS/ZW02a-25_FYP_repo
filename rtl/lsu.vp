@@ -1820,7 +1820,7 @@ module lsu(
                                             |alu_lsu_lh_op
                                             |alu_lsu_lw_op
                                             |alu_lsu_lbu_op
-                                            |alu_lsu_lhu_op);
+                                            |alu_lsu_lhu_op) & (alu_lsu_ld_st_addr[14:13] == 'b11);
 
     assign lsu_riscv_st_vld = lsu_vld_qual & (alu_lsu_sb_op | alu_lsu_sh_op | alu_lsu_sw_op);
     assign lsu_riscv_wb_vld = lsu_vld_qual & alu_lsu_wb_vld; 
