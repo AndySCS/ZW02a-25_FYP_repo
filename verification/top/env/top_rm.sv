@@ -1,4 +1,4 @@
-typedef bit[127:0][255:0] rf_rlt_q [$];
+typedef bit[255:0][127:0] rf_rlt_q [$];
 class top_rm extends uvm_component;
 
     uvm_blocking_get_port #(model_output_transaction) port;
@@ -153,11 +153,11 @@ function rf_rlt_q top_rm::riscv_rf_cal();
     int limit_count;
     bit [31:0] [31:0] rm_rf ;
     //bit [31:0] [31:0] rm_rf_q [$];
-    bit [127:0][255:0] rm_rf_q [$];
-    bit [127:0][255:0] iram;
-    bit [127:0][255:0] wram;
-    bit [127:0][255:0] oram_lo;
-    bit [127:0][255:0] oram_hi;
+    bit [255:0][127:0] rm_rf_q [$];
+    bit [255:0][127:0] iram;
+    bit [255:0][127:0] wram;
+    bit [255:0][127:0] oram_lo;
+    bit [255:0][127:0] oram_hi;
 
     while(1)begin 
         //pc 
@@ -811,3 +811,4 @@ function rf_rlt_q top_rm::riscv_rf_cal();
 
     return rm_rf_q;
 endfunction
+
