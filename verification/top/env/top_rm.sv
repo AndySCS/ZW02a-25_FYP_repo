@@ -793,6 +793,14 @@ function rf_rlt_q top_rm::riscv_rf_cal();
     	    //`uvm_info("top_rm", $sformatf("pc_count_num: %0h", pc_count_num), UVM_NONE);
 	        pc_count_num = pc_count_num+1;
 	    end
+        else if(instruction[6:0] == 'b0100011)begin   
+	        rm_rf_q.push_back(rm_rf);
+            rm_rf_q.push_back(pc);
+            rm_rf_q.push_back(iram);
+            rm_rf_q.push_back(wram);
+            rm_rf_q.push_back(oram_lo);
+            rm_rf_q.push_back(oram_hi);
+        end
 	    if(limit_count == 10000)begin	
     	    `uvm_info("top_rm", "reach 10000 limit count", UVM_NONE);
             break;
