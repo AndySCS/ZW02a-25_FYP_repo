@@ -773,7 +773,7 @@ function rf_rlt_q top_rm::riscv_rf_cal();
             |instruction[6:0] == 'b0000011 //load
             |instruction[6:0] == 'b0110111 //lui
             |instruction[6:0] == 'b0010111 //auipc
-            |instruction[6:0] == 'b1101111 // jal
+            |instruction[6:0] == 'b1101111 //jal
         )begin
     	    //`uvm_info("top_rm", "data need push", UVM_NONE);
 	        if(|rd)begin

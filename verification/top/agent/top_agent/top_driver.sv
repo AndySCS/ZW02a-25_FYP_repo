@@ -54,9 +54,21 @@ task top_driver::main_phase(uvm_phase phase);
      	  harness.u_tpu.u_lsu.iram.mem[i][63:32] = $urandom();
      	  harness.u_tpu.u_lsu.iram.mem[i][95:64] = $urandom();
      	  harness.u_tpu.u_lsu.iram.mem[i][127:96] = $urandom();
-     	  harness.u_tpu.u_lsu.wram.mem[i] = $urandom();
-     	  harness.u_tpu.u_lsu.oram_lo.mem[i] = $urandom();
-     	  harness.u_tpu.u_lsu.oram_hi.mem[i] = $urandom();
+
+     	  harness.u_tpu.u_lsu.wram.mem[i][31:0] = $urandom();
+     	  harness.u_tpu.u_lsu.wram.mem[i][63:32] = $urandom();
+     	  harness.u_tpu.u_lsu.wram.mem[i][95:64] = $urandom();
+     	  harness.u_tpu.u_lsu.wram.mem[i][127:96] = $urandom();
+
+     	  harness.u_tpu.u_lsu.oram_lo.mem[i][31:0] = $urandom();
+     	  harness.u_tpu.u_lsu.oram_lo.mem[i][63:32] = $urandom();
+     	  harness.u_tpu.u_lsu.oram_lo.mem[i][95:64] = $urandom();
+     	  harness.u_tpu.u_lsu.oram_lo.mem[i][127:96] = $urandom();
+
+     	  harness.u_tpu.u_lsu.oram_hi.mem[i][31:0] = $urandom();
+     	  harness.u_tpu.u_lsu.oram_hi.mem[i][63:32] = $urandom();
+     	  harness.u_tpu.u_lsu.oram_hi.mem[i][95:64] = $urandom();
+     	  harness.u_tpu.u_lsu.oram_hi.mem[i][127:96] = $urandom();
     end
     super.main_phase(phase);
     phase.raise_objection(this);

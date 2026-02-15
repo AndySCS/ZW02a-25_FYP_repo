@@ -17,8 +17,14 @@ class top_sc extends uvm_scoreboard;
 
     bit [255:0][127:0] sc_exp_iram_q[$];
     bit [255:0][127:0] sc_act_iram_q[$];
+    bit [255:0][127:0] sc_exp_wram_q[$];
+    bit [255:0][127:0] sc_act_wram_q[$];
+    bit [255:0][127:0] sc_exp_oram_lo_q[$];
+    bit [255:0][127:0] sc_act_oram_lo_q[$];
+    bit [255:0][127:0] sc_exp_oram_hi_q[$];
+    bit [255:0][127:0] sc_act_oram_hi_q[$];
 
-    function new(string name = "top_sc", uvm_component parent);
+	function new(string name = "top_sc", uvm_component parent);
         super.new(name, parent);
     endfunction
 
@@ -71,30 +77,53 @@ task top_sc::main_phase(uvm_phase phase);
 	    this.rf_q_rm_exp_port.get(rf_exp_result_q);
 	    sc_exp_rf_q = rf_exp_result_q.rf_output;
 	    sc_exp_iram_q = rf_exp_result_q.iram;
+	    sc_exp_wram_q = rf_exp_result_q.wram;
+	    sc_exp_oram_lo_q = rf_exp_result_q.oram_lo;
+	    sc_exp_oram_hi_q = rf_exp_result_q.oram_hi;
 	    //`uvm_info("top_sc", $sformatf("exp_data_size[%0h]", this.exp_test2_q.size()), UVM_NONE);
 	end
 	while(1)begin
 		this.rf_q_mon_act_port.get(rf_act_result_q);
 	   	sc_act_rf_q = rf_act_result_q.rf_output;
-	    	sc_act_iram_q = rf_act_result_q.iram;
-		    if (this.sc_act_rf_q.size() != this.sc_exp_rf_q.size())begin
-    			`uvm_info("top_sc", "error found,rf size not match", UVM_NONE);
-	         	`uvm_info("top_sc", $sformatf("act_rf_size[%0h]", this.sc_act_rf_q.size()), UVM_NONE);
-	         	`uvm_info("top_sc", $sformatf("exp_rf_size[%0h]", this.sc_exp_rf_q.size()), UVM_NONE);
-			end
-    		`uvm_info("top_sc", "check rf size pass", UVM_NONE);
+	    sc_act_iram_q = rf_act_result_q.iram;
+	    sc_act_wram_q = rf_act_result_q.wram;
+	    sc_act_oram_lo_q = rf_act_result_q.oram_lo;
+	    sc_act_oram_hi_q = rf_act_result_q.oram_hi;
+		if (this.sc_act_rf_q.size() != this.sc_exp_rf_q.size())begin
+    		`uvm_info("top_sc", "error found,rf size not match", UVM_NONE);
+	        `uvm_info("top_sc", $sformatf("act_rf_size[%0h]", this.sc_act_rf_q.size()), UVM_NONE);
+	        `uvm_info("top_sc", $sformatf("exp_rf_size[%0h]", this.sc_exp_rf_q.size()), UVM_NONE);
+		end
+    	`uvm_info("top_sc", "check rf size pass", UVM_NONE);
 
-		    if (this.sc_act_iram_q.size() != this.sc_exp_iram_q.size())begin
-    			`uvm_info("top_sc", "error found,iram size not match", UVM_NONE);
-	         	`uvm_info("top_sc", $sformatf("act_iram_size[%0h]", this.sc_act_iram_q.size()), UVM_NONE);
-	         	`uvm_info("top_sc", $sformatf("exp_iram_size[%0h]", this.sc_exp_iram_q.size()), UVM_NONE);
-			end
-    		`uvm_info("top_sc", "check iram size pass", UVM_NONE);
+		if (this.sc_act_iram_q.size() != this.sc_exp_iram_q.size())begin
+    		`uvm_info("top_sc", "error found,iram size not match", UVM_NONE);
+	        `uvm_info("top_sc", $sformatf("act_iram_size[%0h]", this.sc_act_iram_q.size()), UVM_NONE);
+	        `uvm_info("top_sc", $sformatf("exp_iram_size[%0h]", this.sc_exp_iram_q.size()), UVM_NONE);
+		end
+    	`uvm_info("top_sc", "check iram size pass", UVM_NONE);
 
-	        //`uvm_info("top_sc", $sformatf("act_iram_size[%0h]", this.sc_act_iram_q.size()), UVM_NONE);
-	        //`uvm_info("top_sc", $sformatf("exp_iram_size[%0h]", this.sc_exp_iram_q.size()), UVM_NONE);
-	        //`uvm_info("top_sc", $sformatf("act_iram_data[%0h]", this.sc_act_iram_q[0]), UVM_NONE);
-	        //`uvm_info("top_sc", $sformatf("exp_iram_data[%0h]", this.sc_exp_iram_q[0]), UVM_NONE);
+		if (this.sc_act_wram_q.size() != this.sc_exp_wram_q.size())begin
+    		`uvm_info("top_sc", "error found,wram size not match", UVM_NONE);
+	        `uvm_info("top_sc", $sformatf("act_wram_size[%0h]", this.sc_act_wram_q.size()), UVM_NONE);
+	        `uvm_info("top_sc", $sformatf("exp_wram_size[%0h]", this.sc_exp_wram_q.size()), UVM_NONE);
+		end
+
+		if (this.sc_act_oram_lo_q.size() != this.sc_exp_oram_lo_q.size())begin
+    		`uvm_info("top_sc", "error found,oram_lo size not match", UVM_NONE);
+	        `uvm_info("top_sc", $sformatf("act_oram_lo_size[%0h]", this.sc_act_oram_lo_q.size()), UVM_NONE);
+	        `uvm_info("top_sc", $sformatf("exp_oram_lo_size[%0h]", this.sc_exp_oram_lo_q.size()), UVM_NONE);
+		end
+
+		if (this.sc_act_oram_hi_q.size() != this.sc_exp_oram_hi_q.size())begin
+    		`uvm_info("top_sc", "error found,oram_hi size not match", UVM_NONE);
+	        `uvm_info("top_sc", $sformatf("act_oram_hi_size[%0h]", this.sc_act_oram_hi_q.size()), UVM_NONE);
+	        `uvm_info("top_sc", $sformatf("exp_oram_hi_size[%0h]", this.sc_exp_oram_hi_q.size()), UVM_NONE);
+		end
+	    //`uvm_info("top_sc", $sformatf("act_iram_size[%0h]", this.sc_act_iram_q.size()), UVM_NONE);
+	    //`uvm_info("top_sc", $sformatf("exp_iram_size[%0h]", this.sc_exp_iram_q.size()), UVM_NONE);
+	    //`uvm_info("top_sc", $sformatf("act_iram_data[%0h]", this.sc_act_iram_q[0]), UVM_NONE);
+	    //`uvm_info("top_sc", $sformatf("exp_iram_data[%0h]", this.sc_exp_iram_q[0]), UVM_NONE);
 	    //`uvm_info("top_sc", $sformatf("act_data: data[%0h]", rf_act_result_q.rf_output[0]), UVM_NONE);
 		count = 0;
 		while(1)begin
@@ -116,6 +145,7 @@ task top_sc::main_phase(uvm_phase phase);
 	         	`uvm_info("top_sc", $sformatf("act_data_size[%0h]", this.sc_act_rf_q.size()), UVM_NONE);
 	       	 	//`uvm_info("top_sc", $sformatf("act_data:  data[%0h]", sc_act_rf_q[0]), UVM_NONE);
 	       	 	//`uvm_info("top_sc", $sformatf("exp_data:  data[%0h]", sc_exp_rf_q[0]), UVM_NONE);
+				
 				//iram
 		   		for (int i=0; i<256; i++)begin
 					if(sc_act_iram_q[0][i] != sc_exp_iram_q[0][i])begin
@@ -129,6 +159,49 @@ task top_sc::main_phase(uvm_phase phase);
 		    	end
     		    `uvm_info("top_sc", "iram pass", UVM_NONE);
 	         	`uvm_info("top_sc", $sformatf("act_data_size[%0h]", this.sc_act_iram_q.size()), UVM_NONE);
+
+				//wram
+		   		for (int i=0; i<256; i++)begin
+					if(sc_act_wram_q[0][i] != sc_exp_wram_q[0][i])begin
+    					`uvm_info("top_sc", "ERROR wram act not macth with exp", UVM_NONE);
+						`uvm_error("top_sc", $sformatf("ERROR wram row %h", i))					
+	       	 			`uvm_info("top_sc", $sformatf("act_data:  data[%0h]", sc_act_wram_q[0][i]), UVM_NONE);
+	       	 			`uvm_info("top_sc", $sformatf("exp_data:  data[%0h]", sc_exp_wram_q[0][i]), UVM_NONE);
+    					`uvm_info("top_sc", "\n===================================================================\n", UVM_NONE);
+					end
+					//`uvm_info("top_sc", $sformatf("act_data from mon: [%d], data[%0h]",i, rf_mon_act_tr.rf_output), UVM_NONE);
+		    	end
+    		    `uvm_info("top_sc", "wram pass", UVM_NONE);
+	         	`uvm_info("top_sc", $sformatf("act_data_size[%0h]", this.sc_act_wram_q.size()), UVM_NONE);
+
+				//oram_lo
+		   		for (int i=0; i<256; i++)begin
+					if(sc_act_oram_lo_q[0][i] != sc_exp_oram_lo_q[0][i])begin
+    					`uvm_info("top_sc", "ERROR oram_lo act not macth with exp", UVM_NONE);
+						`uvm_error("top_sc", $sformatf("ERROR oram_lo row %h", i))					
+	       	 			`uvm_info("top_sc", $sformatf("act_data:  data[%0h]", sc_act_oram_lo_q[0][i]), UVM_NONE);
+	       	 			`uvm_info("top_sc", $sformatf("exp_data:  data[%0h]", sc_exp_oram_lo_q[0][i]), UVM_NONE);
+    					`uvm_info("top_sc", "\n===================================================================\n", UVM_NONE);
+					end
+					//`uvm_info("top_sc", $sformatf("act_data from mon: [%d], data[%0h]",i, rf_mon_act_tr.rf_output), UVM_NONE);
+		    	end
+    		    `uvm_info("top_sc", "oram_lo pass", UVM_NONE);
+	         	`uvm_info("top_sc", $sformatf("act_data_size[%0h]", this.sc_act_oram_lo_q.size()), UVM_NONE);
+
+				//oram_hi
+		   		for (int i=0; i<256; i++)begin
+					if(sc_act_oram_hi_q[0][i] != sc_exp_oram_hi_q[0][i])begin
+    					`uvm_info("top_sc", "ERROR oram_hi act not macth with exp", UVM_NONE);
+						`uvm_error("top_sc", $sformatf("ERROR oram_hi row %h", i))					
+	       	 			`uvm_info("top_sc", $sformatf("act_data:  data[%0h]", sc_act_oram_hi_q[0][i]), UVM_NONE);
+	       	 			`uvm_info("top_sc", $sformatf("exp_data:  data[%0h]", sc_exp_oram_hi_q[0][i]), UVM_NONE);
+    					`uvm_info("top_sc", "\n===================================================================\n", UVM_NONE);
+					end
+					//`uvm_info("top_sc", $sformatf("act_data from mon: [%d], data[%0h]",i, rf_mon_act_tr.rf_output), UVM_NONE);
+		    	end
+    		    `uvm_info("top_sc", "oram_hi pass", UVM_NONE);
+	         	`uvm_info("top_sc", $sformatf("act_data_size[%0h]", this.sc_act_oram_hi_q.size()), UVM_NONE);
+
 	       	 	//`uvm_info("top_sc", $sformatf("act_data:  data[%0h]", sc_act_iram_q[0]), UVM_NONE);
 	       	 	//`uvm_info("top_sc", $sformatf("exp_data:  data[%0h]", sc_exp_iram_q[0]), UVM_NONE);
     		    `uvm_info("top_sc", "\n===================================================================\n", UVM_NONE);
