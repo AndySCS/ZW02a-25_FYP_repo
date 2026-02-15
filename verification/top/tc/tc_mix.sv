@@ -19,7 +19,8 @@ function void `tc_name::build_phase(uvm_phase phase);
 endfunction
 
 task `tc_name::run_phase(uvm_phase phase);
-
+    mix_seq mix_test = mix_seq::type_id::create("mix_test");
+    mix_test.start(null);
 endtask
 
 `undef tc_name
