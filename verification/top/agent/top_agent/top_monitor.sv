@@ -106,6 +106,10 @@ task top_monitor::main_phase(uvm_phase phase);
                     rf_data[i] = rf_data_raw[i];
                 end
 
+    	    	//`uvm_info("top_mon", $sformatf("ram_check :%0h", rf_ram_check), UVM_NONE);
+    	    	//`uvm_info("top_mon", $sformatf("ram_check2 :%0h", wb_vld_ff), UVM_NONE);
+    	    	//`uvm_info("top_mon", $sformatf("count :%0d", limit_count), UVM_NONE);
+
     	    	//`uvm_info("top_mon", $sformatf("iram_data2:%0h", iram_data), UVM_NONE);
 				rf_q_tr.rf_output.push_back(rf_data);
                 rf_q_tr.iram.push_back(iram_data);
@@ -161,9 +165,15 @@ task top_monitor::main_phase(uvm_phase phase);
 	    	    end
     	    	//`uvm_info("top_mon", $sformatf("iram_data:%0h", iram_ff), UVM_NONE);
             end
+	    else begin
+		rf_ram_check = 1'b0;
+	    end
             if((harness.u_tpu.u_lsu.alu_lsu_wb_vld | harness.u_tpu.u_lsu.alu_lsu_sb_op | harness.u_tpu.u_lsu.alu_lsu_sh_op | harness.u_tpu.u_lsu.alu_lsu_sw_op) & (count <= 2000))begin
                 lsu_ram_check = 1'b1;
             end
+	    else begin
+                lsu_ram_check = 1'b0;
+	    end
 			limit_count = limit_count+1;
 		    //end
         end
