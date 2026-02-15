@@ -1,4 +1,5 @@
-typedef bit[31:0][31:0] rf_rlt_q [$];
+//typedef bit[31:0][31:0] rf_rlt_q [$];
+typedef bit[$][$] rf_rlt_q [$];
 class top_rm extends uvm_component;
 
     uvm_blocking_get_port #(model_output_transaction) port;
@@ -69,10 +70,14 @@ task top_rm::main_phase(uvm_phase phase);
 	    rf_exp_rlt =  riscv_rf_cal();
 	    rf_exp_rlt_size = rf_exp_rlt.size();
 	    //`uvm_info("top_rm", $sformatf("rf_port test: %0h", rf_exp_rlt_size/2), UVM_NONE);
-	    for (int i=0; i<(rf_exp_rlt_size/2); i++)begin
+	    for (int i=0; i<(rf_exp_rlt_size/6); i++)begin
 		    rf_q_tr.rf_output.push_back(rf_exp_rlt.pop_front());
-            	    rf_pc = rf_exp_rlt.pop_front();
-	            //`uvm_info("top_rm", $sformatf("rf pc: %0h", rf_pc), UVM_NONE);
+            rf_pc = rf_exp_rlt.pop_front();
+		    rf_q_tr.iram.push_back(rf_exp_rlt.pop_front());
+		    //rf_q_tr.wram.push_back(rf_exp_rlt.pop_front());
+		    //rf_q_tr.oram_lo.push_back(rf_exp_rlt.pop_front());
+		    //rf_q_tr.oram_hi.push_back(rf_exp_rlt.pop_front());
+	        //`uvm_info("top_rm", $sformatf("rf pc: %0h", rf_pc), UVM_NONE);
 	    end	
 	    rf_q_ap.write(rf_q_tr);	
     end
@@ -148,7 +153,8 @@ function rf_rlt_q top_rm::riscv_rf_cal();
     bit [31:0] pc_count_num;
     int limit_count;
     bit [31:0] [31:0] rm_rf ;
-    bit [31:0] [31:0] rm_rf_q [$];
+    //bit [31:0] [31:0] rm_rf_q [$];
+    bit [$][$] rm_rf_q [$];
     bit [127:0] iram [255:0];
     bit [127:0] wram [255:0];
     bit [127:0] oram_lo [255:0];
@@ -777,12 +783,17 @@ function rf_rlt_q top_rm::riscv_rf_cal();
 		        rm_rf[rd] = 'b0;
             	rf_output[rd] = 'b0;
 	        end
-	        rm_rf_q.push_back(rm_rf);
+	            rm_rf_q.push_back(rm_rf);
             	rm_rf_q.push_back(pc);
+                rm_rf_q.push_back(iram);
+                //rm_rf_q.push_back(wram);
+                //rm_rf_q.push_back(oram_lo);
+                //rm_rf_q.push_back(oram_hi);
 
     	    //`uvm_info("top_rm", $sformatf("pc_count_num: %0h", pc_count_num), UVM_NONE);
 	        pc_count_num = pc_count_num+1;
 	    end
+        if()
 	    if(limit_count == 10000)begin	
     	    `uvm_info("top_rm", "reach 10000 limit count", UVM_NONE);
             break;
