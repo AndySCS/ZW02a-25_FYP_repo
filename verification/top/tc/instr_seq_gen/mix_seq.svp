@@ -1,0 +1,79 @@
+`ifndef MIX_SEQ_SV
+`define MIX_SEQ_SV
+
+class mix_seq extends uvm_sequence;
+    `uvm_object_utils(mix_seq);	
+
+    instr_itype itype;	
+    instr_utype utype;
+    instr_rtype rtype;
+    instr_btype btype;
+    instr_jtype jtype;
+
+    extern function new(string name="mix_seq");
+    extern task body();
+endclass
+
+
+function mix_seq::new(string name="mix_seq");
+    super.new(name);
+endfunction
+
+task mix_seq::body();
+    static bit [255:0][127:0] ram_tmp;
+    static bit [127:0] ram_tmp_pre;
+    static int ram_count;
+
+    for(int i = 0; i < 1024; i++) begin
+        itype = new();	
+        utype = new();
+        rtype = new();
+        btype = new();
+        jtype = new();
+
+        itype.randomize();	
+        utype.randomize();
+        rtype.randomize();
+        btype.randomize();
+        jtype.randomize();
+
+        itype.pack();	
+        utype.pack();
+        rtype.pack();
+        btype.pack();
+        jtype.pack();
+
+	    if(i==0)begin
+		    ram_tmp_pre[31:0] = btype.instruction;
+	    end
+        else if(i%4 == 1)begin
+		    ram_tmp_pre[63:32] = itype.instruction;
+	    end
+        else if(i%4 == 2)begin
+		    ram_tmp_pre[95:64] = rtype.instruction;
+	    end
+        else if(i%4 == 3)begin
+		    ram_tmp_pre[127:96] = utype.instruction;
+	    end
+	    else begin
+		    ram_tmp[ram_count] = ram_tmp_pre;
+		    ram_count = ram_count+1;
+		    ram_tmp_pre[31:0] = jtype.instruction;
+	    end
+    end
+ 
+
+    ram_tmp[255][31:0] = 'h7f;
+    ram_tmp[255][63:32] = 'h7f; 
+    ram_tmp[255][95:64] = 'h7f; 
+    ram_tmp[255][127:96] = 'h7f; 
+    //:for($i = 0; $i < 256;$i++){    
+    force harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[{$i}] = ram_tmp[{$i}];
+    //:}
+   	`uvm_info(get_type_name(), "MIX IMEM INIT FINISH", UVM_NONE)
+endtask
+
+`endif
+
+
+

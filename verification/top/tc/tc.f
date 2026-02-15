@@ -8,6 +8,7 @@ $MINITPU_VER/top/tc/instr_seq_gen/utype_seq.sv
 $MINITPU_VER/top/tc/instr_seq_gen/stype_seq.sv
 $MINITPU_VER/top/tc/instr_seq_gen/btype_seq.sv
 $MINITPU_VER/top/tc/instr_seq_gen/jtype_seq.sv
+$MINITPU_VER/top/tc/instr_seq_gen/mix_seq.sv
 
 $MINITPU_VER/top/tc/tc_sanity.sv
 $MINITPU_VER/top/tc/tc_rtype.sv
