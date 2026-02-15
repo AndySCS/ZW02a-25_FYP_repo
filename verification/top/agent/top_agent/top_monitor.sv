@@ -44,8 +44,9 @@ task top_monitor::main_phase(uvm_phase phase);
     bit wb_vld_ff;
     bit[4:0] wb_addr_ff;
     bit[31:0] wb_data_ff;
-    bit[31:0][31:0] rf_data;
-    bit[31:0][31:0] rf_data_q[$];
+    bit[31:0] rf_data_raw [31:0];
+    bit[31:0][31:0]rf_data;
+    bit[31:0][31:0]rf_data_q[$];
     int cycle_count;
     int dut_size;
     bit[127:0][255:0] iram_data;
@@ -56,6 +57,10 @@ task top_monitor::main_phase(uvm_phase phase);
     bit[127:0][255:0] wram_ff;
     bit[127:0][255:0] oram_lo_ff;
     bit[127:0][255:0] oram_hi_ff;
+    bit[127:0] iram [255:0];
+    bit[127:0] wram [255:0];
+    bit[127:0] oram_lo [255:0];
+    bit[127:0] oram_hi [255:0];
 
     bit lsu_ram_check;
     bit rf_ram_check;
@@ -92,19 +97,19 @@ task top_monitor::main_phase(uvm_phase phase);
 		    //while(1)begin
             @(posedge top_if.clk)
 			if(wb_vld_ff | rf_ram_check)begin
-				//if(wb_addr_ff != 'b0)begin
-				//    rf_data[wb_addr_ff] = wb_data_ff;
-				//end
                 iram_data    = iram_ff;
                 wram_data    = wram_ff;
                 oram_lo_data = oram_lo_ff;
                 oram_hi_data = oram_hi_ff;
-                rf_data = harness.u_tpu.u_rf.rf_data;
+                rf_data_raw = harness.u_tpu.u_rf.rf_data;
+                for(int i=0; i<32; i++)begin
+                    rf_data[i] = rf_data_raw[i];
+                end
 				rf_q_tr.rf_output.push_back(rf_data);
                 rf_q_tr.iram.push_back(iram_data);
-                //rf_q_tr.iram.push_back(wram_data);
-                //rf_q_tr.iram.push_back(oram_lo_data);
-                //rf_q_tr.iram.push_back(oram_hi_data);
+                rf_q_tr.iram.push_back(wram_data);
+                rf_q_tr.iram.push_back(oram_lo_data);
+                rf_q_tr.iram.push_back(oram_hi_data);
 				rf_tr.rf_output = rf_data;
 				rf_ap.write(rf_tr);
     	    			//`uvm_info(get_name(), "pushing data back", UVM_NONE);
@@ -136,12 +141,19 @@ task top_monitor::main_phase(uvm_phase phase);
 			end
             if(lsu_ram_check)begin
                 rf_ram_check = 1'b1;
-                iram_ff = harness.u_tpu.u_lsu.iram.mem;
-                wram_ff = harness.u_tpu.u_lsu.wram.mem;
-                oram_lo_ff = harness.u_tpu.u_lsu.oram_lo.mem;
-                oram_hi_ff = harness.u_tpu.u_lsu.oram_hi.mem;
+                iram = harness.u_tpu.u_lsu.iram.mem;
+                wram = harness.u_tpu.u_lsu.wram.mem;
+                oram_lo = harness.u_tpu.u_lsu.oram_lo.mem;
+                oram_hi = harness.u_tpu.u_lsu.oram_hi.mem;
+                for (int i=0; i>256; i++)begin
+                    iram_ff[i] = iram[i];
+                    wram_ff[i] = wram[i];
+                    oram_lo_ff[i] = oram_lo[i];
+                    oram_hi_ff[i] = oram_hi[i];
+
+                end
             end
-            if((harness.u_tpu.u_rf.alu_lsu_wb_vld | harness.u_tpu.u_rf.alu_lsu_sb_op | harness.u_tpu.u_rf.alu_lsu_sh_op | harness.u_tpu.u_rf.alu_lsu_sw_op) & (count <= 2000))begin
+            if((harness.u_tpu.u_lsu.alu_lsu_wb_vld | harness.u_tpu.u_lsu.alu_lsu_sb_op | harness.u_tpu.u_lsu.alu_lsu_sh_op | harness.u_tpu.u_lsu.alu_lsu_sw_op) & (count <= 2000))begin
                 lsu_ram_check = 1'b1;
             end
 			limit_count = limit_count+1;
@@ -151,3 +163,4 @@ task top_monitor::main_phase(uvm_phase phase);
 
 
 endtask
+

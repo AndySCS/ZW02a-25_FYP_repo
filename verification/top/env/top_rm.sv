@@ -1,5 +1,4 @@
-//typedef bit[31:0][31:0] rf_rlt_q [$];
-typedef bit[$][$] rf_rlt_q [$];
+typedef bit[127:0][255:0] rf_rlt_q [$];
 class top_rm extends uvm_component;
 
     uvm_blocking_get_port #(model_output_transaction) port;
@@ -74,9 +73,9 @@ task top_rm::main_phase(uvm_phase phase);
 		    rf_q_tr.rf_output.push_back(rf_exp_rlt.pop_front());
             rf_pc = rf_exp_rlt.pop_front();
 		    rf_q_tr.iram.push_back(rf_exp_rlt.pop_front());
-		    //rf_q_tr.wram.push_back(rf_exp_rlt.pop_front());
-		    //rf_q_tr.oram_lo.push_back(rf_exp_rlt.pop_front());
-		    //rf_q_tr.oram_hi.push_back(rf_exp_rlt.pop_front());
+		    rf_q_tr.wram.push_back(rf_exp_rlt.pop_front());
+		    rf_q_tr.oram_lo.push_back(rf_exp_rlt.pop_front());
+		    rf_q_tr.oram_hi.push_back(rf_exp_rlt.pop_front());
 	        //`uvm_info("top_rm", $sformatf("rf pc: %0h", rf_pc), UVM_NONE);
 	    end	
 	    rf_q_ap.write(rf_q_tr);	
@@ -154,25 +153,27 @@ function rf_rlt_q top_rm::riscv_rf_cal();
     int limit_count;
     bit [31:0] [31:0] rm_rf ;
     //bit [31:0] [31:0] rm_rf_q [$];
-    bit [$][$] rm_rf_q [$];
-    bit [127:0] iram [255:0];
-    bit [127:0] wram [255:0];
-    bit [127:0] oram_lo [255:0];
-    bit [127:0] oram_hi [255:0];
+    bit [127:0][255:0] rm_rf_q [$];
+    bit [127:0][255:0] iram;
+    bit [127:0][255:0] wram;
+    bit [127:0][255:0] oram_lo;
+    bit [127:0][255:0] oram_hi;
 
     while(1)begin 
         //pc 
         if(start_tr.start_vld & ~pc_count)begin
-	    pc_count_num = 0;
+	        pc_count_num = 0;
             pc = start_tr.start_addr;
-	    for (int i=0; i <32; i++)begin
-		rm_rf[i] = 'b0;
-    	    	//`uvm_info("top_rm", $sformatf("rf:%0h ,%0h", i,rm_rf[i]), UVM_NONE);
-	    end
-	    iram = start_tr.start_iram;
-	    wram = start_tr.start_wram;
-	    oram_lo = start_tr.start_oram_lo;
-	    oram_hi = start_tr.start_oram_hi;
+	        for (int i=0; i <32; i++)begin
+		        rm_rf[i] = 'b0;
+    	        //`uvm_info("top_rm", $sformatf("rf:%0h ,%0h", i,rm_rf[i]), UVM_NONE);
+	        end
+            for (int i=0; i<256; i++)begin
+	            iram[i] = start_tr.start_iram[i];
+	            wram[i] = start_tr.start_wram[i];
+	            oram_lo[i] = start_tr.start_oram_lo[i];
+	            oram_hi[i] = start_tr.start_oram_hi[i];
+            end
     	    //`uvm_info("top_rm", $sformatf("iram0:%0h", iram[0]), UVM_NONE);
     	    //`uvm_info("top_rm", $sformatf("wram0:%0h", wram[0]), UVM_NONE);
     	    //`uvm_info("top_rm", $sformatf("oram_lo0:%0h", oram_lo[0]), UVM_NONE);
@@ -181,6 +182,7 @@ function rf_rlt_q top_rm::riscv_rf_cal();
         else begin
             pc = new_pc;
         end
+
         if(pc[3:2] == 2'b00)begin
    	        instruction = start_tr.start_imem[pc[31:4]][31:0];
         end
@@ -195,7 +197,8 @@ function rf_rlt_q top_rm::riscv_rf_cal();
         end
         //`uvm_info("pc", $sformatf("pc: %0h", pc), UVM_NONE);
         //`uvm_info("instr", $sformatf("instr: %0h", instruction), UVM_NONE);
-        //decode
+
+        //Decode part
         //rtype
         if (instruction[6:0] == 'b0110011)begin
             rs1 = instruction[19:15];
@@ -255,11 +258,10 @@ function rf_rlt_q top_rm::riscv_rf_cal();
             else if (instruction[14:12] == 'b111)begin
                 rd_data = rs1_data & rs2_data;
             end
-	    else begin
-    		`uvm_info("top_rm", "decode error found in Rtype", UVM_NONE);
-	    end
-
-	    new_pc = pc+4;
+	        else begin
+    		    `uvm_info("top_rm", "decode error found in Rtype", UVM_NONE);
+	        end
+	        new_pc = pc+4;
         end
 
         //itype normal operation
@@ -305,7 +307,7 @@ function rf_rlt_q top_rm::riscv_rf_cal();
                 end
                 else begin
                     shift_data = {32{rs1_data[31]}} << (32-shamt);	
-		    rd_data = shift_data | (rs1_data >> shamt);
+		            rd_data = shift_data | (rs1_data >> shamt);
                 end
             end
             //or
@@ -368,7 +370,7 @@ function rf_rlt_q top_rm::riscv_rf_cal();
                             ram_data = 0;
                 end
 		        ram_data_raw = ram_data >> (ram_addr[3:0]*8);
-                	rd_data = {{24{ram_data_raw[7]}},{ram_data_raw[7:0]}};
+                rd_data = {{24{ram_data_raw[7]}},{ram_data_raw[7:0]}};
     	    	//`uvm_info("top_rm", $sformatf("ram_data_raw:%0h", ram_data_raw), UVM_NONE);
     	    	//`uvm_info("top_rm", $sformatf("ram_data:%0h", ram_data), UVM_NONE);
     	    	//`uvm_info("top_rm", $sformatf("rd_data_sign:%0h", ram_data_raw[7]), UVM_NONE);
@@ -416,7 +418,7 @@ function rf_rlt_q top_rm::riscv_rf_cal();
                 end
                 else begin         
     			    `uvm_info("top_rm", "decode error found in LW", UVM_NONE);
-                            ram_data = 0;
+                    ram_data = 0;
                 end
 		        ram_data = ram_data >> (ram_addr[3:2]*32);
                 rd_data = ram_data[31:0];
@@ -443,7 +445,7 @@ function rf_rlt_q top_rm::riscv_rf_cal();
                 end
                 else begin         
     			    `uvm_info("top_rm", "decode error found in LBU", UVM_NONE);
-                            ram_data = 0;
+                    ram_data = 0;
                 end
 		        ram_data_raw = ram_data >> (ram_addr[3:0]*8);
                 rd_data = {{24{1'b0}},ram_data_raw[7:0]};
@@ -469,7 +471,7 @@ function rf_rlt_q top_rm::riscv_rf_cal();
                 end
                 else begin         
     			    `uvm_info("top_rm", "decode error found in LHU", UVM_NONE);
-                            ram_data = 0;
+                    ram_data = 0;
                 end
 		        ram_data = ram_data >> (ram_addr[3:1]*16);
                 rd_data = {{16{1'b0}},ram_data[15:0]};
@@ -773,7 +775,6 @@ function rf_rlt_q top_rm::riscv_rf_cal();
             |instruction[6:0] == 'b0010111 //auipc
             |instruction[6:0] == 'b1101111 // jal
         )begin
-
     	    //`uvm_info("top_rm", "data need push", UVM_NONE);
 	        if(|rd)begin
 		        rm_rf[rd] = rd_data;
@@ -783,17 +784,15 @@ function rf_rlt_q top_rm::riscv_rf_cal();
 		        rm_rf[rd] = 'b0;
             	rf_output[rd] = 'b0;
 	        end
-	            rm_rf_q.push_back(rm_rf);
-            	rm_rf_q.push_back(pc);
-                rm_rf_q.push_back(iram);
-                //rm_rf_q.push_back(wram);
-                //rm_rf_q.push_back(oram_lo);
-                //rm_rf_q.push_back(oram_hi);
-
+	        rm_rf_q.push_back(rm_rf);
+            rm_rf_q.push_back(pc);
+            rm_rf_q.push_back(iram);
+            rm_rf_q.push_back(wram);
+            rm_rf_q.push_back(oram_lo);
+            rm_rf_q.push_back(oram_hi);
     	    //`uvm_info("top_rm", $sformatf("pc_count_num: %0h", pc_count_num), UVM_NONE);
 	        pc_count_num = pc_count_num+1;
 	    end
-        if()
 	    if(limit_count == 10000)begin	
     	    `uvm_info("top_rm", "reach 10000 limit count", UVM_NONE);
             break;
@@ -803,6 +802,4 @@ function rf_rlt_q top_rm::riscv_rf_cal();
     end
 
     return rm_rf_q;
-    //return rm_rf_q;
 endfunction
-
