@@ -31,54 +31,112 @@ task mxu_monitor::main_phase(uvm_phase phase);
     int pack_cnt [15:0];
     int num_of_pack = 4;
     int input_size = 785;
+    int second_layer_input_size = 57;
     int perceptron_size = 56;
-    int input_check_cnt;
-    bit [785*4-1:0][7:0] iram_data;
-    bit [785*16-1:0][7:0] wram_data;
-    bit [127:0] wram_data_tmp;
-    bit [784:0] [7:0] iram_data_all;
+
+    bit [785*4+57-1:0] [7:0] iram_data;
+    bit [785*56+569:0] [7:0] wram_data;
+    bit [127:0]              wram_data_tmp;
+    bit [784:0]        [7:0] iram_data_all;
+
+    int                   first_layer_ouput [55:0];
+
+    bit [56:0]      [7:0] second_layer_input;
     bit mon_begin;
+    bit [2:0] input_fsm;
+    bit [2:0] perceptron0to15  = 3'b000;
+    bit [2:0] perceptron16to31 = 3'b001;
+    bit [2:0] perceptron32to47 = 3'b010;
+    bit [2:0] perceptron48to55 = 3'b011;
+    bit [2:0] second_layer     = 3'b100;
+
+    int wram_data_idx;
+    int wram_data_idx_scd_layer;
+    int cur_pack;
+    int cur_pack_addr;
 
     model_read_transaction tr;
 
     tr = model_read_transaction::type_id::create("tr");
-    iram_data_all = {8'b1, tr.img_array};
+
+    iram_data_all      = {8'b1, tr.img_array};
+
+    for(int i = 0; i < 56; i++)begin
+        for(int j = 0; j < 785; j++)begin
+            first_layer_ouput[i] += int'($signed(iram_data_all[j]) * $signed(tr.first_layer_weight[j+i*785]));
+            if(first_layer_ouput[i] > 32767)  first_layer_ouput[i] = 32767;
+            if(first_layer_ouput[i] < -32768) first_layer_ouput[i] = -32768;
+        end
+        
+        if(first_layer_ouput[i] < 0) first_layer_ouput[i] = 0;
+
+        second_layer_input[i] = first_layer_ouput[i][7:0];
+        if(first_layer_ouput[i] > 127)  second_layer_input[i] = 127;
+        if(first_layer_ouput[i] < -128) second_layer_input[i] = -128;
+    end
+
+    second_layer_input = {8'b1, second_layer_input};
 
     while (1) begin 
         @(posedge mxu_if.clk);
         if (mxu_if.lsu_mxu_iram_vld[0]) begin
             iram_data[iram_cnt] = mxu_if.lsu_mxu_iram_pld[7:0];
-            if(iram_data[iram_cnt] !== iram_data_all[iram_cnt%input_size]) begin
-                `uvm_error(get_name(), $sformatf("data mismatch at index %0d, img index %d: iram_data = 0x%0h, img_array = 0x%0h", iram_cnt,iram_cnt%input_size, iram_data[iram_cnt], iram_data_all[iram_cnt%input_size]))
+            if(input_fsm != second_layer)begin
+                if(iram_data[iram_cnt] !== iram_data_all[iram_cnt%input_size]) begin
+                    `uvm_error(get_name(), $sformatf("data mismatch at index %0d, img index %0d: iram_data = 0x%0h, img_array = 0x%0h"
+                              , iram_cnt,iram_cnt%input_size, iram_data[iram_cnt], iram_data_all[iram_cnt%input_size]))
+                end
+            end
+            else begin
+                if(iram_data[iram_cnt] !== second_layer_input[iram_cnt - input_size * num_of_pack]) begin
+                    `uvm_error(get_name(), $sformatf("data mismatch at index %0d, input index %0d: iram_data = 0x%0h, second_layer_input = 0x%0h"
+                               , iram_cnt,iram_cnt - input_size * num_of_pack, iram_data[iram_cnt], second_layer_input[iram_cnt - input_size * num_of_pack]))
+                end
             end
             iram_cnt++;
+            if ((iram_cnt % input_size) == 0 && iram_cnt != 0) begin
+                input_fsm++;
+            end
         end
         for(int i = 0; i < 16; i++)begin
             if (mxu_if.lsu_mxu_wram_vld[i]) begin
-                if(perceptron_cnt[i] == input_size) begin
-                    perceptron_cnt[i] = 0; 
-                    pack_cnt[i]++; 
-                end
                 wram_data_tmp =  mxu_if.lsu_mxu_wram_pld >> i*8;
-                wram_data[perceptron_cnt[i] + i*input_size + pack_cnt[i]*input_size*16] = wram_data_tmp[7:0];
+                if(wram_cnt < input_size * perceptron_size) begin
+                    cur_pack = pack_cnt[i] / input_size;
+                    cur_pack_addr = pack_cnt[i] % input_size;
+                    wram_data_idx = cur_pack_addr + cur_pack*input_size*16 + input_size*i;
+                    wram_data[wram_data_idx] = wram_data_tmp[7:0];
+                    if(wram_data[wram_data_idx] !== tr.first_layer_weight[wram_data_idx]) begin
+                        `uvm_error(get_name(), $sformatf("data mismatch at index %0d, pack_cnt %0d, idx %0d: wram_data = 0x%0h, weight_array = 0x%0h"
+                                   , wram_data_idx,pack_cnt[i], i, wram_data[wram_data_idx], tr.first_layer_weight[wram_data_idx]))
+                    end
+                    pack_cnt[i]++;
+                end
+                else begin
+                    cur_pack      = pack_cnt[i] / second_layer_input_size;
+                    cur_pack_addr = pack_cnt[i] % second_layer_input_size;
+                    wram_data_idx = cur_pack_addr + cur_pack*second_layer_input_size*16 + second_layer_input_size*i;
+                    wram_data_idx_scd_layer = wram_data_idx + input_size*perceptron_size;
+                    wram_data[wram_data_idx_scd_layer] = wram_data_tmp[7:0];
+                    if(wram_data[wram_data_idx_scd_layer] !== tr.second_layer_weight[wram_data_idx]) begin
+                        `uvm_error(get_name(), $sformatf("data mismatch at index %0d, %0d, pack_cnt %0d, idx %0d: wram_data = 0x%0h, weight_array = 0x%0h"
+                                   ,wram_data_idx_scd_layer, wram_data_idx, pack_cnt[i], i, wram_data[wram_data_idx_scd_layer], tr.second_layer_weight[wram_data_idx]))
+                    end
+                    pack_cnt[i]++;
+                end
                 wram_cnt++;
-                perceptron_cnt[i]++;
+                if(wram_cnt == input_size * perceptron_size) begin
+                    foreach(pack_cnt[j]) pack_cnt[j] = 0;
+                end
             end
         end
         if(!(top_if.wfi & mon_begin))begin
         end
-        else if(iram_cnt != input_size * num_of_pack) begin
+        else if(iram_cnt != input_size * num_of_pack + 570) begin
             `uvm_error(get_name(), $sformatf("iram_cnt out of range: %0d", iram_cnt))
         end
         else if(wram_cnt != input_size*perceptron_size) begin
             `uvm_error(get_name(), $sformatf("wram_cnt out of range: %0d", wram_cnt))
-        end
-        else begin
-            for (int i = 0; i < input_size; i++) begin
-                if(wram_data[i] !== tr.first_layer_weight[i]) begin
-                    `uvm_error(get_name(), $sformatf("data mismatch at index %0d: wram_data = 0x%0h, weight_array = 0x%0h", i, wram_data[i], tr.first_layer_weight[i]))
-                end
-            end
         end
         if(top_if.start_vld)begin
            mon_begin = 1;
