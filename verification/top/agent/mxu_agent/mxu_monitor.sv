@@ -41,7 +41,7 @@ task mxu_monitor::main_phase(uvm_phase phase);
 
     int                   first_layer_ouput [55:0];
 
-    bit [56:0]      [7:0] second_layer_input;
+    bit [7:0] second_layer_input [56:0];
     bit mon_begin;
     bit [2:0] input_fsm;
     bit [2:0] perceptron0to15  = 3'b000;
@@ -75,7 +75,7 @@ task mxu_monitor::main_phase(uvm_phase phase);
         if(first_layer_ouput[i] < -128) second_layer_input[i] = -128;
     end
 
-    second_layer_input = {8'b1, second_layer_input};
+    second_layer_input[56] = 8'b1;
 
     while (1) begin 
         @(posedge mxu_if.clk);
