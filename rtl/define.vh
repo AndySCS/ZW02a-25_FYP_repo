@@ -61,7 +61,7 @@
 `define S_TYPE_IMM_4_0_MSB          (`S_TYPE_IMM_4_0_LSB + `S_TYPE_IMM_4_0_SIZE -1)
 `define S_TYPE_IMM_4_0_RNG          `S_TYPE_IMM_4_0_MSB : `S_TYPE_IMM_4_0_LSB
 
-`define S_TYPE_IMM_SIZE             (`S_TYPE_IMM_11_5_LSB + `S_TYPE_IMM_4_0_SIZE)
+`define S_TYPE_IMM_SIZE             (`S_TYPE_IMM_11_5_SIZE + `S_TYPE_IMM_4_0_SIZE)
 
 `define B_TYPE_IMM_11_SIZE          1
 `define B_TYPE_IMM_11_LSB           (`OP_MSB + 1)

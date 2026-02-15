@@ -85,7 +85,7 @@ task top_monitor::main_phase(uvm_phase phase);
 
             	start_tr.start_vld = 1'b1;
             	start_tr.start_addr = top_if.start_addr;
-	    	    for(int i; i<256; i++)begin
+	    	    for(int i=0; i<256; i++)begin
             		start_tr.start_imem[i] = harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[i];
             		start_tr.start_iram[i] = harness.u_tpu.u_lsu.iram.mem[i];
             		start_tr.start_wram[i] = harness.u_tpu.u_lsu.wram.mem[i];
@@ -134,7 +134,7 @@ task top_monitor::main_phase(uvm_phase phase);
  	        	//rf_tr.rf_output[harness.u_tpu.u_rf.lsu_rf_wb_addr] = harness.u_tpu.u_rf.lsu_rf_wb_data;
 	    	end
 
-			else if(harness.u_tpu.u_lsu.alu_lsu_wfi)begin	
+			else if(harness.u_tpu.u_lsu.alu_lsu_wfi & !lsu_ram_check)begin	
 				//rf_tr.rf_output = 'b0;
     	    	`uvm_info(get_name(), "reach wfi2", UVM_NONE);
 				rf_q_ap.write(rf_q_tr);
@@ -185,13 +185,20 @@ task top_monitor::main_phase(uvm_phase phase);
         //define vld store
         if((harness.u_tpu.u_lsu.alu_lsu_sb_op | harness.u_tpu.u_lsu.alu_lsu_sh_op | harness.u_tpu.u_lsu.alu_lsu_sw_op)
             &(harness.u_tpu.u_lsu.alu_lsu_st_iram | harness.u_tpu.u_lsu.alu_lsu_st_wram | harness.u_tpu.u_lsu.alu_lsu_st_oram))begin
-            st_vld = 1'b1; 
+            st_vld = 1'b1;
+	    //if(harness.u_tpu.u_lsu.alu_lsu_sb_op)begin 
+    	    //`uvm_info("top_mon", $sformatf("iram:%0h", harness.u_tpu.u_lsu.alu_lsu_st_iram), UVM_NONE);
+    	    //`uvm_info("top_mon", $sformatf("wram:%0h", harness.u_tpu.u_lsu.alu_lsu_st_wram), UVM_NONE);
+    	    //`uvm_info("top_mon", $sformatf("oram:%0h", harness.u_tpu.u_lsu.alu_lsu_st_oram), UVM_NONE);
+    	    //`uvm_info("top_mon", $sformatf("din:%0h", harness.u_tpu.u_lsu.lsu_iram_din), UVM_NONE);
+    	    //`uvm_info("top_mon", $sformatf("addr:%0h", harness.u_tpu.u_lsu.lsu_iram_addr), UVM_NONE);
+	   //end
         end
         else begin
             st_vld = 1'b0;
         end
 
-        if((harness.u_tpu.u_lsu.alu_lsu_wb_vld & (~ld_invld) | st_vld) & (count <= 2000))begin
+        if(((harness.u_tpu.u_lsu.alu_lsu_wb_vld & (~ld_invld)) | st_vld) & (count <= 2000))begin
                 lsu_ram_check = 1'b1;
             end
 	    else begin

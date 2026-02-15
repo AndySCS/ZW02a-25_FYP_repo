@@ -98,7 +98,7 @@ task top_sc::main_phase(uvm_phase phase);
 
 		if (this.sc_act_iram_q.size() != this.sc_exp_iram_q.size())begin
     		`uvm_info("top_sc", "error found,iram size not match", UVM_NONE);
-	        `uvm_info("top_sc", $sformatf("act_iram_size[%0h]", this.sc_act_iram_q.size()), UVM_NONE);
+	        `uvm_error("top_sc", $sformatf("act_iram_size[%0h]", this.sc_act_iram_q.size()));
 	        `uvm_info("top_sc", $sformatf("exp_iram_size[%0h]", this.sc_exp_iram_q.size()), UVM_NONE);
 		end
     	`uvm_info("top_sc", "check iram size pass", UVM_NONE);
@@ -150,6 +150,7 @@ task top_sc::main_phase(uvm_phase phase);
 		   		for (int i=0; i<256; i++)begin
 					if(sc_act_iram_q[0][i] != sc_exp_iram_q[0][i])begin
     					`uvm_info("top_sc", "ERROR iram act not macth with exp", UVM_NONE);
+						`uvm_error("top_sc", $sformatf("ERROR iram row %d", i))	
 						`uvm_error("top_sc", $sformatf("ERROR iram row %h", i))					
 	       	 			`uvm_info("top_sc", $sformatf("act_data:  data[%0h]", sc_act_iram_q[0][i]), UVM_NONE);
 	       	 			`uvm_info("top_sc", $sformatf("exp_data:  data[%0h]", sc_exp_iram_q[0][i]), UVM_NONE);
@@ -164,6 +165,7 @@ task top_sc::main_phase(uvm_phase phase);
 		   		for (int i=0; i<256; i++)begin
 					if(sc_act_wram_q[0][i] != sc_exp_wram_q[0][i])begin
     					`uvm_info("top_sc", "ERROR wram act not macth with exp", UVM_NONE);
+						`uvm_error("top_sc", $sformatf("ERROR wram row %d", i))
 						`uvm_error("top_sc", $sformatf("ERROR wram row %h", i))					
 	       	 			`uvm_info("top_sc", $sformatf("act_data:  data[%0h]", sc_act_wram_q[0][i]), UVM_NONE);
 	       	 			`uvm_info("top_sc", $sformatf("exp_data:  data[%0h]", sc_exp_wram_q[0][i]), UVM_NONE);
@@ -178,6 +180,7 @@ task top_sc::main_phase(uvm_phase phase);
 		   		for (int i=0; i<256; i++)begin
 					if(sc_act_oram_lo_q[0][i] != sc_exp_oram_lo_q[0][i])begin
     					`uvm_info("top_sc", "ERROR oram_lo act not macth with exp", UVM_NONE);
+						`uvm_error("top_sc", $sformatf("ERROR oram_lo row %d", i))
 						`uvm_error("top_sc", $sformatf("ERROR oram_lo row %h", i))					
 	       	 			`uvm_info("top_sc", $sformatf("act_data:  data[%0h]", sc_act_oram_lo_q[0][i]), UVM_NONE);
 	       	 			`uvm_info("top_sc", $sformatf("exp_data:  data[%0h]", sc_exp_oram_lo_q[0][i]), UVM_NONE);
@@ -192,6 +195,7 @@ task top_sc::main_phase(uvm_phase phase);
 		   		for (int i=0; i<256; i++)begin
 					if(sc_act_oram_hi_q[0][i] != sc_exp_oram_hi_q[0][i])begin
     					`uvm_info("top_sc", "ERROR oram_hi act not macth with exp", UVM_NONE);
+						`uvm_error("top_sc", $sformatf("ERROR oram_hi row %d", i))
 						`uvm_error("top_sc", $sformatf("ERROR oram_hi row %h", i))					
 	       	 			`uvm_info("top_sc", $sformatf("act_data:  data[%0h]", sc_act_oram_hi_q[0][i]), UVM_NONE);
 	       	 			`uvm_info("top_sc", $sformatf("exp_data:  data[%0h]", sc_exp_oram_hi_q[0][i]), UVM_NONE);
