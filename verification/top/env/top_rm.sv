@@ -147,6 +147,7 @@ function rf_rlt_q top_rm::riscv_rf_cal();
     bit [31:0] offset;
     bit [31:0] ram_addr;
     bit ld_invld;
+    bit st_invld;
     bit [127:0] ram_data;
     bit [127:0] ram_data_raw;
     bit pc_count;
@@ -496,6 +497,7 @@ function rf_rlt_q top_rm::riscv_rf_cal();
             rs1_data = rf_output[rs1];
             offset = {{20{instruction[31]}},{instruction[31:20]}};
             ram_addr = rs1_data + offset;
+            st_invld = 0;
             //SB
             if(instruction[14:12] == 3'b000)begin
                 if(ram_addr[14:13]=='b00) begin
@@ -530,6 +532,7 @@ function rf_rlt_q top_rm::riscv_rf_cal();
                 end
                 else begin         
     			    `uvm_info("top_rm", "decode error found in SB", UVM_NONE);
+                    st_invld = 1;
                     ram_data = 0;
                 end
             end
@@ -569,6 +572,7 @@ function rf_rlt_q top_rm::riscv_rf_cal();
                 else begin         
     			    `uvm_info("top_rm", "decode error found in SH", UVM_NONE);
                     ram_data = 0;
+                    st_invld = 1;
                 end
             end
 
@@ -606,6 +610,7 @@ function rf_rlt_q top_rm::riscv_rf_cal();
                 else begin         
     			    `uvm_info("top_rm", "decode error found in SW", UVM_NONE);
                     ram_data = 0;
+                    st_invld = 1;
                 end
             end
             else begin         
@@ -800,8 +805,8 @@ function rf_rlt_q top_rm::riscv_rf_cal();
     	    //`uvm_info("top_rm", $sformatf("pc_count_num: %0h", pc_count_num), UVM_NONE);
 	        pc_count_num = pc_count_num+1;
 	    end
-        else if(instruction[6:0] == 'b0100011)begin   
-	    rm_rf_q.push_back(rm_rf);
+        else if((instruction[6:0] == 'b0100011) & ~st_invld )begin   
+	        rm_rf_q.push_back(rm_rf);
             rm_rf_q.push_back(pc);
             rm_rf_q.push_back(iram);
             rm_rf_q.push_back(wram);
