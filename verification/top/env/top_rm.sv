@@ -200,6 +200,8 @@ function rf_rlt_q top_rm::riscv_rf_cal();
         //`uvm_info("pc", $sformatf("pc: %0h", pc), UVM_NONE);
         //`uvm_info("instr", $sformatf("instr: %0h", instruction), UVM_NONE);
 
+        ld_invld = 0;
+	st_invld = 0;
         //Decode part
         //rtype
         if (instruction[6:0] == 'b0110011)begin
@@ -344,7 +346,6 @@ function rf_rlt_q top_rm::riscv_rf_cal();
             rs1_data = rf_output[rs1];
             offset = {{20{instruction[31]}},{instruction[31:20]}};
             ram_addr = rs1_data + offset;
-            ld_invld = 0;
     	    //`uvm_info("top_rm", $sformatf("ram_addr1:%0d", ram_addr), UVM_NONE);
     	    //`uvm_info("top_rm", $sformatf("rs1:%0d", rs1), UVM_NONE);
     	    //`uvm_info("top_rm", $sformatf("rs1_data:%0d", rs1_data), UVM_NONE);
@@ -808,7 +809,7 @@ function rf_rlt_q top_rm::riscv_rf_cal();
             rm_rf_q.push_back(wram);
             rm_rf_q.push_back(oram_lo);
             rm_rf_q.push_back(oram_hi);
-    	    //`uvm_info("top_rm", $sformatf("pc_count_num: %0h", pc_count_num), UVM_NONE);
+    	    `uvm_info("top_rm", $sformatf("pc_count_num: %0h", pc_count_num), UVM_NONE);
 	        pc_count_num = pc_count_num+1;
 	    end
         else if((instruction[6:0] == 'b0100011) & ~st_invld )begin   
