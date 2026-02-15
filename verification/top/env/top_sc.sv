@@ -209,6 +209,12 @@ task top_sc::main_phase(uvm_phase phase);
 				this.sc_act_rf_q.pop_front();
 				this.sc_exp_iram_q.pop_front();
 				this.sc_act_iram_q.pop_front();
+				this.sc_exp_wram_q.pop_front();
+				this.sc_act_wram_q.pop_front();
+				this.sc_exp_oram_lo_q.pop_front();
+				this.sc_act_oram_lo_q.pop_front();
+				this.sc_exp_oram_hi_q.pop_front();
+				this.sc_act_oram_hi_q.pop_front();
 				count = count+1;
 			end
 			else begin
