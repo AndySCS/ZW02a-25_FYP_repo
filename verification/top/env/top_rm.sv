@@ -78,7 +78,7 @@ function bit[9:0][7:0] top_rm::cal_data();
 
     for(int i = 0; i < 10; i++)begin
         for(int j = 0; j < 56; j++)begin
-            second_layer_output[i] += int'($signed(second_layer_input[j]) * $signed(model_rd_tr.second_layer_weight[j+i]));
+            second_layer_output[i] += int'($signed(second_layer_input[j]) * $signed(model_rd_tr.second_layer_weight[j+i*57]));
             if(second_layer_output[i] > 32767)  second_layer_output[i] = 32767;
             if(second_layer_output[i] < -32768) second_layer_output[i] = -32768;
         end
