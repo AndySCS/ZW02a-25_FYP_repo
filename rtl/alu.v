@@ -354,8 +354,8 @@ module alu(
 
     assign br_jump_vld = idu_alu_beq_op  & (idu_alu_src1 == idu_alu_src2)
                        | idu_alu_bne_op  & (idu_alu_src1 != idu_alu_src2)
-                       | idu_alu_blt_op  & (idu_alu_src1 <  idu_alu_src2) & ~(idu_alu_src1[31] ^ idu_alu_src2[31])
-                       | idu_alu_bge_op  & (idu_alu_src2 <  idu_alu_src1) & ~(idu_alu_src1[31] ^ idu_alu_src2[31])
+                       | idu_alu_blt_op  & ((idu_alu_src1 <  idu_alu_src2) & ~(idu_alu_src1[31] ^ idu_alu_src2[31]) | (idu_alu_src1[31] & ~idu_alu_src2[31]))
+                       | idu_alu_bge_op  & ((idu_alu_src2 <=  idu_alu_src1) & ~(idu_alu_src1[31] ^ idu_alu_src2[31])| (~idu_alu_src1[31] & idu_alu_src2[31]))
                        | idu_alu_bltu_op & (idu_alu_src1 <  idu_alu_src2)
                        | idu_alu_bgeu_op & (idu_alu_src1 >= idu_alu_src2);
     
