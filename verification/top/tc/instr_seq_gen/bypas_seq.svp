@@ -1,27 +1,24 @@
-`ifndef MIX_SEQ_SV
-`define MIX_SEQ_SV
+`ifndef BYPAS_SEQ_SV
+`define BYPAS_SEQ_SV
 
-class mix_seq extends uvm_sequence;
-    `uvm_object_utils(mix_seq);	
+class bypas_seq extends uvm_sequence;
+    `uvm_object_utils(bypas_seq);	
 
     instr_rtype rtype;
     instr_itype itype;	
     instr_utype utype;
-    instr_btype btype;
-    instr_jtype jtype;
-    instr_stype stype;
 
-    extern function new(string name="mix_seq");
-    extern function bit[31:0] mix_seq_sel();
+    extern function new(string name="bypas_seq");
+    extern function bit[31:0] bypas_seq_sel();
     extern task body();
 endclass
 
 
-function mix_seq::new(string name="mix_seq");
+function bypas_seq::new(string name="bypas_seq");
     super.new(name);
 endfunction
 
-task mix_seq::body();
+task bypas_seq::body();
     static bit [255:0][127:0] ram_tmp;
     static bit [127:0] ram_tmp_pre;
     static int ram_count;
@@ -30,40 +27,31 @@ task mix_seq::body();
         itype = new();	
         utype = new();
         rtype = new();
-        btype = new();
-        jtype = new();
-        stype = new();
 
         itype.randomize();	
         utype.randomize();
         rtype.randomize();
-        btype.randomize();
-        jtype.randomize();
-        stype.randomize();
 
         itype.pack();	
         utype.pack();
         rtype.pack();
-        btype.pack();
-        jtype.pack();
-        stype.pack();
 
 	    if(i==0)begin
-		    ram_tmp_pre[31:0] = mix_seq_sel();
+		    ram_tmp_pre[31:0] = bypas_seq_sel();
 	    end
         else if(i%4 == 1)begin
-		    ram_tmp_pre[63:32] = mix_seq_sel();
+		    ram_tmp_pre[63:32] = bypas_seq_sel();
 	    end
         else if(i%4 == 2)begin
-		    ram_tmp_pre[95:64] = mix_seq_sel();
+		    ram_tmp_pre[95:64] = bypas_seq_sel();
 	    end
         else if(i%4 == 3)begin
-		    ram_tmp_pre[127:96] = mix_seq_sel();
+		    ram_tmp_pre[127:96] = bypas_seq_sel();
 	    end
 	    else begin
 		    ram_tmp[ram_count] = ram_tmp_pre;
 		    ram_count = ram_count+1;
-		    ram_tmp_pre[31:0] = mix_seq_sel();
+		    ram_tmp_pre[31:0] = bypas_seq_sel();
 	    end
     end
  
@@ -78,38 +66,37 @@ task mix_seq::body();
    	`uvm_info(get_type_name(), "MIX IMEM INIT FINISH", UVM_NONE)
 endtask
 
-function bit[31:0] mix_seq::mix_seq_sel();
+function bit[31:0] bypas_seq::bypas_seq_sel();
     bit[2:0] rand_sel;
     bit[31:0] rand_instr;
+    bit[31:0] rand_instr_raw;
+
     randcase
         300: rand_sel = 0; 
         300: rand_sel = 1;
-        200: rand_sel = 2; 
-        30 : rand_sel = 3; 
-        30 : rand_sel = 4; 
-        139: rand_sel = 5; 
+        400: rand_sel = 2; 
         1 : rand_sel = 6;
     endcase
     if(rand_sel == 0)begin
-        rand_instr = rtype.instruction;
+        rand_instr_raw = rtype.instruction;
+        rand_instr_raw[11:7] = $urandom_range(1,4);
+        rand_instr_raw[19:15] = $urandom_range(1,4);
+        rand_instr_raw[24:20] = $urandom_range(1,4);
+        rand_instr = rand_instr_raw;
     end
     else if(rand_sel == 1)begin
-        rand_instr = itype.instruction;
+        rand_instr_raw = itype.instruction;
+        rand_instr_raw[11:7] = $urandom_range(1,4);
+        rand_instr_raw[19:15] = $urandom_range(1,4);
+        rand_instr = rand_instr_raw;
     end
     else if(rand_sel == 2)begin
-        rand_instr = utype.instruction;
-    end
-    else if(rand_sel == 3)begin
-        rand_instr = jtype.instruction;
-    end
-    else if(rand_sel == 4)begin
-        rand_instr = btype.instruction;
-    end
-    else if(rand_sel == 5)begin
-        rand_instr = stype.instruction;
+        rand_instr_raw = utype.instruction;
+        rand_instr_raw[11:7] = $urandom_range(1,4);
+        rand_instr = rand_instr_raw;
     end
     else if(rand_sel == 6)begin
-        rand_instr = 'h7f;
+        rand_instr_raw = 'h7f;
     end
     else begin
         rand_instr = 'h7f;
