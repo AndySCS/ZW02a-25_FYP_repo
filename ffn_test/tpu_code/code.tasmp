@@ -100,7 +100,7 @@ layer_network_loop:
             blt x25, x24, matrix_multi_case_norm
             jal x0, matrix_multi_case_bias
         matrix_multi_branch_else:
-            beq x25, x0, matrix_multi_case_last_perceptron_first
+            beq x25, x2, matrix_multi_case_last_perceptron_first
             blt x25, x24, matrix_multi_case_last_perceptron_norm
             jal x0, matrix_multi_case_last_perceptron_bias
         matrix_multi_branch_end:
@@ -164,7 +164,7 @@ layer_network_loop:
     blt x22, x23, layer_network_loop //go back to begin if loop not done
 //
     addi x31, x0, 1
-    sb x31, x0, 855//store 1 for bias to iram
+    sb x31, x0, 911//store 1 for bias to iram
 
 //second layer network
 addi x10, x0, 4 //iter thd
