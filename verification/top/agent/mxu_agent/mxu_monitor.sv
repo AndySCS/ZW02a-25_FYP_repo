@@ -132,10 +132,10 @@ task mxu_monitor::main_phase(uvm_phase phase);
         end
         if(!(top_if.wfi & mon_begin))begin
         end
-        else if(iram_cnt != input_size * num_of_pack + 570) begin
+        else if(iram_cnt != input_size * num_of_pack + 57) begin
             `uvm_error(get_name(), $sformatf("iram_cnt out of range: %0d", iram_cnt))
         end
-        else if(wram_cnt != input_size*perceptron_size) begin
+        else if(wram_cnt != input_size*perceptron_size + 570) begin
             `uvm_error(get_name(), $sformatf("wram_cnt out of range: %0d", wram_cnt))
         end
         if(top_if.start_vld)begin
