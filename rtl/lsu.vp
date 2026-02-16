@@ -894,9 +894,10 @@ module lsu(
     wire lsu_st_type2_oram_ce_ff;
 
     wire lsu_st_type2_oram_we;
+    wire        lsu_st_type2_oram_addr_raw_en;
+    wire [12:0] lsu_st_type2_oram_addr_raw;
+    wire [12:0] lsu_st_type2_oram_addr_raw_nxt;
     wire [7:0] lsu_st_type2_oram_addr;
-    wire [7:0] lsu_st_type2_oram_addr_ff;
-    wire [7:0] lsu_st_type2_oram_addr_nxt;
     wire [127:0] lsu_st_type2_oram_dout;
     wire lsu_st_type2_doing;
     wire lsu_st_type2_doing_ff;
@@ -996,9 +997,14 @@ module lsu(
     wire[127:0] lsu_st_type2_oram_dout_raw;
     wire lsu_st_full_low_en;
     wire [7:0] lsu_st_type2_oram_addr_shift;
-     
-    assign lsu_st_type2_oram_ce = lsu_axi_wsend_doing & ~(lsu_axi_wvld & ~axi_lsu_wrdy);
-    assign lsu_st_type2_oram_addr = lsu_st_type2_wr_chunk_len_cnt_nxt + alu_lsu_ld_st_addr[12:5];
+    
+    assign lsu_st_type2_oram_addr_raw_nxt = lsu_vld_qual ? alu_lsu_ld_st_addr[12:0]
+                                          : (lsu_axi_alen == 1) ? lsu_st_type2_oram_addr_raw + 13'h10
+                                          : lsu_st_type2_oram_addr_raw + 13'h20;
+    assign lsu_st_type2_oram_addr_raw_en  = lsu_vld_qual | lsu_st_type2_oram_ce;
+
+    assign lsu_st_type2_oram_ce   = lsu_axi_wsend_doing & ~(lsu_axi_wvld & ~axi_lsu_wrdy);
+    assign lsu_st_type2_oram_addr = lsu_st_type2_oram_addr_raw[12:5];
  
     assign lsu_st_type2_oram_dout_raw = lsu_st_type2_oram_ce_ff ? alu_lsu_st_low | lsu_st_full_low_en ? lsu_oram_dout : lsu_oram_hi_dout : {127{1'b0}};
     // 8 bit => [3:0]
@@ -1080,13 +1086,13 @@ module lsu(
         .q(lsu_axi_oram_addr)
     );
 
-    DFFRE #(.WIDTH(8))
-    ff_lsu_type2_store_addr (
+    DFFRE #(.WIDTH(13))
+    ff_lsu_type2_store_addr_raw (
         .clk(clk),
         .rst_n(rst_n),
-        .d(lsu_st_type2_oram_addr_nxt),
-        .en(lsu_st_type2_oram_ce),
-        .q(lsu_st_type2_oram_addr_ff)
+        .en(lsu_st_type2_oram_addr_raw_en),
+        .d(lsu_st_type2_oram_addr_raw_nxt),
+        .q(lsu_st_type2_oram_addr_raw)
     );
 
     DFFR #(.WIDTH(1))
@@ -1447,11 +1453,10 @@ module lsu(
     assign lsu_st_type1_oram_we       = lsu_st_mm_vld ? (lsu_st_type1_oram_we_raw << alu_lsu_ld_st_addr[4:0]) 
                                                       : (lsu_st_type1_oram_we_raw << lsu_st_type1_oram_addr_inc[4:0]);
 
-    assign lsu_st_type1_oram_ce   = lsu_st_mm_vld ? (lsu_st_type[1] & ~lsu_st_type[0] & lsu_st_type1_ce) 
-                                                  : (lsu_st_type_ff[1] & ~lsu_st_type_ff[0] & lsu_st_type1_ce);
+    assign lsu_st_type1_oram_ce   = lsu_st_oram & lsu_st_type1_ce;
     
     assign lsu_st_type1_oram_addr         = lsu_st_mm_vld   ? alu_lsu_ld_st_addr[12:5] : lsu_st_type1_oram_addr_inc[12:5];
-    assign lsu_st_type1_oram_addr_inc_nxt = lsu_vld_qual    ? alu_lsu_ld_st_addr[12:0] : lsu_st_type1_oram_addr_inc + 13'h20;
+    assign lsu_st_type1_oram_addr_inc_nxt = lsu_vld_qual    ? alu_lsu_ld_st_addr[12:0] + 13'h20 : lsu_st_type1_oram_addr_inc + 13'h20;
     assign lsu_st_type1_oram_addr_inc_en  = |lsu_st_type1_oram_ce;
 
     assign lsu_st_type1_oram_din_start_x = lsu_st_mm_vld ? alu_lsu_start_x : lsu_st_type1_mxu_start_col;
