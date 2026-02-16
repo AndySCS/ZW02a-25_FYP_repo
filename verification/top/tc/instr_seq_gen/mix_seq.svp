@@ -4,13 +4,15 @@
 class mix_seq extends uvm_sequence;
     `uvm_object_utils(mix_seq);	
 
+    instr_rtype rtype;
     instr_itype itype;	
     instr_utype utype;
-    instr_rtype rtype;
     instr_btype btype;
     instr_jtype jtype;
+    instr_stype stype;
 
     extern function new(string name="mix_seq");
+    extern function bit[31:0] mix_seq_sel();
     extern task body();
 endclass
 
@@ -30,35 +32,38 @@ task mix_seq::body();
         rtype = new();
         btype = new();
         jtype = new();
+        stype = new();
 
         itype.randomize();	
         utype.randomize();
         rtype.randomize();
         btype.randomize();
         jtype.randomize();
+        stype.randomize();
 
         itype.pack();	
         utype.pack();
         rtype.pack();
         btype.pack();
         jtype.pack();
+        stype.pack();
 
 	    if(i==0)begin
-		    ram_tmp_pre[31:0] = btype.instruction;
+		    ram_tmp_pre[31:0] = mix_seq_sel();
 	    end
         else if(i%4 == 1)begin
-		    ram_tmp_pre[63:32] = itype.instruction;
+		    ram_tmp_pre[63:32] = mix_seq_sel();
 	    end
         else if(i%4 == 2)begin
-		    ram_tmp_pre[95:64] = rtype.instruction;
+		    ram_tmp_pre[95:64] = mix_seq_sel();
 	    end
         else if(i%4 == 3)begin
-		    ram_tmp_pre[127:96] = utype.instruction;
+		    ram_tmp_pre[127:96] = mix_seq_sel();
 	    end
 	    else begin
 		    ram_tmp[ram_count] = ram_tmp_pre;
 		    ram_count = ram_count+1;
-		    ram_tmp_pre[31:0] = jtype.instruction;
+		    ram_tmp_pre[31:0] = mix_seq_sel();
 	    end
     end
  
@@ -72,6 +77,47 @@ task mix_seq::body();
     //:}
    	`uvm_info(get_type_name(), "MIX IMEM INIT FINISH", UVM_NONE)
 endtask
+
+function bit[31:0] mix_seq::mix_seq_sel();
+    bit[2:0] rand_sel;
+    bit[31:0] rand_instr;
+    randcase
+        30: rand_sel = 0; 
+        30: rand_sel = 1;
+        20: rand_sel = 2; 
+        3 : rand_sel = 3; 
+        3 : rand_sel = 4; 
+        13: rand_sel = 5; 
+        1 : rand_sel = 6;
+    endcase
+    if(rand_sel == 0)begin
+        rand_instr = rtype.instruction;
+    end
+    else if(rand_sel == 1)begin
+        rand_instr = itype.instruction;
+    end
+    else if(rand_sel == 2)begin
+        rand_instr = utype.instruction;
+    end
+    else if(rand_sel == 3)begin
+        rand_instr = jtype.instruction;
+    end
+    else if(rand_sel == 4)begin
+        rand_instr = btype.instruction;
+    end
+    else if(rand_sel == 5)begin
+        rand_instr = stype.instruction;
+    end
+    else if(rand_sel == 6)begin
+        rand_instr = 'h7f;
+    end
+    else begin
+        rand_instr = 'h7f;
+    end
+
+    return rand_instr;
+
+endfunction
 
 `endif
 
