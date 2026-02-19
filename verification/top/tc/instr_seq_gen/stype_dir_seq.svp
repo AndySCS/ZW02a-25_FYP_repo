@@ -14,6 +14,9 @@ class stype_dir_seq extends uvm_sequence;
 
     extern function new(string name="stype_dir_seq");
     extern function bit[255:0][127:0] sb_check();
+    extern function bit[255:0][127:0] sh_check();
+    extern function bit[255:0][127:0] sw_check();
+    extern function bit[255:0][127:0] smix_check();
     extern task body();
 endclass
 
@@ -25,24 +28,44 @@ endfunction
 task stype_dir_seq::body();
     static bit [255:0][127:0] ram_tmp;
     static bit [127:0] ram_tmp_pre;
-    static int ram_count;
-    bit [31:0] instruction_raw;
- 
-    ram_tmp = sb_check();
-    ram_tmp[255][31:0] = 'h7f; 
+    bit [1:0] ramd_sel;
+
+    randcase
+        3 : rand_sel = 0;//sb
+        3 : rand_sel = 1;//sh 
+        3 : rand_sel = 2;//sw 
+        1 : rand_sel = 3;//rand
+    endcase
+    if(rand_sel == 'b0)begin
+        ram_tmp = sb_check();
+    end
+    else if(rand_sel == 'd1)begin
+        ram_tmp = sh_check();
+    end
+    else if(rand_sel == 'd2)begin
+        ram_tmp = sw_check();
+    end
+    else begin
+        ram_tmp = smix_check();
+    end
+
+    ram_tmp[255][31:0] = 'h7f;
+    ram_tmp[255][63:32] = 'h7f;
+    ram_tmp[255][95:64] = 'h7f;
+    ram_tmp[255][127:96] = 'h7f;
+
     //:for($i = 0; $i < 256;$i++){    
     force harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[{$i}] = ram_tmp[{$i}];
     //:}
    	`uvm_info(get_type_name(), "LUI IMEM INIT FINISH", UVM_NONE)
 endtask
 
-function bit[255:0][127:0] sb_instruction stype_dir_seq::sb_check();
+function bit[255:0][127:0] stype_dir_seq::sb_check();
     static bit [255:0][127:0] ram_tmp;
     static bit [127:0] ram_tmp_pre;
     static int ram_count;
-    bit [31:0] instruction_raw;
-    bit[2:0] rand_sb;
-    bit[31:0] rand_instr;
+    bit[1:0] rand_sb;
+
     addi = new();
     addi.randomize();
 	addi.pack();
@@ -58,108 +81,377 @@ function bit[255:0][127:0] sb_instruction stype_dir_seq::sb_check();
     ram_tmp[1][95:64] = 'h02100093;
 
     randcase
-        1 : rand_sb = 1;
+        1 : rand_sb = 0;
+        1 : rand_sb = 1; 
         1 : rand_sb = 2; 
         1 : rand_sb = 3; 
-        1 : rand_sb = 4; 
     endcase
-    if(rand_sb == 1)begin
+
+    if(rand_sb == 0)begin
         ram_tmp[1][127:96] = 'h0ff00193;
-        for(int i = 2; i < 1024; i++) begin
+        for(int i = 2; i < 256; i++) begin
             sb = new();
             sb.randomize();
 	        sb.pack();
-            if(i%4 == 1)begin
-		        ram_tmp_pre[63:32] = 'h00100113;
-	        end
-            else if(i%4 == 2)begin
-		        ram_tmp_pre[95:64] = 'h00110023;
-	        end
-            else if(i%4 == 3)begin
-		        ram_tmp_pre[127:96] = 'h00100113;
-	        end
-	        else begin
-		        ram_tmp[ram_count] = ram_tmp_pre;
-		        ram_count = ram_count+1;
-		        ram_tmp_pre[31:0] = 'h00110023;
-	        end
+		    ram_tmp_pre[31:0] = 'h00110023;
+		    ram_tmp_pre[63:32] = 'h00100113;
+		    ram_tmp_pre[95:64] = 'h00110023;
+		    ram_tmp_pre[127:96] = 'h00100113;
+		    ram_tmp[i] = ram_tmp_pre;
+		    //ram_count = ram_count+1;
+        end
+    end
+
+    else if(rand_sb == 1)begin
+        //X3 == 'd255
+        ram_tmp[1][127:96] = 'h0ff00193;
+        for(int i = 2; i < 256; i++) begin
+            sb = new();
+            sb.randomize();
+	        sb.pack();
+		    ram_tmp_pre[31:0] = 'h00118023;
+		    ram_tmp_pre[63:32] = 'h00100113;
+		    ram_tmp_pre[95:64] = 'h00118023;
+		    ram_tmp_pre[127:96] = 'h00100113;
+		    ram_tmp[i] = ram_tmp_pre;
+		    //ram_count = ram_count+1;
         end
     end
 
     else if(rand_sb == 2)begin
-        //X3 == 'd255
-        ram_tmp[1][127:96] = 'h0ff00193;
-        for(int i = 2; i < 1024; i++) begin
+        //X4 == 'd510
+        ram_tmp[1][127:96] = 'h1fe00213;
+        for(int i = 2; i < 256; i++) begin
             sb = new();
             sb.randomize();
 	        sb.pack();
-            if(i%4 == 1)begin
-		        ram_tmp_pre[63:32] = 'h00100113;
-	        end
-            else if(i%4 == 2)begin
-		        ram_tmp_pre[95:64] = 'h00118023;
-	        end
-            else if(i%4 == 3)begin
-		        ram_tmp_pre[127:96] = 'h00100113;
-	        end
-	        else begin
-		        ram_tmp[ram_count] = ram_tmp_pre;
-		        ram_count = ram_count+1;
-		        ram_tmp_pre[31:0] = 'h00118023;
-	        end
+		    ram_tmp_pre[31:0] = 'h00120023;
+		    ram_tmp_pre[63:32] = 'h00100113;
+		    ram_tmp_pre[95:64] = 'h00120023;
+		    ram_tmp_pre[127:96] = 'h00100113;
+		    ram_tmp[i] = ram_tmp_pre;
+		    //ram_count = ram_count+1;
         end
     end
 
     else if(rand_sb == 3)begin
-        X4 == 'd510
-        ram_tmp[1][127:96] = 'h1fe00213;
-        for(int i = 2; i < 1024; i++) begin
-            sb = new();
-            sb.randomize();
-	        sb.pack();
-            if(i%4 == 1)begin
-		        ram_tmp_pre[63:32] = 'h00100113;
-	        end
-            else if(i%4 == 2)begin
-		        ram_tmp_pre[95:64] = 'h00120023;
-	        end
-            else if(i%4 == 3)begin
-		        ram_tmp_pre[127:96] = 'h00100113;
-	        end
-	        else begin
-		        ram_tmp[ram_count] = ram_tmp_pre;
-		        ram_count = ram_count+1;
-		        ram_tmp_pre[31:0] = 'h00120023;
-	        end
-        end
-    end
-
-    else if(rand_sb == 4)begin
-        X5 == 'd765
+        //X5 == 'd765
         ram_tmp[1][127:96] = 'h2fd00293;
-        for(int i = 2; i < 1024; i++) begin
+        for(int i = 2; i < 256; i++) begin
             sb = new();
             sb.randomize();
 	        sb.pack();
-            if(i%4 == 1)begin
-		        ram_tmp_pre[63:32] = 'h00100113;
-	        end
-            else if(i%4 == 2)begin
-		        ram_tmp_pre[95:64] = 'h00128023;
-	        end
-            else if(i%4 == 3)begin
-		        ram_tmp_pre[127:96] = 'h00100113;
-	        end
-	        else begin
-		        ram_tmp[ram_count] = ram_tmp_pre;
-		        ram_count = ram_count+1;
-		        ram_tmp_pre[31:0] = 'h00128023;
-	        end
+		    ram_tmp_pre[31:0] = 'h00128023;
+		    ram_tmp_pre[63:32] = 'h00100113;
+		    ram_tmp_pre[95:64] = 'h00128023;
+		    ram_tmp_pre[127:96] = 'h00100113;
+		    ram_tmp[i] = ram_tmp_pre;
+		    //ram_count = ram_count+1;
         end
     end
     else begin
         ram_tmp[1][127:96] = 'h7f;
     end
+    return ram_tmp;
+endfunction
+
+function bit[255:0][127:0] stype_dir_seq::sh_check();
+    static bit [255:0][127:0] ram_tmp;
+    static bit [127:0] ram_tmp_pre;
+    static int ram_count;
+    bit[1:0] rand_sh;
+
+    addi = new();
+    addi.randomize();
+	addi.pack();
+    
+    //store data prepare for rs2
+    //X1 == 'h87654321
+    ram_tmp[0][31:0]  = 'h08700093;
+    ram_tmp[0][63:32] = 'h00801093;
+    ram_tmp[0][95:64]  = 'h06500093;
+    ram_tmp[0][127:96] = 'h00801093;
+    ram_tmp[1][31:0]  = 'h04300093;
+    ram_tmp[1][63:32] = 'h00801093;
+    ram_tmp[1][95:64] = 'h02100093;
+
+    randcase
+        1 : rand_sh = 0;
+        1 : rand_sh = 1; 
+        1 : rand_sh = 2; 
+        1 : rand_sh = 3; 
+    endcase
+
+    if(rand_sh == 0)begin
+        ram_tmp[1][127:96] = 'h0ff00193;
+        for(int i = 2; i < 256; i++) begin
+            sh = new();
+            sh.randomize();
+	        sh.pack();
+		    ram_tmp_pre[31:0] = 'h00110023;
+		    ram_tmp_pre[63:32] = 'h00100113;
+		    ram_tmp_pre[95:64] = 'h00110023;
+		    ram_tmp_pre[127:96] = 'h00100113;
+		    ram_tmp[i] = ram_tmp_pre;
+		    //ram_count = ram_count+1;
+        end
+    end
+
+    else if(rand_sh == 1)begin
+        //X3 == 'd255
+        ram_tmp[1][127:96] = 'h0ff00193;
+        for(int i = 2; i < 256; i++) begin
+            sh = new();
+            sh.randomize();
+	        sh.pack();
+		    ram_tmp_pre[31:0] = 'h00118023;
+		    ram_tmp_pre[63:32] = 'h00100113;
+		    ram_tmp_pre[95:64] = 'h00118023;
+		    ram_tmp_pre[127:96] = 'h00100113;
+		    ram_tmp[i] = ram_tmp_pre;
+		    //ram_count = ram_count+1;
+        end
+    end
+
+    else if(rand_sh == 2)begin
+        //X4 == 'd510
+        ram_tmp[1][127:96] = 'h1fe00213;
+        for(int i = 2; i < 256; i++) begin
+            sh = new();
+            sh.randomize();
+	        sh.pack();
+		    ram_tmp_pre[31:0] = 'h00120023;
+		    ram_tmp_pre[63:32] = 'h00100113;
+		    ram_tmp_pre[95:64] = 'h00120023;
+		    ram_tmp_pre[127:96] = 'h00100113;
+		    ram_tmp[i] = ram_tmp_pre;
+		    //ram_count = ram_count+1;
+        end
+    end
+
+    else if(rand_sh == 3)begin
+        //X5 == 'd765
+        ram_tmp[1][127:96] = 'h2fd00293;
+        for(int i = 2; i < 256; i++) begin
+            sh = new();
+            sh.randomize();
+	        sh.pack();
+		    ram_tmp_pre[31:0] = 'h00128023;
+		    ram_tmp_pre[63:32] = 'h00100113;
+		    ram_tmp_pre[95:64] = 'h00128023;
+		    ram_tmp_pre[127:96] = 'h00100113;
+		    ram_tmp[i] = ram_tmp_pre;
+		    //ram_count = ram_count+1;
+        end
+    end
+    else begin
+        ram_tmp[1][127:96] = 'h7f;
+    end
+    return ram_tmp;
+endfunction
+
+function bit[255:0][127:0] stype_dir_seq::sw_check();
+    static bit [255:0][127:0] ram_tmp;
+    static bit [127:0] ram_tmp_pre;
+    static int ram_count;
+    bit[1:0] rand_sw;
+
+    addi = new();
+    addi.randomize();
+	addi.pack();
+    
+    //store data prepare for rs2
+    //X1 == 'h87654321
+    ram_tmp[0][31:0]  = 'h08700093;
+    ram_tmp[0][63:32] = 'h00801093;
+    ram_tmp[0][95:64]  = 'h06500093;
+    ram_tmp[0][127:96] = 'h00801093;
+    ram_tmp[1][31:0]  = 'h04300093;
+    ram_tmp[1][63:32] = 'h00801093;
+    ram_tmp[1][95:64] = 'h02100093;
+
+    randcase
+        1 : rand_sw = 0;
+        1 : rand_sw = 1; 
+        1 : rand_sw = 2; 
+        1 : rand_sw = 3; 
+    endcase
+
+    if(rand_sw == 0)begin
+        ram_tmp[1][127:96] = 'h0ff00193;
+        for(int i = 2; i < 256; i++) begin
+            sw = new();
+            sw.randomize();
+	        sw.pack();
+		    ram_tmp_pre[31:0] = 'h00110023;
+		    ram_tmp_pre[63:32] = 'h00100113;
+		    ram_tmp_pre[95:64] = 'h00110023;
+		    ram_tmp_pre[127:96] = 'h00100113;
+		    ram_tmp[i] = ram_tmp_pre;
+		    //ram_count = ram_count+1;
+        end
+    end
+
+    else if(rand_sw == 1)begin
+        //X3 == 'd255
+        ram_tmp[1][127:96] = 'h0ff00193;
+        for(int i = 2; i < 256; i++) begin
+            sw = new();
+            sw.randomize();
+	        sw.pack();
+		    ram_tmp_pre[31:0] = 'h00118023;
+		    ram_tmp_pre[63:32] = 'h00100113;
+		    ram_tmp_pre[95:64] = 'h00118023;
+		    ram_tmp_pre[127:96] = 'h00100113;
+		    ram_tmp[i] = ram_tmp_pre;
+		    //ram_count = ram_count+1;
+        end
+    end
+
+    else if(rand_sw == 2)begin
+        //X4 == 'd510
+        ram_tmp[1][127:96] = 'h1fe00213;
+        for(int i = 2; i < 256; i++) begin
+            sw = new();
+            sw.randomize();
+	        sw.pack();
+		    ram_tmp_pre[31:0] = 'h00120023;
+		    ram_tmp_pre[63:32] = 'h00100113;
+		    ram_tmp_pre[95:64] = 'h00120023;
+		    ram_tmp_pre[127:96] = 'h00100113;
+		    ram_tmp[i] = ram_tmp_pre;
+		    //ram_count = ram_count+1;
+        end
+    end
+
+    else if(rand_sw == 3)begin
+        //X5 == 'd765
+        ram_tmp[1][127:96] = 'h2fd00293;
+        for(int i = 2; i < 256; i++) begin
+            sw = new();
+            sw.randomize();
+	        sw.pack();
+		    ram_tmp_pre[31:0] = 'h00128023;
+		    ram_tmp_pre[63:32] = 'h00100113;
+		    ram_tmp_pre[95:64] = 'h00128023;
+		    ram_tmp_pre[127:96] = 'h00100113;
+		    ram_tmp[i] = ram_tmp_pre;
+		    //ram_count = ram_count+1;
+        end
+    end
+    else begin
+        ram_tmp[1][127:96] = 'h7f;
+    end
+    return ram_tmp;
+endfunction
+
+
+function bit[255:0][127:0] stype_dir_seq::smix_check();
+    static bit [255:0][127:0] ram_tmp;
+    static bit [127:0] ram_tmp_pre;
+    static int ram_count;
+    bit[1:0] rand_sel;
+
+    for(int i=0; i<10; i++)begin
+        addi = new();
+        addi.randomize();
+	    addi.pack();
+		ram_tmp_pre[31:0]   = addi.instruction;
+
+        addi = new();
+        addi.randomize();
+	    addi.pack();
+		ram_tmp_pre[63:32]  = addi.instruction;
+
+        addi = new();
+        addi.randomize();
+	    addi.pack();
+		ram_tmp_pre[95:64]  = addi.instruction;
+
+        addi = new();
+        addi.randomize();
+	    addi.pack();
+		ram_tmp_pre[127:96] = addi.instruction;
+		ram_tmp[i] = ram_tmp_pre;
+    end
+
+    for(int i=10; i<256; i++)begin
+        randcase
+            1 : rand_sel = 0;//sb
+            1 : rand_sel = 1;//sh 
+            1 : rand_sel = 2;//sw 
+        endcase
+        if(rand_sel == 'd0)begin
+            sb = new();
+            sb.randomize();
+	        sb.pack();
+		    ram_tmp_pre[31:0]   = sb.instruction;
+
+            sb = new();
+            sb.randomize();
+	        sb.pack();
+		    ram_tmp_pre[63:32]  = sb.instruction;
+
+            sb = new();
+            sb.randomize();
+	        sb.pack();
+		    ram_tmp_pre[95:64]  = sb.instruction;
+
+            sb = new();
+            sb.randomize();
+	        sb.pack();
+		    ram_tmp_pre[127:96] = sb.instruction;
+		    ram_tmp[i] = ram_tmp_pre;
+        end
+
+        else if(rand_sel == 'd1)begin
+            sh = new();
+            sh.randomize();
+	        sh.pack();
+		    ram_tmp_pre[31:0]   = sh.instruction;
+
+            sh = new();
+            sh.randomize();
+	        sh.pack();
+		    ram_tmp_pre[63:32]  = sh.instruction;
+
+            sh = new();
+            sh.randomize();
+	        sh.pack();
+		    ram_tmp_pre[95:64]  = sh.instruction;
+
+            sh = new();
+            sh.randomize();
+	        sh.pack();
+		    ram_tmp_pre[127:96] = sh.instruction;
+		    ram_tmp[i] = ram_tmp_pre;
+        end
+
+        else if(rand_sel == 'd2)begin
+            sw = new();
+            sw.randomize();
+	        sw.pack();
+		    ram_tmp_pre[31:0]   = sw.instruction;
+
+            sw = new();
+            sw.randomize();
+	        sw.pack();
+		    ram_tmp_pre[63:32]  = sw.instruction;
+
+            sw = new();
+            sw.randomize();
+	        sw.pack();
+		    ram_tmp_pre[95:64]  = sw.instruction;
+
+            sw = new();
+            sw.randomize();
+	        sw.pack();
+		    ram_tmp_pre[127:96] = sw.instruction;
+		    ram_tmp[i] = ram_tmp_pre;
+        end
+
+    end
+
     return ram_tmp;
 endfunction
 `endif

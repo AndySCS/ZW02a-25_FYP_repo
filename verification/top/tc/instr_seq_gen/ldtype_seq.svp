@@ -25,145 +25,157 @@ task ldtype_seq::body();
     static bit [127:0] ram_tmp_pre;
     static int ram_count;
 
-    for(int i = 0; i < 51; i++) begin
+    for(int i = 0; i < 10; i++) begin
         addi = new();
         addi.randomize();
 	    addi.pack();
-	    if(i==0)begin
-		    ram_tmp_pre[31:0] = addi.instruction;
-	    end
-        else if(i%4 == 1)begin
-		    ram_tmp_pre[63:32] = addi.instruction;
-	    end
-        else if(i%4 == 2)begin
-		    ram_tmp_pre[95:64] = addi.instruction;
-	    end
-        else if(i%4 == 3)begin
-		    ram_tmp_pre[127:96] = addi.instruction;
-	    end
-	    else begin
-		    ram_tmp[ram_count] = ram_tmp_pre;
-		    ram_count = ram_count+1;
-		    ram_tmp_pre[31:0] = addi.instruction;
-	    end
+		ram_tmp_pre[31:0]   = addi.instruction;
+
+        addi = new();
+        addi.randomize();
+	    addi.pack();
+		ram_tmp_pre[63:32]  = addi.instruction;
+
+        addi = new();
+        addi.randomize();
+	    addi.pack();
+		ram_tmp_pre[95:64]  = addi.instruction;
+
+        addi = new();
+        addi.randomize();
+	    addi.pack();
+		ram_tmp_pre[127:96] = addi.instruction;
+		ram_tmp[i] = ram_tmp_pre;
+		//ram_count = ram_count+1;
     end
 
-    for(int i = 51; i < 201; i++) begin
+    for(int i = 10; i < 50; i++) begin
         lb = new();
         lb.randomize();
 	    lb.pack();
-	    if(i==0)begin
-		    ram_tmp_pre[31:0] = lb.instruction;
-	    end
-        else if(i%4 == 1)begin
-		    ram_tmp_pre[63:32] = lb.instruction;
-	    end
-        else if(i%4 == 2)begin
-		    ram_tmp_pre[95:64] = lb.instruction;
-	    end
-        else if(i%4 == 3)begin
-		    ram_tmp_pre[127:96] = lb.instruction;
-	    end
-	    else begin
-		    ram_tmp[ram_count] = ram_tmp_pre;
-		    ram_count = ram_count+1;
-		    ram_tmp_pre[31:0] = lb.instruction;
-	    end
+		ram_tmp_pre[31:0] = lb.instruction;
+
+        lb = new();
+        lb.randomize();
+	    lb.pack();
+		ram_tmp_pre[63:32] = lb.instruction;
+
+        lb = new();
+        lb.randomize();
+	    lb.pack();
+		ram_tmp_pre[95:64] = lb.instruction;
+
+        lb = new();
+        lb.randomize();
+	    lb.pack();
+		ram_tmp_pre[127:96] = lb.instruction;
+		ram_tmp[i] = ram_tmp_pre;
+		//ram_count = ram_count+1;
     end
 
-    for(int i = 201; i < 401; i++) begin
+    for(int i = 50; i < 100; i++) begin
         lh = new();
         lh.randomize();
 	    lh.pack();
-	    if(i==0)begin
-		    ram_tmp_pre[31:0] = lh.instruction;
-	    end
-        else if(i%4 == 1)begin
-		    ram_tmp_pre[63:32] = lh.instruction;
-	    end
-        else if(i%4 == 2)begin
-		    ram_tmp_pre[95:64] = lh.instruction;
-	    end
-        else if(i%4 == 3)begin
-		    ram_tmp_pre[127:96] = lh.instruction;
-	    end
-	    else begin
-		    ram_tmp[ram_count] = ram_tmp_pre;
-		    ram_count = ram_count+1;
-		    ram_tmp_pre[31:0] = lh.instruction;
-	    end
+		ram_tmp_pre[31:0] = lh.instruction;
+
+        lh = new();
+        lh.randomize();
+	    lh.pack();
+		ram_tmp_pre[63:32] = lh.instruction;
+
+        lh = new();
+        lh.randomize();
+	    lh.pack();
+		ram_tmp_pre[95:64] = lh.instruction;
+
+        lh = new();
+        lh.randomize();
+	    lh.pack();
+		ram_tmp_pre[127:96] = lh.instruction;
+		ram_tmp[i] = ram_tmp_pre;
+		//ram_count = ram_count+1;
     end
 
-    for(int i = 401; i < 601; i++) begin
+    for(int i = 100; i < 150; i++) begin
         lw = new();
         lw.randomize();
 	    lw.pack();
-	    if(i==0)begin
-		    ram_tmp_pre[31:0] = lw.instruction;
-	    end
-        else if(i%4 == 1)begin
-		    ram_tmp_pre[63:32] = lw.instruction;
-	    end
-        else if(i%4 == 2)begin
-		    ram_tmp_pre[95:64] = lw.instruction;
-	    end
-        else if(i%4 == 3)begin
-		    ram_tmp_pre[127:96] = lw.instruction;
-	    end
-	    else begin
-		    ram_tmp[ram_count] = ram_tmp_pre;
-		    ram_count = ram_count+1;
-		    ram_tmp_pre[31:0] = lw.instruction;
-	    end
+		ram_tmp_pre[31:0] = lw.instruction;
+
+        lw = new();
+        lw.randomize();
+	    lw.pack();
+		ram_tmp_pre[63:32] = lw.instruction;
+
+        lw = new();
+        lw.randomize();
+	    lw.pack();
+		ram_tmp_pre[95:64] = lw.instruction;
+
+        lw = new();
+        lw.randomize();
+	    lw.pack();
+		ram_tmp_pre[127:96] = lw.instruction;
+		ram_tmp[i] = ram_tmp_pre;
+		//ram_count = ram_count+1;
     end
     
-    for(int i = 601; i < 801; i++) begin
+    for(int i = 150; i < 200; i++) begin
         lbu = new();
         lbu.randomize();
 	    lbu.pack();
-	    if(i==0)begin
-		    ram_tmp_pre[31:0] = lbu.instruction;
-	    end
-        else if(i%4 == 1)begin
-		    ram_tmp_pre[63:32] = lbu.instruction;
-	    end
-        else if(i%4 == 2)begin
-		    ram_tmp_pre[95:64] = lbu.instruction;
-	    end
-        else if(i%4 == 3)begin
-		    ram_tmp_pre[127:96] = lbu.instruction;
-	    end
-	    else begin
-		    ram_tmp[ram_count] = ram_tmp_pre;
-		    ram_count = ram_count+1;
-		    ram_tmp_pre[31:0] = lbu.instruction;
+		ram_tmp_pre[31:0] = lbu.instruction;
+
+        lbu = new();
+        lbu.randomize();
+	    lbu.pack();
+		ram_tmp_pre[63:32] = lbu.instruction;
+
+        lbu = new();
+        lbu.randomize();
+	    lbu.pack();
+		ram_tmp_pre[95:64] = lbu.instruction;
+
+        lbu = new();
+        lbu.randomize();
+	    lbu.pack();
+		ram_tmp_pre[127:96] = lbu.instruction;
+		ram_tmp[i] = ram_tmp_pre;
+		//ram_count = ram_count+1;
 	    end
     end
 
-    for(int i = 801; i < 1024; i++) begin
+    for(int i = 200; i < 256; i++) begin
         lhu = new();
         lhu.randomize();
 	    lhu.pack();
-	    if(i==0)begin
-		    ram_tmp_pre[31:0] = lhu.instruction;
-	    end
-        else if(i%4 == 1)begin
-		    ram_tmp_pre[63:32] = lhu.instruction;
-	    end
-        else if(i%4 == 2)begin
-		    ram_tmp_pre[95:64] = lhu.instruction;
-	    end
-        else if(i%4 == 3)begin
-		    ram_tmp_pre[127:96] = lhu.instruction;
-	    end
-	    else begin
-		    ram_tmp[ram_count] = ram_tmp_pre;
-		    ram_count = ram_count+1;
-		    ram_tmp_pre[31:0] = lhu.instruction;
+		ram_tmp_pre[31:0] = lhu.instruction;
+
+        lhu = new();
+        lhu.randomize();
+	    lhu.pack();
+		ram_tmp_pre[63:32] = lhu.instruction;
+
+        lhu = new();
+        lhu.randomize();
+	    lhu.pack();
+		ram_tmp_pre[95:64] = lhu.instruction;
+
+        lhu = new();
+        lhu.randomize();
+	    lhu.pack();
+		ram_tmp_pre[127:96] = lhu.instruction;
+		ram_tmp[i] = ram_tmp_pre;
+		//ram_count = ram_count+1;
 	    end
     end
 
-    ram_tmp[255][31:0] = 'h7f; 
+    ram_tmp[255][31:0] = 'h7f;
+    ram_tmp[255][63:32] = 'h7f;
+    ram_tmp[255][95:64] = 'h7f;
+    ram_tmp[255][127:96] = 'h7f;
+	
     //:for($i = 0; $i < 256;$i++){    
     force harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[{$i}] = ram_tmp[{$i}];
     //:}
