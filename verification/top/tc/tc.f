@@ -11,15 +11,21 @@ $MINITPU_VER/top/tc/instr_seq_gen/jtype_seq.sv
 $MINITPU_VER/top/tc/instr_seq_gen/mix_seq.sv
 $MINITPU_VER/top/tc/instr_seq_gen/bypas_seq.sv
 
-$MINITPU_VER/top/tc/tc_sanity.sv
-$MINITPU_VER/top/tc/tc_rtype.sv
-$MINITPU_VER/top/tc/tc_itype.sv
-$MINITPU_VER/top/tc/tc_jtype.sv
-$MINITPU_VER/top/tc/tc_utype.sv
-$MINITPU_VER/top/tc/tc_btype.sv
-$MINITPU_VER/top/tc/tc_stype.sv
-$MINITPU_VER/top/tc/tc_ld.sv
-$MINITPU_VER/top/tc/tc_st.sv
-$MINITPU_VER/top/tc/tc_br.sv
-$MINITPU_VER/top/tc/tc_mix.sv
-$MINITPU_VER/top/tc/tc_bypas.sv
+//tc basic
+$MINITPU_VER/top/tc/tc_basic/tc_sanity.sv
+$MINITPU_VER/top/tc/tc_basic/tc_rtype.sv
+$MINITPU_VER/top/tc/tc_basic/tc_itype.sv
+$MINITPU_VER/top/tc/tc_basic/tc_jtype.sv
+$MINITPU_VER/top/tc/tc_basic/tc_utype.sv
+$MINITPU_VER/top/tc/tc_basic/tc_btype.sv
+$MINITPU_VER/top/tc/tc_basic/tc_stype.sv
+
+//tc ldst
+$MINITPU_VER/top/tc/tc_ldst/tc_ld.sv
+$MINITPU_VER/top/tc/tc_ldst/tc_stype_dir.sv
+
+//tc mix
+$MINITPU_VER/top/tc/tc_mix/tc_mix.sv
+
+//tc bypass
+$MINITPU_VER/top/tc/tc_bypass/tc_bypas.sv

@@ -1,24 +1,24 @@
-`ifndef BYPAS_SEQ_SV
-`define BYPAS_SEQ_SV
+`ifndef BYPASS_SEQ_SV
+`define BYPASS_SEQ_SV
 
-class bypas_seq extends uvm_sequence;
-    `uvm_object_utils(bypas_seq);	
+class bypass_seq extends uvm_sequence;
+    `uvm_object_utils(bypass_seq);	
 
     instr_rtype rtype;
     instr_itype itype;	
     instr_utype utype;
 
-    extern function new(string name="bypas_seq");
+    extern function new(string name="bypass_seq");
     extern function bit[31:0] bypas_seq_sel();
     extern task body();
 endclass
 
 
-function bypas_seq::new(string name="bypas_seq");
+function bypass_seq::new(string name="bypass_seq");
     super.new(name);
 endfunction
 
-task bypas_seq::body();
+task bypass_seq::body();
     static bit [255:0][127:0] ram_tmp;
     static bit [127:0] ram_tmp_pre;
     static int ram_count;
@@ -66,7 +66,7 @@ task bypas_seq::body();
    	`uvm_info(get_type_name(), "MIX IMEM INIT FINISH", UVM_NONE)
 endtask
 
-function bit[31:0] bypas_seq::bypas_seq_sel();
+function bit[31:0] bypass_seq::bypas_seq_sel();
     bit[2:0] rand_sel;
     bit[31:0] rand_instr;
     bit[31:0] rand_instr_raw;
