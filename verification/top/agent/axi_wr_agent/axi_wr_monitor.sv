@@ -39,9 +39,10 @@ task axi_wr_monitor::main_phase(uvm_phase phase);
         end
         if(axi_wr_if.WVALID & axi_wr_if.WREADY)begin
             `uvm_info(get_name(),$sformatf("received axi wr, output_num = %d", output_num), UVM_LOW);
-            tr.model_output[alloc_ptr] = axi_wr_if.WDATA;
+            tr.model_output_int16[alloc_ptr] = axi_wr_if.WDATA;
             output_num--;
-            alloc_ptr += wdata_len;
+            alloc_ptr ++;
+
             if(output_num == 0) ap.write(tr);
         end
     end

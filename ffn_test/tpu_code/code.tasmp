@@ -181,6 +181,8 @@ addi x28, x0, 10
 
 addi x26, x0, 15 //
 
+addi x1, x0, 1
+
 second_layer_loop:
     //56 input in this layer, 10 output
 
@@ -223,7 +225,7 @@ second_layer_loop:
 
     sl_load_weight_end:
 
-    beq x10, x0, sl_matrix_multi_case_first
+    beq x11, x1, sl_matrix_multi_case_first
     blt x11, x10, sl_matrix_multi_case_norm
 
     sl_matrix_multi_case_bias:
@@ -242,11 +244,11 @@ second_layer_loop:
 //set oram addr
 addi x3, x0, 0
 lui x3, 2
-STMT x3, x0, 0, 9, 1 //store result oram
+STMT x3, x0, 0, 9, 0 //store result oram
 //set dram addr
 addi x5, x0, 0
 lui x5, 12
 addi x5, x5, 1520
-STT x3, x5,  9, 0, 0, 1 // store result to dram
+STT x3, x5,  9, 1, 0, 1 // store result to dram
 
 WFI

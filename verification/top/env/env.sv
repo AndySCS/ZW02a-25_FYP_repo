@@ -26,7 +26,9 @@ endclass //env extends superClass
 function void env::build_phase(uvm_phase phase);
     `uvm_info(get_name(), "build phase begins", UVM_LOW);
     super.build_phase(phase);
-    set_report_max_quit_count(1);
+
+    set_report_max_quit_count(10);
+
     top_agt = top_agent::type_id::create("top_agt", this);
     axi_wr_agt = axi_wr_agent::type_id::create("axi_wr_agt", this);
     axi_rd_agt = axi_rd_agent::type_id::create("axi_rd_agt", this);

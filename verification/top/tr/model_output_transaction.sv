@@ -1,6 +1,7 @@
 class model_output_transaction extends uvm_sequence_item;
 
     bit [9:0][7:0] model_output;
+    bit [9:0][15:0] model_output_int16;
 
     function new(string name = "model_output_transaction");
        super.new(name);

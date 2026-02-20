@@ -46,11 +46,11 @@ task top_sc::main_phase(uvm_phase phase);
     	    `uvm_info("top_sc", "received act matrix from mon", UVM_MEDIUM);
 	    if(this.exp_result_q.size() > 0)begin
 	        tmp_tr = this.exp_result_q.pop_front();
-
-	        if(tmp_tr.model_output != act_tr.model_output) begin
-	            `uvm_error(get_name(), $sformatf("exp and act model output is not the same, act output = %h, exp output = %h", act_tr.model_output, tmp_tr.model_output))
+                for(int i = 0; i < 10; i++)begin
+	        if(tmp_tr.model_output_int16[i] != act_tr.model_output_int16[i]) begin
+	            `uvm_error(get_name(), $sformatf("exp and act model %0d output is not the same, act output = %d, exp output = %d", i, act_tr.model_output_int16[i], tmp_tr.model_output_int16[i]))
                 end
-
+                end
                 softmax_output = softmax(tmp_tr.model_output);
                 fd = $fopen("model_output.txt", "w");
                 $fdisplay(fd, $sformatf("%d", softmax_output));
