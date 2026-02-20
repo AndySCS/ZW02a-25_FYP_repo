@@ -9,7 +9,7 @@ class bypass_seq extends uvm_sequence;
     instr_utype utype;
 
     extern function new(string name="bypass_seq");
-    extern function bit[31:0] bypass_seq_sel();
+    extern function bit[31:0] bypass_seq_sel(bit[2:0] rand_index_sel);
     extern task body();
 endclass
 
@@ -31,7 +31,7 @@ task bypass_seq::body();
 		ram_tmp_pre[63:32]  = bypass_seq_sel(rand_index_sel);
 		ram_tmp_pre[95:64]  = bypass_seq_sel(rand_index_sel);
 		ram_tmp_pre[127:96] = bypass_seq_sel(rand_index_sel);
-        if(i = 255)begin
+        if(i == 255)begin
             ram_tmp[255][31:0]   = 'h7f;
             ram_tmp[255][63:32]  = 'h7f; 
             ram_tmp[255][95:64]  = 'h7f; 
@@ -66,27 +66,27 @@ function bit[31:0] bypass_seq::bypass_seq_sel(bit[2:0] rand_index_sel);
     utype.pack();
     rtype.pack();
     
-    if(rand_index_sel == 'b0)begin
+    if(rand_index_sel == 'd0)begin
        rand_rd  = $urandom_range(1,5);
        rand_rs1 = $urandom_range(1,5);
        rand_rs2 = $urandom_range(1,5);
     end
-    else if(rand_index_sel == 'b1)begin
+    else if(rand_index_sel == 'd1)begin
        rand_rd  = $urandom_range(6,10);
        rand_rs1 = $urandom_range(6,10);
        rand_rs2 = $urandom_range(6,10);
     end 
-    else if(rand_index_sel == 'b2)begin
+    else if(rand_index_sel == 'd2)begin
        rand_rd  = $urandom_range(11,15);
        rand_rs1 = $urandom_range(11,15);
        rand_rs2 = $urandom_range(11,15);
     end 
-    else if(rand_index_sel == 'b3)begin
+    else if(rand_index_sel == 'd3)begin
        rand_rd  = $urandom_range(16,20);
        rand_rs1 = $urandom_range(16,20);
        rand_rs2 = $urandom_range(16,20);
     end 
-    else if(rand_index_sel == 'b4)begin
+    else if(rand_index_sel == 'd4)begin
        rand_rd  = $urandom_range(21,25);
        rand_rs1 = $urandom_range(21,25);
        rand_rs2 = $urandom_range(21,25);
@@ -130,6 +130,3 @@ function bit[31:0] bypass_seq::bypass_seq_sel(bit[2:0] rand_index_sel);
 endfunction
 
 `endif
-
-
-

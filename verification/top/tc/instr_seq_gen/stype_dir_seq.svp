@@ -28,7 +28,7 @@ endfunction
 task stype_dir_seq::body();
     static bit [255:0][127:0] ram_tmp;
     static bit [127:0] ram_tmp_pre;
-    bit [1:0] ramd_sel;
+    bit [1:0] rand_sel;
 
     randcase
         3 : rand_sel = 0;//sb

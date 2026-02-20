@@ -143,7 +143,6 @@ task ldtype_seq::body();
 		ram_tmp_pre[127:96] = lbu.instruction;
 		ram_tmp[i] = ram_tmp_pre;
 		//ram_count = ram_count+1;
-	    end
     end
 
     for(int i = 200; i < 256; i++) begin
@@ -168,7 +167,6 @@ task ldtype_seq::body();
 		ram_tmp_pre[127:96] = lhu.instruction;
 		ram_tmp[i] = ram_tmp_pre;
 		//ram_count = ram_count+1;
-	    end
     end
 
     ram_tmp[255][31:0] = 'h7f;

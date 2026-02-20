@@ -246,8 +246,9 @@ function rf_rlt_q top_rm::riscv_rf_cal();
             end
             //srl & sra
             else if (instruction[14:12] == 'b101)begin
-                if (instruction[31:15] == 'b0000000)begin
+                if (instruction[31:25] == 'b0000000)begin
                     rd_data = rs1_data >> rs2_data[4:0];
+    	    	    `uvm_info("top_rm", $sformatf("srl: %0h, %0h, %0h",rs1_data, rs2_data, rd_data), UVM_NONE);
                 end
                 else begin
                     shift_data = {32{rs1_data[31]}} << (32-rs2_data[4:0]);	
