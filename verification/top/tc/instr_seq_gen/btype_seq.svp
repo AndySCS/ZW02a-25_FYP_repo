@@ -4,8 +4,8 @@
 class btype_seq extends uvm_sequence;
     `uvm_object_utils(btype_seq);	
 
-
     instr_addi  addi;
+	instr_btype btype;
     instr_beq   beq;
     instr_bne   bne;
     instr_blt   blt;
@@ -14,6 +14,14 @@ class btype_seq extends uvm_sequence;
     instr_bgeu  bgeu;
     
     extern function new(string name="btype_seq");
+    extern function bit[31:0] btype_addi_gen();
+    extern function bit[31:0] btype_rand_gen();
+    extern function bit[31:0] btype_beq_gen();
+    extern function bit[31:0] btype_bne_gen();
+    extern function bit[31:0] btype_blt_gen();
+    extern function bit[31:0] btype_bge_gen();
+    extern function bit[31:0] btype_bltu_gen();
+    extern function bit[31:0] btype_bgeu_gen();
     extern task body();
 endclass
 
@@ -27,173 +35,169 @@ task btype_seq::body();
     static bit [127:0] ram_tmp_pre;
     static int ram_count;
 
-    for(int i = 0; i < 51; i++) begin
-        addi = new();
-        addi.randomize();
-	    addi.pack();
-	    if(i==0)begin
-		    ram_tmp_pre[31:0] = addi.instruction;
-	    end
-        else if(i%4 == 1)begin
-		    ram_tmp_pre[63:32] = addi.instruction;
-	    end
-        else if(i%4 == 2)begin
-		    ram_tmp_pre[95:64] = addi.instruction;
-	    end
-        else if(i%4 == 3)begin
-		    ram_tmp_pre[127:96] = addi.instruction;
-	    end
-	    else begin
-		    ram_tmp[ram_count] = ram_tmp_pre;
-		    ram_count = ram_count+1;
-		    ram_tmp_pre[31:0] = addi.instruction;
-	    end
+	//data init
+	//addi
+    for(int i = 0; i < 10; i++) begin
+		ram_tmp_pre[31:0]   = btype_addi_gen();
+		ram_tmp_pre[63:32]  = btype_addi_gen();
+		ram_tmp_pre[95:64]  = btype_addi_gen();
+		ram_tmp_pre[127:96] = btype_addi_gen();
+		ram_tmp[i] = ram_tmp_pre;
+		//ram_count = ram_count+1;
     end
 
-    for(int i = 51; i < 201; i++) begin
-        beq = new();
-        beq.randomize();
-	    beq.pack();
-	    if(i==0)begin
-		    ram_tmp_pre[31:0] = beq.instruction;
-	    end
-        else if(i%4 == 1)begin
-		    ram_tmp_pre[63:32] = beq.instruction;
-	    end
-        else if(i%4 == 2)begin
-		    ram_tmp_pre[95:64] = beq.instruction;
-	    end
-        else if(i%4 == 3)begin
-		    ram_tmp_pre[127:96] = beq.instruction;
-	    end
-	    else begin
-		    ram_tmp[ram_count] = ram_tmp_pre;
-		    ram_count = ram_count+1;
-		    ram_tmp_pre[31:0] = beq.instruction;
-	    end
+	//beq
+    for(int i = 10; i < 20; i++) begin
+		ram_tmp_pre[31:0]   = btype_beq_gen();
+		ram_tmp_pre[63:32]  = btype_beq_gen();
+		ram_tmp_pre[95:64]  = btype_beq_gen();
+		ram_tmp_pre[127:96] = btype_beq_gen();
+		ram_tmp[i] = ram_tmp_pre;
+		//ram_count = ram_count+1;
     end
 
-    for(int i = 201; i < 351; i++) begin
-        bne = new();
-        bne.randomize();
-	    bne.pack();
-	    if(i==0)begin
-		    ram_tmp_pre[31:0] = bne.instruction;
-	    end
-        else if(i%4 == 1)begin
-		    ram_tmp_pre[63:32] = bne.instruction;
-	    end
-        else if(i%4 == 2)begin
-		    ram_tmp_pre[95:64] = bne.instruction;
-	    end
-        else if(i%4 == 3)begin
-		    ram_tmp_pre[127:96] = bne.instruction;
-	    end
-	    else begin
-		    ram_tmp[ram_count] = ram_tmp_pre;
-		    ram_count = ram_count+1;
-		    ram_tmp_pre[31:0] = bne.instruction;
-	    end
-    end
-    
-    for(int i = 351; i < 551; i++) begin
-        blt = new();
-        blt.randomize();
-	    blt.pack();
-	    if(i==0)begin
-		    ram_tmp_pre[31:0] = blt.instruction;
-	    end
-        else if(i%4 == 1)begin
-		    ram_tmp_pre[63:32] = blt.instruction;
-	    end
-        else if(i%4 == 2)begin
-		    ram_tmp_pre[95:64] = blt.instruction;
-	    end
-        else if(i%4 == 3)begin
-		    ram_tmp_pre[127:96] = blt.instruction;
-	    end
-	    else begin
-		    ram_tmp[ram_count] = ram_tmp_pre;
-		    ram_count = ram_count+1;
-		    ram_tmp_pre[31:0] = blt.instruction;
-	    end
+	//bne
+    for(int i = 20; i < 30; i++) begin
+		ram_tmp_pre[31:0]   = btype_bne_gen();
+		ram_tmp_pre[63:32]  = btype_bne_gen();
+		ram_tmp_pre[95:64]  = btype_bne_gen();
+		ram_tmp_pre[127:96] = btype_bne_gen();
+		ram_tmp[i] = ram_tmp_pre;
+		//ram_count = ram_count+1;
     end
 
-    for(int i = 551; i < 751; i++) begin
-        bge = new();
-        bge.randomize();
-	    bge.pack();
-	    if(i==0)begin
-		    ram_tmp_pre[31:0] = bge.instruction;
-	    end
-        else if(i%4 == 1)begin
-		    ram_tmp_pre[63:32] = bge.instruction;
-	    end
-        else if(i%4 == 2)begin
-		    ram_tmp_pre[95:64] = bge.instruction;
-	    end
-        else if(i%4 == 3)begin
-		    ram_tmp_pre[127:96] = bge.instruction;
-	    end
-	    else begin
-		    ram_tmp[ram_count] = ram_tmp_pre;
-		    ram_count = ram_count+1;
-		    ram_tmp_pre[31:0] = bge.instruction;
-	    end
+	//blt
+    for(int i = 30; i < 40; i++) begin
+		ram_tmp_pre[31:0]   = btype_blt_gen();
+		ram_tmp_pre[63:32]  = btype_blt_gen();
+		ram_tmp_pre[95:64]  = btype_blt_gen();
+		ram_tmp_pre[127:96] = btype_blt_gen();
+		ram_tmp[i] = ram_tmp_pre;
+		//ram_count = ram_count+1;
     end
 
-    for(int i = 751; i < 851; i++) begin
-        bltu = new();
-        bltu.randomize();
-	    bltu.pack();
-	    if(i==0)begin
-		    ram_tmp_pre[31:0] = bltu.instruction;
-	    end
-        else if(i%4 == 1)begin
-		    ram_tmp_pre[63:32] = bltu.instruction;
-	    end
-        else if(i%4 == 2)begin
-		    ram_tmp_pre[95:64] = bltu.instruction;
-	    end
-        else if(i%4 == 3)begin
-		    ram_tmp_pre[127:96] = bltu.instruction;
-	    end
-	    else begin
-		    ram_tmp[ram_count] = ram_tmp_pre;
-		    ram_count = ram_count+1;
-		    ram_tmp_pre[31:0] = bltu.instruction;
-	    end
+	//bge
+    for(int i = 40; i < 50; i++) begin
+		ram_tmp_pre[31:0]   = btype_bge_gen();
+		ram_tmp_pre[63:32]  = btype_bge_gen();
+		ram_tmp_pre[95:64]  = btype_bge_gen();
+		ram_tmp_pre[127:96] = btype_bge_gen();
+		ram_tmp[i] = ram_tmp_pre;
+		//ram_count = ram_count+1;
     end
 
-    for(int i = 851; i < 1024; i++) begin
-        bgeu = new();
-        bgeu.randomize();
-	    bgeu.pack();
-	    if(i==0)begin
-		    ram_tmp_pre[31:0] = bgeu.instruction;
-	    end
-        else if(i%4 == 1)begin
-		    ram_tmp_pre[63:32] = bgeu.instruction;
-	    end
-        else if(i%4 == 2)begin
-		    ram_tmp_pre[95:64] = bgeu.instruction;
-	    end
-        else if(i%4 == 3)begin
-		    ram_tmp_pre[127:96] = bgeu.instruction;
-	    end
-	    else begin
-		    ram_tmp[ram_count] = ram_tmp_pre;
-		    ram_count = ram_count+1;
-		    ram_tmp_pre[31:0] = bgeu.instruction;
-	    end
+	//bltu
+    for(int i = 50; i < 60; i++) begin
+		ram_tmp_pre[31:0]   = btype_bltu_gen();
+		ram_tmp_pre[63:32]  = btype_bltu_gen();
+		ram_tmp_pre[95:64]  = btype_bltu_gen();
+		ram_tmp_pre[127:96] = btype_bltu_gen();
+		ram_tmp[i] = ram_tmp_pre;
+		//ram_count = ram_count+1;
     end
 
-    ram_tmp[255][31:0] = 'h7f; 
+	//bgeu
+    for(int i = 60; i < 70; i++) begin
+		ram_tmp_pre[31:0]   = btype_bgeu_gen();
+		ram_tmp_pre[63:32]  = btype_bgeu_gen();
+		ram_tmp_pre[95:64]  = btype_bgeu_gen();
+		ram_tmp_pre[127:96] = btype_bgeu_gen();
+		ram_tmp[i] = ram_tmp_pre;
+		//ram_count = ram_count+1;
+    end
+
+	//btype rand
+    for(int i = 70; i < 256; i++) begin
+		ram_tmp_pre[31:0]   = btype_rand_gen();
+		ram_tmp_pre[63:32]  = btype_rand_gen();
+		ram_tmp_pre[95:64]  = btype_rand_gen();
+		ram_tmp_pre[127:96] = btype_rand_gen();
+		ram_tmp[i] = ram_tmp_pre;
+		//ram_count = ram_count+1;
+    end
+
+	//WFI
+    ram_tmp[255][31:0] 	 = 'h7f; 
+    ram_tmp[255][63:32]	 = 'h7f; 
+    ram_tmp[255][95:64]	 = 'h7f; 
+    ram_tmp[255][127:96] = 'h7f;
+
     //:for($i = 0; $i < 256;$i++){    
     force harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[{$i}] = ram_tmp[{$i}];
     //:}
    	`uvm_info(get_type_name(), "LUI IMEM INIT FINISH", UVM_NONE)
 endtask
 
+function bit[31:0] btype_seq::btype_addi_gen();
+	bit[31:0] btype_instr;
+    addi = new();	
+    addi.randomize();	
+    addi.pack();	
+	btype_instr = addi.instruction;
+	return btype_instr;
+endfunction
+
+function bit[31:0] btype_seq::btype_beq_gen();
+	bit[31:0] btype_instr;
+    beq = new();	
+    beq.randomize();	
+    beq.pack();	
+	btype_instr = beq.instruction;
+	return btype_instr;
+endfunction
+
+function bit[31:0] btype_seq::btype_bne_gen();
+	bit[31:0] btype_instr;
+    bne = new();	
+    bne.randomize();	
+    bne.pack();	
+	btype_instr = bne.instruction;
+	return btype_instr;
+endfunction
+
+function bit[31:0] btype_seq::btype_blt_gen();
+	bit[31:0] btype_instr;
+    blt = new();	
+    blt.randomize();	
+    blt.pack();	
+	btype_instr = blt.instruction;
+	return btype_instr;
+endfunction
+
+function bit[31:0] btype_seq::btype_bge_gen();
+	bit[31:0] btype_instr;
+    bge = new();	
+    bge.randomize();	
+    bge.pack();	
+	btype_instr = bge.instruction;
+	return btype_instr;
+endfunction
+
+function bit[31:0] btype_seq::btype_bltu_gen();
+	bit[31:0] btype_instr;
+    bltu = new();	
+    bltu.randomize();	
+    bltu.pack();	
+	btype_instr = bltu.instruction;
+	return btype_instr;
+endfunction
+
+function bit[31:0] btype_seq::btype_bgeu_gen();
+	bit[31:0] btype_instr;
+    bgeu = new();	
+    bgeu.randomize();	
+    bgeu.pack();	
+	btype_instr = bgeu.instruction;
+	return btype_instr;
+endfunction
+
+function bit[31:0] btype_seq::btype_rand_gen();
+	bit[31:0] btype_instr;
+    btype = new();	
+    btype.randomize();	
+    btype.pack();	
+	btype_instr = btype.instruction;
+	return btype_instr;
+endfunction
 `endif
 
