@@ -93,9 +93,12 @@ constraint instr_itype::itype_cons_opcode{
                             3'b101,
                             3'b110,
                             3'b111};
-        //if ((instr_funct3 == 3'b001) | (instr_funct3 == 3'b101)){
-        //    instr_imm[11:5] inside {7'b0000000};
-        //}
+        if (instr_funct3 == 3'b001){
+            instr_imm[11:5] inside {7'b0000000};
+        }
+	    else if (instr_funct3 == 3'b101){	
+            instr_imm[11:5] inside {7'b0000000,7'b0100000};
+	    }
     }
     else if(instr_opcode == 7'b0000011){
         instr_funct3 inside {3'b000,
