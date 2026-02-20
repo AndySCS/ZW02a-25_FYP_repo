@@ -1,0 +1,9 @@
+[
+{"mode":"reg"},
+{"tc_name" : "tc_rtype"              , "num": 1000},
+{"tc_name" : "tc_itype"              , "num": 1000},
+{"tc_name" : "tc_utype"              , "num": 1000},
+{"tc_name" : "tc_jtype"              , "num": 200},
+{"tc_name" : "tc_btype"              , "num": 200},
+{"tc_name" : "tc_stype"              , "num": 30}
+]
