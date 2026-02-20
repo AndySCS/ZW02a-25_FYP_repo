@@ -137,112 +137,92 @@ task itype_seq::body();
 endtask
 
 function bit[31:0] itype_seq::itype_rand_gen();
-
 	bit[31:0] itype_instr;
     itype = new();	
     itype.randomize();	
     itype.pack();	
 	itype_instr = itype.instruction;
 	return itype_instr;
-
 endfunction
 
 function bit[31:0] itype_seq::itype_addi_gen();
-
 	bit[31:0] itype_instr;
     addi = new();	
     addi.randomize();	
     addi.pack();	
 	itype_instr = addi.instruction;
 	return itype_instr;
-
 endfunction
 
 function bit[31:0] itype_seq::itype_slli_gen();
-
 	bit[31:0] itype_instr;
     slli = new();	
     slli.randomize();	
     slli.pack();	
 	itype_instr = slli.instruction;
 	return itype_instr;
-
 endfunction
 
 function bit[31:0] itype_seq::itype_slti_gen();
-
 	bit[31:0] itype_instr;
     slti = new();	
     slti.randomize();	
     slti.pack();	
 	itype_instr = slti.instruction;
 	return itype_instr;
-
 endfunction
 
 function bit[31:0] itype_seq::itype_sltiu_gen();
-
 	bit[31:0] itype_instr;
     sltiu = new();	
     sltiu.randomize();	
     sltiu.pack();	
 	itype_instr = sltiu.instruction;
 	return itype_instr;
-
 endfunction
 
 function bit[31:0] itype_seq::itype_xori_gen();
-
 	bit[31:0] itype_instr;
     xori = new();	
     xori.randomize();	
     xori.pack();	
 	itype_instr = xori.instruction;
 	return itype_instr;
-
 endfunction
 
 function bit[31:0] itype_seq::itype_srli_gen();
-
 	bit[31:0] itype_instr;
     srli = new();	
     srli.randomize();	
     srli.pack();	
 	itype_instr = srli.instruction;
 	return itype_instr;
-
 endfunction
 
 function bit[31:0] itype_seq::itype_srai_gen();
-
 	bit[31:0] itype_instr;
     srai = new();	
     srai.randomize();	
     srai.pack();	
 	itype_instr = srai.instruction;
 	return itype_instr;
-
 endfunction
 
 function bit[31:0] itype_seq::itype_ori_gen();
-
 	bit[31:0] itype_instr;
     ori = new();	
     ori.randomize();	
     ori.pack();	
 	itype_instr = ori.instruction;
 	return itype_instr;
-
 endfunction
 
 function bit[31:0] itype_seq::itype_andi_gen();
-
 	bit[31:0] itype_instr;
     andi = new();	
     andi.randomize();	
     andi.pack();	
 	itype_instr = andi.instruction;
 	return itype_instr;
-
 endfunction
 `endif
