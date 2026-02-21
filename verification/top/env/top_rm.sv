@@ -760,12 +760,13 @@ function rf_rlt_q top_rm::riscv_rf_cal();
 
         end
 	    if(pc_count_num > 2000)begin
+
     	    `uvm_info("top_rm", "instrutcion count reach 2000 limit", UVM_NONE);
             break;
 	    end
 
         //debug use
-    	//`uvm_info("top_rm", $sformatf("pc_count: %0h", pc_count), UVM_NONE);
+    	`uvm_info("top_rm", $sformatf("pc_count: %0h", pc_count), UVM_NONE);
     	`uvm_info("top_rm", $sformatf("start_vld: %0h", start_tr.start_vld), UVM_NONE);
     	`uvm_info("top_rm", "instrutcion finish", UVM_NONE);
     	`uvm_info("top_rm", $sformatf("instruction: %0h", instruction), UVM_NONE);
@@ -780,7 +781,7 @@ function rf_rlt_q top_rm::riscv_rf_cal();
     	`uvm_info("top_rm", $sformatf("rs2: %0h", rs2), UVM_NONE);
     	`uvm_info("top_rm", $sformatf("rs2_data: %0h", rs2_data), UVM_NONE);
     	`uvm_info("top_rm", $sformatf("imm_data: %0h", imm_data), UVM_NONE);
-    	`uvm_info("top_rm", "\n===================================================================================", UVM_NONE);
+    	`uvm_info("top_rm", "\n===================================================================================\n", UVM_NONE);
 	//for(int i=0; i<32; i++)begin	
     	//	`uvm_info("top_rm", $sformatf("rf_output %0h : %0h",i ,rf_output[i]), UVM_NONE);
     	//	`uvm_info("top_rm", $sformatf("rm_rf %0h : %0h",i ,rm_rf[i]), UVM_NONE);
@@ -811,6 +812,7 @@ function rf_rlt_q top_rm::riscv_rf_cal();
             rm_rf_q.push_back(wram);
             rm_rf_q.push_back(oram_lo);
             rm_rf_q.push_back(oram_hi);
+    	    `uvm_info("top_rm", $sformatf("pc_count_num: %0h", pc_count_num), UVM_NONE);
 	        pc_count_num = pc_count_num+1;
 	    end
         else if((instruction[6:0] == 'b0100011) & ~st_invld )begin   
@@ -823,21 +825,20 @@ function rf_rlt_q top_rm::riscv_rf_cal();
 
     	    `uvm_info("top_rm", "ram_data need push", UVM_NONE);
         end
-	    if(limit_count == 10000)begin	
-    	    `uvm_info("top_rm", "reach 10000 limit count", UVM_NONE);
+	    if(limit_count == 50000)begin	
+    	    `uvm_info("top_rm", "reach 50000 limit count", UVM_NONE);
             break;
 	    end
 	    limit_count = limit_count+1;
+	    pc_count = 1;
 	    
     	    `uvm_info("top_rm", $sformatf("pc: %0h", pc), UVM_NONE);
     	    `uvm_info("top_rm", $sformatf("instruction: %0h", instruction), UVM_NONE);
     	    `uvm_info("top_rm", $sformatf("rm_instr_count: %0d", pc_count_num), UVM_NONE);
     	    `uvm_info("top_rm", $sformatf("rm_limit_count: %0d", limit_count), UVM_NONE);
     	    `uvm_info("top_rm", "\n===================================================================================\n", UVM_NONE);
-	    pc_count = 1;
     end
 
     return rm_rf_q;
 endfunction
-
 

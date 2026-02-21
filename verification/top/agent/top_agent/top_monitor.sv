@@ -94,7 +94,7 @@ task top_monitor::main_phase(uvm_phase phase);
 	    	    end
            	    start_ap.write(start_tr);
         	    ap.write(tr);
-    	       `uvm_info(get_name(), "reach wfi", UVM_NONE);
+    	       `uvm_info(get_name(), "data init", UVM_NONE);
             end
         
 		    //while(1)begin
@@ -136,12 +136,12 @@ task top_monitor::main_phase(uvm_phase phase);
 
 			else if(harness.u_tpu.u_lsu.alu_lsu_wfi & !lsu_ram_check)begin	
 				//rf_tr.rf_output = 'b0;
-    	    	`uvm_info(get_name(), "reach wfi2", UVM_NONE);
+    	    	`uvm_info(get_name(), "reach wfi", UVM_NONE);
 				rf_q_ap.write(rf_q_tr);
                 break;
 			end
-			else if (limit_count >= 10000)begin	
-    	    	`uvm_info(get_name(), "reach 10000 limit count", UVM_NONE);
+			else if (limit_count >= 50000)begin	
+    	    	`uvm_info(get_name(), "reach 50000 limit count", UVM_NONE);
 				rf_q_ap.write(rf_q_tr);
                 break;
 			end
