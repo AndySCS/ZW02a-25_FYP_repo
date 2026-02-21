@@ -332,7 +332,7 @@ module idu (
     
     assign inst_type_is_wfi     = (ifu_idu_ins[`OP_RNG] == `WFI_OP_CODE);
 
-    assign core_wfi_nxt = inst_type_is_wfi & idu_vld | core_wfi & ~start_vld;
+    assign core_wfi_nxt = inst_type_is_wfi & idu_vld | core_wfi & ~start_vld & ~alu_idu_flush_vld;
 
     DFFR #(.WIDTH(1))
     ff_core_wfi(

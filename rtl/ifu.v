@@ -35,7 +35,7 @@ module ifu (
     wire [11:0] cur_ins_addr;
     wire [11:0] cur_ins_addr_plus;
 
-    assign ifu_idu_vld_nxt = start_vld | ifu_idu_vld & ~idu_ifu_wfi;
+    assign ifu_idu_vld_nxt = start_vld | ifu_idu_vld & ~idu_ifu_wfi | alu_ifu_br_vld;
     assign ifu_idu_ins = {32{cur_ins_addr[3:2] == 2'b00}} & ifu_idu_ins_raw[31:0]
                        | {32{cur_ins_addr[3:2] == 2'b01}} & ifu_idu_ins_raw[63:32]
                        | {32{cur_ins_addr[3:2] == 2'b10}} & ifu_idu_ins_raw[95:64]

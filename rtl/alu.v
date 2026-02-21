@@ -359,7 +359,7 @@ module alu(
                        | idu_alu_bltu_op & (idu_alu_src1 <  idu_alu_src2)
                        | idu_alu_bgeu_op & (idu_alu_src1 >= idu_alu_src2);
     
-    assign alu_ifu_br_vld_nxt = alu_vld & (br_jump_vld | idu_alu_jal_op | idu_alu_jalr_op);
+    assign alu_ifu_br_vld_nxt = alu_vld & (br_jump_vld | idu_alu_jal_op | idu_alu_jalr_op) | alu_ifu_br_vld & ~lsu_alu_rdy;
     
     assign ld_op = idu_alu_lb_op | idu_alu_lh_op | idu_alu_lw_op | idu_alu_lbu_op | idu_alu_lhu_op;
     assign st_op = idu_alu_sb_op | idu_alu_sh_op | idu_alu_sw_op;
