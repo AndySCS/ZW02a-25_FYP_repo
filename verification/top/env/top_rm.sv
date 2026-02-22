@@ -152,6 +152,7 @@ function rf_rlt_q top_rm::riscv_rf_cal();
     bit [127:0] ram_data_raw;
     bit pc_count;
     bit [31:0] pc_count_num;
+    bit [31:0] st_count_num;
     int limit_count;
     bit [31:0] [31:0] rm_rf ;
     //bit [31:0] [31:0] rm_rf_q [$];
@@ -165,6 +166,7 @@ function rf_rlt_q top_rm::riscv_rf_cal();
         //pc 
         if(start_tr.start_vld & ~pc_count)begin
 	        pc_count_num = 0;
+	        st_count_num = 0;
             pc = start_tr.start_addr;
 	        for (int i=0; i <32; i++)begin
 		        rm_rf[i] = 'b0;
@@ -405,8 +407,11 @@ function rf_rlt_q top_rm::riscv_rf_cal();
                     ram_data = 0;
                     ld_invld = 1;
                 end
-		        ram_data = ram_data >> (ram_addr[3:1]*16);
+    	    	`uvm_info("top_rm", $sformatf("ram_addr1:%0h", ram_addr[11:4]), UVM_NONE);
+    	    	`uvm_info("top_rm", $sformatf("ram_addr2:%0h", ram_addr[3:0]), UVM_NONE);
+		ram_data = ram_data >> (ram_addr[3:1]*16);
                 rd_data = {{16{ram_data[15]}},{ram_data[15:0]}};
+    	    	`uvm_info("top_rm", $sformatf("rd_data:%0h", rd_data), UVM_NONE);
             end
             //LW
             else if(instruction[14:12] == 3'b010)begin
@@ -548,6 +553,7 @@ function rf_rlt_q top_rm::riscv_rf_cal();
 
             //SH
             else if(instruction[14:12] == 3'b001)begin 
+		
                 if(ram_addr[14:13]=='b00) begin
                     ram_data = iram[ram_addr[11:4]];
                     for (int i=ram_addr[3:1]*16; i<(ram_addr[3:1]*16)+16; i++)begin
@@ -557,7 +563,13 @@ function rf_rlt_q top_rm::riscv_rf_cal();
                 end
                 else if (ram_addr[14:13]=='b10)begin
                     ram_data = wram[ram_addr[11:4]];
-                    for (int i=ram_addr[3:1]*16; i>(ram_addr[3:1]*16)+16; i++)begin
+
+    	    	    `uvm_info("top_rm", $sformatf("ram_addr_LH:%0h", ram_addr[11:0]), UVM_NONE);
+    	    	    `uvm_info("top_rm", $sformatf("ram_data:%0h", ram_data), UVM_NONE);
+    	    	    `uvm_info("top_rm", $sformatf("rs2_data:%0h", rs2_data), UVM_NONE);
+
+                    for (int i=ram_addr[3:1]*16; i<(ram_addr[3:1]*16)+16; i++)begin
+    	    	    	`uvm_info("top_rm", $sformatf("ram_access: [%0h], [%0h]", i, rs2_data[i-ram_addr[3:1]*16]), UVM_NONE);
                         ram_data[i] = rs2_data[i-(ram_addr[3:1]*16)];
                     end
                     wram[ram_addr[11:4]] = ram_data;
@@ -583,6 +595,9 @@ function rf_rlt_q top_rm::riscv_rf_cal();
                     ram_data = 0;
                     st_invld = 1;
                 end
+    	    	`uvm_info("top_rm", $sformatf("ram_addr:%0h", ram_addr), UVM_NONE);
+    	    	`uvm_info("top_rm", $sformatf("sram:%0h", ram_addr[14:13]), UVM_NONE);
+    	    	`uvm_info("top_rm", $sformatf("ram_data:%0h", ram_data), UVM_NONE);
             end
 
             else if(instruction[14:12] == 3'b010)begin
@@ -626,6 +641,10 @@ function rf_rlt_q top_rm::riscv_rf_cal();
     			`uvm_info("top_rm", "decode error found in Store", UVM_NONE);
             end
             
+    	    `uvm_info("top_rm", $sformatf("ram_addr:%0h", ram_addr[11:4]), UVM_NONE);
+    	    `uvm_info("top_rm", $sformatf("ram_addr2:%0h", ram_addr[3:0]), UVM_NONE);
+    	    `uvm_info("top_rm", $sformatf("sram_type:%0h", ram_addr[14:13]), UVM_NONE);
+    	    `uvm_info("top_rm", $sformatf("ram_data:%0h", ram_data), UVM_NONE);
             new_pc = pc+4;
         end
 
@@ -812,7 +831,7 @@ function rf_rlt_q top_rm::riscv_rf_cal();
             rm_rf_q.push_back(wram);
             rm_rf_q.push_back(oram_lo);
             rm_rf_q.push_back(oram_hi);
-    	    `uvm_info("top_rm", $sformatf("pc_count_num: %0h", pc_count_num), UVM_NONE);
+    	    //`uvm_info("top_rm", $sformatf("pc_count_num: %0h", pc_count_num), UVM_NONE);
 	        pc_count_num = pc_count_num+1;
 	    end
         else if((instruction[6:0] == 'b0100011) & ~st_invld )begin   
@@ -823,7 +842,9 @@ function rf_rlt_q top_rm::riscv_rf_cal();
             rm_rf_q.push_back(oram_lo);
             rm_rf_q.push_back(oram_hi);
 
-    	    `uvm_info("top_rm", "ram_data need push", UVM_NONE);
+    	    //`uvm_info("top_rm", "ram_data need push", UVM_NONE);
+    	    //`uvm_info("top_rm", $sformatf("pc_count_num: %0h", pc_count_num), UVM_NONE);
+	    st_count_num = st_count_num+1;
         end
 	    if(limit_count == 50000)begin	
     	    `uvm_info("top_rm", "reach 50000 limit count", UVM_NONE);
@@ -835,10 +856,10 @@ function rf_rlt_q top_rm::riscv_rf_cal();
     	    `uvm_info("top_rm", $sformatf("pc: %0h", pc), UVM_NONE);
     	    `uvm_info("top_rm", $sformatf("instruction: %0h", instruction), UVM_NONE);
     	    `uvm_info("top_rm", $sformatf("rm_instr_count: %0d", pc_count_num), UVM_NONE);
+    	    `uvm_info("top_rm", $sformatf("st_instr_count: %0d", st_count_num), UVM_NONE);
     	    `uvm_info("top_rm", $sformatf("rm_limit_count: %0d", limit_count), UVM_NONE);
     	    `uvm_info("top_rm", "\n===================================================================================\n", UVM_NONE);
     end
 
     return rm_rf_q;
 endfunction
-

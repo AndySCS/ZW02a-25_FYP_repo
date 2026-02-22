@@ -160,7 +160,7 @@ task top_monitor::main_phase(uvm_phase phase);
                 //    oram_lo_ff[i] = oram_lo[i];
                //     oram_hi_ff[i] = oram_hi[i];
                 //end
-	    	    for(int i; i<256; i++)begin
+	    	    for(int i=0; i<256; i++)begin
             		iram_ff[i] = harness.u_tpu.u_lsu.iram.mem[i];
             		wram_ff[i] = harness.u_tpu.u_lsu.wram.mem[i];
             		oram_lo_ff[i] = harness.u_tpu.u_lsu.oram_lo.mem[i];
@@ -211,4 +211,3 @@ task top_monitor::main_phase(uvm_phase phase);
 
 
 endtask
-
