@@ -114,6 +114,49 @@ constraint instr_itype::itype_cons_opcode{
 
 ///////////////////////////////////////////////////////////////////
 
+//ITYPE OP
+class instr_itype_op extends instr_base;
+
+    rand bit [4:0]  instr_rd;
+    rand bit [2:0]  instr_funct3;
+    rand bit [4:0]  instr_rs1;
+    rand bit [11:0] instr_imm;
+
+    function new();
+        super.new();
+    endfunction
+
+    extern function pack();
+    extern constraint itype_cons_opcode; 
+endclass
+
+function instr_itype_op::pack();
+    instruction[6:0]   = instr_opcode;
+    instruction[11:7]  = instr_rd;
+    instruction[14:12] = instr_funct3;
+    instruction[19:15] = instr_rs1;
+    instruction[31:20] = instr_imm;
+endfunction
+
+constraint instr_itype_op::itype_cons_opcode{
+    instr_opcode inside {7'b0010011};
+    instr_funct3 inside {3'b000,
+                         3'b001,
+                         3'b010,
+                         3'b011,
+                         3'b100,
+                         3'b101,
+                         3'b110,
+                         3'b111};
+    if (instr_funct3 == 3'b001){
+        instr_imm[11:5] inside {7'b0000000};
+    }
+	else if (instr_funct3 == 3'b101){	
+        instr_imm[11:5] inside {7'b0000000,7'b0100000};
+	} 
+}
+///////////////////////////////////////////////////////////////////
+
 //STYPE
 class instr_stype extends instr_base;
 
