@@ -529,9 +529,11 @@ function rf_rlt_q top_rm::riscv_rf_cal();
                 else if (ram_addr[14:13]=='b01)begin
                     if(ram_addr[12]=='b0)begin
                         ram_data = oram_lo[ram_addr[11:4]];
+    	    		`uvm_info("top_rm", $sformatf("ram_data_init:%0h", ram_data), UVM_NONE);
                         for (int i=ram_addr[3:0]*8; i<(ram_addr[3:0]*8)+8; i++)begin
                             ram_data[i] = rs2_data[i-(ram_addr[3:0]*8)];
                         end
+    	    		`uvm_info("top_rm", $sformatf("ram_data_after:%0h", ram_data), UVM_NONE);
                         oram_lo[ram_addr[11:4]] = ram_data;
                     end
                     else begin
