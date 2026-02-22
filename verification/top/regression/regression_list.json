@@ -6,7 +6,8 @@
 {"tc_name" : "tc_jtype"              , "num": 200},
 {"tc_name" : "tc_btype"              , "num": 200},
 {"tc_name" : "tc_stype"              , "num": 300},
-{"tc_name" : "tc_ld"                 , "num": 500},
-{"tc_name" : "tc_stype_dir"          , "num": 500},
-{"tc_name" : "tc_bypass"             , "num": 1000}
+{"tc_name" : "tc_ld"                 , "num": 300},
+{"tc_name" : "tc_stype_dir"          , "num": 300},
+{"tc_name" : "tc_bypass"             , "num": 5000},
+{"tc_name" : "tc_mix"                , "num": 5000}
 ]
