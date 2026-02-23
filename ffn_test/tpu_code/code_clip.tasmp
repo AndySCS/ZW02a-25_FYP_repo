@@ -50,6 +50,7 @@ addi x18, x0, 0 // iram update iter
 addi x31, x0, 785 //nummber of weight + bias
 addi x28, x0, 16 //number of iters
 
+lui x3, 2 //set oram addr for store
 layer_network_loop:
 
     //first layer neuron num = 56, number of weight = 784, num of iter = 784/16*4 = 49
@@ -146,7 +147,7 @@ layer_network_loop:
 
     ACT 0
 
-    STMT x3, x0, 0, 15, 1 //store result back to iram
+    STMT x3, x0, 0, 15, 0 //store int16 result to oram
     addi x3, x3, 256 // update store addr 
     
     add x10, x10, x11 //update dram addr
@@ -163,8 +164,24 @@ layer_network_loop:
     add x12, x11, x12 // moove to next pack of perceptrons
     blt x22, x23, layer_network_loop //go back to begin if loop not done
 //
-    addi x31, x0, 1
-    sb x31, x0, 911//store 1 for bias to iram
+
+addi x1, x0, 784 //dram addr for store result
+addi x22, x0, 56
+addi x23, x0, 0
+store_result_loop:
+    STT x3, x1,  55, 1, 0, 1 // store int16 result to dram
+    addi x1, x1, 2 //addr add 2 byte
+    addi x3, x3, 32
+    addi x23, x23, 1
+    blt x23, x22, store_result_loop
+WFI
+
+addi x3, x0, 15
+addi x1, x0, 785 //dram addr for store result
+LDT x3, x6, 55, 001, 000
+
+addi x31, x0, 1
+sb x31, x0, 911//store 1 for bias to iram
 
 //second layer network
 addi x10, x0, 4 //iter thd
