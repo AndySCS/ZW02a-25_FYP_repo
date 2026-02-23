@@ -1,7 +1,7 @@
 class axi_rd_agent extends uvm_agent;
     
     axi_rd_driver axi_rd_drv;
-    uvm_analysis_port #(model_output_transaction) axi_wr_port;
+    uvm_blocking_get_port #(model_output_transaction) axi_wr_port;
 
     function new(string name = "axi_rd_agent", uvm_component parent);
         super.new(name, parent);

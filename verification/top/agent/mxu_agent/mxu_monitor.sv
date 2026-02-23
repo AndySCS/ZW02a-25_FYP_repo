@@ -41,7 +41,7 @@ task mxu_monitor::main_phase(uvm_phase phase);
 
     int                   first_layer_ouput [55:0];
 
-    bit [7:0] second_layer_input [56:0];
+    bit [56:0][7:0] second_layer_input;
     bit mon_begin;
     bit [2:0] input_fsm;
     bit [2:0] perceptron0to15  = 3'b000;
@@ -63,7 +63,7 @@ task mxu_monitor::main_phase(uvm_phase phase);
 
     iram_data_all      = {8'b1, tr.img_array};
 
-    second_layer_input[55:0] = tr_out.cal_first_layer(model_rd_tr);
+    second_layer_input[55:0] = tr_out.cal_first_layer(tr);
 
     second_layer_input[56] = 8'b1;
 

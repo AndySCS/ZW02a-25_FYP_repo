@@ -159,7 +159,7 @@ function bit[63:0] axi_rd_driver::get_data(axi_transaction axi_tr);
     end
     if(axi_tr.AxADDR < 1000)begin
         for(int i = 0; i < arsize_convert; i++)begin
-            rdata_tmp[i] = first_layer_output[axi_tr.AxADDR+i - 784];
+            rdata_tmp[i] = first_layer_ouptut[axi_tr.AxADDR+i - 784];
         end
     end
     else if (axi_tr.AxADDR < 45000) begin 

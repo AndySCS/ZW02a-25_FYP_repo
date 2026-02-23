@@ -72,16 +72,16 @@ endtask
 
 function void top_sc::check_first_layer(model_output_transaction exp_tr, model_output_transaction act_tr);
     for(int i = 0; i < 56; i++)begin
-	    if(exp_tr.first_layer_output[i] != act_tr.first_layer_output[i]) begin
-	         `uvm_error(get_name(), $sformatf("exp and act model %0d output is not the same, act output = %d, exp output = %d", i, act_tr.first_layer_output[i], exp_tr.first_layer_output[i]))
+	if(exp_tr.model_first_layer_output_int16[i] != act_tr.model_first_layer_output_int16[i]) begin
+	    `uvm_error(get_name(), $sformatf("exp and act model %0d output is not the same, act output = %d, exp output = %d", i, act_tr.model_first_layer_output_int16[i], exp_tr.model_first_layer_output_int16[i]))
         end
     end
 endfunction
 
 function void top_sc::check_second_layer(model_output_transaction exp_tr, model_output_transaction act_tr);
     for(int i = 0; i < 10; i++)begin
-	    if(exp_tr.model_output_int16[i] != act_tr.model_output_int16[i]) begin
-	         `uvm_error(get_name(), $sformatf("exp and act model %0d output is not the same, act output = %d, exp output = %d", i, act_tr.model_output_int16[i], exp_tr.model_output_int16[i]))
+	if(exp_tr.model_output_int16[i] != act_tr.model_output_int16[i]) begin
+	     `uvm_error(get_name(), $sformatf("exp and act model %0d output is not the same, act output = %d, exp output = %d", i, act_tr.model_output_int16[i], exp_tr.model_output_int16[i]))
         end
     end
 endfunction

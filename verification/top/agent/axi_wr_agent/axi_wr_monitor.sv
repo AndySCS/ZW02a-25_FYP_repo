@@ -19,8 +19,8 @@ class axi_wr_monitor extends uvm_monitor;
     
     extern function void build_phase(uvm_phase phase);
     extern virtual task main_phase(uvm_phase phase);
-    extern function void mon_first_layer();
-    extern function void mon_second_layer();
+    extern function void mon_first_layer(model_output_transaction tr);
+    extern function void mon_second_layer(model_output_transaction tr);
     
 endclass //axi_wr_input_monitor extends superClass
 
@@ -33,6 +33,7 @@ function void axi_wr_monitor::build_phase(uvm_phase phase);
         `uvm_fatal(get_name(), "axi_wr_monitor fail to get top_if")
     end
     ap = new("ap", this);
+    axi_wr_port = new("axi_wr_port", this);
 endfunction
 
 task axi_wr_monitor::main_phase(uvm_phase phase);
@@ -53,17 +54,17 @@ task axi_wr_monitor::main_phase(uvm_phase phase);
             else if(mon_fsm == 2'b10) wnum = 10;
         end
         if(mon_fsm == 2'b01)begin
-            if($test$plusargs("ffn_clip")) mon_first_layer();
-            else mon_second_layer();
+            if($test$plusargs("ffn_clip")) mon_first_layer(tr);
+            else mon_second_layer(tr);
         end
         else if(mon_fsm == 2'b10)begin
-            mon_second_layer();
+            mon_second_layer(tr);
         end
     end
 
 endtask
 
-function void axi_wr_monitor::mon_first_layer();
+function void axi_wr_monitor::mon_first_layer(model_output_transaction tr);
     if(axi_wr_if.AWVALID & axi_wr_if.AWREADY)begin
         waddr = axi_wr_if.AWADDR;
         wdata_len = axi_wr_if.AWLEN + 1;
@@ -71,7 +72,6 @@ function void axi_wr_monitor::mon_first_layer();
     end
     if(axi_wr_if.WVALID & axi_wr_if.WREADY)begin
         alloc_ptr = waddr - 784;
-        `uvm_info(get_name(),$sformatf("received axi wr, output_num = %d", output_num), UVM_LOW);
         tr.model_first_layer_output_int16[alloc_ptr] = axi_wr_if.WDATA;
         wnum--;
         waddr++;
@@ -82,7 +82,7 @@ function void axi_wr_monitor::mon_first_layer();
     end
 endfunction
 
-function void axi_wr_monitor::mon_second_layer();
+function void axi_wr_monitor::mon_second_layer(model_output_transaction tr);
     if(axi_wr_if.AWVALID & axi_wr_if.AWREADY)begin
         waddr = axi_wr_if.AWADDR;
         wdata_len = axi_wr_if.AWLEN + 1;
@@ -90,7 +90,6 @@ function void axi_wr_monitor::mon_second_layer();
     end
     if(axi_wr_if.WVALID & axi_wr_if.WREADY)begin
         alloc_ptr = waddr - 50672;
-        `uvm_info(get_name(),$sformatf("received axi wr, output_num = %d", output_num), UVM_LOW);
         tr.model_output_int16[alloc_ptr] = axi_wr_if.WDATA;
         wnum--;
         waddr++;
