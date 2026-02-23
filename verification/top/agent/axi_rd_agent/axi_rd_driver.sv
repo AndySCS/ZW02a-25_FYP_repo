@@ -1,9 +1,13 @@
 class axi_rd_driver extends uvm_driver; 
 
     virtual axi_rd_intf axi_rd_if;
+    uvm_blocking_get_port #(model_output_transaction) axi_wr_port;
 
+    model_output_transaction axi_wr_tr;
     model_read_transaction model_rd_tr;
     axi_transaction axi_rd_req_q[$];
+
+    int first_layer_ouptut[55:0];
 
     `uvm_component_utils(axi_rd_driver)
     
@@ -27,6 +31,7 @@ endclass //className extends superClass
 function void axi_rd_driver::build_phase(uvm_phase phase);
     super.build_phase(phase);
     model_rd_tr = new();
+    axi_wr_port = new("axi_wr_port", this);
     if(!uvm_config_db#(virtual axi_rd_intf)::get(this, "", "axi_rd_if", axi_rd_if))begin
         `uvm_fatal("axi_rd_driver", "axi_rd driver fail to get axi_rd if")
     end
@@ -46,6 +51,10 @@ task axi_rd_driver::main_phase(uvm_phase phase);
     super.main_phase(phase);
     //init data
     fork
+        while(1)begin
+            axi_wr_port.get(axi_wr_tr);
+            first_layer_ouptut = axi_wr_tr.rescale_data();
+        end
         send_axi_read_recv();
         send_axi_read_send();
     join
@@ -63,7 +72,7 @@ task axi_rd_driver::send_axi_read_recv();
             if(repeated_q.size() > 0)begin
                 `uvm_error(get_name(), $sformatf("repeated ARID is received, ARID = %d", axi_rd_if.ARID));
             end 
-	    else begin       
+	        else begin       
                 axi_rd_tr = axi_transaction::type_id::create();
                 axi_rd_tr.init_axi_tr(
                     .AxID	     (axi_rd_if.ARID),
@@ -75,7 +84,7 @@ task axi_rd_driver::send_axi_read_recv();
                 );
                 axi_rd_req_q.push_back(axi_rd_tr);
                 `uvm_info(get_name(), $sformatf("received axi_rd_tr, ARID = %d", axi_rd_tr.AxID), UVM_LOW);
-	    end
+	        end
         end        
         
         axi_rd_if.ARREADY = (axi_rd_req_q.size() < 16);
@@ -101,8 +110,8 @@ task axi_rd_driver::send_axi_read_send();
             send_axi_read_send_tr(axi_rd_tr);
             is_sending = axi_rd_tr.AxLEN[8] != 1;
             if (!is_sending) begin
-	        `uvm_info(get_name(), $sformatf("finished sending axi_rd_tr, ARID = %d, remaining tr = %d", axi_rd_tr.AxID, axi_rd_req_q.size()), UVM_LOW);
-	    end
+	            `uvm_info(get_name(), $sformatf("finished sending axi_rd_tr, ARID = %d, remaining tr = %d", axi_rd_tr.AxID, axi_rd_req_q.size()), UVM_LOW);
+	        end
         end
 
     end
@@ -143,9 +152,14 @@ function bit[63:0] axi_rd_driver::get_data(axi_transaction axi_tr);
 
     arsize_convert = 1 << axi_tr.AxSIZE;
 
-    if(axi_tr.AxADDR < 1000)begin
+    if(axi_tr.AxADDR < 784)begin
         for(int i = 0; i < arsize_convert; i++)begin
             rdata_tmp[i] = model_rd_tr.img_array[axi_tr.AxADDR+i];
+        end
+    end
+    if(axi_tr.AxADDR < 1000)begin
+        for(int i = 0; i < arsize_convert; i++)begin
+            rdata_tmp[i] = first_layer_output[axi_tr.AxADDR+i - 784];
         end
     end
     else if (axi_tr.AxADDR < 45000) begin 
