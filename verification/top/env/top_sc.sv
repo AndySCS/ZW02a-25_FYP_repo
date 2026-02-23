@@ -12,8 +12,9 @@ class top_sc extends uvm_scoreboard;
     extern virtual task main_phase(uvm_phase phase);
     extern virtual function void final_phase(uvm_phase phase);
 
-
     extern virtual function int softmax(bit[9:0][7:0] softmax_input);
+    extern virtual function void check_first_layer(model_output_transaction exp_tr, model_output_transaction act_tr);
+    extern virtual function void check_second_layer(model_output_transaction exp_tr, model_output_transaction act_tr);
 
     `uvm_component_utils(top_sc)
 
@@ -33,36 +34,57 @@ task top_sc::main_phase(uvm_phase phase);
     int softmax_output;
 	int fd;
 
+    bit check_first_layer_flag = 0;
+
     super.main_phase(phase);
+
+    check_first_layer_flag = $test$plusargs("ffn_clip");
 	
     fork
 	while(1)begin
 		this.exp_port.get(exp_tr);
-    		`uvm_info("top_sc", "received exp matrix from rm", UVM_MEDIUM);
+    	`uvm_info("top_sc", "received exp matrix from rm", UVM_MEDIUM);
 		this.exp_result_q.push_back(exp_tr);
 	end
 	while(1)begin
 	    this.act_port.get(act_tr);
-    	    `uvm_info("top_sc", "received act matrix from mon", UVM_MEDIUM);
+    	`uvm_info("top_sc", "received act matrix from mon", UVM_MEDIUM);
 	    if(this.exp_result_q.size() > 0)begin
 	        tmp_tr = this.exp_result_q.pop_front();
-                for(int i = 0; i < 10; i++)begin
-	        if(tmp_tr.model_output_int16[i] != act_tr.model_output_int16[i]) begin
-	            `uvm_error(get_name(), $sformatf("exp and act model %0d output is not the same, act output = %d, exp output = %d", i, act_tr.model_output_int16[i], tmp_tr.model_output_int16[i]))
-                end
-                end
-                softmax_output = softmax(tmp_tr.model_output);
-                fd = $fopen("model_output.txt", "w");
-                $fdisplay(fd, $sformatf("%d", softmax_output));
-                $fclose(fd);
+            if(check_first_layer_flag) begin
+                check_first_layer(tmp_tr, act_tr);
+                check_first_layer_flag = 0;
+                continue;
             end
-            else begin
-                `uvm_error("top_sc", "exp_result_q is empty")
-            end
+            check_second_layer(tmp_tr, act_tr);
+            softmax_output = softmax(tmp_tr.model_output);
+            fd = $fopen("model_output.txt", "w");
+            $fdisplay(fd, $sformatf("%d", softmax_output));
+            $fclose(fd);
+        end
+        else begin
+            `uvm_error("top_sc", "exp_result_q is empty")
+        end
 	end
     join
 
 endtask
+
+function void top_sc::check_first_layer(model_output_transaction exp_tr, model_output_transaction act_tr);
+    for(int i = 0; i < 56; i++)begin
+	    if(exp_tr.first_layer_output[i] != act_tr.first_layer_output[i]) begin
+	         `uvm_error(get_name(), $sformatf("exp and act model %0d output is not the same, act output = %d, exp output = %d", i, act_tr.first_layer_output[i], exp_tr.first_layer_output[i]))
+        end
+    end
+endfunction
+
+function void top_sc::check_second_layer(model_output_transaction exp_tr, model_output_transaction act_tr);
+    for(int i = 0; i < 10; i++)begin
+	    if(exp_tr.model_output_int16[i] != act_tr.model_output_int16[i]) begin
+	         `uvm_error(get_name(), $sformatf("exp and act model %0d output is not the same, act output = %d, exp output = %d", i, act_tr.model_output_int16[i], exp_tr.model_output_int16[i]))
+        end
+    end
+endfunction
 
 function void top_sc::final_phase(uvm_phase phase);
     super.final_phase(phase);
