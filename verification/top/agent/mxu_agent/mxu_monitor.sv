@@ -56,24 +56,14 @@ task mxu_monitor::main_phase(uvm_phase phase);
     int cur_pack_addr;
 
     model_read_transaction tr;
+    model_output_transaction tr_out;
 
     tr = model_read_transaction::type_id::create("tr");
+    tr_out = model_output_transaction::type_id::create("tr_out");
 
     iram_data_all      = {8'b1, tr.img_array};
 
-    for(int i = 0; i < 56; i++)begin
-        for(int j = 0; j < 785; j++)begin
-            first_layer_ouput[i] += int'($signed(iram_data_all[j]) * $signed(tr.first_layer_weight[j+i*785]));
-            if(first_layer_ouput[i] > 32767)  first_layer_ouput[i] = 32767;
-            if(first_layer_ouput[i] < -32768) first_layer_ouput[i] = -32768;
-        end
-        
-        if(first_layer_ouput[i] < 0) first_layer_ouput[i] = 0;
-
-        second_layer_input[i] = first_layer_ouput[i][7:0];
-        if(first_layer_ouput[i] > 127)  second_layer_input[i] = 127;
-        if(first_layer_ouput[i] < -128) second_layer_input[i] = -128;
-    end
+    second_layer_input[55:0] = tr_out.cal_first_layer(model_rd_tr);
 
     second_layer_input[56] = 8'b1;
 
