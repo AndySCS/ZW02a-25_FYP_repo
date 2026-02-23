@@ -4,14 +4,22 @@
 class ldtype_seq extends uvm_sequence;
     `uvm_object_utils(ldtype_seq);	
 
-    instr_addi addi;
-    instr_lb   lb;
-    instr_lh   lh;
-    instr_lw   lw;
-    instr_lbu  lbu;
-    instr_lhu  lhu;
+    instr_addi      addi;
+    instr_ldtype    ldtype;
+    instr_lb        lb;
+    instr_lh        lh;
+    instr_lw        lw;
+    instr_lbu       lbu;
+    instr_lhu       lhu;
 
     extern function new(string name="ldtype_seq");
+    extern function bit[31:0] ldtype_rand_gen();
+    extern function bit[31:0] itype_addi_gen();
+    extern function bit[31:0] ldtype_lb_gen();
+    extern function bit[31:0] ldtype_lh_gen();
+    extern function bit[31:0] ldtype_lw_gen();
+    extern function bit[31:0] ldtype_lbu_gen();
+    extern function bit[31:0] ldtype_lhu_gen();
     extern task body();
 endclass
 
@@ -26,145 +34,64 @@ task ldtype_seq::body();
     static int ram_count;
 
     for(int i = 0; i < 10; i++) begin
-        addi = new();
-        addi.randomize();
-	    addi.pack();
-		ram_tmp_pre[31:0]   = addi.instruction;
-
-        addi = new();
-        addi.randomize();
-	    addi.pack();
-		ram_tmp_pre[63:32]  = addi.instruction;
-
-        addi = new();
-        addi.randomize();
-	    addi.pack();
-		ram_tmp_pre[95:64]  = addi.instruction;
-
-        addi = new();
-        addi.randomize();
-	    addi.pack();
-		ram_tmp_pre[127:96] = addi.instruction;
+		ram_tmp_pre[31:0]   = itype_addi_gen();
+		ram_tmp_pre[63:32]  = itype_addi_gen();
+		ram_tmp_pre[95:64]  = itype_addi_gen();
+		ram_tmp_pre[127:96] = itype_addi_gen();
 		ram_tmp[i] = ram_tmp_pre;
 		//ram_count = ram_count+1;
     end
 
-    for(int i = 10; i < 50; i++) begin
-        lb = new();
-        lb.randomize();
-	    lb.pack();
-		ram_tmp_pre[31:0] = lb.instruction;
-
-        lb = new();
-        lb.randomize();
-	    lb.pack();
-		ram_tmp_pre[63:32] = lb.instruction;
-
-        lb = new();
-        lb.randomize();
-	    lb.pack();
-		ram_tmp_pre[95:64] = lb.instruction;
-
-        lb = new();
-        lb.randomize();
-	    lb.pack();
-		ram_tmp_pre[127:96] = lb.instruction;
+    for(int i = 10; i < 40; i++) begin
+		ram_tmp_pre[31:0]   = ldtype_lb_gen();
+		ram_tmp_pre[63:32]  = ldtype_lb_gen();
+		ram_tmp_pre[95:64]  = ldtype_lb_gen();
+		ram_tmp_pre[127:96] = ldtype_lb_gen();
 		ram_tmp[i] = ram_tmp_pre;
 		//ram_count = ram_count+1;
     end
 
-    for(int i = 50; i < 100; i++) begin
-        lh = new();
-        lh.randomize();
-	    lh.pack();
-		ram_tmp_pre[31:0] = lh.instruction;
-
-        lh = new();
-        lh.randomize();
-	    lh.pack();
-		ram_tmp_pre[63:32] = lh.instruction;
-
-        lh = new();
-        lh.randomize();
-	    lh.pack();
-		ram_tmp_pre[95:64] = lh.instruction;
-
-        lh = new();
-        lh.randomize();
-	    lh.pack();
-		ram_tmp_pre[127:96] = lh.instruction;
+    for(int i = 40; i < 70; i++) begin
+		ram_tmp_pre[31:0]   = ldtype_lh_gen();
+		ram_tmp_pre[63:32]  = ldtype_lh_gen();
+		ram_tmp_pre[95:64]  = ldtype_lh_gen();
+		ram_tmp_pre[127:96] = ldtype_lh_gen();
 		ram_tmp[i] = ram_tmp_pre;
 		//ram_count = ram_count+1;
     end
 
-    for(int i = 100; i < 150; i++) begin
-        lw = new();
-        lw.randomize();
-	    lw.pack();
-		ram_tmp_pre[31:0] = lw.instruction;
-
-        lw = new();
-        lw.randomize();
-	    lw.pack();
-		ram_tmp_pre[63:32] = lw.instruction;
-
-        lw = new();
-        lw.randomize();
-	    lw.pack();
-		ram_tmp_pre[95:64] = lw.instruction;
-
-        lw = new();
-        lw.randomize();
-	    lw.pack();
-		ram_tmp_pre[127:96] = lw.instruction;
+    for(int i = 70; i < 100; i++) begin
+		ram_tmp_pre[31:0]   = ldtype_lw_gen();
+		ram_tmp_pre[63:32]  = ldtype_lw_gen();
+		ram_tmp_pre[95:64]  = ldtype_lw_gen();
+		ram_tmp_pre[127:96] = ldtype_lw_gen();
 		ram_tmp[i] = ram_tmp_pre;
 		//ram_count = ram_count+1;
     end
     
-    for(int i = 150; i < 200; i++) begin
-        lbu = new();
-        lbu.randomize();
-	    lbu.pack();
-		ram_tmp_pre[31:0] = lbu.instruction;
-
-        lbu = new();
-        lbu.randomize();
-	    lbu.pack();
-		ram_tmp_pre[63:32] = lbu.instruction;
-
-        lbu = new();
-        lbu.randomize();
-	    lbu.pack();
-		ram_tmp_pre[95:64] = lbu.instruction;
-
-        lbu = new();
-        lbu.randomize();
-	    lbu.pack();
-		ram_tmp_pre[127:96] = lbu.instruction;
+    for(int i = 100; i < 130; i++) begin
+		ram_tmp_pre[31:0]   = ldtype_lbu_gen();
+		ram_tmp_pre[63:32]  = ldtype_lbu_gen();
+		ram_tmp_pre[95:64]  = ldtype_lbu_gen();
+		ram_tmp_pre[127:96] = ldtype_lbu_gen();
 		ram_tmp[i] = ram_tmp_pre;
 		//ram_count = ram_count+1;
     end
 
-    for(int i = 200; i < 256; i++) begin
-        lhu = new();
-        lhu.randomize();
-	    lhu.pack();
-		ram_tmp_pre[31:0] = lhu.instruction;
+    for(int i = 130; i < 160; i++) begin
+		ram_tmp_pre[31:0]   = ldtype_lhu_gen();
+		ram_tmp_pre[63:32]  = ldtype_lhu_gen();
+		ram_tmp_pre[95:64]  = ldtype_lhu_gen();
+		ram_tmp_pre[127:96] = ldtype_lhu_gen();
+		ram_tmp[i] = ram_tmp_pre;
+		//ram_count = ram_count+1;
+    end
 
-        lhu = new();
-        lhu.randomize();
-	    lhu.pack();
-		ram_tmp_pre[63:32] = lhu.instruction;
-
-        lhu = new();
-        lhu.randomize();
-	    lhu.pack();
-		ram_tmp_pre[95:64] = lhu.instruction;
-
-        lhu = new();
-        lhu.randomize();
-	    lhu.pack();
-		ram_tmp_pre[127:96] = lhu.instruction;
+    for(int i = 160; i < 256; i++) begin
+		ram_tmp_pre[31:0]   = ldtype_rand_gen();
+		ram_tmp_pre[63:32]  = ldtype_rand_gen();
+		ram_tmp_pre[95:64]  = ldtype_rand_gen();
+		ram_tmp_pre[127:96] = ldtype_rand_gen();
 		ram_tmp[i] = ram_tmp_pre;
 		//ram_count = ram_count+1;
     end
@@ -179,6 +106,69 @@ task ldtype_seq::body();
     //:}
    	`uvm_info(get_type_name(), "LUI IMEM INIT FINISH", UVM_NONE)
 endtask
+
+function bit[31:0] ldtype_seq::ldtype_rand_gen();
+	bit[31:0] ldtype_instr;
+    ldtype = new();	
+    ldtype.randomize();	
+    ldtype.pack();	
+	ldtype_instr = ldtype.instruction;
+	return ldtype_instr;
+endfunction
+
+function bit[31:0] ldtype_seq::itype_addi_gen();
+	bit[31:0] itype_instr;
+    addi = new();	
+    addi.randomize();	
+    addi.pack();	
+	itype_instr = addi.instruction;
+	return itype_instr;
+endfunction
+
+function bit[31:0] ldtype_seq::ldtype_lb_gen();
+	bit[31:0] ldtype_instr;
+    lb = new();	
+    lb.randomize();	
+    lb.pack();	
+	ldtype_instr = lb.instruction;
+	return ldtype_instr;
+endfunction
+
+function bit[31:0] ldtype_seq::ldtype_lh_gen();
+	bit[31:0] ldtype_instr;
+    lh = new();	
+    lh.randomize();	
+    lh.pack();	
+	ldtype_instr = lh.instruction;
+	return ldtype_instr;
+endfunction
+
+function bit[31:0] ldtype_seq::ldtype_lw_gen();
+	bit[31:0] ldtype_instr;
+    lw = new();	
+    lw.randomize();	
+    lw.pack();	
+	ldtype_instr = lw.instruction;
+	return ldtype_instr;
+endfunction
+
+function bit[31:0] ldtype_seq::ldtype_lbu_gen();
+	bit[31:0] ldtype_instr;
+    lbu = new();	
+    lbu.randomize();	
+    lbu.pack();	
+	ldtype_instr = lbu.instruction;
+	return ldtype_instr;
+endfunction
+
+function bit[31:0] ldtype_seq::ldtype_lhu_gen();
+	bit[31:0] ldtype_instr;
+    lhu = new();	
+    lhu.randomize();	
+    lhu.pack();	
+	ldtype_instr = lhu.instruction;
+	return ldtype_instr;
+endfunction
 
 `endif
 
