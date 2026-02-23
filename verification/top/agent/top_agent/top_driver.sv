@@ -1,4 +1,4 @@
-class top_driver extends uvm_driver #(model_output_transaction);
+class top_driver extends uvm_driver #(top_tr);
     /*
     this class is responsible for generating top stimulus to the dut
     */
@@ -41,7 +41,7 @@ task top_driver::reset_phase(uvm_phase phase);
 endtask
 
 task top_driver::main_phase(uvm_phase phase);
-    model_output_transaction tr;
+    top_tr tr;
     int phase_cnt;
     bit val_begin;
     
@@ -55,13 +55,13 @@ task top_driver::main_phase(uvm_phase phase);
             @(posedge top_if.clk);
             if(top_if.wfi)begin
                 top_if.start_vld <= 1;
-                top_if.start_addr <= 0;
-		phase_cnt = 0;
-		val_begin = 1;
+                top_if.start_addr <= top_tr.start_addr;
+		        phase_cnt = 0;
+		        val_begin = 1;
                 @(posedge top_if.clk);
                 top_if.start_vld <= 0;
                 seq_item_port.item_done();
-		break;
+		        break;
             end
         end
     end
@@ -69,12 +69,12 @@ task top_driver::main_phase(uvm_phase phase);
         @(posedge top_if.clk);
         if(val_begin & top_if.wfi)begin
     	   `uvm_info(get_name(), $sformatf("begin top cnt down main phase, phase_cnt = %d", phase_cnt), UVM_MEDIUM);
-	    phase_cnt++;
+	        phase_cnt++;
         end
-	if(phase_cnt > 1000) begin
-    	   `uvm_info(get_name(), "main phase ends", UVM_MEDIUM);
-	    phase.drop_objection(this);
-	end
+	    if(phase_cnt > 1000) begin
+    	    `uvm_info(get_name(), "main phase ends", UVM_MEDIUM);
+	        phase.drop_objection(this);
+	    end
     end
     join
         

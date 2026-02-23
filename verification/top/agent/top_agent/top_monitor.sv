@@ -26,11 +26,11 @@ task top_monitor::main_phase(uvm_phase phase);
     model_output_transaction tr;
    // top_tr tr_send;
 
-    tr = model_output_transaction::type_id::create();
 //    tr_send = top_tr::type_id::create("imon_top_tr_send");
 
     while (1) begin 
 
+        tr = model_output_transaction::type_id::create();
         while(1)begin
             @(posedge top_if.clk)
             if(top_if.start_vld) begin
