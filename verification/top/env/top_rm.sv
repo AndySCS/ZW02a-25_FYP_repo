@@ -374,7 +374,7 @@ function rf_rlt_q top_rm::riscv_rf_cal();
                     end
                 end
                 else begin         
-    			    `uvm_info("top_rm", "decode error found in LB", UVM_NONE);
+    	 	    `uvm_info("top_rm", "decode error found in LB", UVM_NONE);
                     ram_data = 0;
                     ld_invld = 1;
                 end
@@ -849,6 +849,9 @@ function rf_rlt_q top_rm::riscv_rf_cal();
 	        st_count_num = st_count_num+1;
 	        pc_count_num = pc_count_num+1;
         end
+	else begin	
+    	    `uvm_info("top_rm", "no push", UVM_NONE);
+	end
 	    if(limit_count == 50000)begin	
     	    `uvm_info("top_rm", "reach 50000 limit count", UVM_NONE);
             break;
