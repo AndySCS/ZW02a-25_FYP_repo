@@ -557,6 +557,7 @@ module tpu(
     lsu u_lsu(
         .clk                                  (clk),
         .rst_n                                (rst_n),
+        .start_vld                            (start_vld),
         .alu_lsu_vld                          (alu_lsu_vld),
         .alu_lsu_wb_vld                       (alu_lsu_wb_vld),
         .alu_lsu_lb_op                        (alu_lsu_lb_op),

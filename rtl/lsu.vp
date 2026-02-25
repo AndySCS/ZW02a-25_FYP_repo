@@ -1,7 +1,7 @@
 module lsu(
     clk,
     rst_n,
-
+    start_vld,
     //from alu
     alu_lsu_vld,
     //riscv flag
@@ -174,6 +174,7 @@ module lsu(
     //input/output signal
     input clk;
     input rst_n;
+    input start_vld;
 
     //from alu
     //instruction related
@@ -531,7 +532,7 @@ module lsu(
 
     assign lsu_vld_qual = alu_lsu_vld & lsu_alu_rdy;
     assign lsu_vld_qual_en = lsu_vld_qual | ~alu_lsu_vld;
-    assign lsu_vld_nxt = lsu_vld_qual | lsu_vld & ~(lsu_riscv_finish | lsu_instr_finish_ff | lsu_act_finish);
+    assign lsu_vld_nxt = lsu_vld_qual | lsu_vld & ~(lsu_riscv_finish | lsu_instr_finish_ff | lsu_act_finish | start_vld);
     
     assign lsu_mxu_act_type = 2'b0;
 
@@ -1034,7 +1035,7 @@ module lsu(
                              | {8{alu_lsu_len == 3'b101}} & 8'hff;
 
     assign lsu_axi_wsend_done      = lsu_st_type2_wr_chunk_num_cnt_end & lsu_st_type2_wr_chunk_len_cnt_end;
-    assign lsu_axi_wsend_doing_nxt = lsu_vld_qual & alu_lsu_st_dram | lsu_axi_wsend_doing & ~(lsu_axi_wsend_done & lsu_axi_wvld_qual);
+    assign lsu_axi_wsend_doing_nxt = lsu_vld_qual & alu_lsu_st_dram | lsu_axi_wsend_doing & ~(lsu_axi_wsend_done & lsu_st_type2_oram_ce);
     assign lsu_st_type2_doing        = lsu_vld_qual & alu_lsu_st_dram | ~lsu_st_type2_bresp_end & lsu_st_type2_doing_ff;
 
     assign lsu_axi_wvld_nxt   = lsu_st_type2_doing_ff & lsu_st_type2_oram_ce | lsu_axi_wvld & ~axi_lsu_wrdy;
