@@ -169,7 +169,7 @@ addi x1, x0, 784 //dram addr for store result
 addi x22, x0, 56
 addi x23, x0, 0
 store_result_loop:
-    STT x3, x1,  55, 1, 0, 1 // store int16 result to dram
+    STT x3, x1,  0, 1, 0, 1 // store int16 result to dram
     addi x1, x1, 2 //addr add 2 byte
     addi x3, x3, 32
     addi x23, x23, 1
