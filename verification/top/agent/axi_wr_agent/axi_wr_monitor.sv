@@ -71,7 +71,7 @@ function void axi_wr_monitor::mon_first_layer(model_output_transaction tr);
         wsize = 1 << axi_wr_if.AWSIZE;
     end
     if(axi_wr_if.WVALID & axi_wr_if.WREADY)begin
-        alloc_ptr = waddr - 784;
+        alloc_ptr = (waddr - 784)/2;
         tr.model_first_layer_output_int16[alloc_ptr] = axi_wr_if.WDATA;
         wnum--;
         waddr++;
