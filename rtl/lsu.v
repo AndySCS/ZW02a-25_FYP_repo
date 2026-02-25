@@ -1237,7 +1237,7 @@ module lsu(
     wire lsu_st_type1_qual_en;
     assign lsu_st_type1_qual_en = lsu_st_mm_en;
 
-    assign lsu_st_type1_qual = (lsu_st_mm_vld & (~lsu_st_type[1] | (lsu_st_type[1] & ~lsu_st_type[0])));
+    assign lsu_st_type1_qual = lsu_st_mm_vld & (lsu_st_iram_pulse | lsu_st_oram_pulse);
     DFFRE #(.WIDTH(1))
     ff_lsu_st_type1_qual(
         .clk(clk),
