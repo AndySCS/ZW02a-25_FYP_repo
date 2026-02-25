@@ -131,7 +131,10 @@ task top_sc::main_phase(uvm_phase phase);
 	         	`uvm_info("top_sc", $sformatf("pc[%0h]", (count*4)), UVM_NONE);
 	       	 	`uvm_info("top_sc", $sformatf("count_num:  %0h", count), UVM_NONE);
 				//rf
+			
 		   		for (int i=0; i<32; i++)begin
+    					`uvm_info("top_sc", "Debug use", UVM_NONE);
+	       	 			`uvm_info("top_sc", $sformatf("act_data:[%0h], exp_data:[%0h], rd:[%0h]", sc_act_rf_q[0][i], sc_exp_rf_q[0][i], i), UVM_NONE);
 					if(sc_act_rf_q[0][i] != sc_exp_rf_q[0][i])begin
     					`uvm_info("top_sc", "ERROR rf act not macth with exp", UVM_NONE);
 						`uvm_error("top_sc", $sformatf("ERROR rd %h", i))					

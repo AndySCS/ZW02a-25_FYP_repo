@@ -184,7 +184,8 @@ task top_monitor::main_phase(uvm_phase phase);
 
         //define vld store
         if((harness.u_tpu.u_lsu.alu_lsu_sb_op | harness.u_tpu.u_lsu.alu_lsu_sh_op | harness.u_tpu.u_lsu.alu_lsu_sw_op)
-            &(harness.u_tpu.u_lsu.alu_lsu_st_iram | harness.u_tpu.u_lsu.alu_lsu_st_wram | harness.u_tpu.u_lsu.alu_lsu_st_oram))begin
+            &(harness.u_tpu.u_lsu.alu_lsu_st_iram | harness.u_tpu.u_lsu.alu_lsu_st_wram | harness.u_tpu.u_lsu.alu_lsu_st_oram)
+	    & harness.u_tpu.u_lsu.alu_lsu_vld)begin
             st_vld = 1'b1;
 	    //if(harness.u_tpu.u_lsu.alu_lsu_sb_op)begin 
     	    //`uvm_info("top_mon", $sformatf("iram:%0h", harness.u_tpu.u_lsu.alu_lsu_st_iram), UVM_NONE);
@@ -208,6 +209,5 @@ task top_monitor::main_phase(uvm_phase phase);
 		    //end
         end
    // end
-
 
 endtask
