@@ -148,7 +148,7 @@ layer_network_loop:
     ACT 0
 
     STMT x3, x0, 0, 15, 0 //store int16 result to oram
-    addi x3, x3, 256 // update store addr 
+    addi x3, x3, 512 // update store addr 
     
     add x10, x10, x11 //update dram addr
     addi x22, x22, 1 //update iter
@@ -165,6 +165,7 @@ layer_network_loop:
     blt x22, x23, layer_network_loop //go back to begin if loop not done
 //
 
+addi x3, x0, 0
 addi x1, x0, 784 //dram addr for store result
 addi x22, x0, 56
 addi x23, x0, 0
@@ -177,7 +178,7 @@ store_result_loop:
 WFI
 
 addi x3, x0, 15
-addi x1, x0, 785 //dram addr for store result
+addi x1, x0, 784 //dram addr for store result
 LDT x3, x6, 55, 001, 000
 
 addi x31, x0, 1
