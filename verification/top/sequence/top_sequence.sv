@@ -32,9 +32,11 @@ task top_seqeunce::send_top();
 
     repeat(tr_num) begin
         tr = top_tr::type_id::create("top_tr");
-        if(repaet_cnt == 1) tr.start_addr = 1684;
         `uvm_info(get_name(), "top sequence begin", UVM_LOW);
-        `uvm_do(tr)
+        start_item(tr);
+        if(repaet_cnt == 1) tr.start_addr = 428;
+        else tr.start_addr = 0;
+        finish_item(tr);
         `uvm_info(get_name(), "top sequence ends", UVM_LOW);
         repaet_cnt++;
     end
