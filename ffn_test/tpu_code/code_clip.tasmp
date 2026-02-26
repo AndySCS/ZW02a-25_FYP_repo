@@ -177,10 +177,10 @@ store_result_loop:
     blt x23, x22, store_result_loop
 WFI
 
-
+addi x19, x0, 1 //for debug
 addi x3, x0, 15
 addi x1, x0, 784 //dram addr for store result
-LDT x3, x1, 55, 1, 1
+LDT x3, x1, 55, 0, 0
 
 addi x31, x0, 1
 sb x31, x0, 911//store 1 for bias to iram
@@ -268,6 +268,16 @@ STMT x3, x0, 0, 9, 0 //store result oram
 addi x5, x0, 0
 lui x5, 12
 addi x5, x5, 1520
-STT x3, x5,  9, 1, 0, 1 // store result to dram
+//STT x3, x5,  9, 1, 0, 1 // store result to dram
+
+addi x23, x23, 0
+addi x22, x22, 10
+addi x3, x0, 0
+store_final_loop:
+    STT x3, x5,  0, 1, 0, 1 // store int16 result to dram
+    addi x5, x5, 2 //addr add 2 byte
+    addi x3, x3, 32
+    addi x23, x23, 1
+    blt x23, x22, store_final_loop
 
 WFI
