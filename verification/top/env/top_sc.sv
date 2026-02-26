@@ -51,20 +51,20 @@ task top_sc::main_phase(uvm_phase phase);
     	    `uvm_info("top_sc", "received act matrix from mon", UVM_MEDIUM);
 	    if(this.exp_result_q.size() > 0)begin
 	        tmp_tr = this.exp_result_q.pop_front();
-            if(check_first_layer_flag) begin
-                check_first_layer(tmp_tr, act_tr);
-                check_first_layer_flag = 0;
-                continue;
+                if(check_first_layer_flag) begin
+                    check_first_layer(tmp_tr, act_tr);
+                    check_first_layer_flag = 0;
+                    continue;
+                end
+                check_second_layer(tmp_tr, act_tr);
+                softmax_output = softmax(tmp_tr.model_output);
+                fd = $fopen("model_output.txt", "w");
+                $fdisplay(fd, $sformatf("%d", softmax_output));
+                $fclose(fd);
             end
-            check_second_layer(tmp_tr, act_tr);
-            softmax_output = softmax(tmp_tr.model_output);
-            fd = $fopen("model_output.txt", "w");
-            $fdisplay(fd, $sformatf("%d", softmax_output));
-            $fclose(fd);
-        end
-        else begin
-            `uvm_error("top_sc", "exp_result_q is empty")
-        end
+            else begin
+                `uvm_error("top_sc", "exp_result_q is empty")
+            end
 	end
     join
 
