@@ -249,6 +249,15 @@ STMT x3, x0, 0, 9, 0 //store result oram
 addi x5, x0, 0
 lui x5, 12
 addi x5, x5, 1520
-STT x3, x5,  9, 1, 0, 1 // store result to dram
+//STT x3, x5,  9, 1, 0, 1 // store result to dram
+addi x23, x23, 0
+addi x22, x22, 10
+addi x3, x0, 0
+store_final_loop:
+    STT x3, x5,  0, 1, 0, 1 // store int16 result to dram
+    addi x5, x5, 2 //addr add 2 byte
+    addi x3, x3, 32
+    addi x23, x23, 1
+    blt x23, x22, store_final_loop
 
 WFI
