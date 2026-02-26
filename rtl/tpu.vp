@@ -250,7 +250,7 @@ module tpu(
     wire lsu_mxu_conv_vld;
 
     wire [7:0] lsu_axi_awid;
-    wire [9:0] lsu_axi_awaddr;
+    wire [`AWADDR_WIDTH-1:0] lsu_axi_awaddr;
     wire [7:0] lsu_axi_awlen;
     wire [2:0] lsu_axi_awsize;
     wire [1:0] lsu_axi_awburst;

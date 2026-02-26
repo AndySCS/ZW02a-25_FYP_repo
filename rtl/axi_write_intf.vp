@@ -75,7 +75,7 @@ module AXI_WRITE_INFT(
     output BREADY;
     //lsu->axi interface
     input [7:0] lsu_axi_awid;
-    input [9:0] lsu_axi_awaddr;
+    input [AWADDR_WIDTH-1:0] lsu_axi_awaddr;
     input [7:0] lsu_axi_awlen;
     input [2:0] lsu_axi_awsize;
     input [1:0] lsu_axi_awburst;

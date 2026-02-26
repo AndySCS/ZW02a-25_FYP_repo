@@ -306,7 +306,7 @@ module lsu(
     //to axi interface
     //for write interface
     output [7:0] lsu_axi_awid;
-    output [9:0] lsu_axi_awaddr;
+    output [`AWADDR_WIDTH-1:0] lsu_axi_awaddr;
     output [7:0] lsu_axi_awlen;
     output [2:0] lsu_axi_awsize;
     output [1:0] lsu_axi_awburst;
