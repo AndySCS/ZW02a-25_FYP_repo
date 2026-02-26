@@ -3,11 +3,12 @@
 {"tc_name" : "tc_rtype"              , "num": 100},
 {"tc_name" : "tc_itype"              , "num": 100},
 {"tc_name" : "tc_utype"              , "num": 100},
-{"tc_name" : "tc_jtype"              , "num": 200},
-{"tc_name" : "tc_btype"              , "num": 200},
+{"tc_name" : "tc_jtype"              , "num": 100},
+{"tc_name" : "tc_btype"              , "num": 100},
 {"tc_name" : "tc_stype"              , "num": 300},
 {"tc_name" : "tc_ld"                 , "num": 300},
 {"tc_name" : "tc_stype_dir"          , "num": 300},
-{"tc_name" : "tc_bypass"             , "num": 10000},
+{"tc_name" : "tc_ldst_rand"          , "num": 300},
+{"tc_name" : "tc_bypass"             , "num": 5000},
 {"tc_name" : "tc_mix"                , "num": 10000}
 ]
