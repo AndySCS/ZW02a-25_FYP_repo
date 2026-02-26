@@ -8,6 +8,7 @@ class axi_wr_monitor extends uvm_monitor;
     int wdata_len;
     int wnum;
     int alloc_ptr;
+    bit tc_clip = $test$plusargs("ffn_clip");
 
     uvm_analysis_port #(model_output_transaction) ap;
     uvm_analysis_port #(model_output_transaction) axi_wr_port;
@@ -50,8 +51,8 @@ task axi_wr_monitor::main_phase(uvm_phase phase);
         if(top_if.start_vld) begin
             mon_fsm++;
             tr = new();
-            if(mon_fsm == 2'b01) wnum = 56;
-            else if(mon_fsm == 2'b10) wnum = 10;
+            if(mon_fsm == 2'b01 & tc_clip) wnum = 56;
+            else if(mon_fsm == 2'b10 | ~tc_clip) wnum = 10;
         end
         if(mon_fsm == 2'b01)begin
             if($test$plusargs("ffn_clip")) mon_first_layer(tr);
