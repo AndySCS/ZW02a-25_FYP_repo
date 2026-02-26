@@ -42,13 +42,13 @@ task top_sc::main_phase(uvm_phase phase);
 	
     fork
 	while(1)begin
-		this.exp_port.get(exp_tr);
-    	`uvm_info("top_sc", "received exp matrix from rm", UVM_MEDIUM);
-		this.exp_result_q.push_back(exp_tr);
+	    this.exp_port.get(exp_tr);
+    	    `uvm_info("top_sc", "received exp matrix from rm", UVM_MEDIUM);
+	    this.exp_result_q.push_back(exp_tr);
 	end
 	while(1)begin
 	    this.act_port.get(act_tr);
-    	`uvm_info("top_sc", "received act matrix from mon", UVM_MEDIUM);
+    	    `uvm_info("top_sc", "received act matrix from mon", UVM_MEDIUM);
 	    if(this.exp_result_q.size() > 0)begin
 	        tmp_tr = this.exp_result_q.pop_front();
             if(check_first_layer_flag) begin
