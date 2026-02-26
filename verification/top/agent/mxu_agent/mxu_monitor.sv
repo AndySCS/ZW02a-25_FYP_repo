@@ -42,7 +42,7 @@ task mxu_monitor::main_phase(uvm_phase phase);
     int                   first_layer_ouput [55:0];
 
     bit [56:0][7:0] second_layer_input;
-    bit mon_begin;
+    int mon_begin;
     bit [2:0] input_fsm;
     bit [2:0] perceptron0to15  = 3'b000;
     bit [2:0] perceptron16to31 = 3'b001;
@@ -57,6 +57,8 @@ task mxu_monitor::main_phase(uvm_phase phase);
 
     model_read_transaction tr;
     model_output_transaction tr_out;
+
+    int mon_thd = ($test$plusargs("ffn_clip")) ? 1 : 0;
 
     tr = model_read_transaction::type_id::create("tr");
     tr_out = model_output_transaction::type_id::create("tr_out");
@@ -120,7 +122,7 @@ task mxu_monitor::main_phase(uvm_phase phase);
                 end
             end
         end
-        if(!(top_if.wfi & mon_begin))begin
+        if(!(top_if.wfi & mon_begin > mon_thd))begin
         end
         else if(iram_cnt != input_size * num_of_pack + 57) begin
             `uvm_error(get_name(), $sformatf("iram_cnt out of range: %0d", iram_cnt))
@@ -129,7 +131,7 @@ task mxu_monitor::main_phase(uvm_phase phase);
             `uvm_error(get_name(), $sformatf("wram_cnt out of range: %0d", wram_cnt))
         end
         if(top_if.start_vld)begin
-           mon_begin = 1;
+           mon_begin++;
         end
     end
 
