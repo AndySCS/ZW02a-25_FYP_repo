@@ -1,0 +1,129 @@
+`ifndef LDST_RAND_SEQ_SV
+`define LDST_RAND_SEQ_SV
+
+class ldst_rand_seq extends uvm_sequence;
+    `uvm_object_utils(ldst_rand_seq);	
+
+    instr_addi addi;
+    instr_sb   sb;
+    instr_sh   sh;
+    instr_sw   sw;
+    instr_lb   lb;
+    instr_lh   lh;
+    instr_lw   lw;
+    instr_lb   lbu;
+    instr_lh   lhu;
+    extern function new(string name="ldst_rand_seq");
+    extern function bit[31:0] itype_addi_gen();
+    extern function bit[31:0] ldst_rand_gen();
+    extern task body();
+endclass
+
+
+function ldst_rand_seq::new(string name="ldst_rand_seq");
+    super.new(name);
+endfunction
+
+task ldst_rand_seq::body();
+    static bit [255:0][127:0] ram_tmp;
+    static bit [127:0] ram_tmp_pre;
+    static int ram_count;
+
+    for(int i = 0; i < 20; i++) begin
+		    ram_tmp_pre[31:0] = itype_addi_gen();
+		    ram_tmp_pre[63:32] = itype_addi_gen();
+		    ram_tmp_pre[95:64] = itype_addi_gen();
+		    ram_tmp_pre[127:96] = itype_addi_gen();
+		    ram_tmp[i] = ram_tmp_pre;
+		    //ram_count = ram_count+1;
+    end
+
+    for(int i = 20; i < 256; i++) begin
+		ram_tmp_pre[31:0] = ldst_rand_gen();
+		ram_tmp_pre[63:32] = ldst_rand_gen();
+		ram_tmp_pre[95:64] = ldst_rand_gen();
+		ram_tmp_pre[127:96] = ldst_rand_gen();
+		ram_tmp[i] = ram_tmp_pre;
+		//ram_count = ram_count+1;
+    end
+
+    ram_tmp[255][31:0] = 'h7f; 
+    ram_tmp[255][63:32] = 'h7f; 
+    ram_tmp[255][95:64] = 'h7f; 
+    ram_tmp[255][127:96] = 'h7f;
+
+    //:for($i = 0; $i < 256;$i++){    
+    force harness.u_tpu.u_ifu.ifu_mem_wrap_256x128.mem[{$i}] = ram_tmp[{$i}];
+    //:}
+   	`uvm_info(get_type_name(), "ldst_rand IMEM INIT FINISH", UVM_NONE)
+endtask
+
+function bit[31:0] rtype_seq::itype_addi_gen();
+	bit[31:0] itype_instr;
+    addi_instr = new();	
+    addi_instr.randomize();	
+    addi_instr.pack();	
+	itype_instr = addi_instr.instruction;
+	return itype_instr;
+endfunction
+
+function bit[31:0] ldst_rand_seq::ldst_rand_gen();
+	bit[31:0] ldst_instr;
+    bit[3:0] rand_sel;
+    rand_sel = $urandom_range(0,7);
+    case(rand_sel)
+        4'd0 : begin
+            sb = new();	
+            sb.randomize();	
+            sb.pack();	
+	        ldst_instr = sb.instruction;
+        end
+        4'd1 : begin
+            sh = new();	
+            sh.randomize();	
+            sh.pack();	
+	        ldst_instr = sh.instruction;
+        end
+        4'd2 : begin
+            sw = new();	
+            sw.randomize();	
+            sw.pack();	
+	        ldst_instr = sw.instruction;
+        end
+        4'd3 : begin
+            lb = new();	
+            lb.randomize();	
+            lb.pack();	
+	        ldst_instr = lb.instruction;
+        end
+        4'd4 : begin
+            lh = new();	
+            lh.randomize();	
+            lh.pack();	
+	        ldst_instr = lh.instruction;
+        end
+        4'd5 : begin
+            lw = new();	
+            lw.randomize();	
+            lw.pack();	
+	        ldst_instr = lw.instruction;
+        end
+        4'd6 : begin
+            lbu = new();	
+            lbu.randomize();	
+            lbu.pack();	
+	        ldst_instr = lbu.instruction;
+        end
+        4'd7 : begin
+            lhu = new();	
+            lhu.randomize();	
+            lhu.pack();	
+	        ldst_instr = lhu.instruction;
+        end
+    end
+
+	return ldst_instr;
+endfunction
+
+`endif
+

@@ -11,6 +11,7 @@ $MINITPU_VER/top/tc/instr_seq_gen/jtype_seq.sv
 $MINITPU_VER/top/tc/instr_seq_gen/mix_seq.sv
 $MINITPU_VER/top/tc/instr_seq_gen/bypass_seq.sv
 $MINITPU_VER/top/tc/instr_seq_gen/stype_dir_seq.sv
+$MINITPU_VER/top/tc/instr_seq_gen/ldst_rand_seq.sv
 
 //tc basic
 $MINITPU_VER/top/tc/tc_basic/tc_sanity.sv
@@ -24,6 +25,7 @@ $MINITPU_VER/top/tc/tc_basic/tc_stype.sv
 //tc ldst
 $MINITPU_VER/top/tc/tc_ldst/tc_ld.sv
 $MINITPU_VER/top/tc/tc_ldst/tc_stype_dir.sv
+$MINITPU_VER/top/tc/tc_ldst/tc_ldst_rand.sv
 
 //tc mix
 $MINITPU_VER/top/tc/tc_mix/tc_mix.sv
