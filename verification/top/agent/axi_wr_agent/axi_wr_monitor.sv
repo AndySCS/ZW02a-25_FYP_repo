@@ -89,8 +89,9 @@ function void axi_wr_monitor::mon_second_layer(model_output_transaction tr);
         wsize = 1 << axi_wr_if.AWSIZE;
     end
     if(axi_wr_if.WVALID & axi_wr_if.WREADY)begin
-        alloc_ptr = waddr - 50672;
+        alloc_ptr = (waddr - 50672)/2;
         tr.model_output_int16[alloc_ptr] = axi_wr_if.WDATA;
+        `uvm_info(get_name(), $sformatf("received wdata, alloc_ptr = %0d, wdata = %0d", alloc_ptr, axi_wr_if.WDATA),UVM_NONE);
         wnum--;
         waddr++;
         if(wnum == 0) ap.write(tr);
