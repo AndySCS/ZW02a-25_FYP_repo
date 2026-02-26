@@ -75,6 +75,7 @@ task top_driver::main_phase(uvm_phase phase);
 	if(phase_cnt > 1000) begin
     	    `uvm_info(get_name(), "main phase ends", UVM_MEDIUM);
 	    phase.drop_objection(this);
+            break;
 	end
     end
     join
