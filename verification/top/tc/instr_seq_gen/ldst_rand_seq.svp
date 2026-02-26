@@ -58,12 +58,12 @@ task ldst_rand_seq::body();
    	`uvm_info(get_type_name(), "ldst_rand IMEM INIT FINISH", UVM_NONE)
 endtask
 
-function bit[31:0] rtype_seq::itype_addi_gen();
+function bit[31:0] ldst_rand_seq::itype_addi_gen();
 	bit[31:0] itype_instr;
-    addi_instr = new();	
-    addi_instr.randomize();	
-    addi_instr.pack();	
-	itype_instr = addi_instr.instruction;
+    addi = new();	
+    addi.randomize();	
+    addi.pack();	
+	itype_instr = addi.instruction;
 	return itype_instr;
 endfunction
 
@@ -120,7 +120,7 @@ function bit[31:0] ldst_rand_seq::ldst_rand_gen();
             lhu.pack();	
 	        ldst_instr = lhu.instruction;
         end
-    end
+    endcase
 
 	return ldst_instr;
 endfunction
