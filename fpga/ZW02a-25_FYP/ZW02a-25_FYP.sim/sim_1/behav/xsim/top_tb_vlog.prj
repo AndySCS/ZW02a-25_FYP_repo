@@ -1,0 +1,37 @@
+# compile verilog/system verilog design source files
+verilog xil_defaultlib "/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/rtl/define.vh" --include "../../../../../../rtl" \
+"../../../../../../rtl/lib/DFFE.v" \
+"../../../../../../rtl/lib/DFFR.v" \
+"../../../../../../rtl/lib/DFFRE.v" \
+"../../../../../../rtl/lib/DFFSE.v" \
+"../../../../../../rtl/acc.v" \
+"../../../../../../rtl/act_mod.v" \
+"../../../../../../rtl/alu.v" \
+"../../../../../../rtl/axi_read_intf.v" \
+"../../../../../../rtl/axi_write_intf.v" \
+"../../../../../../rtl/lib/data_byte_shift.v" \
+"../../../../../../rtl/lib/dec32to5.v" \
+"../../../../../../rtl/lib/dec4to16.v" \
+"../../../../../../rtl/lib/dec5to32.v" \
+"../../../../../../rtl/lib/dec8to4.v" \
+"../../../../../../rtl/idu.v" \
+"../../../../../../rtl/ifu.v" \
+"../../../../../../rtl/lsu.v" \
+"../../../../../../rtl/mem_wrapper/mem_wrapper.v" \
+"../../../../../../rtl/mm_ctrl_buffer.v" \
+"../../../../../../rtl/lib/mux16.v" \
+"../../../../../../rtl/mxu.v" \
+"../../../../../../rtl/lib/mxu8.v" \
+"../../../../../../rtl/pe.v" \
+"../../../../../../rtl/mem_wrapper/ram_mem_wrapper.v" \
+"../../../../../../rtl/lib/resp_assign.v" \
+"../../../../../../rtl/lib/resp_data_get.v" \
+"../../../../../../rtl/rf.v" \
+"../../../../../../rtl/tpu.v" \
+"../../../../ZW02a-25_FYP.srcs/sim_1/new/top_tb.v" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort

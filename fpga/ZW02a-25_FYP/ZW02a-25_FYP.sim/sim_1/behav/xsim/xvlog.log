@@ -1,0 +1,64 @@
+INFO: [VRFC 10-2263] Analyzing Verilog file "/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/rtl/define.vh" into library xil_defaultlib
+INFO: [VRFC 10-2263] Analyzing Verilog file "/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/rtl/lib/DFFE.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module DFFE
+INFO: [VRFC 10-2263] Analyzing Verilog file "/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/rtl/lib/DFFR.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module DFFR
+INFO: [VRFC 10-2263] Analyzing Verilog file "/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/rtl/lib/DFFRE.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module DFFRE
+INFO: [VRFC 10-2263] Analyzing Verilog file "/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/rtl/lib/DFFSE.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module DFFSE
+INFO: [VRFC 10-2263] Analyzing Verilog file "/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/rtl/acc.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module acc
+INFO: [VRFC 10-2263] Analyzing Verilog file "/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/rtl/act_mod.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module act_mod
+INFO: [VRFC 10-2263] Analyzing Verilog file "/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/rtl/alu.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module alu
+INFO: [VRFC 10-2263] Analyzing Verilog file "/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/rtl/axi_read_intf.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module AXI_READ_INFT
+WARNING: [VRFC 10-8956] extra semicolon is not allowed here in this dialect; use SystemVerilog mode instead [/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/rtl/axi_read_intf.v:252]
+INFO: [VRFC 10-2263] Analyzing Verilog file "/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/rtl/axi_write_intf.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module AXI_WRITE_INFT
+INFO: [VRFC 10-2263] Analyzing Verilog file "/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/rtl/lib/data_byte_shift.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module data_byte_shift
+INFO: [VRFC 10-2263] Analyzing Verilog file "/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/rtl/lib/dec32to5.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module dec32to5
+INFO: [VRFC 10-2263] Analyzing Verilog file "/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/rtl/lib/dec4to16.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module dec4to16
+INFO: [VRFC 10-2263] Analyzing Verilog file "/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/rtl/lib/dec5to32.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module dec5to32
+INFO: [VRFC 10-2263] Analyzing Verilog file "/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/rtl/lib/dec8to4.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module dec8to3
+INFO: [VRFC 10-2263] Analyzing Verilog file "/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/rtl/idu.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module idu
+INFO: [VRFC 10-2263] Analyzing Verilog file "/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/rtl/ifu.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module ifu
+INFO: [VRFC 10-2263] Analyzing Verilog file "/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/rtl/lsu.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module lsu
+INFO: [VRFC 10-2263] Analyzing Verilog file "/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/rtl/mem_wrapper/mem_wrapper.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mem_wrapper
+INFO: [VRFC 10-2263] Analyzing Verilog file "/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/rtl/mm_ctrl_buffer.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mm_ctrl_buffer
+INFO: [VRFC 10-2263] Analyzing Verilog file "/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/rtl/lib/mux16.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mux16
+INFO: [VRFC 10-2263] Analyzing Verilog file "/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/rtl/mxu.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mxu
+INFO: [VRFC 10-2263] Analyzing Verilog file "/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/rtl/lib/mxu8.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mux8
+INFO: [VRFC 10-2263] Analyzing Verilog file "/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/rtl/pe.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module pe
+INFO: [VRFC 10-2263] Analyzing Verilog file "/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/rtl/mem_wrapper/ram_mem_wrapper.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module ram_mem_wrapper
+WARNING: [VRFC 10-8956] extra semicolon is not allowed here in this dialect; use SystemVerilog mode instead [/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/rtl/mem_wrapper/ram_mem_wrapper.v:25]
+INFO: [VRFC 10-2263] Analyzing Verilog file "/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/rtl/lib/resp_assign.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module resp_assign
+INFO: [VRFC 10-2263] Analyzing Verilog file "/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/rtl/lib/resp_data_get.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module resp_data_get
+INFO: [VRFC 10-2263] Analyzing Verilog file "/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/rtl/rf.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module rf
+WARNING: [VRFC 10-8956] extra semicolon is not allowed here in this dialect; use SystemVerilog mode instead [/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/rtl/rf.v:33]
+INFO: [VRFC 10-2263] Analyzing Verilog file "/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/rtl/tpu.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module tpu
+INFO: [VRFC 10-2263] Analyzing Verilog file "/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/fpga/ZW02a-25_FYP/ZW02a-25_FYP.srcs/sim_1/new/top_tb.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module top_tb
+INFO: [VRFC 10-2263] Analyzing Verilog file "/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/fpga/ZW02a-25_FYP/ZW02a-25_FYP.sim/sim_1/behav/xsim/glbl.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module glbl
