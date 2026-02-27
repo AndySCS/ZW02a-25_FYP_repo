@@ -250,7 +250,7 @@ module AXI_READ_INFT(
 
     genvar i;
     generate;
-        for(i = 0; i < 16; i++)begin
+        for(i = 0; i < 16; i=i+1)begin
 
             //assign ram_addr_en[i] = (ARVALID_sent) & (ram_ptr == i);
 
