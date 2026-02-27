@@ -16,8 +16,18 @@ tc_opt =
 
 tc_opt_dir = ../tc/$(tc).opt
 
+ffn_code_dir = $(MINITPU_FOLDER)/ffn_test/tpu_code/code_no_clip.tasmp
+
 ifneq ($wildcard($(tc_opt_dir)),"")
 	tc_opt := $(shell cat $(tc_opt_dir))
+endif
+
+
+ifeq ($(tc), tc_ffn_no_clip)
+	ffn_code_dir = $(MINITPU_FOLDER)/ffn_test/tpu_code/code_no_clip.tasmp
+endif
+ifeq ($(tc), tc_ffn_clip)
+	ffn_code_dir = $(MINITPU_FOLDER)/ffn_test/tpu_code/code_clip.tasmp
 endif
 
 img_seed = $(shell expr $(seed) % 1000)
@@ -35,7 +45,7 @@ fsdb_file_name = $(tc)
 #Command
 $(shell $(MINITPU_SCRIPT)/linux/file_extend -dir $(MINITPU_VER))
 $(shell $(MINITPU_SCRIPT)/linux/file_extend -dir $(MINITPU_RTL))
-$(shell $(MINITPU_FOLDER)/ffn_test/tpu_code/cmp_linux -srcDir $(MINITPU_FOLDER)/ffn_test/tpu_code/code.tasmp -binDir code.txt)
+$(shell $(MINITPU_FOLDER)/ffn_test/tpu_code/cmp_linux -srcDir $(ffn_code_dir) -binDir code.txt)
 $(shell cp $(MINITPU_FOLDER)/ffn_test/mnist_data/csv/img$(img_seed).csv sample.csv)
 $(shell cp $(MINITPU_FOLDER)/ffn_test/mnist_data/label/label$(img_seed).txt sample_label.txt)
 
