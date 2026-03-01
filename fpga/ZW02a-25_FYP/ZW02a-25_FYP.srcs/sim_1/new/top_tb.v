@@ -46,7 +46,7 @@ module top_tb(
     // Initialize
     rst_n      = 0;
     start_vld  = 0;
-    start_addr = 12'h000;
+    start_addr = 12'h1;
     
 
     // Apply reset
@@ -58,15 +58,15 @@ module top_tb(
 
     // Example stimulus: issue a start with a 12-bit address
     start_vld  = 1;
-    start_addr = 12'hA55;
+    start_addr = 12'h0;
     @(posedge clk);
     start_vld  = 0;
 
     // Observe for some cycles
-    repeat (20) @(posedge clk);
+    repeat (50) @(posedge clk);
 
     // End simulation
-    $finish;
+    //$finish;
   end
 
   // Optional: simple monitor to print signals each clock
