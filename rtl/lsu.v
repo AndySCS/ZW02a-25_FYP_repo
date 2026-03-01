@@ -2202,15 +2202,26 @@ module lsu(
     assign lsu_iram_din  = (lsu_st_type1_iram_din & {128{lsu_st_type1_iram_ce}}) 
                             | lsu_ld_iram_din 
                             | (lsu_riscv_st_data & {128{alu_lsu_st_iram}});
+    //original
+    //ram_mem_wrapper #(.DATA_WIDTH(128))
+    //iram(
+    //    .clk (clk),
+    //    .we  (lsu_iram_we), 
+    //    .ce  (lsu_iram_ce),
+    //    .addr(lsu_iram_addr),
+    //    .din (lsu_iram_din),
+    //    .dout(lsu_iram_dout)
+    //);
 
-    ram_mem_wrapper #(.DATA_WIDTH(128))
+    //fpga
+    ram_mem_wrapper 
     iram(
-        .clk (clk),
-        .we  (lsu_iram_we), 
-        .ce  (lsu_iram_ce),
-        .addr(lsu_iram_addr),
-        .din (lsu_iram_din),
-        .dout(lsu_iram_dout)
+        .clka (clk),
+        .wea  (lsu_iram_we), 
+        .ena  (lsu_iram_ce),
+        .addra(lsu_iram_addr),
+        .dina (lsu_iram_din),
+        .douta(lsu_iram_dout)
     );
 
     DFFR #(.WIDTH(1))
@@ -2245,14 +2256,26 @@ module lsu(
                             | lsu_ld_wram_din 
                             | (lsu_riscv_st_data & {128{alu_lsu_st_wram}});
 
-    ram_mem_wrapper #(.DATA_WIDTH(128))
+    //original
+    //ram_mem_wrapper #(.DATA_WIDTH(128))
+    //wram(
+    //    .clk (clk),
+    //    .we  (lsu_wram_we), 
+    //    .ce  (lsu_wram_ce),
+    //    .addr(lsu_wram_addr),
+    //    .din (lsu_wram_din),
+    //    .dout(lsu_wram_dout)
+    //);
+
+    //fpga
+    ram_mem_wrapper
     wram(
-        .clk (clk),
-        .we  (lsu_wram_we), 
-        .ce  (lsu_wram_ce),
-        .addr(lsu_wram_addr),
-        .din (lsu_wram_din),
-        .dout(lsu_wram_dout)
+        .clka (clk),
+        .wea  (lsu_wram_we), 
+        .ena  (lsu_wram_ce),
+        .addra(lsu_wram_addr),
+        .dina (lsu_wram_din),
+        .douta(lsu_wram_dout)
     );
 
     DFFR #(.WIDTH(1))
@@ -2293,24 +2316,46 @@ module lsu(
                             | (lsu_st_type2_oram_addr & {8{lsu_st_type2_oram_ce}}) 
                             | ({8{lsu_riscv_ce}} & lsu_riscv_addr & ({8{alu_lsu_st_oram}} | {8{alu_lsu_ld_oram}}));
 
-    ram_mem_wrapper #(.DATA_WIDTH(128))
-    oram_lo(
-        .clk (clk),
-        .we  (lsu_oram_lo_we), 
-        .ce  (lsu_oram_lo_ce),
-        .addr(lsu_oram_addr),
-        .din (lsu_oram_lo_din),
-        .dout(lsu_oram_lo_dout)
-    );
+    //original
+    //ram_mem_wrapper #(.DATA_WIDTH(128))
+    //oram_lo(
+    //    .clk (clk),
+    //    .we  (lsu_oram_lo_we), 
+    //    .ce  (lsu_oram_lo_ce),
+    //    .addr(lsu_oram_addr),
+    //    .din (lsu_oram_lo_din),
+    //    .dout(lsu_oram_lo_dout)
+    //);
+
+    //ram_mem_wrapper #(.DATA_WIDTH(128))
+    //oram_hi(
+    //    .clk (clk),
+    //    .we  (lsu_oram_hi_we), 
+    //    .ce  (lsu_oram_hi_ce),
+    //    .addr(lsu_oram_addr),
+    //    .din (lsu_oram_hi_din),
+    //    .dout(lsu_oram_hi_dout)
+    //);
     
-    ram_mem_wrapper #(.DATA_WIDTH(128))
+    //fpga
+    ram_mem_wrapper
+    oram_lo(
+        .clka (clk),
+        .wea  (lsu_oram_lo_we), 
+        .ena  (lsu_oram_lo_ce),
+        .addra(lsu_oram_addr),
+        .dina (lsu_oram_lo_din),
+        .douta(lsu_oram_lo_dout)
+    );
+
+    ram_mem_wrapper
     oram_hi(
-        .clk (clk),
-        .we  (lsu_oram_hi_we), 
-        .ce  (lsu_oram_hi_ce),
-        .addr(lsu_oram_addr),
-        .din (lsu_oram_hi_din),
-        .dout(lsu_oram_hi_dout)
+        .clka (clk),
+        .wea  (lsu_oram_hi_we), 
+        .ena  (lsu_oram_hi_ce),
+        .addra(lsu_oram_addr),
+        .dina (lsu_oram_hi_din),
+        .douta(lsu_oram_hi_dout)
     );
 
     //deal with ld data 

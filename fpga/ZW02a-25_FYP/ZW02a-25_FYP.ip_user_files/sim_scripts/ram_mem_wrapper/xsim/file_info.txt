@@ -1,0 +1,2 @@
+ram_mem_wrapper.v,verilog,xil_defaultlib,../../../../ZW02a-25_FYP.gen/sources_1/ip/ram_mem_wrapper/sim/ram_mem_wrapper.v,
+glbl.v,Verilog,xil_defaultlib,glbl.v

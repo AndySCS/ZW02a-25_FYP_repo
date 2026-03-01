@@ -1,0 +1,14 @@
+#-----------------------------------------------------------
+# Vivado v2023.1 (64-bit)
+# SW Build 3865809 on Sun May  7 15:04:56 MDT 2023
+# IP Build 3864474 on Sun May  7 20:36:21 MDT 2023
+# SharedData Build 3865790 on Sun May 07 13:33:03 MDT 2023
+# Start of session at: Sat Feb 28 22:11:20 2026
+# Process ID: 105935
+# Current directory: /dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/fpga/ZW02a-25_FYP/ZW02a-25_FYP.runs/mem_wrapper_synth_1
+# Command line: vivado -log mem_wrapper.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source mem_wrapper.tcl
+# Log file: /dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/fpga/ZW02a-25_FYP/ZW02a-25_FYP.runs/mem_wrapper_synth_1/mem_wrapper.vds
+# Journal file: /dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/fpga/ZW02a-25_FYP/ZW02a-25_FYP.runs/mem_wrapper_synth_1/vivado.jou
+# Running On: ecelvd711.ece.local, OS: Linux, CPU Frequency: 2593.905 MHz, CPU Physical cores: 32, Host memory: 270292 MB
+#-----------------------------------------------------------
+source mem_wrapper.tcl -notrace
