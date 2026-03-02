@@ -2,10 +2,10 @@
 // Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2023.1 (lin64) Build 3865809 Sun May  7 15:04:56 MDT 2023
-// Date        : Sun Mar  1 21:54:53 2026
+// Date        : Sun Mar  1 21:54:48 2026
 // Host        : ecelvd711.ece.local running 64-bit CentOS Linux release 7.9.2009 (Core)
-// Command     : write_verilog -force -mode synth_stub
-//               /dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/fpga/ZW02a-25_FYP/ZW02a-25_FYP.gen/sources_1/ip/ram_mem_wrapper/ram_mem_wrapper_stub.v
+// Command     : write_verilog -force -mode synth_stub -rename_top ram_mem_wrapper -prefix
+//               ram_mem_wrapper_ ram_mem_wrapper_stub.v
 // Design      : ram_mem_wrapper
 // Purpose     : Stub declaration of top-level module interface
 // Device      : xc7z020clg484-1
