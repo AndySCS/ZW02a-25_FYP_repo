@@ -42,7 +42,7 @@ module tpu(
 );
 
     parameter AWID_WIDTH = 4;
-    parameter AWADDR_WIDTH = 32;
+    parameter AWADDR_WIDTH = 10;
     parameter WDATA_WIDTH = 64;
     parameter WSTRB_WIDTH = WDATA_WIDTH/8; // should be WDATA_WIDTH/8
 
