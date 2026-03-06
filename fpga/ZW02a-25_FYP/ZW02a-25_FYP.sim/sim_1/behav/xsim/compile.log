@@ -59,5 +59,3 @@ INFO: [VRFC 10-2263] Analyzing Verilog file "/dfs/usrhome/twipaa/Documents/fpga/
 INFO: [VRFC 10-311] analyzing module tpu
 INFO: [VRFC 10-2263] Analyzing Verilog file "/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/fpga/ZW02a-25_FYP/ZW02a-25_FYP.srcs/sim_1/new/top_tb.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module top_tb
-INFO: [VRFC 10-2263] Analyzing Verilog file "/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/fpga/ZW02a-25_FYP/ZW02a-25_FYP.sim/sim_1/behav/xsim/glbl.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module glbl
