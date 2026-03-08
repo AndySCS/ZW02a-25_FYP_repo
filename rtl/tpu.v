@@ -20,11 +20,11 @@ module tpu(
     //ARREGION,
     //ARVALID,
     //ARREADY,
-    AID,
-    AADDR,
-    ALEN,
-    ASIZE,
-    ABURST,
+    ID,
+    ADDR,
+    LEN,
+    SIZE,
+    BURST,
 
     AWVALID,
     AWREADY,
@@ -60,7 +60,7 @@ module tpu(
     input clk;
     input rst_n;
     input start_vld;
-    input [11:0] start_addr;
+    input [9:0] start_addr;
     //parameter
 
     //inout bus
@@ -85,11 +85,11 @@ module tpu(
     //output  ARVALID;
     //input ARREADY;
 
-    output [AWID_WIDTH-1:0] AID;
-    output [AWADDR_WIDTH-1:0] AADDR;
-    output [7:0] ALEN;
-    output [2:0] ASIZE;
-    output [1:0] ABURST;
+    output [AWID_WIDTH-1:0] ID;
+    output [AWADDR_WIDTH-1:0] ADDR;
+    output [7:0] LEN;
+    output [2:0] SIZE;
+    output [1:0] BURST;
     output  ARVALID;
     input   ARREADY;
     output  AWVALID;
@@ -920,10 +920,10 @@ module tpu(
         .axi_lsu_resp_oram_addr               (axi_lsu_resp_oram_addr)
     );
 
-    assign AID = ARVALID ? ARID : AWVALID ? AWID : 'b0;
-    assign AADDR = ARVALID ? ARADDR : AWVALID ? AWADDR : 'b0;
-    assign ALEN = ARVALID ? ARLEN : AWVALID ? AWLEN : 'b0;
-    assign ASIZE = ARVALID ? ARSIZE : AWVALID ? AWSIZE : 'b0;
-    assign ABURST = ARVALID ? ARBURST : AWVALID ? AWBURST : 'b0;
+    assign ID = ARVALID ? ARID : AWVALID ? AWID : 'b0;
+    assign ADDR = ARVALID ? ARADDR : AWVALID ? AWADDR : 'b0;
+    assign LEN = ARVALID ? ARLEN : AWVALID ? AWLEN : 'b0;
+    assign SIZE = ARVALID ? ARSIZE : AWVALID ? AWSIZE : 'b0;
+    assign BURST = ARVALID ? ARBURST : AWVALID ? AWBURST : 'b0;
     
 endmodule
