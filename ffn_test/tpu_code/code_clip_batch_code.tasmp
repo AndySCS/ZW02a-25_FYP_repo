@@ -35,6 +35,7 @@ addi x18, x0, 0
 addi x19, x0, 3840
 addi x20, x0, 1000
 perceptron_for_loop_0:
+add x11, x20, 11
 addi x14, x14, 1
 beq x14, x15, perceptron_for_loop_0_last_iter_br
 beq x14, x31, perceptron_for_loop_0_first_iter_br
@@ -108,8 +109,11 @@ addi x12, x0, 0
 addi x17, x0, 1
 addi x18, x0, 0
 addi x19, x0, 3840
-addi x20, x0, 38632
+addi x20, x0, 1768
+lui x20, 0
+lui x20, 9
 perceptron_for_loop_1:
+add x11, x20, 11
 addi x14, x14, 1
 beq x14, x15, perceptron_for_loop_1_last_iter_br
 beq x14, x31, perceptron_for_loop_1_first_iter_br
@@ -206,8 +210,11 @@ addi x12, x0, 0
 addi x17, x0, 1
 addi x18, x0, 0
 addi x19, x0, 3840
-addi x20, x0, 45000
+addi x20, x0, 4040
+lui x20, 0
+lui x20, 10
 perceptron_for_loop_2:
+add x11, x20, 11
 addi x14, x14, 1
 beq x14, x15, perceptron_for_loop_2_last_iter_br
 beq x14, x31, perceptron_for_loop_2_first_iter_br

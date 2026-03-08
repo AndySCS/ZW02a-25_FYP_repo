@@ -190,15 +190,18 @@ def gen_perceptron_for_loop(f: TextIOWrapper, info: perceptron_info) -> None:
 
     gen_set_data(f = f, data = 0, reg = perceptron_for_loop_iter_reg)
     gen_set_data(f = f, data = perceptron_iter_thd, reg = perceptron_for_loop_thd_reg)
-    gen_set_data(f = f, data = 1, reg = 31)
+    gen_set_data(f = f, data = 1, reg = first_iter_reg)
 
     gen_set_data(f = f, data = 0, reg = sram_idata_addr_reg)
     gen_set_data(f = f, data = info.input_width, reg = perceptron_input_width_reg)
     gen_set_data(f = f, data = 0, reg = perceptron_input_col_reg)
     gen_set_data(f = f, data = input_last_row, reg = perceptron_input_last_row_reg)
+    gen_set_data(f = f, data = info.dram_wdata_addr, reg = perceptron_dram_wdata_addr_reg)
     
-    f.write(f"addi x{perceptron_dram_wdata_addr_reg}, x0, {info.dram_wdata_addr}\n")
     f.write(f"perceptron_for_loop_{perceptron_for_loop_cnt}:\n")
+
+    f.write(f"add x{dram_wdata_addr_reg}, x{perceptron_dram_wdata_addr_reg}, {dram_wdata_addr_reg}\n")
+
     f.write(f"addi x{perceptron_for_loop_iter_reg}, x{perceptron_for_loop_iter_reg}, 1\n")
     f.write(f"beq x{perceptron_for_loop_iter_reg}, x{perceptron_for_loop_thd_reg}, perceptron_for_loop_{perceptron_for_loop_cnt}_last_iter_br\n")
     f.write(f"beq x{perceptron_for_loop_iter_reg}, x{first_iter_reg}, perceptron_for_loop_{perceptron_for_loop_cnt}_first_iter_br\n")
