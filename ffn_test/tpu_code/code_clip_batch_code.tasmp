@@ -68,13 +68,13 @@ addi x2, x0, 0
 addi x1, x0, 16
 addi x3, x0, 785
 load_wdata_for_loop_1:
-LDT x13, x11, 0, 4, 4
+LDT x13, x11, 0, 0, 0
 addi x13, x13, 16
 add x11, x11, x3
 addi x2, x2, 1
 blt x2, x1, load_wdata_for_loop_1
 addi x13, x0, 0
-MM x12, x13, 16, 0, 15, 0
+MM x12, x13, 1, 0, 15, 0
 jal x0, perceptron_for_loop_0_end
 perceptron_for_loop_0_first_iter_br:
 addi x13, x0, 0
@@ -154,13 +154,13 @@ addi x2, x0, 0
 addi x1, x0, 8
 addi x3, x0, 785
 load_wdata_for_loop_4:
-LDT x13, x11, 0, 4, 4
+LDT x13, x11, 0, 0, 0
 addi x13, x13, 16
 add x11, x11, x3
 addi x2, x2, 1
 blt x2, x1, load_wdata_for_loop_4
 addi x13, x0, 0
-MM x12, x13, 16, 0, 7, 0
+MM x12, x13, 1, 0, 7, 0
 jal x0, perceptron_for_loop_1_end
 perceptron_for_loop_1_first_iter_br:
 addi x13, x0, 0
@@ -260,16 +260,24 @@ addi x13, x0, 0
 lui x13, 0
 lui x13, 4
 addi x2, x0, 0
-addi x1, x0, 10
+addi x1, x0, 1
 addi x3, x0, 57
 load_wdata_for_loop_7:
-LDT x13, x11, 0, 3, 3
+add x27, x0, x11
+LDT x13, x11, 0, 3, 0
+addi x13, x13, 8
+addi x11, x11, 8
+LDT x13, x11, 0, 0, 0
+addi x13, x13, 1
+addi x11, x11, 1
+add x11, x0, x27
+andi x13, x11, 4080
 addi x13, x13, 16
 add x11, x11, x3
 addi x2, x2, 1
 blt x2, x1, load_wdata_for_loop_7
 addi x13, x0, 0
-MM x12, x13, 8, 0, 9, 0
+MM x12, x13, 9, 0, 9, 0
 jal x0, perceptron_for_loop_2_end
 perceptron_for_loop_2_first_iter_br:
 addi x13, x0, 0

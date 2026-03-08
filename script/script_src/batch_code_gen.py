@@ -1,8 +1,7 @@
 import configparser
 from dataclasses import dataclass
 import os
-import glob
-import re
+import copy
 from io import TextIOWrapper
 import math
 
@@ -50,6 +49,8 @@ fc_oram_col_reg = 24
 fc_last_row_reg = 25
 
 st_dram_addr_reg = 26
+
+dram_adr_tmp_reg = 27
 
 first_iter_reg = 31
 
@@ -112,13 +113,35 @@ def gen_load_wdata_for_loop(f: TextIOWrapper, perceptron_cnt: int, ldt_info: ldt
     global load_wdata_for_loop_thd_reg
     global wdata_size_reg
     global wram_start_addr
+    global dram_idata_addr_reg
+    
+    legal_len = [16, 8, 4, 2, 1]
+    legal_stride = [32, 16, 8, 4, 2, 1]
+
+    if ldt_info.stride not in legal_stride:
+        perceptron_cnt = ldt_info.num
+        ldt_info.num = 1
+        ldt_info.stride = 1
 
     gen_set_data(f = f, data = wram_start_addr, reg = ldt_info.dest_addr_reg)
     gen_set_data(f = f, data = 0, reg = load_wdata_for_loop_iter_reg)
     gen_set_data(f = f, data = perceptron_cnt, reg = load_wdata_for_loop_thd_reg)
     gen_set_data(f = f, data = wdata_size, reg = wdata_size_reg)
     f.write(f"load_wdata_for_loop_{load_wdata_for_loop_cnt}:\n")
-    gen_load_data(f = f, info = ldt_info)
+    if ldt_info.len not in legal_len:
+        f.write(f"add x{dram_adr_tmp_reg}, x0, x{ldt_info.dram_addr_reg}\n")
+        for i in legal_len:
+            if ldt_info.len - i >= 0:
+                new_ldt_info = copy.deepcopy(ldt_info)
+                new_ldt_info.len = i
+                gen_load_data(f = f, info = new_ldt_info)
+                f.write(f"addi x{ldt_info.dest_addr_reg}, x{ldt_info.dest_addr_reg}, {i}\n")
+                f.write(f"addi x{ldt_info.dram_addr_reg}, x{ldt_info.dram_addr_reg}, {i}\n")
+                ldt_info.len -= i
+        f.write(f"add x{ldt_info.dram_addr_reg}, x0, x{dram_adr_tmp_reg}\n")
+        f.write(f"andi x{ldt_info.dest_addr_reg}, x{ldt_info.dram_addr_reg}, 4080\n")
+    else:
+        gen_load_data(f = f, info = ldt_info)
     f.write(f"addi x{ldt_info.dest_addr_reg}, x{ldt_info.dest_addr_reg}, 16\n")
     f.write(f"add x{ldt_info.dram_addr_reg}, x{ldt_info.dram_addr_reg}, x{wdata_size_reg}\n")
     f.write(f"addi x{load_wdata_for_loop_iter_reg}, x{load_wdata_for_loop_iter_reg}, 1\n")
@@ -170,7 +193,7 @@ def gen_perceptron_for_loop(f: TextIOWrapper, info: perceptron_info) -> None:
     global perceptron_dram_wdata_addr_reg
 
     perceptron_iter_thd = math.ceil(info.input_len+1 / 16)
-    last_iter_input_size = 16 if info.input_len % 16 == 0 else info.input_len % 16
+    last_iter_input_size = 16 if (info.input_len + 1) % 16 == 0 else (info.input_len + 1) % 16
     perceptron_wdata_for_loop_cnt = 1 if perceptron_iter_thd == 1 else info.perceptron_size
     input_last_row = 256*15
     non_last_ldt_info = ldt_info(
