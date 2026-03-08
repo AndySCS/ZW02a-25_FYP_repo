@@ -99,11 +99,11 @@ def gen_load_data(f: TextIOWrapper, info: ldt_info) -> None:
 
 def gen_set_data(f: TextIOWrapper, data: int, reg: int) -> None:
     if data > 0x7ff:
-        upper_imm = (data >> 11) & 0xfffff
+        upper_imm = data >> 12
         lower_imm = data & 0x7ff
-        f.write(f"addi x{reg}, x0, {lower_imm}\n")
         f.write(f"lui x{reg}, 0\n")
         f.write(f"lui x{reg}, {upper_imm}\n")
+        f.write(f"addi x{reg}, x0, {lower_imm}\n")
     else:
         f.write(f"addi x{reg}, x0, {data}\n")
 
