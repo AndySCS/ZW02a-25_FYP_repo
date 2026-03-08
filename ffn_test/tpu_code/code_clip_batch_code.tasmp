@@ -271,7 +271,7 @@ LDT x13, x11, 0, 0, 0
 addi x13, x13, 1
 addi x11, x11, 1
 add x11, x0, x27
-andi x13, x11, 4080
+andi x13, x13, 4080
 addi x13, x13, 16
 add x11, x11, x3
 addi x2, x2, 1

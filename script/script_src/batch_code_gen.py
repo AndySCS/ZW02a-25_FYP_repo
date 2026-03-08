@@ -139,7 +139,7 @@ def gen_load_wdata_for_loop(f: TextIOWrapper, perceptron_cnt: int, ldt_info: ldt
                 f.write(f"addi x{ldt_info.dram_addr_reg}, x{ldt_info.dram_addr_reg}, {i}\n")
                 ldt_info.len -= i
         f.write(f"add x{ldt_info.dram_addr_reg}, x0, x{dram_adr_tmp_reg}\n")
-        f.write(f"andi x{ldt_info.dest_addr_reg}, x{ldt_info.dram_addr_reg}, 4080\n")
+        f.write(f"andi x{ldt_info.dest_addr_reg}, x{ldt_info.dest_addr_reg}, 4080\n")
     else:
         gen_load_data(f = f, info = ldt_info)
     f.write(f"addi x{ldt_info.dest_addr_reg}, x{ldt_info.dest_addr_reg}, 16\n")
