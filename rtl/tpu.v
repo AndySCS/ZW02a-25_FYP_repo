@@ -4,20 +4,30 @@ module tpu(
     start_vld,
     start_addr,
     // waddr interface
-    AWID,
-    AWADDR,
-    AWLEN,
-    AWSIZE,
-    AWBURST,
-    AWREGION,
+    //AWID,
+    //AWADDR,
+    //AWLEN,
+    //AWSIZE,
+    //AWBURST,
+    //AWREGION,
+    //AWVALID,
+    //AWREADY,
+    //ARID,
+    //ARADDR,
+    //ARLEN,
+    //ARSIZE,
+    //ARBURST,
+    //ARREGION,
+    //ARVALID,
+    //ARREADY,
+    AID,
+    AADDR,
+    ALEN,
+    ASIZE,
+    ABURST,
+
     AWVALID,
     AWREADY,
-    ARID,
-    ARADDR,
-    ARLEN,
-    ARSIZE,
-    ARBURST,
-    ARREGION,
     ARVALID,
     ARREADY,
     // wdata interface
@@ -46,6 +56,7 @@ module tpu(
     parameter WDATA_WIDTH = 64;
     parameter WSTRB_WIDTH = WDATA_WIDTH/8; // should be WDATA_WIDTH/8
 
+    //15
     input clk;
     input rst_n;
     input start_vld;
@@ -54,24 +65,37 @@ module tpu(
 
     //inout bus
     //address write channel 
-    output [AWID_WIDTH-1:0] AWID;
-    output [AWADDR_WIDTH-1:0] AWADDR;
-    output [7:0] AWLEN;
-    output [2:0] AWSIZE;
-    output [1:0] AWBURST;
-    output [3:0] AWREGION;
-    output  AWVALID;
-    input AWREADY;
+    //31
+    //output [AWID_WIDTH-1:0] AWID;
+    //output [AWADDR_WIDTH-1:0] AWADDR;
+    //output [7:0] AWLEN;
+    //output [2:0] AWSIZE;
+    //output [1:0] AWBURST;
+    //output [3:0] AWREGION;
+    //output  AWVALID;
+    //input AWREADY;
 
-    output [AWID_WIDTH-1:0] ARID;
-    output [AWADDR_WIDTH-1:0] ARADDR;
-    output [7:0] ARLEN;
-    output [2:0] ARSIZE;
-    output [1:0] ARBURST;
-    output [3:0] ARREGION;
+    //31
+    //output [AWID_WIDTH-1:0] ARID;
+    //output [AWADDR_WIDTH-1:0] ARADDR;
+    //output [7:0] ARLEN;
+    //output [2:0] ARSIZE;
+    //output [1:0] ARBURST;
+    //output [3:0] ARREGION;
+    //output  ARVALID;
+    //input ARREADY;
+
+    output [AWID_WIDTH-1:0] AID;
+    output [AWADDR_WIDTH-1:0] AADDR;
+    output [7:0] ALEN;
+    output [2:0] ASIZE;
+    output [1:0] ABURST;
     output  ARVALID;
-    input ARREADY;
+    input   ARREADY;
+    output  AWVALID;
+    input   AWREADY;
 
+    //75
     //write data channel
     output [WDATA_WIDTH-1:0] WDATA;
     output [WSTRB_WIDTH-1:0] WSTRB;
@@ -79,6 +103,7 @@ module tpu(
     output WVALID;
     input WREADY;
 
+    //73
     //read data channel
     input [AWID_WIDTH-1:0] RID;
     input [WDATA_WIDTH-1:0] RDATA;
@@ -86,12 +111,13 @@ module tpu(
     input RLAST;
     input RVALID;
     output RREADY; 
+    
+    //9
     //write response channel
     input [AWID_WIDTH-1:0] BID;
     input [1:0] BRESP;
     input BVALID;
     output BREADY;
-
     output wfi;
 
     //ifu output
@@ -337,6 +363,20 @@ module tpu(
     wire [255:0] mxu_lsu_int16_row15_data;
     wire mxu_lsu_data_rdy;
     wire mxu_lsu_rdy;
+
+    wire [AWID_WIDTH-1:0] AWID;
+    wire [AWADDR_WIDTH-1:0] AWADDR;
+    wire [7:0] AWLEN;
+    wire [2:0] AWSIZE;
+    wire [1:0] AWBURST;
+    wire [3:0] AWREGION;
+
+    wire [AWID_WIDTH-1:0] ARID;
+    wire [AWADDR_WIDTH-1:0] ARADDR;
+    wire [7:0] ARLEN;
+    wire [2:0] ARSIZE;
+    wire [1:0] ARBURST;
+    wire [3:0] ARREGION;
 
     ifu u_ifu(
         .clk            (clk),
@@ -879,4 +919,11 @@ module tpu(
         .axi_lsu_bvld                         (axi_lsu_bvld),
         .axi_lsu_resp_oram_addr               (axi_lsu_resp_oram_addr)
     );
+
+    assign AID = ARVALID ? ARID : AWVALID ? AWID : 'b0;
+    assign AADDR = ARVALID ? ARADDR : AWVALID ? AWADDR : 'b0;
+    assign ALEN = ARVALID ? ARLEN : AWVALID ? AWLEN : 'b0;
+    assign ASIZE = ARVALID ? ARSIZE : AWVALID ? AWSIZE : 'b0;
+    assign ABURST = ARVALID ? ARBURST : AWVALID ? AWBURST : 'b0;
+    
 endmodule
