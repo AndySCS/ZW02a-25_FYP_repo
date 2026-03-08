@@ -169,7 +169,7 @@ def gen_perceptron_for_loop(f: TextIOWrapper, info: perceptron_info) -> None:
     global perceptron_input_last_row_reg
     global perceptron_dram_wdata_addr_reg
 
-    perceptron_iter_thd = math.ceil(info.input_len / 16)
+    perceptron_iter_thd = math.ceil(info.input_len+1 / 16)
     last_iter_input_size = 16 if info.input_len % 16 == 0 else info.input_len % 16
     perceptron_wdata_for_loop_cnt = 1 if perceptron_iter_thd == 1 else info.perceptron_size
     input_last_row = 256*15
@@ -359,7 +359,7 @@ if __name__ == "__main__":
             num = input_num,
             len = 1,
             stride = 1,
-            dest_addr_reg = dram_idata_addr_reg,
+            dest_addr_reg = sram_idata_addr_reg,
             dram_addr_reg = dram_idata_addr_reg
         )
         gen_set_data(f = f, data = dram_idata_addr, reg = dram_idata_addr_reg)
