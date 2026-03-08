@@ -222,9 +222,8 @@ def gen_perceptron_for_loop(f: TextIOWrapper, info: perceptron_info) -> None:
     gen_set_data(f = f, data = input_last_row, reg = perceptron_input_last_row_reg)
     gen_set_data(f = f, data = info.dram_wdata_addr, reg = perceptron_dram_wdata_addr_reg)
     
-    f.write(f"perceptron_for_loop_{perceptron_for_loop_cnt}:\n")
-
     f.write(f"add x{dram_wdata_addr_reg}, x{perceptron_dram_wdata_addr_reg}, {dram_wdata_addr_reg}\n")
+    f.write(f"perceptron_for_loop_{perceptron_for_loop_cnt}:\n")
 
     f.write(f"addi x{perceptron_for_loop_iter_reg}, x{perceptron_for_loop_iter_reg}, 1\n")
     f.write(f"beq x{perceptron_for_loop_iter_reg}, x{perceptron_for_loop_thd_reg}, perceptron_for_loop_{perceptron_for_loop_cnt}_last_iter_br\n")
