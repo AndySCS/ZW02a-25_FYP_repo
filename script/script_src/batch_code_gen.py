@@ -238,9 +238,9 @@ def gen_perceptron_for_loop(f: TextIOWrapper, info: perceptron_info) -> None:
     gen_load_wdata_for_loop(f = f, perceptron_cnt = perceptron_wdata_for_loop_cnt, ldt_info = last_ldt_info, wdata_size = wdata_len)
     gen_set_data(f = f, data = 0, reg = sram_wdata_addr_reg)
     if perceptron_iter_thd == 1:
-        f.write(f"MM x{sram_idata_addr_reg}, x{sram_wdata_addr_reg}, {info.input_len}, {info.input_width - 1}, {info.perceptron_size - 1}, 1\n")
+        f.write(f"MM x{sram_idata_addr_reg}, x{sram_wdata_addr_reg}, {info.input_len - 1}, {info.input_width - 1}, {info.perceptron_size - 1}, 1\n")
     else:
-        f.write(f"MM x{sram_idata_addr_reg}, x{sram_wdata_addr_reg}, {last_iter_input_size}, {info.input_width - 1}, {info.perceptron_size - 1}, 0\n")    
+        f.write(f"MM x{sram_idata_addr_reg}, x{sram_wdata_addr_reg}, {last_iter_input_size -1 }, {info.input_width - 1}, {info.perceptron_size - 1}, 0\n")    
     f.write(f"jal x0, perceptron_for_loop_{perceptron_for_loop_cnt}_end\n")
 
     f.write(f"perceptron_for_loop_{perceptron_for_loop_cnt}_first_iter_br:\n")
