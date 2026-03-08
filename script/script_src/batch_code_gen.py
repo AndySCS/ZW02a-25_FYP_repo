@@ -266,7 +266,7 @@ def gen_fc_layer_for_loop(f: TextIOWrapper, fc_layer_info: fc_layer_info) -> Non
     
     gen_set_data(f = f, data = 0, reg = fc_layer_for_loop_iter_reg)
     gen_set_data(f = f, data = fc_layer_for_loop_thd, reg = fc_layer_for_loop_thd_reg)
-    gen_set_data(f = f, data = dram_wdata_addr, reg = fc_layer_info.dram_wdata_addr)
+    gen_set_data(f = f, data = dram_wdata_addr, reg = fc_dram_wdata_addr_reg)
     gen_set_data(f = f, data = fc_layer_wdata_dram_inc, reg = fc_layer_wdata_dram_inc_reg)
 
     gen_set_data(f = f, data = 0, reg = fc_oram_col_reg)
