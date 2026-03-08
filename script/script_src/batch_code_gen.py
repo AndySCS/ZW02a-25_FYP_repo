@@ -277,7 +277,7 @@ def gen_fc_layer_for_loop(f: TextIOWrapper, fc_layer_info: fc_layer_info) -> Non
         gen_perceptron_for_loop(f = f, info = perceptron_last_info)
         if fc_layer_info.relu:
             f.write(f"act 0\n")
-        f.write(f"STMT x{oram_addr_reg}, x0, 0, {fc_layer_info.perceptron_cnt - 1}, 0")
+        f.write(f"STMT x{oram_addr_reg}, x0, 0, {fc_layer_info.perceptron_cnt - 1}, 0\n")
         fc_layer_for_loop_cnt += 1
         return
     
@@ -312,7 +312,7 @@ def gen_fc_layer_for_loop(f: TextIOWrapper, fc_layer_info: fc_layer_info) -> Non
     gen_perceptron_for_loop(f = f, info = perceptron_last_info)
     if fc_layer_info.relu:
         f.write(f"act 0\n")
-    f.write(f"STMT x{oram_addr_reg}, x0, 0, {perceptron_last_info.perceptron_size - 1}, 0")
+    f.write(f"STMT x{oram_addr_reg}, x0, 0, {perceptron_last_info.perceptron_size - 1}, 0\n")
     f.write(f"fc_layer_for_loop_{fc_layer_for_loop_cnt}_end:\n")
 
     f.write(f"blt x{fc_layer_for_loop_iter_reg}, x{fc_layer_for_loop_thd_reg}, fc_layer_for_loop_{fc_layer_for_loop_cnt}\n")

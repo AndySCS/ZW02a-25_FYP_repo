@@ -164,7 +164,8 @@ addi x11, x20, 16
 addi x20, x20, 16
 blt x14, x15, perceptron_for_loop_1
 act 0
-STMT x23, x0, 0, 7, 0fc_layer_for_loop_0_end:
+STMT x23, x0, 0, 7, 0
+fc_layer_for_loop_0_end:
 blt x9, x8, fc_layer_for_loop_0
 addi x23, x0, 0
 addi x9, x0, 0
@@ -261,7 +262,8 @@ addi x11, x20, 16
 addi x20, x20, 16
 blt x14, x15, perceptron_for_loop_2
 act 0
-STMT x23, x0, 0, 9, 0addi x23, x0, 0
+STMT x23, x0, 0, 9, 0
+addi x23, x0, 0
 addi x9, x0, 0
 addi x8, x0, 10
 addi x26, x0, 1520
