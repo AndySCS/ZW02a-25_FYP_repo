@@ -195,7 +195,7 @@ def gen_perceptron_for_loop(f: TextIOWrapper, info: perceptron_info) -> None:
     perceptron_iter_thd = math.ceil(info.input_len+1 / 16)
     last_iter_input_size = 16 if (info.input_len + 1) % 16 == 0 else (info.input_len + 1) % 16
     perceptron_wdata_for_loop_cnt = 1 if perceptron_iter_thd == 1 else info.perceptron_size
-    input_last_row = 256*15 - 1
+    input_last_row = 256*15
     non_last_ldt_info = ldt_info(
         num = 1, 
         len = 16, 
