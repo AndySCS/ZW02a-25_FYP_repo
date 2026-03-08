@@ -5,7 +5,13 @@ Running: /usr/eelocal/xilinx/Vivado/2023.1/bin/unwrapped/lnx64.o/xelab --incr --
 Using 8 slave threads.
 Starting static elaboration
 Pass Through NonSizing Optimizer
-WARNING: [VRFC 10-3091] actual bit length 32 differs from formal bit length 10 for port 'lsu_axi_awaddr' [/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/rtl/tpu.v:695]
+WARNING: [VRFC 10-3091] actual bit length 32 differs from formal bit length 10 for port 'lsu_axi_awaddr' [/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/rtl/tpu.v:735]
+WARNING: [VRFC 10-3091] actual bit length 2 differs from formal bit length 3 for port 'sel' [/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/rtl/lsu.v:1744]
+WARNING: [VRFC 10-3091] actual bit length 2 differs from formal bit length 3 for port 'sel' [/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/rtl/lsu.v:1753]
+WARNING: [VRFC 10-3091] actual bit length 2 differs from formal bit length 3 for port 'sel' [/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/rtl/lsu.v:1762]
+WARNING: [VRFC 10-3091] actual bit length 2 differs from formal bit length 3 for port 'sel' [/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/rtl/lsu.v:1771]
+WARNING: [VRFC 10-3091] actual bit length 10 differs from formal bit length 32 for port 'ARADDR' [/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/rtl/tpu.v:841]
+WARNING: [VRFC 10-3091] actual bit length 10 differs from formal bit length 32 for port 'AWADDR' [/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/rtl/tpu.v:885]
 WARNING: [VRFC 10-5021] port 'AWREADY' is not connected on this instance [/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/fpga/ZW02a-25_FYP/ZW02a-25_FYP.srcs/sim_1/new/top_tb.v:33]
 Completed static elaboration
 Starting simulation data flow analysis
@@ -47,12 +53,12 @@ Compiling module xil_defaultlib.dec32to5
 Compiling module xil_defaultlib.DFFR(WIDTH=8)
 Compiling module xil_defaultlib.DFFRE(WIDTH=9)
 Compiling module xil_defaultlib.DFFRE(WIDTH=16)
-Compiling module xil_defaultlib.mux8(WIDTH=128)
-Compiling module xil_defaultlib.mux8(WIDTH=256)
-Compiling module xil_defaultlib.DFFR(WIDTH=16)
 Compiling module xil_defaultlib.DFFR(WIDTH=128)
-Compiling module xil_defaultlib.DFFR(WIDTH=32)
 Compiling module xil_defaultlib.DFFR(WIDTH=256)
+Compiling module xil_defaultlib.mux8(WIDTH=128)
+Compiling module xil_defaultlib.mux4(WIDTH=256)
+Compiling module xil_defaultlib.DFFR(WIDTH=16)
+Compiling module xil_defaultlib.DFFR(WIDTH=32)
 Compiling module xil_defaultlib.data_byte_shift
 Compiling module xil_defaultlib.DFFE(WIDTH=128)
 Compiling module xil_defaultlib.mm_ctrl_buffer(RAM_TYPE="IRAM")

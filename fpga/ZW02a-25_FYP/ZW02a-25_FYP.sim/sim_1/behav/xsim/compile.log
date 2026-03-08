@@ -42,6 +42,8 @@ INFO: [VRFC 10-2263] Analyzing Verilog file "/dfs/usrhome/twipaa/Documents/fpga/
 INFO: [VRFC 10-311] analyzing module mm_ctrl_buffer
 INFO: [VRFC 10-2263] Analyzing Verilog file "/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/rtl/lib/mux16.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module mux16
+INFO: [VRFC 10-2263] Analyzing Verilog file "/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/rtl/lib/mux4.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mux4
 INFO: [VRFC 10-2263] Analyzing Verilog file "/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/rtl/mxu.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module mxu
 INFO: [VRFC 10-2263] Analyzing Verilog file "/dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/rtl/lib/mxu8.v" into library xil_defaultlib

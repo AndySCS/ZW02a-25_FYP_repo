@@ -3,8 +3,8 @@
 # SW Build 3865809 on Sun May  7 15:04:56 MDT 2023
 # IP Build 3864474 on Sun May  7 20:36:21 MDT 2023
 # SharedData Build 3865790 on Sun May 07 13:33:03 MDT 2023
-# Start of session at: Wed Mar  4 20:14:12 2026
-# Process ID: 21964
+# Start of session at: Sun Mar  8 21:36:50 2026
+# Process ID: 30923
 # Current directory: /dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/fpga/ZW02a-25_FYP/ZW02a-25_FYP.runs/mem_wrapper_synth_1
 # Command line: vivado -log mem_wrapper.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source mem_wrapper.tcl
 # Log file: /dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/fpga/ZW02a-25_FYP/ZW02a-25_FYP.runs/mem_wrapper_synth_1/mem_wrapper.vds
@@ -12,7 +12,7 @@
 # Running On: ecelvd711.ece.local, OS: Linux, CPU Frequency: 2593.905 MHz, CPU Physical cores: 32, Host memory: 270292 MB
 #-----------------------------------------------------------
 source mem_wrapper.tcl -notrace
-create_project: Time (s): cpu = 00:00:05 ; elapsed = 00:00:05 . Memory (MB): peak = 2548.273 ; gain = 116.984 ; free physical = 200129 ; free virtual = 218177
+create_project: Time (s): cpu = 00:00:05 ; elapsed = 00:00:05 . Memory (MB): peak = 2548.305 ; gain = 116.016 ; free physical = 213975 ; free virtual = 234682
 INFO: [IP_Flow 19-6924] IPCACHE: Running cache check for IP inst: mem_wrapper
 INFO: [IP_Flow 19-6922] IPCACHE: Exporting cached entry 75afa619fbdd1428 to dir: /dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/fpga/ZW02a-25_FYP/ZW02a-25_FYP.runs/mem_wrapper_synth_1
 INFO: [IP_Flow 19-6928] IPCACHE: copied cached file /dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/fpga/ZW02a-25_FYP/ZW02a-25_FYP.cache/ip/2023.1/7/5/75afa619fbdd1428/mem_wrapper_stub.v to /dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/fpga/ZW02a-25_FYP/ZW02a-25_FYP.runs/mem_wrapper_synth_1/mem_wrapper_stub.v.
@@ -21,4 +21,4 @@ INFO: [IP_Flow 19-6928] IPCACHE: copied cached file /dfs/usrhome/twipaa/Document
 INFO: [IP_Flow 19-6928] IPCACHE: copied cached file /dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/fpga/ZW02a-25_FYP/ZW02a-25_FYP.cache/ip/2023.1/7/5/75afa619fbdd1428/mem_wrapper_sim_netlist.v to /dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/fpga/ZW02a-25_FYP/ZW02a-25_FYP.runs/mem_wrapper_synth_1/mem_wrapper_sim_netlist.v.
 INFO: [IP_Flow 19-6928] IPCACHE: copied cached file /dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/fpga/ZW02a-25_FYP/ZW02a-25_FYP.cache/ip/2023.1/7/5/75afa619fbdd1428/mem_wrapper_sim_netlist.vhdl to /dfs/usrhome/twipaa/Documents/fpga/ZW02a-25_FYP_repo/fpga/ZW02a-25_FYP/ZW02a-25_FYP.runs/mem_wrapper_synth_1/mem_wrapper_sim_netlist.vhdl.
 INFO: [IP_Flow 19-4838] Using cached IP synthesis design for IP mem_wrapper, cache-ID = 75afa619fbdd1428.
-INFO: [Common 17-206] Exiting Vivado at Wed Mar  4 20:14:25 2026...
+INFO: [Common 17-206] Exiting Vivado at Sun Mar  8 21:37:03 2026...
