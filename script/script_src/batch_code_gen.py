@@ -61,6 +61,13 @@ class ldt_info:
     dest_addr_reg: int
     dram_addr_reg: int
 
+    def __post_init__(self):
+        assert self.num > 0 and self.num <= 256, "num should be in range (0, 256]"
+        assert self.len > 0 and self.len <= 16, "len should be in range (0, 256]"
+        assert self.stride > 0 and self.stride <= 32, "stride should be in range (0, 256]"
+        assert self.dest_addr_reg >= 0 and self.dest_addr_reg <= 31, "dest_addr_reg should be in range [0, 31]"
+        assert self.dram_addr_reg >= 0 and self.dram_addr_reg <= 31, "dram_addr_reg should be in range [0, 31]"
+
 @dataclass
 class perceptron_info:
     input_len: int
@@ -77,7 +84,17 @@ class fc_layer_info:
     relu: bool
 
 def gen_load_data(f: TextIOWrapper, info: ldt_info) -> None:
-    f.write(f"LDT x{info.dest_addr_reg}, x{info.dram_addr_reg}, {info.num-1}, {info.len-1}, {info.stride-1}\n")
+    transform_dict = {
+        1: 0,
+        2: 1,
+        4: 2,
+        8: 3,
+        16: 4,
+        32: 5
+    }
+    len_trasform = transform_dict[info.len]
+    stride_transform = transform_dict[info.stride]
+    f.write(f"LDT x{info.dest_addr_reg}, x{info.dram_addr_reg}, {info.num-1}, {len_trasform}, {stride_transform}\n")
 
 def gen_set_data(f: TextIOWrapper, data: int, reg: int) -> None:
     if data > 0x7fff:

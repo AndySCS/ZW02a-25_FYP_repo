@@ -43,7 +43,7 @@ addi x2, x0, 0
 addi x1, x0, 16
 addi x3, x0, 784
 load_wdata_for_loop_0:
-LDT x13, x11, 0, 15, 15
+LDT x13, x11, 0, 4, 4
 addi x13, x13, 16
 add x11, x11, x3
 addi x2, x2, 1
@@ -57,7 +57,7 @@ addi x2, x0, 0
 addi x1, x0, 16
 addi x3, x0, 784
 load_wdata_for_loop_1:
-LDT x13, x11, 0, 15, 15
+LDT x13, x11, 0, 4, 4
 addi x13, x13, 16
 add x11, x11, x3
 addi x2, x2, 1
@@ -71,7 +71,7 @@ addi x2, x0, 0
 addi x1, x0, 16
 addi x3, x0, 784
 load_wdata_for_loop_2:
-LDT x13, x11, 0, 15, 15
+LDT x13, x11, 0, 4, 4
 addi x13, x13, 16
 add x11, x11, x3
 addi x2, x2, 1
@@ -117,7 +117,7 @@ addi x2, x0, 0
 addi x1, x0, 8
 addi x3, x0, 784
 load_wdata_for_loop_3:
-LDT x13, x11, 0, 15, 15
+LDT x13, x11, 0, 4, 4
 addi x13, x13, 16
 add x11, x11, x3
 addi x2, x2, 1
@@ -131,7 +131,7 @@ addi x2, x0, 0
 addi x1, x0, 8
 addi x3, x0, 784
 load_wdata_for_loop_4:
-LDT x13, x11, 0, 15, 15
+LDT x13, x11, 0, 4, 4
 addi x13, x13, 16
 add x11, x11, x3
 addi x2, x2, 1
@@ -145,7 +145,7 @@ addi x2, x0, 0
 addi x1, x0, 8
 addi x3, x0, 784
 load_wdata_for_loop_5:
-LDT x13, x11, 0, 15, 15
+LDT x13, x11, 0, 4, 4
 addi x13, x13, 16
 add x11, x11, x3
 addi x2, x2, 1
@@ -214,7 +214,7 @@ addi x2, x0, 0
 addi x1, x0, 10
 addi x3, x0, 56
 load_wdata_for_loop_6:
-LDT x13, x11, 0, 15, 15
+LDT x13, x11, 0, 4, 4
 addi x13, x13, 16
 add x11, x11, x3
 addi x2, x2, 1
@@ -228,7 +228,7 @@ addi x2, x0, 0
 addi x1, x0, 10
 addi x3, x0, 56
 load_wdata_for_loop_7:
-LDT x13, x11, 0, 7, 7
+LDT x13, x11, 0, 3, 3
 addi x13, x13, 16
 add x11, x11, x3
 addi x2, x2, 1
@@ -242,7 +242,7 @@ addi x2, x0, 0
 addi x1, x0, 10
 addi x3, x0, 56
 load_wdata_for_loop_8:
-LDT x13, x11, 0, 15, 15
+LDT x13, x11, 0, 4, 4
 addi x13, x13, 16
 add x11, x11, x3
 addi x2, x2, 1
