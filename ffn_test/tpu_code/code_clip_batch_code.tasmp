@@ -92,7 +92,8 @@ blt x14, x15, perceptron_for_loop_0
 add x11, x22, x21
 add x22, x22, x21
 act 0
-STMT x23, x0, 0, 15, 0bge x23, x25, fc_layer_for_loop_0_oram_update_sp
+STMT x23, x0, 0, 15, 0
+bge x23, x25, fc_layer_for_loop_0_oram_update_sp
 addi x23, x23, 512
 jal x0, fc_layer_for_loop_0_end
 fc_layer_for_loop_0_oram_update_sp:

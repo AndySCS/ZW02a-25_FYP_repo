@@ -299,7 +299,7 @@ def gen_fc_layer_for_loop(f: TextIOWrapper, fc_layer_info: fc_layer_info) -> Non
     f.write(f"add x{fc_dram_wdata_addr_reg}, x{fc_dram_wdata_addr_reg}, x{fc_layer_wdata_dram_inc_reg}\n")
     if fc_layer_info.relu:
         f.write(f"act 0\n")
-    f.write(f"STMT x{oram_addr_reg}, x0, 0, 15, 0")
+    f.write(f"STMT x{oram_addr_reg}, x0, 0, 15, 0\n")
     f.write(f"bge x{oram_addr_reg}, x{fc_last_row_reg}, fc_layer_for_loop_{fc_layer_for_loop_cnt}_oram_update_sp\n")
     f.write(f"addi x{oram_addr_reg}, x{oram_addr_reg}, 512\n")
     f.write(f"jal x0, fc_layer_for_loop_{fc_layer_for_loop_cnt}_end\n")
