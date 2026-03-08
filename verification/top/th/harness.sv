@@ -1,10 +1,9 @@
-
 module harness;
 
     reg clk;
     wire rst_n;
     wire start_vld;
-    wire [11:0] start_addr;
+    wire [9:0] start_addr;
     wire wfi;
     
     wire [`AWID_WIDTH-1:0] AWID;

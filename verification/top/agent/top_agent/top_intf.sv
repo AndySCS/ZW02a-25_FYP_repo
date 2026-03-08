@@ -9,7 +9,7 @@ interface top_intf(
     input clk;
     input rst_n;
     input start_vld;
-    input [11:0] start_addr;
+    input [9:0] start_addr;
     input wfi;
     //parameter
 
