@@ -15,7 +15,7 @@ module ifu (
     input clk;
     input rst_n;
     input start_vld;
-    input [9:0] start_addr;
+    input [`IRAM_ADDR_WIDTH-1:0] start_addr;
     //input [11:0] start_addr;
     input idu_ifu_rdy;
     input idu_ifu_wfi;

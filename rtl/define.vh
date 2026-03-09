@@ -242,6 +242,8 @@
 `define RAM_BUFF_FSM_REV            11
 
 `define AWADDR_WIDTH                32
+`define AWADDR_WIDTH                16
 `define AWID_WIDTH                  4
 `define WDATA_WIDTH                 64
 `define WSTRB_WIDTH                 `WDATA_WIDTH/8
+`define IRAM_ADDR_WIDTH             10

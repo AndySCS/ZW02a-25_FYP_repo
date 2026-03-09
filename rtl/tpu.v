@@ -20,7 +20,7 @@ module tpu(
     //ARREGION,
     //ARVALID,
     //ARREADY,
-    ID,
+    //ID,
     ADDR,
     LEN,
     SIZE,
@@ -51,16 +51,16 @@ module tpu(
     wfi
 );
 
-    parameter AWID_WIDTH = 4;
-    parameter AWADDR_WIDTH = 10;
-    parameter WDATA_WIDTH = 64;
-    parameter WSTRB_WIDTH = WDATA_WIDTH/8; // should be WDATA_WIDTH/8
+    //parameter AWID_WIDTH = 4;
+    //parameter AWADDR_WIDTH = `AWADDR_WIDTH;
+    //parameter WDATA_WIDTH = 64;
+    //parameter WSTRB_WIDTH = WDATA_WIDTH/8; // should be WDATA_WIDTH/8
 
     //15
     input clk;
     input rst_n;
     input start_vld;
-    input [9:0] start_addr;
+    input [`IRAM_ADDR_WIDTH-1:0] start_addr;
     //parameter
 
     //inout bus
@@ -85,8 +85,8 @@ module tpu(
     //output  ARVALID;
     //input ARREADY;
 
-    output [AWID_WIDTH-1:0] ID;
-    output [AWADDR_WIDTH-1:0] ADDR;
+    //output [AWID_WIDTH-1:0] ID;
+    output [`AWADDR_WIDTH-1:0] ADDR;
     output [7:0] LEN;
     output [2:0] SIZE;
     output [1:0] BURST;
@@ -97,16 +97,16 @@ module tpu(
 
     //75
     //write data channel
-    output [WDATA_WIDTH-1:0] WDATA;
-    output [WSTRB_WIDTH-1:0] WSTRB;
+    output [`WDATA_WIDTH-1:0] WDATA;
+    output [`WSTRB_WIDTH-1:0] WSTRB;
     output WLAST;
     output WVALID;
     input WREADY;
 
     //73
     //read data channel
-    input [AWID_WIDTH-1:0] RID;
-    input [WDATA_WIDTH-1:0] RDATA;
+    input [`AWID_WIDTH-1:0] RID;
+    input [`WDATA_WIDTH-1:0] RDATA;
     input [1:0] RRESP;
     input RLAST;
     input RVALID;
@@ -114,7 +114,7 @@ module tpu(
     
     //9
     //write response channel
-    input [AWID_WIDTH-1:0] BID;
+    input [`AWID_WIDTH-1:0] BID;
     input [1:0] BRESP;
     input BVALID;
     output BREADY;
@@ -364,15 +364,15 @@ module tpu(
     wire mxu_lsu_data_rdy;
     wire mxu_lsu_rdy;
 
-    wire [AWID_WIDTH-1:0] AWID;
-    wire [AWADDR_WIDTH-1:0] AWADDR;
+    wire [`AWID_WIDTH-1:0] AWID;
+    wire [`AWADDR_WIDTH-1:0] AWADDR;
     wire [7:0] AWLEN;
     wire [2:0] AWSIZE;
     wire [1:0] AWBURST;
     wire [3:0] AWREGION;
 
-    wire [AWID_WIDTH-1:0] ARID;
-    wire [AWADDR_WIDTH-1:0] ARADDR;
+    wire [`AWID_WIDTH-1:0] ARID;
+    wire [`AWADDR_WIDTH-1:0] ARADDR;
     wire [7:0] ARLEN;
     wire [2:0] ARSIZE;
     wire [1:0] ARBURST;
@@ -752,7 +752,7 @@ module tpu(
         .lsu_axi_arburst                      (lsu_axi_arburst),
         .lsu_axi_arstr                        (lsu_axi_arstr),
         .lsu_axi_arnum                        (lsu_axi_arnum),
-	 .lsu_axi_sram_addr		      (lsu_axi_sram_addr),
+	    .lsu_axi_sram_addr		              (lsu_axi_sram_addr),
         .lsu_axi_arvld                        (lsu_axi_arvld),
         .lsu_axi_rrdy                         (lsu_axi_rrdy),
         .lsu_idu_wb_vld                       (lsu_idu_wb_vld),
@@ -830,9 +830,9 @@ module tpu(
     );
 
     AXI_READ_INFT#(
-        .ARID_WIDTH  (4), 
-        .ARADDR_WIDTH(32), 
-        .RDATA_WIDTH (64)
+        .ARID_WIDTH  (`AWID_WIDTH), 
+        .ARADDR_WIDTH(`AWADDR_WIDTH), 
+        .RDATA_WIDTH (`WDATA_WIDTH)
     )
     u_AXI_READ_INFT(
         .clk                                  (clk),
@@ -873,9 +873,9 @@ module tpu(
     );
 
     AXI_WRITE_INFT#(
-        .AWID_WIDTH  (4), 
-        .AWADDR_WIDTH(32), 
-        .WDATA_WIDTH (64)
+        .AWID_WIDTH  (`AWID_WIDTH), 
+        .AWADDR_WIDTH(`AWADDR_WIDTH), 
+        .WDATA_WIDTH (`WDATA_WIDTH)
     )
     u_AXI_WRITE_INTF
     (
@@ -920,10 +920,10 @@ module tpu(
         .axi_lsu_resp_oram_addr               (axi_lsu_resp_oram_addr)
     );
 
-    assign ID = ARVALID ? ARID : AWVALID ? AWID : 'b0;
-    assign ADDR = ARVALID ? ARADDR : AWVALID ? AWADDR : 'b0;
-    assign LEN = ARVALID ? ARLEN : AWVALID ? AWLEN : 'b0;
-    assign SIZE = ARVALID ? ARSIZE : AWVALID ? AWSIZE : 'b0;
-    assign BURST = ARVALID ? ARBURST : AWVALID ? AWBURST : 'b0;
+    //assign ID = ARVALID ? ARID : AWID;
+    assign ADDR = ARVALID ? ARADDR : AWADDR;
+    assign LEN = ARVALID ? ARLEN : AWLEN;
+    assign SIZE = ARVALID ? ARSIZE : AWSIZE;
+    assign BURST = ARVALID ? ARBURST : AWBURST;
     
 endmodule
