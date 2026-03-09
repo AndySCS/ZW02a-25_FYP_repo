@@ -102,14 +102,10 @@ def gen_set_data(f: TextIOWrapper, data: int, reg: int) -> None:
     global tmp_data_reg
 
     if data > 0x7ff:
-        upper_imm = data >> 12
+        upper_imm = (data + 0x800) >> 12
         lower_imm = data & 0xfff
-        f.write(f"lui x{reg}, 0\n")
         f.write(f"lui x{reg}, {upper_imm}\n")
-        f.write(f"addi x{tmp_data_reg}, x0, {lower_imm}\n")
-        f.write(f"srli x{tmp_data_reg}, x{tmp_data_reg}, 20\n")
-        f.write(f"slli x{tmp_data_reg}, x{tmp_data_reg}, 20\n")
-        f.write(f"add x{reg}, x{reg}, x{tmp_data_reg}\n")
+        f.write(f"addi x{reg}, x{reg}, {lower_imm}\n")
     else:
         f.write(f"addi x{reg}, x0, {data}\n")
 
