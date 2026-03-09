@@ -52,6 +52,7 @@ st_dram_addr_reg = 26
 
 dram_adr_tmp_reg = 27
 
+tmp_data_reg = 30
 first_iter_reg = 31
 
 @dataclass
@@ -98,12 +99,17 @@ def gen_load_data(f: TextIOWrapper, info: ldt_info) -> None:
     f.write(f"LDT x{info.dest_addr_reg}, x{info.dram_addr_reg}, {info.num-1}, {len_trasform}, {stride_transform}\n")
 
 def gen_set_data(f: TextIOWrapper, data: int, reg: int) -> None:
+    global tmp_data_reg
+
     if data > 0x7ff:
         upper_imm = data >> 12
-        lower_imm = data & 0x7ff
+        lower_imm = data & 0xfff
         f.write(f"lui x{reg}, 0\n")
         f.write(f"lui x{reg}, {upper_imm}\n")
-        f.write(f"addi x{reg}, x0, {lower_imm}\n")
+        f.write(f"addi x{tmp_data_reg}, x0, {lower_imm}\n")
+        f.write(f"srli x{tmp_data_reg}, x{tmp_data_reg}, 20\n")
+        f.write(f"slli x{tmp_data_reg}, x{tmp_data_reg}, 20\n")
+        f.write(f"add x{reg}, x{reg}, x{tmp_data_reg}\n")
     else:
         f.write(f"addi x{reg}, x0, {data}\n")
 

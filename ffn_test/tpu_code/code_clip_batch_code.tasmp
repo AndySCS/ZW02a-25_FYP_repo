@@ -21,11 +21,17 @@ addi x8, x0, 4
 addi x22, x0, 1000
 lui x21, 0
 lui x21, 3
-addi x21, x0, 256
+addi x30, x0, 256
+srli x30, x30, 20
+slli x30, x30, 20
+add x21, x21, x30
 addi x24, x0, 0
 lui x25, 0
 lui x25, 1
-addi x25, x0, 1536
+addi x30, x0, 3584
+srli x30, x30, 20
+slli x30, x30, 20
+add x25, x25, x30
 add x22, x11, x0
 fc_layer_for_loop_0:
 addi x9, x9, 1
@@ -38,7 +44,10 @@ addi x17, x0, 1
 addi x18, x0, 0
 lui x19, 0
 lui x19, 0
-addi x19, x0, 1792
+addi x30, x0, 3840
+srli x30, x30, 20
+slli x30, x30, 20
+add x19, x19, x30
 addi x20, x0, 1000
 add x11, x20, 11
 perceptron_for_loop_0:
@@ -47,7 +56,10 @@ beq x14, x15, perceptron_for_loop_0_last_iter_br
 beq x14, x31, perceptron_for_loop_0_first_iter_br
 lui x13, 0
 lui x13, 2
-addi x13, x0, 0
+addi x30, x0, 0
+srli x30, x30, 20
+slli x30, x30, 20
+add x13, x13, x30
 addi x2, x0, 0
 addi x1, x0, 16
 addi x3, x0, 785
@@ -63,7 +75,10 @@ jal x0, perceptron_for_loop_0_end
 perceptron_for_loop_0_last_iter_br:
 lui x13, 0
 lui x13, 2
-addi x13, x0, 0
+addi x30, x0, 0
+srli x30, x30, 20
+slli x30, x30, 20
+add x13, x13, x30
 addi x2, x0, 0
 addi x1, x0, 16
 addi x3, x0, 785
@@ -79,7 +94,10 @@ jal x0, perceptron_for_loop_0_end
 perceptron_for_loop_0_first_iter_br:
 lui x13, 0
 lui x13, 2
-addi x13, x0, 0
+addi x30, x0, 0
+srli x30, x30, 20
+slli x30, x30, 20
+add x13, x13, x30
 addi x2, x0, 0
 addi x1, x0, 16
 addi x3, x0, 785
@@ -122,10 +140,16 @@ addi x17, x0, 1
 addi x18, x0, 0
 lui x19, 0
 lui x19, 0
-addi x19, x0, 1792
+addi x30, x0, 3840
+srli x30, x30, 20
+slli x30, x30, 20
+add x19, x19, x30
 lui x20, 0
 lui x20, 9
-addi x20, x0, 1768
+addi x30, x0, 1768
+srli x30, x30, 20
+slli x30, x30, 20
+add x20, x20, x30
 add x11, x20, 11
 perceptron_for_loop_1:
 addi x14, x14, 1
@@ -133,7 +157,10 @@ beq x14, x15, perceptron_for_loop_1_last_iter_br
 beq x14, x31, perceptron_for_loop_1_first_iter_br
 lui x13, 0
 lui x13, 2
-addi x13, x0, 0
+addi x30, x0, 0
+srli x30, x30, 20
+slli x30, x30, 20
+add x13, x13, x30
 addi x2, x0, 0
 addi x1, x0, 8
 addi x3, x0, 785
@@ -149,7 +176,10 @@ jal x0, perceptron_for_loop_1_end
 perceptron_for_loop_1_last_iter_br:
 lui x13, 0
 lui x13, 2
-addi x13, x0, 0
+addi x30, x0, 0
+srli x30, x30, 20
+slli x30, x30, 20
+add x13, x13, x30
 addi x2, x0, 0
 addi x1, x0, 8
 addi x3, x0, 785
@@ -165,7 +195,10 @@ jal x0, perceptron_for_loop_1_end
 perceptron_for_loop_1_first_iter_br:
 lui x13, 0
 lui x13, 2
-addi x13, x0, 0
+addi x30, x0, 0
+srli x30, x30, 20
+slli x30, x30, 20
+add x13, x13, x30
 addi x2, x0, 0
 addi x1, x0, 8
 addi x3, x0, 785
@@ -222,7 +255,10 @@ addi x7, x0, 897
 addi x23, x0, 0
 lui x11, 0
 lui x11, 10
-addi x11, x0, 1992
+addi x30, x0, 4040
+srli x30, x30, 20
+slli x30, x30, 20
+add x11, x11, x30
 addi x14, x0, 0
 addi x15, x0, 57
 addi x31, x0, 1
@@ -231,10 +267,16 @@ addi x17, x0, 1
 addi x18, x0, 0
 lui x19, 0
 lui x19, 0
-addi x19, x0, 1792
+addi x30, x0, 3840
+srli x30, x30, 20
+slli x30, x30, 20
+add x19, x19, x30
 lui x20, 0
 lui x20, 10
-addi x20, x0, 1992
+addi x30, x0, 4040
+srli x30, x30, 20
+slli x30, x30, 20
+add x20, x20, x30
 add x11, x20, 11
 perceptron_for_loop_2:
 addi x14, x14, 1
@@ -242,7 +284,10 @@ beq x14, x15, perceptron_for_loop_2_last_iter_br
 beq x14, x31, perceptron_for_loop_2_first_iter_br
 lui x13, 0
 lui x13, 2
-addi x13, x0, 0
+addi x30, x0, 0
+srli x30, x30, 20
+slli x30, x30, 20
+add x13, x13, x30
 addi x2, x0, 0
 addi x1, x0, 10
 addi x3, x0, 57
@@ -258,7 +303,10 @@ jal x0, perceptron_for_loop_2_end
 perceptron_for_loop_2_last_iter_br:
 lui x13, 0
 lui x13, 2
-addi x13, x0, 0
+addi x30, x0, 0
+srli x30, x30, 20
+slli x30, x30, 20
+add x13, x13, x30
 addi x2, x0, 0
 addi x1, x0, 1
 addi x3, x0, 57
@@ -282,7 +330,10 @@ jal x0, perceptron_for_loop_2_end
 perceptron_for_loop_2_first_iter_br:
 lui x13, 0
 lui x13, 2
-addi x13, x0, 0
+addi x30, x0, 0
+srli x30, x30, 20
+slli x30, x30, 20
+add x13, x13, x30
 addi x2, x0, 0
 addi x1, x0, 10
 addi x3, x0, 57
@@ -312,7 +363,10 @@ addi x9, x0, 0
 addi x8, x0, 10
 lui x26, 0
 lui x26, 12
-addi x26, x0, 1520
+addi x30, x0, 1520
+srli x30, x30, 20
+slli x30, x30, 20
+add x26, x26, x30
 oram_st_for_loop_1:
 addi x9, x9, 1
 STT x23, x26,  0, 1, 0, 1
