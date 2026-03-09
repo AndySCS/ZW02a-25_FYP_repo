@@ -241,13 +241,13 @@
 `define RAM_BUFF_FSM_SND            10
 `define RAM_BUFF_FSM_REV            11
 
-`define AWADDR_WIDTH                16
+`define AWADDR_WIDTH                32
 `define AWID_WIDTH                  4
 `define WDATA_WIDTH                 64
 `define WSTRB_WIDTH                 `WDATA_WIDTH/8
-`define IRAM_ADDR_WIDTH             10
+`define IRAM_ADDR_WIDTH             12
  
 `define RAM_ADDR_WIDTH = 8;
 `define RAM_DATA_WIDTH = 16;
 
-//`define FPGA
+`define FPGA

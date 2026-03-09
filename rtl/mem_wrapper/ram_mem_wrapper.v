@@ -16,9 +16,9 @@ module ram_mem_wrapper (
     input ce;
     input [ADDR_WIDTH-1:0] addr;
     input [DATA_WIDTH-1:0] din;
-    output reg [DATA_WIDTH-1:0] dout;
 
     `ifdef FPGA
+    output [DATA_WIDTH-1:0] dout;
     //fpga
     fpga_ram_mem_wrapper 
     iram(
@@ -32,6 +32,7 @@ module ram_mem_wrapper (
 
     `else
     //original
+    output reg [DATA_WIDTH-1:0] dout;
     wire [DATA_WIDTH-1:0] we_wide;
     reg  [DATA_WIDTH-1:0] mem [0:DEPTH-1];
 

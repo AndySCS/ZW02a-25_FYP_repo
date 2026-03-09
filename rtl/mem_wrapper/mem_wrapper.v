@@ -15,9 +15,9 @@ module mem_wrapper (
     input ce;
     input [ADDR_WIDTH-1:0] addr;
     input [DATA_WIDTH-1:0] din;
-    output reg [DATA_WIDTH-1:0] dout;
     
     `ifdef FPGA
+    output [DATA_WIDTH-1:0] dout;
     //fpga
     fpga_mem_wrapper 
     ifu_mem_wrap_256x128(
@@ -29,6 +29,7 @@ module mem_wrapper (
         .douta	(dout)
     );
     `else
+    output reg [DATA_WIDTH-1:0] dout;
     //original
     reg [DATA_WIDTH-1:0] mem [0:DEPTH-1];
   
