@@ -39,10 +39,10 @@ module AXI_READ_INFT(
     axi_lsu_axi_done
 );
     //parameter
-    parameter ARID_WIDTH = 4;
-    parameter ARADDR_WIDTH = 10;
-    parameter RDATA_WIDTH = 64;
-    parameter RSTRB_WIDTH = RDATA_WIDTH/8; // should be WDATA_WIDTH/8
+    parameter ARID_WIDTH = `AWID_WIDTH;
+    parameter ARADDR_WIDTH = `AWADDR_WIDTH;
+    parameter RDATA_WIDTH = `WDATA_WIDTH;
+    parameter RSTRB_WIDTH = `WSTRB_WIDTH; // should be WDATA_WIDTH/8
     input clk;
     input rst_n;
     //addr read channel

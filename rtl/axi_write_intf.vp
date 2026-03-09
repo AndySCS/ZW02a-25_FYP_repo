@@ -46,10 +46,10 @@ module AXI_WRITE_INFT(
 
 );
     //parameter
-    parameter AWID_WIDTH = 4;
-    parameter AWADDR_WIDTH = 10;
-    parameter WDATA_WIDTH = 64;
-    parameter WSTRB_WIDTH = WDATA_WIDTH/8; // should be WDATA_WIDTH/8
+    parameter AWID_WIDTH = `AWID_WIDTH;
+    parameter AWADDR_WIDTH = `AWADDR_WIDTH;
+    parameter WDATA_WIDTH = `WDATA_WIDTH;
+    parameter WSTRB_WIDTH = `WSTRB_WIDTH ; // should be WDATA_WIDTH/8
     //inout bus
     input clk;
     input rst_n;
@@ -75,7 +75,7 @@ module AXI_WRITE_INFT(
     output BREADY;
     //lsu->axi interface
     input [7:0] lsu_axi_awid;
-    input [9:0] lsu_axi_awaddr;
+    input [`AWADDR_WIDTH-1:0] lsu_axi_awaddr;
     input [7:0] lsu_axi_awlen;
     input [2:0] lsu_axi_awsize;
     input [1:0] lsu_axi_awburst;
