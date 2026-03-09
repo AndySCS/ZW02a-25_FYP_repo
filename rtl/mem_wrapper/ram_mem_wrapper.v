@@ -20,7 +20,7 @@ module ram_mem_wrapper (
 
     `ifdef FPGA
     //fpga
-    ram_mem_wrapper 
+    fpga_ram_mem_wrapper 
     iram(
         .clka (clk),
         .wea  (we), 

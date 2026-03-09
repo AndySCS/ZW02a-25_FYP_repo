@@ -19,7 +19,7 @@ module mem_wrapper (
     
     `ifdef FPGA
     //fpga
-    mem_wrapper 
+    fpga_mem_wrapper 
     ifu_mem_wrap_256x128(
         .clka	(clk),
         .wea	(we),
