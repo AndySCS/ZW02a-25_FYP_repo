@@ -18,6 +18,20 @@ module ram_mem_wrapper (
     input [DATA_WIDTH-1:0] din;
     output reg [DATA_WIDTH-1:0] dout;
 
+    `ifdef FPGA
+    //fpga
+    ram_mem_wrapper 
+    iram(
+        .clka (clk),
+        .wea  (we), 
+        .ena  (ce),
+        .addra(addr),
+        .dina (din),
+        .douta(dout)
+    );
+
+    `else
+    //original
     wire [DATA_WIDTH-1:0] we_wide;
     reg  [DATA_WIDTH-1:0] mem [0:DEPTH-1];
 
@@ -36,6 +50,7 @@ module ram_mem_wrapper (
             dout <= mem[addr]; // Synchronous read
         end
     end
+    `endif
 
 endmodule
 

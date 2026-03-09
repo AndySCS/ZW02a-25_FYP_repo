@@ -67,20 +67,6 @@ module ifu (
     //assign mem_addr = start_vld ? start_addr[11:4] : alu_ifu_br_vld ? alu_ifu_br_addr[11:4] : cur_ins_addr_plus[11:4];
     assign mem_addr = start_vld ? start_addr[9:2] : alu_ifu_br_vld ? alu_ifu_br_addr[11:4] : cur_ins_addr_plus[11:4];
 
-    //original
-    `ifdef FPGA
-    //fpga
-    mem_wrapper 
-    ifu_mem_wrap_256x128(
-        .clka(clk),
-        .wea(1'b0),
-        .ena(mem_ce),
-        .addra(mem_addr),
-        .dina(128'b0),
-        .douta(ifu_idu_ins_raw)
-    );
-
-    `else
     mem_wrapper #(
         .ADDR_WIDTH(8),
         .DATA_WIDTH(128)
@@ -93,9 +79,7 @@ module ifu (
         .din(128'b0),
         .dout(ifu_idu_ins_raw)
     );
-    `endif
 
     assign ifu_idu_pc = {20'b0, cur_ins_addr};
-
 
 endmodule

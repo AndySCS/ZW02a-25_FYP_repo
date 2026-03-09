@@ -6,7 +6,6 @@ module mem_wrapper (
     din,
     dout
 );
-
     parameter ADDR_WIDTH = 8;
     parameter DATA_WIDTH = 16;
     parameter DEPTH = 1 << ADDR_WIDTH;
@@ -17,9 +16,22 @@ module mem_wrapper (
     input [ADDR_WIDTH-1:0] addr;
     input [DATA_WIDTH-1:0] din;
     output reg [DATA_WIDTH-1:0] dout;
-
-    reg [DATA_WIDTH-1:0] mem [0:DEPTH-1];
     
+    `ifdef FPGA
+    //fpga
+    mem_wrapper 
+    ifu_mem_wrap_256x128(
+        .clka	(clk),
+        .wea	(we),
+        .ena	(ce),
+        .addra	(addr),
+        .dina	(din),
+        .douta	(dout)
+    );
+    `else
+    //original
+    reg [DATA_WIDTH-1:0] mem [0:DEPTH-1];
+  
     always @(posedge clk) begin
         if (we & ce) begin
             mem[addr] <= din;
@@ -28,5 +40,6 @@ module mem_wrapper (
             dout <= mem[addr]; // Synchronous read
         end
     end
+    `endif
 
 endmodule
