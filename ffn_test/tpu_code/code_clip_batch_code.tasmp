@@ -31,7 +31,7 @@ fc_layer_for_loop_0:
 addi x9, x9, 1
 beq x9, x8, fc_layer_for_loop_0_last_iter_br
 addi x14, x0, 0
-addi x15, x0, 785
+addi x15, x0, 50
 addi x12, x0, 0
 addi x17, x0, 1
 addi x18, x0, 0
@@ -113,7 +113,7 @@ addi x24, x24, 1
 jal x0, fc_layer_for_loop_0_end
 fc_layer_for_loop_0_last_iter_br:
 addi x14, x0, 0
-addi x15, x0, 785
+addi x15, x0, 50
 addi x12, x0, 0
 addi x17, x0, 1
 addi x18, x0, 0
@@ -219,7 +219,7 @@ addi x23, x0, 0
 lui x11, 11
 addi x11, x11, 4040
 addi x14, x0, 0
-addi x15, x0, 57
+addi x15, x0, 4
 addi x12, x0, 0
 addi x17, x0, 1
 addi x18, x0, 0
