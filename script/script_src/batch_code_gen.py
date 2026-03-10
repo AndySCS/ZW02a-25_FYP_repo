@@ -5,7 +5,7 @@ import copy
 from io import TextIOWrapper
 import math
 
-wram_start_addr = 0x2000
+wram_start_addr = 0x8000
 iram_start_addr = 0x0000
 
 load_wdata_for_loop_cnt = 0
