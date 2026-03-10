@@ -1,0 +1,29 @@
+Time resolution is 1 ps
+ Block Memory Generator module loading initial data...
+ Block Memory Generator data initialization complete.
+Block Memory Generator module top_tb.top_tpu.u_ifu.ifu_mem_wrap_256x128.ifu_mem_wrap_256x128.inst.\native_mem_module.blk_mem_gen_v8_4_6_inst  is using a behavioral model for simulation which will not precisely model memory collision behavior.
+ Block Memory Generator module loading initial data...
+ Block Memory Generator data initialization complete.
+Block Memory Generator module top_tb.top_tpu.u_lsu.iram.iram.inst.\native_mem_module.blk_mem_gen_v8_4_6_inst  is using a behavioral model for simulation which will not precisely model memory collision behavior.
+ Block Memory Generator module loading initial data...
+ Block Memory Generator data initialization complete.
+Block Memory Generator module top_tb.top_tpu.u_lsu.wram.iram.inst.\native_mem_module.blk_mem_gen_v8_4_6_inst  is using a behavioral model for simulation which will not precisely model memory collision behavior.
+ Block Memory Generator module loading initial data...
+ Block Memory Generator data initialization complete.
+Block Memory Generator module top_tb.top_tpu.u_lsu.oram_lo.iram.inst.\native_mem_module.blk_mem_gen_v8_4_6_inst  is using a behavioral model for simulation which will not precisely model memory collision behavior.
+ Block Memory Generator module loading initial data...
+ Block Memory Generator data initialization complete.
+Block Memory Generator module top_tb.top_tpu.u_lsu.oram_hi.iram.inst.\native_mem_module.blk_mem_gen_v8_4_6_inst  is using a behavioral model for simulation which will not precisely model memory collision behavior.
+ Block Memory Generator module loading initial data...
+ Block Memory Generator data initialization complete.
+Block Memory Generator module top_tb.top_tpu.external_mem.inst.\axi_mem_module.blk_mem_gen_v8_4_6_inst  is using a behavioral model for simulation which will not precisely model memory collision behavior.
+time=50000 clk=1 rst_n=0 start_vld=0 addr=001 wfi=1
+time=150000 clk=1 rst_n=0 start_vld=0 addr=001 wfi=1
+time=250000 clk=1 rst_n=1 start_vld=0 addr=001 wfi=1
+time=350000 clk=1 rst_n=1 start_vld=0 addr=001 wfi=1
+time=450000 clk=1 rst_n=1 start_vld=1 addr=000 wfi=1
+time=550000 clk=1 rst_n=1 start_vld=0 addr=000 wfi=1
+time=650000 clk=1 rst_n=1 start_vld=0 addr=000 wfi=0
+time=750000 clk=1 rst_n=1 start_vld=0 addr=000 wfi=0
+time=850000 clk=1 rst_n=1 start_vld=0 addr=000 wfi=0
+time=950000 clk=1 rst_n=1 start_vld=0 addr=000 wfi=0

@@ -1,0 +1,7 @@
+verilog xil_defaultlib  \
+"../../../../FPGA.gen/sources_1/ip/extern_bram/sim/extern_bram.v" \
+
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort

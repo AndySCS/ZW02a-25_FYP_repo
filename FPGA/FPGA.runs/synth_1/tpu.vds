@@ -1,0 +1,683 @@
+#-----------------------------------------------------------
+# Vivado v2023.1 (64-bit)
+# SW Build 3865809 on Sun May  7 15:04:56 MDT 2023
+# IP Build 3864474 on Sun May  7 20:36:21 MDT 2023
+# SharedData Build 3865790 on Sun May 07 13:33:03 MDT 2023
+# Start of session at: Tue Mar 10 22:00:38 2026
+# Process ID: 84138
+# Current directory: /dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/FPGA/FPGA.runs/synth_1
+# Command line: vivado -log tpu.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source tpu.tcl
+# Log file: /dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/FPGA/FPGA.runs/synth_1/tpu.vds
+# Journal file: /dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/FPGA/FPGA.runs/synth_1/vivado.jou
+# Running On: ecelvd711.ece.local, OS: Linux, CPU Frequency: 2593.905 MHz, CPU Physical cores: 32, Host memory: 270292 MB
+#-----------------------------------------------------------
+source tpu.tcl -notrace
+create_project: Time (s): cpu = 00:00:05 ; elapsed = 00:00:05 . Memory (MB): peak = 2548.148 ; gain = 116.984 ; free physical = 209217 ; free virtual = 230995
+Command: read_checkpoint -auto_incremental -incremental /dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/FPGA/FPGA.srcs/utils_1/imports/synth_1/tpu.dcp
+INFO: [Vivado 12-5825] Read reference checkpoint from /dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/FPGA/FPGA.srcs/utils_1/imports/synth_1/tpu.dcp for incremental synthesis
+INFO: [Vivado 12-7989] Please ensure there are no constraint changes
+Command: synth_design -top tpu -part xc7z020clg484-1
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7z020'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7z020'
+INFO: [Device 21-403] Loading part xc7z020clg484-1
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 4 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 84220
+WARNING: [Synth 8-10714] extra semicolon is not allowed here in this dialect; use SystemVerilog mode instead [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/axi_read_intf.v:252]
+INFO: [Synth 8-11241] undeclared symbol 'idu_alu_op', assumed default net type 'wire' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/idu.v:450]
+INFO: [Synth 8-11241] undeclared symbol 'idu_alu_funct3', assumed default net type 'wire' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/idu.v:451]
+INFO: [Synth 8-11241] undeclared symbol 'idu_alu_funct7', assumed default net type 'wire' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/idu.v:452]
+INFO: [Synth 8-11241] undeclared symbol 'lsu_st_vld', assumed default net type 'wire' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lsu.v:763]
+INFO: [Synth 8-11241] undeclared symbol 'lsu_st_mm_vld', assumed default net type 'wire' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lsu.v:764]
+INFO: [Synth 8-11241] undeclared symbol 'lsu_st_type2_bresp_resend_last', assumed default net type 'wire' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lsu.v:1190]
+INFO: [Synth 8-11241] undeclared symbol 'lsu_st_type2_bresp_resend_sram_addr', assumed default net type 'wire' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lsu.v:1242]
+INFO: [Synth 8-11241] undeclared symbol 'lsu_st_type1_done', assumed default net type 'wire' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lsu.v:1323]
+INFO: [Synth 8-11241] undeclared symbol 'lsu_ld_vld', assumed default net type 'wire' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lsu.v:1923]
+INFO: [Synth 8-11241] undeclared symbol 'lsu_ld_sram_chunk_cnt_nxt', assumed default net type 'wire' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lsu.v:2131]
+INFO: [Synth 8-11241] undeclared symbol 'acc_clr_qual', assumed default net type 'wire' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/mxu.v:244]
+WARNING: [Synth 8-10714] extra semicolon is not allowed here in this dialect; use SystemVerilog mode instead [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/rf.v:33]
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:03 ; elapsed = 00:00:03 . Memory (MB): peak = 3311.230 ; gain = 378.523 ; free physical = 208046 ; free virtual = 229971
+---------------------------------------------------------------------------------
+INFO: [Synth 8-6157] synthesizing module 'tpu' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/tpu.v:2]
+INFO: [Synth 8-6157] synthesizing module 'ifu' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/ifu.v:1]
+INFO: [Synth 8-6157] synthesizing module 'DFFR' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFR.v:1]
+	Parameter WIDTH bound to: 1 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'DFFR' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFR.v:1]
+INFO: [Synth 8-6157] synthesizing module 'DFFE' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:1]
+	Parameter WIDTH bound to: 12 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'DFFE' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:1]
+INFO: [Synth 8-6157] synthesizing module 'mem_wrapper' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/mem_wrapper/mem_wrapper.v:1]
+	Parameter ADDR_WIDTH bound to: 8 - type: integer 
+	Parameter DATA_WIDTH bound to: 128 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'fpga_mem_wrapper' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/FPGA/FPGA.runs/synth_1/.Xil/Vivado-84138-ecelvd711.ece.local/realtime/fpga_mem_wrapper_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'fpga_mem_wrapper' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/FPGA/FPGA.runs/synth_1/.Xil/Vivado-84138-ecelvd711.ece.local/realtime/fpga_mem_wrapper_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'mem_wrapper' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/mem_wrapper/mem_wrapper.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'ifu' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/ifu.v:1]
+INFO: [Synth 8-6157] synthesizing module 'idu' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/idu.v:1]
+INFO: [Synth 8-6157] synthesizing module 'DFFE__parameterized0' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:1]
+	Parameter WIDTH bound to: 32 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'DFFE__parameterized0' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:1]
+INFO: [Synth 8-6157] synthesizing module 'DFFRE' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFRE.v:1]
+	Parameter WIDTH bound to: 1 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'DFFRE' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFRE.v:1]
+INFO: [Synth 8-6157] synthesizing module 'DFFE__parameterized1' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:1]
+	Parameter WIDTH bound to: 1 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'DFFE__parameterized1' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'idu' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/idu.v:1]
+INFO: [Synth 8-6157] synthesizing module 'alu' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/alu.v:1]
+INFO: [Synth 8-6157] synthesizing module 'DFFE__parameterized2' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:1]
+	Parameter WIDTH bound to: 5 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'DFFE__parameterized2' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:1]
+INFO: [Synth 8-6157] synthesizing module 'DFFE__parameterized3' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:1]
+	Parameter WIDTH bound to: 8 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'DFFE__parameterized3' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:1]
+INFO: [Synth 8-6157] synthesizing module 'DFFE__parameterized4' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:1]
+	Parameter WIDTH bound to: 3 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'DFFE__parameterized4' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:1]
+INFO: [Synth 8-6157] synthesizing module 'DFFE__parameterized5' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:1]
+	Parameter WIDTH bound to: 4 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'DFFE__parameterized5' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:1]
+INFO: [Synth 8-6157] synthesizing module 'DFFE__parameterized6' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:1]
+	Parameter WIDTH bound to: 13 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'DFFE__parameterized6' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:1]
+INFO: [Synth 8-6157] synthesizing module 'DFFE__parameterized7' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:1]
+	Parameter WIDTH bound to: 2 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'DFFE__parameterized7' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'alu' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/alu.v:1]
+INFO: [Synth 8-6157] synthesizing module 'lsu' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lsu.v:1]
+INFO: [Synth 8-6157] synthesizing module 'DFFRE__parameterized0' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFRE.v:1]
+	Parameter WIDTH bound to: 12 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'DFFRE__parameterized0' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFRE.v:1]
+INFO: [Synth 8-6157] synthesizing module 'DFFRE__parameterized1' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFRE.v:1]
+	Parameter WIDTH bound to: 4 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'DFFRE__parameterized1' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFRE.v:1]
+INFO: [Synth 8-6157] synthesizing module 'DFFRE__parameterized2' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFRE.v:1]
+	Parameter WIDTH bound to: 2 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'DFFRE__parameterized2' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFRE.v:1]
+INFO: [Synth 8-6157] synthesizing module 'DFFRE__parameterized3' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFRE.v:1]
+	Parameter WIDTH bound to: 8 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'DFFRE__parameterized3' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFRE.v:1]
+INFO: [Synth 8-6157] synthesizing module 'DFFRE__parameterized4' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFRE.v:1]
+	Parameter WIDTH bound to: 10 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'DFFRE__parameterized4' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFRE.v:1]
+INFO: [Synth 8-6157] synthesizing module 'DFFRE__parameterized5' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFRE.v:1]
+	Parameter WIDTH bound to: 3 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'DFFRE__parameterized5' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFRE.v:1]
+INFO: [Synth 8-6157] synthesizing module 'DFFRE__parameterized6' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFRE.v:1]
+	Parameter WIDTH bound to: 5 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'DFFRE__parameterized6' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFRE.v:1]
+INFO: [Synth 8-6157] synthesizing module 'DFFRE__parameterized7' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFRE.v:1]
+	Parameter WIDTH bound to: 13 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'DFFRE__parameterized7' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFRE.v:1]
+INFO: [Synth 8-6157] synthesizing module 'resp_data_get' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/resp_data_get.v:1]
+INFO: [Synth 8-226] default block is never used [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/resp_data_get.v:12]
+INFO: [Synth 8-6155] done synthesizing module 'resp_data_get' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/resp_data_get.v:1]
+INFO: [Synth 8-6157] synthesizing module 'dec5to32' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec5to32.v:1]
+INFO: [Synth 8-226] default block is never used [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec5to32.v:9]
+INFO: [Synth 8-6155] done synthesizing module 'dec5to32' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec5to32.v:1]
+INFO: [Synth 8-6157] synthesizing module 'resp_assign' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/resp_assign.v:1]
+INFO: [Synth 8-226] default block is never used [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/resp_assign.v:12]
+INFO: [Synth 8-6155] done synthesizing module 'resp_assign' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/resp_assign.v:1]
+INFO: [Synth 8-6157] synthesizing module 'dec8to3' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec8to4.v:1]
+WARNING: [Synth 8-153] case item 32'b0000000000000000000000001xxxxxxx will never be executed [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec8to4.v:10]
+WARNING: [Synth 8-153] case item 32'b00000000000000000000000001xxxxxx will never be executed [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec8to4.v:10]
+WARNING: [Synth 8-153] case item 32'b000000000000000000000000001xxxxx will never be executed [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec8to4.v:10]
+WARNING: [Synth 8-153] case item 32'b0000000000000000000000000001xxxx will never be executed [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec8to4.v:10]
+WARNING: [Synth 8-153] case item 32'b00000000000000000000000000001xxx will never be executed [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec8to4.v:10]
+WARNING: [Synth 8-153] case item 32'b000000000000000000000000000001xx will never be executed [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec8to4.v:10]
+WARNING: [Synth 8-153] case item 32'b0000000000000000000000000000001x will never be executed [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec8to4.v:10]
+INFO: [Synth 8-6155] done synthesizing module 'dec8to3' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec8to4.v:1]
+INFO: [Synth 8-6157] synthesizing module 'mux8' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/mxu8.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'mux8' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/mxu8.v:1]
+INFO: [Synth 8-6157] synthesizing module 'dec32to5' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec32to5.v:1]
+WARNING: [Synth 8-153] case item 32'b1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx will never be executed [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec32to5.v:10]
+WARNING: [Synth 8-153] case item 32'b01xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx will never be executed [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec32to5.v:10]
+WARNING: [Synth 8-153] case item 32'b001xxxxxxxxxxxxxxxxxxxxxxxxxxxxx will never be executed [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec32to5.v:10]
+WARNING: [Synth 8-153] case item 32'b0001xxxxxxxxxxxxxxxxxxxxxxxxxxxx will never be executed [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec32to5.v:10]
+WARNING: [Synth 8-153] case item 32'b00001xxxxxxxxxxxxxxxxxxxxxxxxxxx will never be executed [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec32to5.v:10]
+WARNING: [Synth 8-153] case item 32'b000001xxxxxxxxxxxxxxxxxxxxxxxxxx will never be executed [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec32to5.v:10]
+WARNING: [Synth 8-153] case item 32'b0000001xxxxxxxxxxxxxxxxxxxxxxxxx will never be executed [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec32to5.v:10]
+WARNING: [Synth 8-153] case item 32'b00000001xxxxxxxxxxxxxxxxxxxxxxxx will never be executed [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec32to5.v:10]
+WARNING: [Synth 8-153] case item 32'b000000001xxxxxxxxxxxxxxxxxxxxxxx will never be executed [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec32to5.v:10]
+WARNING: [Synth 8-153] case item 32'b0000000001xxxxxxxxxxxxxxxxxxxxxx will never be executed [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec32to5.v:10]
+WARNING: [Synth 8-153] case item 32'b00000000001xxxxxxxxxxxxxxxxxxxxx will never be executed [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec32to5.v:10]
+WARNING: [Synth 8-153] case item 32'b000000000001xxxxxxxxxxxxxxxxxxxx will never be executed [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec32to5.v:10]
+WARNING: [Synth 8-153] case item 32'b0000000000001xxxxxxxxxxxxxxxxxxx will never be executed [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec32to5.v:10]
+WARNING: [Synth 8-153] case item 32'b00000000000001xxxxxxxxxxxxxxxxxx will never be executed [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec32to5.v:10]
+WARNING: [Synth 8-153] case item 32'b000000000000001xxxxxxxxxxxxxxxxx will never be executed [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec32to5.v:10]
+WARNING: [Synth 8-153] case item 32'b00000000000000x1xxxxxxxxxxxxxxxx will never be executed [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec32to5.v:10]
+WARNING: [Synth 8-153] case item 32'b00000000000000001xxxxxxxxxxxxxxx will never be executed [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec32to5.v:10]
+WARNING: [Synth 8-153] case item 32'b000000000000000001xxxxxxxxxxxxxx will never be executed [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec32to5.v:10]
+WARNING: [Synth 8-153] case item 32'b0000000000000000001xxxxxxxxxxxxx will never be executed [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec32to5.v:10]
+WARNING: [Synth 8-153] case item 32'b00000000000000000001xxxxxxxxxxxx will never be executed [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec32to5.v:10]
+WARNING: [Synth 8-153] case item 32'b000000000000000000001xxxxxxxxxxx will never be executed [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec32to5.v:10]
+WARNING: [Synth 8-153] case item 32'b0000000000000000000001xxxxxxxxxx will never be executed [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec32to5.v:10]
+WARNING: [Synth 8-153] case item 32'b00000000000000000000001xxxxxxxxx will never be executed [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec32to5.v:10]
+WARNING: [Synth 8-153] case item 32'b000000000000000000000001xxxxxxxx will never be executed [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec32to5.v:10]
+WARNING: [Synth 8-153] case item 32'b0000000000000000000000001xxxxxxx will never be executed [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec32to5.v:10]
+WARNING: [Synth 8-153] case item 32'b00000000000000000000000001xxxxxx will never be executed [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec32to5.v:10]
+WARNING: [Synth 8-153] case item 32'b000000000000000000000000001xxxxx will never be executed [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec32to5.v:10]
+WARNING: [Synth 8-153] case item 32'b0000000000000000000000000001xxxx will never be executed [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec32to5.v:10]
+WARNING: [Synth 8-153] case item 32'b00000000000000000000000000001xxx will never be executed [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec32to5.v:10]
+WARNING: [Synth 8-153] case item 32'b000000000000000000000000000001xx will never be executed [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec32to5.v:10]
+WARNING: [Synth 8-153] case item 32'b0000000000000000000000000000001x will never be executed [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec32to5.v:10]
+INFO: [Synth 8-6155] done synthesizing module 'dec32to5' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec32to5.v:1]
+INFO: [Synth 8-6157] synthesizing module 'DFFR__parameterized0' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFR.v:1]
+	Parameter WIDTH bound to: 8 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'DFFR__parameterized0' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFR.v:1]
+INFO: [Synth 8-6157] synthesizing module 'DFFRE__parameterized8' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFRE.v:1]
+	Parameter WIDTH bound to: 9 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'DFFRE__parameterized8' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFRE.v:1]
+INFO: [Synth 8-6157] synthesizing module 'DFFRE__parameterized9' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFRE.v:1]
+	Parameter WIDTH bound to: 16 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'DFFRE__parameterized9' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFRE.v:1]
+INFO: [Synth 8-6157] synthesizing module 'DFFR__parameterized1' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFR.v:1]
+	Parameter WIDTH bound to: 128 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'DFFR__parameterized1' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFR.v:1]
+INFO: [Synth 8-6157] synthesizing module 'DFFR__parameterized2' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFR.v:1]
+	Parameter WIDTH bound to: 256 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'DFFR__parameterized2' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFR.v:1]
+INFO: [Synth 8-6157] synthesizing module 'mux8__parameterized0' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/mxu8.v:1]
+	Parameter WIDTH bound to: 128 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'mux8__parameterized0' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/mxu8.v:1]
+INFO: [Synth 8-6157] synthesizing module 'mux8__parameterized1' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/mxu8.v:1]
+	Parameter WIDTH bound to: 256 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'mux8__parameterized1' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/mxu8.v:1]
+INFO: [Synth 8-6157] synthesizing module 'DFFR__parameterized3' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFR.v:1]
+	Parameter WIDTH bound to: 16 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'DFFR__parameterized3' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFR.v:1]
+INFO: [Synth 8-6157] synthesizing module 'DFFR__parameterized4' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFR.v:1]
+	Parameter WIDTH bound to: 32 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'DFFR__parameterized4' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFR.v:1]
+INFO: [Synth 8-6157] synthesizing module 'mm_ctrl_buffer' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/mm_ctrl_buffer.v:1]
+	Parameter RAM_TYPE bound to: IRAM - type: string 
+INFO: [Synth 8-6157] synthesizing module 'DFFE__parameterized8' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:1]
+	Parameter WIDTH bound to: 128 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'DFFE__parameterized8' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:1]
+INFO: [Synth 8-6157] synthesizing module 'data_byte_shift' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/data_byte_shift.v:1]
+INFO: [Synth 8-226] default block is never used [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/data_byte_shift.v:11]
+INFO: [Synth 8-6155] done synthesizing module 'data_byte_shift' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/data_byte_shift.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'mm_ctrl_buffer' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/mm_ctrl_buffer.v:1]
+INFO: [Synth 8-6157] synthesizing module 'mm_ctrl_buffer__parameterized0' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/mm_ctrl_buffer.v:1]
+	Parameter RAM_TYPE bound to: WRAM - type: string 
+INFO: [Synth 8-6155] done synthesizing module 'mm_ctrl_buffer__parameterized0' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/mm_ctrl_buffer.v:1]
+INFO: [Synth 8-6157] synthesizing module 'ram_mem_wrapper' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/mem_wrapper/ram_mem_wrapper.v:1]
+	Parameter DATA_WIDTH bound to: 128 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'fpga_ram_mem_wrapper' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/FPGA/FPGA.runs/synth_1/.Xil/Vivado-84138-ecelvd711.ece.local/realtime/fpga_ram_mem_wrapper_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'fpga_ram_mem_wrapper' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/FPGA/FPGA.runs/synth_1/.Xil/Vivado-84138-ecelvd711.ece.local/realtime/fpga_ram_mem_wrapper_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'ram_mem_wrapper' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/mem_wrapper/ram_mem_wrapper.v:1]
+INFO: [Synth 8-6157] synthesizing module 'DFFR__parameterized5' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFR.v:1]
+	Parameter WIDTH bound to: 13 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'DFFR__parameterized5' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFR.v:1]
+INFO: [Synth 8-6157] synthesizing module 'DFFR__parameterized6' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFR.v:1]
+	Parameter WIDTH bound to: 5 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'DFFR__parameterized6' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFR.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'lsu' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lsu.v:1]
+INFO: [Synth 8-6157] synthesizing module 'mxu' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/mxu.v:1]
+INFO: [Synth 8-6157] synthesizing module 'DFFSE' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFSE.v:1]
+	Parameter WIDTH bound to: 1 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'DFFSE' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFSE.v:1]
+INFO: [Synth 8-6157] synthesizing module 'pe' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/pe.v:1]
+INFO: [Synth 8-6157] synthesizing module 'DFFE__parameterized9' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:1]
+	Parameter WIDTH bound to: 16 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'DFFE__parameterized9' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'pe' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/pe.v:1]
+INFO: [Synth 8-6157] synthesizing module 'acc' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/acc.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'acc' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/acc.v:1]
+INFO: [Synth 8-6157] synthesizing module 'act_mod' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/act_mod.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'act_mod' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/act_mod.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'mxu' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/mxu.v:1]
+INFO: [Synth 8-6157] synthesizing module 'rf' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/rf.v:1]
+INFO: [Synth 8-6157] synthesizing module 'DFFRE__parameterized10' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFRE.v:1]
+	Parameter WIDTH bound to: 32 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'DFFRE__parameterized10' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFRE.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'rf' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/rf.v:1]
+INFO: [Synth 8-6157] synthesizing module 'AXI_READ_INFT' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/axi_read_intf.v:1]
+	Parameter ARID_WIDTH bound to: 4 - type: integer 
+	Parameter ARADDR_WIDTH bound to: 32 - type: integer 
+	Parameter RDATA_WIDTH bound to: 64 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'DFFRE__parameterized11' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFRE.v:1]
+	Parameter WIDTH bound to: 15 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'DFFRE__parameterized11' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFRE.v:1]
+INFO: [Synth 8-6157] synthesizing module 'dec4to16' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec4to16.v:1]
+INFO: [Synth 8-226] default block is never used [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec4to16.v:10]
+INFO: [Synth 8-6155] done synthesizing module 'dec4to16' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/dec4to16.v:1]
+INFO: [Synth 8-6157] synthesizing module 'DFFRE__parameterized12' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFRE.v:1]
+	Parameter WIDTH bound to: 64 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'DFFRE__parameterized12' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFRE.v:1]
+INFO: [Synth 8-6157] synthesizing module 'DFFE__parameterized10' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:1]
+	Parameter WIDTH bound to: 9 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'DFFE__parameterized10' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'AXI_READ_INFT' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/axi_read_intf.v:1]
+INFO: [Synth 8-6157] synthesizing module 'AXI_WRITE_INFT' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/axi_write_intf.v:1]
+	Parameter AWID_WIDTH bound to: 4 - type: integer 
+	Parameter AWADDR_WIDTH bound to: 32 - type: integer 
+	Parameter WDATA_WIDTH bound to: 64 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'DFFE__parameterized11' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:1]
+	Parameter WIDTH bound to: 64 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'DFFE__parameterized11' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:1]
+INFO: [Synth 8-6157] synthesizing module 'mux16' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/mux16.v:1]
+	Parameter WIDTH bound to: 13 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'mux16' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lib/mux16.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'AXI_WRITE_INFT' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/axi_write_intf.v:1]
+INFO: [Synth 8-6157] synthesizing module 'extern_bram' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/FPGA/FPGA.runs/synth_1/.Xil/Vivado-84138-ecelvd711.ece.local/realtime/extern_bram_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'extern_bram' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/FPGA/FPGA.runs/synth_1/.Xil/Vivado-84138-ecelvd711.ece.local/realtime/extern_bram_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'tpu' (0#1) [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/tpu.v:2]
+WARNING: [Synth 8-3848] Net lsu_mxu_pool_size in module/entity lsu does not have driver. [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lsu.v:300]
+WARNING: [Synth 8-3848] Net lsu_axi_awid in module/entity lsu does not have driver. [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lsu.v:307]
+CRITICAL WARNING: [Synth 8-6859] multi-driven net on pin /dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lsu.v-1.0 with 1st driver pin 'lsu:/ff_lsu_axi_aburst/q[0]' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lsu.v:1]
+CRITICAL WARNING: [Synth 8-6859] multi-driven net on pin /dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lsu.v-1.0 with 2nd driver pin 'VCC' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lsu.v:1]
+CRITICAL WARNING: [Synth 8-6858] multi-driven net /dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lsu.v-1.0 is connected to at least one constant driver which has been preserved, other driver is ignored [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lsu.v:1]
+WARNING: [Synth 8-3848] Net lsu_axi_arid in module/entity lsu does not have driver. [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lsu.v:322]
+CRITICAL WARNING: [Synth 8-6859] multi-driven net on pin /dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lsu.v-1.0 with 1st driver pin 'lsu:/ff_lsu_axi_aburst/q[0]' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lsu.v:1]
+CRITICAL WARNING: [Synth 8-6859] multi-driven net on pin /dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lsu.v-1.0 with 2nd driver pin 'VCC' [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lsu.v:1]
+CRITICAL WARNING: [Synth 8-6858] multi-driven net /dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lsu.v-1.0 is connected to at least one constant driver which has been preserved, other driver is ignored [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lsu.v:1]
+WARNING: [Synth 8-3848] Net lsu_axi_aburst_nxt in module/entity lsu does not have driver. [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lsu.v:394]
+WARNING: [Synth 8-3848] Net lsu_ld_rd_doing in module/entity lsu does not have driver. [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/lsu.v:2107]
+WARNING: [Synth 8-3848] Net load_data in module/entity acc does not have driver. [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/acc.v:19]
+WARNING: [Synth 8-3848] Net axi_lsu_bid in module/entity AXI_WRITE_INFT does not have driver. [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/axi_write_intf.v:94]
+WARNING: [Synth 8-7129] Port axi_lsu_bid in module AXI_WRITE_INFT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_axi_awid[7] in module AXI_WRITE_INFT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_axi_awid[6] in module AXI_WRITE_INFT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_axi_awid[5] in module AXI_WRITE_INFT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_axi_awid[4] in module AXI_WRITE_INFT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_axi_awid[3] in module AXI_WRITE_INFT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_axi_awid[2] in module AXI_WRITE_INFT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_axi_awid[1] in module AXI_WRITE_INFT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_axi_awid[0] in module AXI_WRITE_INFT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_axi_awnum[7] in module AXI_WRITE_INFT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_axi_awnum[6] in module AXI_WRITE_INFT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_axi_awnum[5] in module AXI_WRITE_INFT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_axi_awnum[4] in module AXI_WRITE_INFT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_axi_arid[7] in module AXI_READ_INFT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_axi_arid[6] in module AXI_READ_INFT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_axi_arid[5] in module AXI_READ_INFT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_axi_arid[4] in module AXI_READ_INFT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_axi_arid[3] in module AXI_READ_INFT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_axi_arid[2] in module AXI_READ_INFT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_axi_arid[1] in module AXI_READ_INFT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_axi_arid[0] in module AXI_READ_INFT is either unconnected or has no load
+WARNING: [Synth 8-7129] Port clk in module act_mod is either unconnected or has no load
+WARNING: [Synth 8-7129] Port rst_n in module act_mod is either unconnected or has no load
+WARNING: [Synth 8-7129] Port act_type[1] in module act_mod is either unconnected or has no load
+WARNING: [Synth 8-7129] Port act_type[0] in module act_mod is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_mxu_pool_vld in module mxu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_mxu_pool_size[1] in module mxu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_mxu_pool_size[0] in module mxu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_mm_buff_ram_alloc_addr[7] in module mm_ctrl_buffer__parameterized0 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_mm_buff_ram_alloc_addr[6] in module mm_ctrl_buffer__parameterized0 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_mm_buff_ram_alloc_addr[5] in module mm_ctrl_buffer__parameterized0 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_mm_buff_ram_alloc_addr[4] in module mm_ctrl_buffer__parameterized0 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_mm_buff_ram_alloc_addr[3] in module mm_ctrl_buffer__parameterized0 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_mm_buff_ram_alloc_addr[2] in module mm_ctrl_buffer__parameterized0 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_mm_buff_ram_alloc_addr[1] in module mm_ctrl_buffer__parameterized0 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_mm_buff_ram_alloc_addr[0] in module mm_ctrl_buffer__parameterized0 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_mm_buff_ram_alloc_addr[7] in module mm_ctrl_buffer is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_mm_buff_ram_alloc_addr[6] in module mm_ctrl_buffer is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_mm_buff_ram_alloc_addr[5] in module mm_ctrl_buffer is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_mm_buff_ram_alloc_addr[4] in module mm_ctrl_buffer is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_mm_buff_ram_alloc_addr[3] in module mm_ctrl_buffer is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_mm_buff_ram_alloc_addr[2] in module mm_ctrl_buffer is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_mm_buff_ram_alloc_addr[1] in module mm_ctrl_buffer is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_mm_buff_ram_alloc_addr[0] in module mm_ctrl_buffer is either unconnected or has no load
+WARNING: [Synth 8-7129] Port in[31] in module dec32to5 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port in[30] in module dec32to5 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port in[29] in module dec32to5 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port in[28] in module dec32to5 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port in[27] in module dec32to5 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port in[26] in module dec32to5 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port in[25] in module dec32to5 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port in[24] in module dec32to5 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port in[23] in module dec32to5 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port in[22] in module dec32to5 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port in[21] in module dec32to5 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port in[20] in module dec32to5 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port in[19] in module dec32to5 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port in[18] in module dec32to5 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port in[17] in module dec32to5 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port in[16] in module dec32to5 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port in[15] in module dec32to5 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port in[14] in module dec32to5 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port in[13] in module dec32to5 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port in[12] in module dec32to5 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port in[11] in module dec32to5 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port in[10] in module dec32to5 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port in[9] in module dec32to5 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port in[8] in module dec32to5 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port in[7] in module dec32to5 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port in[6] in module dec32to5 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port in[5] in module dec32to5 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port in[4] in module dec32to5 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port in[3] in module dec32to5 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port in[2] in module dec32to5 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port in[1] in module dec32to5 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port in[0] in module dec32to5 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port in[7] in module dec8to3 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port in[6] in module dec8to3 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port in[5] in module dec8to3 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port in[4] in module dec8to3 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port in[3] in module dec8to3 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port in[2] in module dec8to3 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port in[1] in module dec8to3 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port in[0] in module dec8to3 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_mxu_pool_size[1] in module lsu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_mxu_pool_size[0] in module lsu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_axi_awid[7] in module lsu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_axi_awid[6] in module lsu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_axi_awid[5] in module lsu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_axi_awid[4] in module lsu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_axi_awid[3] in module lsu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_axi_awid[2] in module lsu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_axi_awid[1] in module lsu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_axi_awid[0] in module lsu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_axi_arid[7] in module lsu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_axi_arid[6] in module lsu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_axi_arid[5] in module lsu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_axi_arid[4] in module lsu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_axi_arid[3] in module lsu is either unconnected or has no load
+WARNING: [Synth 8-7129] Port lsu_axi_arid[2] in module lsu is either unconnected or has no load
+INFO: [Common 17-14] Message 'Synth 8-7129' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:05 ; elapsed = 00:00:06 . Memory (MB): peak = 3451.148 ; gain = 518.441 ; free physical = 207904 ; free virtual = 229826
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:05 ; elapsed = 00:00:06 . Memory (MB): peak = 3451.148 ; gain = 518.441 ; free physical = 207904 ; free virtual = 229826
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:05 ; elapsed = 00:00:06 . Memory (MB): peak = 3451.148 ; gain = 518.441 ; free physical = 207904 ; free virtual = 229826
+---------------------------------------------------------------------------------
+Netlist sorting complete. Time (s): cpu = 00:00:00.42 ; elapsed = 00:00:00.43 . Memory (MB): peak = 3451.148 ; gain = 0.000 ; free physical = 207904 ; free virtual = 229826
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Parsing XDC File [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/FPGA/FPGA.gen/sources_1/ip/fpga_mem_wrapper/fpga_mem_wrapper/fpga_mem_wrapper_in_context.xdc] for cell 'u_ifu/ifu_mem_wrap_256x128/ifu_mem_wrap_256x128'
+Finished Parsing XDC File [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/FPGA/FPGA.gen/sources_1/ip/fpga_mem_wrapper/fpga_mem_wrapper/fpga_mem_wrapper_in_context.xdc] for cell 'u_ifu/ifu_mem_wrap_256x128/ifu_mem_wrap_256x128'
+Parsing XDC File [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/FPGA/FPGA.gen/sources_1/ip/fpga_ram_mem_wrapper/fpga_ram_mem_wrapper/fpga_ram_mem_wrapper_in_context.xdc] for cell 'u_lsu/iram/iram'
+Finished Parsing XDC File [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/FPGA/FPGA.gen/sources_1/ip/fpga_ram_mem_wrapper/fpga_ram_mem_wrapper/fpga_ram_mem_wrapper_in_context.xdc] for cell 'u_lsu/iram/iram'
+Parsing XDC File [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/FPGA/FPGA.gen/sources_1/ip/fpga_ram_mem_wrapper/fpga_ram_mem_wrapper/fpga_ram_mem_wrapper_in_context.xdc] for cell 'u_lsu/wram/iram'
+Finished Parsing XDC File [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/FPGA/FPGA.gen/sources_1/ip/fpga_ram_mem_wrapper/fpga_ram_mem_wrapper/fpga_ram_mem_wrapper_in_context.xdc] for cell 'u_lsu/wram/iram'
+Parsing XDC File [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/FPGA/FPGA.gen/sources_1/ip/fpga_ram_mem_wrapper/fpga_ram_mem_wrapper/fpga_ram_mem_wrapper_in_context.xdc] for cell 'u_lsu/oram_lo/iram'
+Finished Parsing XDC File [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/FPGA/FPGA.gen/sources_1/ip/fpga_ram_mem_wrapper/fpga_ram_mem_wrapper/fpga_ram_mem_wrapper_in_context.xdc] for cell 'u_lsu/oram_lo/iram'
+Parsing XDC File [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/FPGA/FPGA.gen/sources_1/ip/fpga_ram_mem_wrapper/fpga_ram_mem_wrapper/fpga_ram_mem_wrapper_in_context.xdc] for cell 'u_lsu/oram_hi/iram'
+Finished Parsing XDC File [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/FPGA/FPGA.gen/sources_1/ip/fpga_ram_mem_wrapper/fpga_ram_mem_wrapper/fpga_ram_mem_wrapper_in_context.xdc] for cell 'u_lsu/oram_hi/iram'
+Parsing XDC File [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/FPGA/FPGA.gen/sources_1/ip/extern_bram/extern_bram/extern_bram_in_context.xdc] for cell 'external_mem'
+Finished Parsing XDC File [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/FPGA/FPGA.gen/sources_1/ip/extern_bram/extern_bram/extern_bram_in_context.xdc] for cell 'external_mem'
+Parsing XDC File [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/FPGA/FPGA.srcs/constrs_1/new/tpu.xdc]
+Finished Parsing XDC File [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/FPGA/FPGA.srcs/constrs_1/new/tpu.xdc]
+Completed Processing XDC Constraints
+
+Netlist sorting complete. Time (s): cpu = 00:00:00.01 ; elapsed = 00:00:00.01 . Memory (MB): peak = 3629.551 ; gain = 0.000 ; free physical = 207850 ; free virtual = 229752
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+Constraint Validation Runtime : Time (s): cpu = 00:00:00.55 ; elapsed = 00:00:00.22 . Memory (MB): peak = 3629.555 ; gain = 0.004 ; free physical = 207848 ; free virtual = 229750
+WARNING: [Timing 38-316] Clock period '20.000' specified during out-of-context synthesis of instance 'external_mem' at clock pin 's_aclk' is different from the actual clock period '10.000', this can lead to different synthesis results.
+WARNING: [Timing 38-316] Clock period '20.000' specified during out-of-context synthesis of instance 'u_ifu/ifu_mem_wrap_256x128/ifu_mem_wrap_256x128' at clock pin 'clka' is different from the actual clock period '10.000', this can lead to different synthesis results.
+WARNING: [Timing 38-316] Clock period '20.000' specified during out-of-context synthesis of instance 'u_lsu/iram/iram' at clock pin 'clka' is different from the actual clock period '10.000', this can lead to different synthesis results.
+WARNING: [Timing 38-316] Clock period '20.000' specified during out-of-context synthesis of instance 'u_lsu/oram_hi/iram' at clock pin 'clka' is different from the actual clock period '10.000', this can lead to different synthesis results.
+WARNING: [Timing 38-316] Clock period '20.000' specified during out-of-context synthesis of instance 'u_lsu/oram_lo/iram' at clock pin 'clka' is different from the actual clock period '10.000', this can lead to different synthesis results.
+WARNING: [Timing 38-316] Clock period '20.000' specified during out-of-context synthesis of instance 'u_lsu/wram/iram' at clock pin 'clka' is different from the actual clock period '10.000', this can lead to different synthesis results.
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:16 ; elapsed = 00:00:15 . Memory (MB): peak = 3641.457 ; gain = 708.750 ; free physical = 207809 ; free virtual = 229725
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xc7z020clg484-1
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:16 ; elapsed = 00:00:15 . Memory (MB): peak = 3641.457 ; gain = 708.750 ; free physical = 207809 ; free virtual = 229725
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying 'set_property' XDC Constraints
+---------------------------------------------------------------------------------
+Applied set_property KEEP_HIERARCHY = SOFT for u_ifu/ifu_mem_wrap_256x128/ifu_mem_wrap_256x128. (constraint file  auto generated constraint).
+Applied set_property KEEP_HIERARCHY = SOFT for u_lsu/iram/iram. (constraint file  auto generated constraint).
+Applied set_property KEEP_HIERARCHY = SOFT for u_lsu/wram/iram. (constraint file  auto generated constraint).
+Applied set_property KEEP_HIERARCHY = SOFT for u_lsu/oram_lo/iram. (constraint file  auto generated constraint).
+Applied set_property KEEP_HIERARCHY = SOFT for u_lsu/oram_hi/iram. (constraint file  auto generated constraint).
+Applied set_property KEEP_HIERARCHY = SOFT for external_mem. (constraint file  auto generated constraint).
+---------------------------------------------------------------------------------
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:16 ; elapsed = 00:00:15 . Memory (MB): peak = 3641.457 ; gain = 708.750 ; free physical = 207809 ; free virtual = 229725
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Preparing Guide Design
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Doing Graph Differ : Time (s): cpu = 00:00:17 ; elapsed = 00:00:17 . Memory (MB): peak = 3641.457 ; gain = 708.750 ; free physical = 207745 ; free virtual = 229710
+---------------------------------------------------------------------------------
+tpu__GC0mxu__GB3mxu__GB2mxu__GB1mxu__GB0lsu__GB1lsu__GB0---------------------------------------------------------------------------------
+Finished Preparing Guide Design : Time (s): cpu = 00:00:18 ; elapsed = 00:00:17 . Memory (MB): peak = 3641.457 ; gain = 708.750 ; free physical = 207740 ; free virtual = 229704
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:19 ; elapsed = 00:00:18 . Memory (MB): peak = 3641.457 ; gain = 708.750 ; free physical = 207739 ; free virtual = 229703
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Mimic Skeleton from Reference
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Mimic Skeleton from Reference : Time (s): cpu = 00:00:19 ; elapsed = 00:00:18 . Memory (MB): peak = 3641.457 ; gain = 708.750 ; free physical = 207740 ; free virtual = 229704
+---------------------------------------------------------------------------------
+
+
+Incremental Synthesis Report Summary:
+
+1. Incremental synthesis run: yes
+
+   Stitch points used : changed
+
+
+2. Change Summary
+
+Report Incremental Modules: 
++-+----------------+------------+----------+----------+
+| |Changed Modules |Replication |Instances |Changed % |
++-+----------------+------------+----------+----------+
++-+----------------+------------+----------+----------+
+
+
+   Full Design Size (number of cells) : 118135
+   Resynthesis Design Size (number of cells) : 0
+   Resynth % : 0.0000,  Reuse % : 100.0000
+
+3. Reference Checkpoint Information
+
++-------------------------------------------------------------------------------------------------------------------------+
+| DCP Location:  | /dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/FPGA/FPGA.srcs/utils_1/imports/synth_1/tpu.dcp |
++-------------------------------------------------------------------------------------------------------------------------+
+
+
++--------------------------------+------------------------------+
+|         DCP Information        |             Value            |
++--------------------------------+------------------------------+
+| Vivado Version                 |                    v2023.1 |
+| DCP State                      |                              |
++--------------------------------+------------------------------+
+
+
+
+Report RTL Partitions: 
++------+-----------------+------------+----------+
+|      |RTL Partition    |Replication |Instances |
++------+-----------------+------------+----------+
+|1     |lsu__GB0_#REUSE# |           1|         0|
+|2     |lsu__GB1_#REUSE# |           1|         0|
+|3     |mxu__GB0_#REUSE# |           1|         0|
+|4     |mxu__GB1_#REUSE# |           1|         0|
+|5     |mxu__GB2_#REUSE# |           1|         0|
+|6     |mxu__GB3_#REUSE# |           1|         0|
+|7     |tpu__GC0_#REUSE# |           1|         0|
++------+-----------------+------------+----------+
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 220 (col length:60)
+BRAMs: 280 (col length: RAMB18 60 RAMB36 30)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-7080] Parallel synthesis criteria is not met
+WARNING: [Synth 8-7077] IncrSyn: subsequent runs will still be incremental as the reference run was parallel and that data is reused
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:21 ; elapsed = 00:00:20 . Memory (MB): peak = 3641.457 ; gain = 708.750 ; free physical = 207703 ; free virtual = 229708
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Stitch Unchanged AreaOpt Partitions
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Stitch Unchanged AreaOpt Partitions : Time (s): cpu = 00:00:22 ; elapsed = 00:00:21 . Memory (MB): peak = 3641.457 ; gain = 708.750 ; free physical = 207699 ; free virtual = 229704
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying XDC Timing Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:27 ; elapsed = 00:00:26 . Memory (MB): peak = 3641.457 ; gain = 708.750 ; free physical = 207642 ; free virtual = 229689
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:00:27 ; elapsed = 00:00:26 . Memory (MB): peak = 3641.457 ; gain = 708.750 ; free physical = 207642 ; free virtual = 229689
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-7080] Parallel synthesis criteria is not met
+WARNING: [Synth 8-7077] IncrSyn: subsequent runs will still be incremental as the reference run was parallel and that data is reused
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:00:27 ; elapsed = 00:00:27 . Memory (MB): peak = 3641.457 ; gain = 708.750 ; free physical = 207636 ; free virtual = 229683
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Stitch Unchanged Partitions
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Stitch Unchanged Partitions : Time (s): cpu = 00:00:28 ; elapsed = 00:00:27 . Memory (MB): peak = 3641.457 ; gain = 708.750 ; free physical = 207635 ; free virtual = 229682
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:00:37 ; elapsed = 00:00:37 . Memory (MB): peak = 3641.457 ; gain = 708.750 ; free physical = 207562 ; free virtual = 229648
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:37 ; elapsed = 00:00:37 . Memory (MB): peak = 3641.457 ; gain = 708.750 ; free physical = 207562 ; free virtual = 229648
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:42 ; elapsed = 00:00:41 . Memory (MB): peak = 3641.457 ; gain = 708.750 ; free physical = 207558 ; free virtual = 229641
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:00:42 ; elapsed = 00:00:42 . Memory (MB): peak = 3641.457 ; gain = 708.750 ; free physical = 207466 ; free virtual = 229641
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:43 ; elapsed = 00:00:43 . Memory (MB): peak = 3641.457 ; gain = 708.750 ; free physical = 207187 ; free virtual = 229586
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:00:44 ; elapsed = 00:00:44 . Memory (MB): peak = 3641.457 ; gain = 708.750 ; free physical = 207127 ; free virtual = 229584
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++------+---------------------+----------+
+|      |BlackBox name        |Instances |
++------+---------------------+----------+
+|1     |extern_bram          |         1|
+|2     |fpga_mem_wrapper     |         1|
+|3     |fpga_ram_mem_wrapper |         4|
++------+---------------------+----------+
+
+Report Cell Usage: 
++------+---------------------+------+
+|      |Cell                 |Count |
++------+---------------------+------+
+|1     |extern_bram          |     1|
+|2     |fpga_mem_wrapper     |     1|
+|3     |fpga_ram_mem_wrapper |     4|
+|7     |BUFG                 |     1|
+|8     |CARRY4               |  4198|
+|9     |LUT1                 |    16|
+|10    |LUT2                 | 10718|
+|11    |LUT3                 |  4226|
+|12    |LUT4                 |  7292|
+|13    |LUT5                 |  3165|
+|14    |LUT6                 | 19443|
+|15    |MUXF7                |  1131|
+|16    |MUXF8                |   200|
+|17    |FDCE                 | 12768|
+|18    |FDPE                 |     5|
+|19    |FDRE                 | 11900|
+|20    |IBUF                 |    13|
+|21    |OBUF                 |     1|
++------+---------------------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:44 ; elapsed = 00:00:44 . Memory (MB): peak = 3641.457 ; gain = 708.750 ; free physical = 207120 ; free virtual = 229583
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 4 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:37 ; elapsed = 00:00:38 . Memory (MB): peak = 3641.457 ; gain = 518.441 ; free physical = 207110 ; free virtual = 229580
+Synthesis Optimization Complete : Time (s): cpu = 00:00:44 ; elapsed = 00:00:44 . Memory (MB): peak = 3641.457 ; gain = 708.750 ; free physical = 207109 ; free virtual = 229580
+INFO: [Project 1-571] Translating synthesized netlist
+Netlist sorting complete. Time (s): cpu = 00:00:00.65 ; elapsed = 00:00:00.65 . Memory (MB): peak = 3641.457 ; gain = 0.000 ; free physical = 207411 ; free virtual = 229908
+INFO: [Netlist 29-17] Analyzing 5529 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.01 . Memory (MB): peak = 3775.059 ; gain = 0.000 ; free physical = 207281 ; free virtual = 229778
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+Synth Design complete | Checksum: 796ebeb1
+INFO: [Common 17-83] Releasing license: Synthesis
+165 Infos, 157 Warnings, 6 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:01:01 ; elapsed = 00:00:58 . Memory (MB): peak = 3775.059 ; gain = 1189.215 ; free physical = 207286 ; free virtual = 229783
+INFO: [Common 17-2834] synth_design peak Physical Memory [PSS] (MB): overall = 2996.960; main = 2822.013; forked = 329.722
+INFO: [Common 17-2834] synth_design peak Virtual Memory [VSS] (MB): overall = 4904.062; main = 3775.059; forked = 1274.395
+INFO: [runtcl-6] Synthesis results are not added to the cache due to CRITICAL_WARNING
+INFO: [Common 17-1381] The checkpoint '/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/FPGA/FPGA.runs/synth_1/tpu.dcp' has been generated.
+write_checkpoint: Time (s): cpu = 00:00:09 ; elapsed = 00:00:06 . Memory (MB): peak = 3847.094 ; gain = 72.035 ; free physical = 207117 ; free virtual = 229773
+INFO: [runtcl-4] Executing : report_utilization -file tpu_utilization_synth.rpt -pb tpu_utilization_synth.pb
+INFO: [Common 17-206] Exiting Vivado at Tue Mar 10 22:01:54 2026...

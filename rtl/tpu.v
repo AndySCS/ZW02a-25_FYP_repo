@@ -849,6 +849,7 @@ module tpu(
     external_mem(
         // waddr interface
         .s_aclk         (clk),
+        .s_aresetn      (rst_n),  
         .s_axi_awid     (AWID),
         .s_axi_awaddr   (AWADDR),
         .s_axi_awlen    (AWLEN),
