@@ -396,12 +396,13 @@ if __name__ == "__main__":
         
         output_num = int(config["OUTPUT_SIZE"][f"layer{i}_output_size"])
         dram_wdata_addr = int(config["WEIGHT_DRAM_ADDR"][f"layer{i}_wgt_addr"])
+        relu = bool(config["ACT_SETUP"][f"layer{i}_relu"])
         fc_info = fc_layer_info(
             perceptron_cnt = output_num,
             input_size = input_size,
             dram_idata_addr = dram_idata_addr,
             dram_wdata_addr = dram_wdata_addr,
-            relu = True
+            relu = relu
         )
         gen_fc_layer_for_loop(f = f, fc_layer_info = fc_info)
 
