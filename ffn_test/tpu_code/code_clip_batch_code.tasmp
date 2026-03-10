@@ -1,3 +1,4 @@
+addi x31, x0, 1
 addi x10, x0, 0
 addi x12, x0, 0
 addi x5, x0, 0
@@ -15,6 +16,7 @@ addi x12, x12, 1
 addi x10, x10, 256
 blt x5, x4, load_idata_for_loop_0
 addi x7, x0, 260
+sb x31, x7, 0
 addi x23, x0, 0
 addi x9, x0, 0
 addi x8, x0, 4
@@ -30,7 +32,6 @@ addi x9, x9, 1
 beq x9, x8, fc_layer_for_loop_0_last_iter_br
 addi x14, x0, 0
 addi x15, x0, 785
-addi x31, x0, 1
 addi x12, x0, 0
 addi x17, x0, 1
 addi x18, x0, 0
@@ -110,7 +111,6 @@ jal x0, fc_layer_for_loop_0_end
 fc_layer_for_loop_0_last_iter_br:
 addi x14, x0, 0
 addi x15, x0, 785
-addi x31, x0, 1
 addi x12, x0, 0
 addi x17, x0, 1
 addi x18, x0, 0
@@ -208,12 +208,12 @@ addi x12, x12, 1
 addi x10, x10, 256
 blt x5, x4, load_idata_for_loop_1
 addi x7, x0, 897
+sb x31, x7, 0
 addi x23, x0, 0
 lui x11, 11
 addi x11, x11, 4040
 addi x14, x0, 0
 addi x15, x0, 57
-addi x31, x0, 1
 addi x12, x0, 0
 addi x17, x0, 1
 addi x18, x0, 0

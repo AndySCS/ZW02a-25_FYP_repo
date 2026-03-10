@@ -178,6 +178,7 @@ def gen_load_idata_for_loop(f: TextIOWrapper, idata_size: int, info: ldt_info) -
     f.write(f"blt x{load_idata_for_loop_iter_reg}, x{load_idata_for_loop_thd_reg}, load_idata_for_loop_{load_idata_for_loop_cnt}\n")
     bias_addr = idata_last_size * 16 + idata_thd
     gen_set_data(f = f, data = bias_addr, reg = idata_bias_reg)
+    f.write(f"sb x{first_iter_reg}, x{idata_bias_reg}, 0\n")
     load_idata_for_loop_cnt += 1
 
 def gen_perceptron_for_loop(f: TextIOWrapper, info: perceptron_info) -> None:
@@ -216,7 +217,6 @@ def gen_perceptron_for_loop(f: TextIOWrapper, info: perceptron_info) -> None:
 
     gen_set_data(f = f, data = 0, reg = perceptron_for_loop_iter_reg)
     gen_set_data(f = f, data = perceptron_iter_thd, reg = perceptron_for_loop_thd_reg)
-    gen_set_data(f = f, data = 1, reg = first_iter_reg)
 
     gen_set_data(f = f, data = 0, reg = sram_idata_addr_reg)
     gen_set_data(f = f, data = info.input_width, reg = perceptron_input_width_reg)
@@ -374,6 +374,9 @@ if __name__ == "__main__":
     config.read(os.path.join(os.path.dirname(__file__), "batch_code_gen/config.ini"))
     output_dir = config["FILE_PATH"]["output_dir"]
     f = open(output_dir, "w")
+    
+    gen_set_data(f = f, data = 1, reg = first_iter_reg)
+
     for i in range(int(config["MODEL_CONFIG"]["num_layers"])):
 
         input_size = int(config["INPUT_SIZE"][f"layer{i}_input_size"])
