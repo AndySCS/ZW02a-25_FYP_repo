@@ -176,7 +176,7 @@ def gen_load_idata_for_loop(f: TextIOWrapper, idata_size: int, info: ldt_info) -
     f.write(f"addi x{info.dest_addr_reg}, x{info.dest_addr_reg}, 1\n")
     f.write(f"addi x{info.dram_addr_reg}, x{info.dram_addr_reg}, 256\n")
     f.write(f"blt x{load_idata_for_loop_iter_reg}, x{load_idata_for_loop_thd_reg}, load_idata_for_loop_{load_idata_for_loop_cnt}\n")
-    bias_addr = idata_last_size * 16 + idata_thd
+    bias_addr = idata_last_size * 16 + idata_thd - 1
     gen_set_data(f = f, data = bias_addr, reg = idata_bias_reg)
     f.write(f"sb x{first_iter_reg}, x{idata_bias_reg}, 0\n")
     load_idata_for_loop_cnt += 1
@@ -232,13 +232,13 @@ def gen_perceptron_for_loop(f: TextIOWrapper, info: perceptron_info) -> None:
     f.write(f"beq x{perceptron_for_loop_iter_reg}, x{first_iter_reg}, perceptron_for_loop_{perceptron_for_loop_cnt}_first_iter_br\n")
 
     gen_load_wdata_for_loop(f = f, perceptron_cnt = info.perceptron_size, ldt_info = non_last_ldt_info, wdata_size = wdata_len)
-    gen_set_data(f = f, data = 0, reg = sram_wdata_addr_reg)
+    gen_set_data(f = f, data = wram_start_addr, reg = sram_wdata_addr_reg)
     f.write(f"MM x{sram_idata_addr_reg}, x{sram_wdata_addr_reg}, 15, {info.input_width - 1}, {info.perceptron_size - 1}, 0\n")
     f.write(f"jal x0, perceptron_for_loop_{perceptron_for_loop_cnt}_end\n")
 
     f.write(f"perceptron_for_loop_{perceptron_for_loop_cnt}_last_iter_br:\n")
     gen_load_wdata_for_loop(f = f, perceptron_cnt = perceptron_wdata_for_loop_cnt, ldt_info = last_ldt_info, wdata_size = wdata_len)
-    gen_set_data(f = f, data = 0, reg = sram_wdata_addr_reg)
+    gen_set_data(f = f, data = wram_start_addr, reg = sram_wdata_addr_reg)
     if perceptron_iter_thd == 1:
         f.write(f"MM x{sram_idata_addr_reg}, x{sram_wdata_addr_reg}, {info.input_len - 1}, {info.input_width - 1}, {info.perceptron_size - 1}, 1\n")
     else:
@@ -247,7 +247,7 @@ def gen_perceptron_for_loop(f: TextIOWrapper, info: perceptron_info) -> None:
 
     f.write(f"perceptron_for_loop_{perceptron_for_loop_cnt}_first_iter_br:\n")
     gen_load_wdata_for_loop(f = f, perceptron_cnt = info.perceptron_size, ldt_info = non_last_ldt_info, wdata_size = wdata_len)
-    gen_set_data(f = f, data = 0, reg = sram_wdata_addr_reg)
+    gen_set_data(f = f, data = wram_start_addr, reg = sram_wdata_addr_reg)
     f.write(f"MM x{sram_idata_addr_reg}, x{sram_wdata_addr_reg}, 15, {info.input_width - 1}, {info.perceptron_size - 1}, 1\n")
     f.write(f"perceptron_for_loop_{perceptron_for_loop_cnt}_end:\n")
 
