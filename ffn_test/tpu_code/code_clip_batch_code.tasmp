@@ -38,7 +38,6 @@ addi x17, x0, 1
 addi x18, x0, 0
 lui x19, 1
 addi x19, x19, 3840
-addi x20, x0, 1000
 add x11, x20, 11
 perceptron_for_loop_0:
 addi x14, x14, 1
@@ -119,8 +118,6 @@ addi x17, x0, 1
 addi x18, x0, 0
 lui x19, 1
 addi x19, x19, 3840
-lui x20, 9
-addi x20, x20, 1816
 add x11, x20, 11
 perceptron_for_loop_1:
 addi x14, x14, 1
@@ -226,8 +223,6 @@ addi x17, x0, 1
 addi x18, x0, 0
 lui x19, 1
 addi x19, x19, 3840
-lui x20, 11
-addi x20, x20, 4040
 add x11, x20, 11
 perceptron_for_loop_2:
 addi x14, x14, 1
