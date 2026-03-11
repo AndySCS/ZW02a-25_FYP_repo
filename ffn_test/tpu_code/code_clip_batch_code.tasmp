@@ -27,7 +27,9 @@ addi x21, x21, 272
 addi x24, x0, 0
 lui x25, 2
 addi x25, x25, 3584
+addi x20, x0, 1000
 add x22, x11, x0
+add x11, x20, 11
 fc_layer_for_loop_0:
 addi x12, x0, 0
 addi x9, x9, 1
@@ -38,7 +40,6 @@ addi x17, x0, 1
 addi x18, x0, 0
 lui x19, 1
 addi x19, x19, 3840
-add x11, x20, 11
 perceptron_for_loop_0:
 addi x14, x14, 1
 beq x14, x15, perceptron_for_loop_0_last_iter_br
@@ -118,7 +119,6 @@ addi x17, x0, 1
 addi x18, x0, 0
 lui x19, 1
 addi x19, x19, 3840
-add x11, x20, 11
 perceptron_for_loop_1:
 addi x14, x14, 1
 beq x14, x15, perceptron_for_loop_1_last_iter_br
@@ -214,6 +214,9 @@ addi x7, x0, 896
 sb x31, x7, 0
 lui x23, 2
 addi x23, x23, 0
+lui x20, 11
+addi x20, x20, 4040
+add x11, x20, 11
 addi x12, x0, 0
 lui x11, 11
 addi x11, x11, 4040
@@ -223,7 +226,6 @@ addi x17, x0, 1
 addi x18, x0, 0
 lui x19, 1
 addi x19, x19, 3840
-add x11, x20, 11
 perceptron_for_loop_2:
 addi x14, x14, 1
 beq x14, x15, perceptron_for_loop_2_last_iter_br
