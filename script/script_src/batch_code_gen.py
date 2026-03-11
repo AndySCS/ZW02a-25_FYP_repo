@@ -220,7 +220,6 @@ def gen_perceptron_for_loop(f: TextIOWrapper, info: perceptron_info) -> None:
     gen_set_data(f = f, data = 0, reg = perceptron_for_loop_iter_reg)
     gen_set_data(f = f, data = perceptron_iter_thd, reg = perceptron_for_loop_thd_reg)
 
-    gen_set_data(f = f, data = 0, reg = sram_idata_addr_reg)
     gen_set_data(f = f, data = info.input_width, reg = perceptron_input_width_reg)
     gen_set_data(f = f, data = 0, reg = perceptron_input_col_reg)
     gen_set_data(f = f, data = input_last_row, reg = perceptron_input_last_row_reg)
@@ -281,6 +280,8 @@ def gen_fc_layer_for_loop(f: TextIOWrapper, fc_layer_info: fc_layer_info) -> Non
     global fc_dram_wdata_addr_reg
     global fc_oram_col_reg
     global fc_last_row_reg
+    global sram_idata_addr_reg
+    global iram_start_addr
 
     fc_layer_for_loop_thd = math.ceil(fc_layer_info.perceptron_cnt / 16)
     dram_wdata_last_addr = fc_layer_info.dram_wdata_addr + 16 * (fc_layer_info.input_size + 1) * (fc_layer_for_loop_thd - 1)
@@ -303,6 +304,7 @@ def gen_fc_layer_for_loop(f: TextIOWrapper, fc_layer_info: fc_layer_info) -> Non
     gen_set_data(f = f, data = 0, reg = oram_addr_reg)
 
     if fc_layer_for_loop_thd == 1:
+        gen_set_data(f = f, data = iram_start_addr, reg = sram_idata_addr_reg)
         gen_set_data(f = f, data = dram_wdata_last_addr_qual, reg = dram_wdata_addr_reg)
         gen_perceptron_for_loop(f = f, info = perceptron_last_info)
         if fc_layer_info.relu:
@@ -321,6 +323,7 @@ def gen_fc_layer_for_loop(f: TextIOWrapper, fc_layer_info: fc_layer_info) -> Non
 
     f.write(f"add x{fc_dram_wdata_addr_reg}, x{dram_wdata_addr_reg}, x0\n")
     f.write(f"fc_layer_for_loop_{fc_layer_for_loop_cnt}:\n")
+    gen_set_data(f = f, data = iram_start_addr, reg = sram_idata_addr_reg)
     f.write(f"addi x{fc_layer_for_loop_iter_reg}, x{fc_layer_for_loop_iter_reg}, 1\n")
     f.write(f"beq x{fc_layer_for_loop_iter_reg}, x{fc_layer_for_loop_thd_reg}, fc_layer_for_loop_{fc_layer_for_loop_cnt}_last_iter_br\n")
     
