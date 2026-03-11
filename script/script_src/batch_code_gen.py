@@ -51,7 +51,7 @@ fc_last_row_reg = 25
 
 st_dram_addr_reg = 26
 
-dram_adr_tmp_reg = 27
+dram_addr_tmp_reg = 27
 
 tmp_data_reg = 30
 first_iter_reg = 31
@@ -122,7 +122,7 @@ def gen_load_wdata_for_loop(f: TextIOWrapper, perceptron_cnt: int, ldt_info: ldt
     legal_stride = [32, 16, 8, 4, 2, 1]
 
     if ldt_info.stride not in legal_stride:
-        perceptron_cnt = ldt_info.num
+#        perceptron_cnt = ldt_info.num
         ldt_info.num = 1
         ldt_info.stride = 1
 
@@ -132,7 +132,7 @@ def gen_load_wdata_for_loop(f: TextIOWrapper, perceptron_cnt: int, ldt_info: ldt
     gen_set_data(f = f, data = wdata_size, reg = wdata_size_reg)
     f.write(f"load_wdata_for_loop_{load_wdata_for_loop_cnt}:\n")
     if ldt_info.len not in legal_len:
-        f.write(f"add x{dram_adr_tmp_reg}, x0, x{ldt_info.dram_addr_reg}\n")
+        f.write(f"add x{dram_addr_tmp_reg}, x0, x{ldt_info.dram_addr_reg}\n")
         for i in legal_len:
             if ldt_info.len - i >= 0:
                 new_ldt_info = copy.deepcopy(ldt_info)
@@ -141,7 +141,7 @@ def gen_load_wdata_for_loop(f: TextIOWrapper, perceptron_cnt: int, ldt_info: ldt
                 f.write(f"addi x{ldt_info.dest_addr_reg}, x{ldt_info.dest_addr_reg}, {i}\n")
                 f.write(f"addi x{ldt_info.dram_addr_reg}, x{ldt_info.dram_addr_reg}, {i}\n")
                 ldt_info.len -= i
-        f.write(f"add x{ldt_info.dram_addr_reg}, x0, x{dram_adr_tmp_reg}\n")
+        f.write(f"add x{ldt_info.dram_addr_reg}, x0, x{dram_addr_tmp_reg}\n")
         f.write(f"andi x{ldt_info.dest_addr_reg}, x{ldt_info.dest_addr_reg}, 4080\n")
     else:
         gen_load_data(f = f, info = ldt_info)
@@ -404,7 +404,7 @@ if __name__ == "__main__":
         
         output_num = int(config["OUTPUT_SIZE"][f"layer{i}_output_size"])
         dram_wdata_addr = int(config["WEIGHT_DRAM_ADDR"][f"layer{i}_wgt_addr"])
-        relu = bool(config["ACT_SETUP"][f"layer{i}_relu"])
+        relu = config.getboolean("ACT_SETUP", f"layer{i}_relu")
         fc_info = fc_layer_info(
             perceptron_cnt = output_num,
             input_size = input_size,
