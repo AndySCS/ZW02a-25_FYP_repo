@@ -63,8 +63,8 @@ module top_tb(
     start_vld  = 0;
 
     // Observe for some cycles
-    repeat (50) @(posedge clk);
-
+    #5472000;
+    $finish;
     // End simulation
     //$finish;
   end
