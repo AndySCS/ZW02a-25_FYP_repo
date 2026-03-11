@@ -17,7 +17,8 @@ addi x10, x10, 256
 blt x5, x4, load_idata_for_loop_0
 addi x7, x0, 259
 sb x31, x7, 0
-addi x23, x0, 0
+lui x23, 2
+addi x23, x23, 0
 addi x9, x0, 0
 addi x8, x0, 4
 addi x22, x0, 1000
@@ -214,7 +215,8 @@ addi x10, x10, 256
 blt x5, x4, load_idata_for_loop_1
 addi x7, x0, 896
 sb x31, x7, 0
-addi x23, x0, 0
+lui x23, 2
+addi x23, x23, 0
 addi x12, x0, 0
 lui x11, 11
 addi x11, x11, 4040

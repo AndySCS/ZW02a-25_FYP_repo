@@ -5,8 +5,9 @@ import copy
 from io import TextIOWrapper
 import math
 
-wram_start_addr = 0x4000
-iram_start_addr = 0x0000
+wram_start_addr = 0b0100_0000_0000_0000
+iram_start_addr = 0b0000_0000_0000_0000
+oram_start_addr = 0b0010_0000_0000_0000
 
 load_wdata_for_loop_cnt = 0
 load_idata_for_loop_cnt = 0
@@ -282,6 +283,7 @@ def gen_fc_layer_for_loop(f: TextIOWrapper, fc_layer_info: fc_layer_info) -> Non
     global fc_last_row_reg
     global sram_idata_addr_reg
     global iram_start_addr
+    global oram_start_addr
 
     fc_layer_for_loop_thd = math.ceil(fc_layer_info.perceptron_cnt / 16)
     dram_wdata_last_addr = fc_layer_info.dram_wdata_addr + 16 * (fc_layer_info.input_size + 1) * (fc_layer_for_loop_thd - 1)
@@ -301,7 +303,7 @@ def gen_fc_layer_for_loop(f: TextIOWrapper, fc_layer_info: fc_layer_info) -> Non
         perceptron_size = 16 if fc_layer_for_loop_thd > 1 else fc_layer_info.perceptron_cnt 
     )
     
-    gen_set_data(f = f, data = 0, reg = oram_addr_reg)
+    gen_set_data(f = f, data = oram_start_addr, reg = oram_addr_reg)
 
     if fc_layer_for_loop_thd == 1:
         gen_set_data(f = f, data = iram_start_addr, reg = sram_idata_addr_reg)
