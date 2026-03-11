@@ -27,7 +27,8 @@ ifeq ($(tc), tc_ffn_no_clip)
 	ffn_code_dir = $(MINITPU_FOLDER)/ffn_test/tpu_code/code_no_clip.tasmp
 endif
 ifeq ($(tc), tc_ffn_clip)
-	ffn_code_dir = $(MINITPU_FOLDER)/ffn_test/tpu_code/code_clip.tasmp
+	ffn_code_dir = $(MINITPU_FOLDER)/ffn_test/tpu_code/code_clip_batch_code.tasmp
+	#ffn_code_dir = $(MINITPU_FOLDER)/ffn_test/tpu_code/code_clip.tasmp
 endif
 
 img_seed = $(shell expr $(seed) % 1000)
@@ -71,7 +72,7 @@ VCS = vcs -sverilog 	 		          \
           -cm_name $(fsdb_file_name)      \
           +max_chk=$(max_chk)             \
           +define+FLASH_DEPTH=$(flash_depth)\
-          +lint=TFIPC-L 
+          +lint=TFIPC-L  \
 
 #Make Mode
 ifeq ($(ccov), on)
@@ -102,6 +103,9 @@ sim:
                    $(sim_ccov_opts)                     \
                    +max_chk=$(max_chk)                  \
                    +define+FLASH_DEPTH=$(flash_depth)   \
+                   +vcs+loopreport+3 \
+                   +vcs+loopdetect \
+                   +vcs+verbose \
                    $(tc_opt)
 
 regress: 

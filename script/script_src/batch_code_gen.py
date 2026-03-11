@@ -226,7 +226,7 @@ def gen_perceptron_for_loop(f: TextIOWrapper, info: perceptron_info) -> None:
     gen_set_data(f = f, data = input_last_row, reg = perceptron_input_last_row_reg)
 
     #gen_set_data(f = f, data = info.dram_wdata_addr, reg = perceptron_dram_wdata_addr_reg) 
-    f.write(f"add x{dram_wdata_addr_reg}, x{perceptron_dram_wdata_addr_reg}, {dram_wdata_addr_reg}\n")
+    f.write(f"add x{dram_wdata_addr_reg}, x{perceptron_dram_wdata_addr_reg}, x0\n")
 
     f.write(f"perceptron_for_loop_{perceptron_for_loop_cnt}:\n")
 
@@ -290,7 +290,7 @@ def gen_fc_layer_for_loop(f: TextIOWrapper, fc_layer_info: fc_layer_info) -> Non
     dram_wdata_last_addr = fc_layer_info.dram_wdata_addr + 16 * (fc_layer_info.input_size + 1) * (fc_layer_for_loop_thd - 1)
     dram_wdata_last_addr_qual = fc_layer_info.dram_wdata_addr if fc_layer_for_loop_thd == 1 else dram_wdata_last_addr
     fc_layer_wdata_dram_inc = 16 * (fc_layer_info.input_size + 1)
-    fc_last_row = 512*15
+    fc_last_row = 512*15 | oram_start_addr
     perceptron_last_info = perceptron_info(
         input_len = fc_layer_info.input_size,
         input_width = 1,
@@ -325,7 +325,6 @@ def gen_fc_layer_for_loop(f: TextIOWrapper, fc_layer_info: fc_layer_info) -> Non
     gen_set_data(f = f, data = 0, reg = fc_oram_col_reg)
     gen_set_data(f = f, data = fc_last_row, reg = fc_last_row_reg)
 
-    f.write(f"add x{fc_dram_wdata_addr_reg}, x{dram_wdata_addr_reg}, x0\n")
     f.write(f"fc_layer_for_loop_{fc_layer_for_loop_cnt}:\n")
     f.write(f"add x{perceptron_dram_wdata_addr_reg}, x{fc_dram_wdata_addr_reg}, x0\n")
     gen_set_data(f = f, data = iram_start_addr, reg = sram_idata_addr_reg)
@@ -335,7 +334,7 @@ def gen_fc_layer_for_loop(f: TextIOWrapper, fc_layer_info: fc_layer_info) -> Non
     gen_perceptron_for_loop(f = f, info = perceptron_non_last_info)
     if fc_layer_info.relu:
         f.write(f"act 0\n")
-    f.write(f"add x{dram_wdata_addr_reg}, x{fc_dram_wdata_addr_reg}, x{fc_layer_wdata_dram_inc_reg}\n")
+#    f.write(f"add x{perceptron_dram_wdata_addr_reg}, x{fc_dram_wdata_addr_reg}, x{fc_layer_wdata_dram_inc_reg}\n")
     f.write(f"add x{fc_dram_wdata_addr_reg}, x{fc_dram_wdata_addr_reg}, x{fc_layer_wdata_dram_inc_reg}\n")
     f.write(f"STMT x{oram_addr_reg}, x0, 0, 15, 0\n")
     f.write(f"bge x{oram_addr_reg}, x{fc_last_row_reg}, fc_layer_for_loop_{fc_layer_for_loop_cnt}_oram_update_sp\n")
