@@ -365,7 +365,7 @@ def gen_oram_st_for_loop(f: TextIOWrapper, st_cnt: int, st_dram_addr: int) -> No
     global oram_st_for_loop_cnt
     global st_dram_addr_reg
 
-    gen_set_data(f = f, data = 0, reg = oram_addr_reg)
+    gen_set_data(f = f, data = oram_start_addr, reg = oram_addr_reg)
     gen_set_data(f = f, data = 0, reg = fc_layer_for_loop_iter_reg)
     gen_set_data(f = f, data = st_cnt, reg = fc_layer_for_loop_thd_reg)
     gen_set_data(f = f, data = st_dram_addr, reg = st_dram_addr_reg)
@@ -373,7 +373,8 @@ def gen_oram_st_for_loop(f: TextIOWrapper, st_cnt: int, st_dram_addr: int) -> No
     f.write(f"oram_st_for_loop_{oram_st_for_loop_cnt}:\n")
     f.write(f"addi x{fc_layer_for_loop_iter_reg}, x{fc_layer_for_loop_iter_reg}, 1\n")
     f.write(f"STT x{oram_addr_reg}, x{st_dram_addr_reg},  0, 1, 0, 1\n")
-    f.write(f"addi x{st_dram_addr_reg}, x{st_dram_addr_reg}, 32\n")
+    f.write(f"addi x{st_dram_addr_reg}, x{st_dram_addr_reg}, 2\n")
+    f.write(f"addi x{oram_addr_reg}, x{oram_addr_reg}, 32\n")
     f.write(f"blt x{fc_layer_for_loop_iter_reg}, x{fc_layer_for_loop_thd_reg}, oram_st_for_loop_{oram_st_for_loop_cnt}\n")
     f.write("WFI\n")
     oram_st_for_loop_cnt += 1

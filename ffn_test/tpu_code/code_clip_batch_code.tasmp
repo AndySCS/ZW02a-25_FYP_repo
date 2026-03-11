@@ -183,14 +183,16 @@ act 0
 STMT x23, x0, 0, 7, 0
 fc_layer_for_loop_0_end:
 blt x9, x8, fc_layer_for_loop_0
-addi x23, x0, 0
+lui x23, 2
+addi x23, x23, 0
 addi x9, x0, 0
 addi x8, x0, 56
 addi x26, x0, 784
 oram_st_for_loop_0:
 addi x9, x9, 1
 STT x23, x26,  0, 1, 0, 1
-addi x26, x26, 32
+addi x26, x26, 2
+addi x23, x23, 32
 blt x9, x8, oram_st_for_loop_0
 WFI
 addi x10, x0, 784
@@ -296,7 +298,8 @@ addi x20, x20, 16
 blt x14, x15, perceptron_for_loop_2
 act 0
 STMT x23, x0, 0, 9, 0
-addi x23, x0, 0
+lui x23, 2
+addi x23, x23, 0
 addi x9, x0, 0
 addi x8, x0, 10
 lui x26, 12
@@ -304,6 +307,7 @@ addi x26, x26, 1520
 oram_st_for_loop_1:
 addi x9, x9, 1
 STT x23, x26,  0, 1, 0, 1
-addi x26, x26, 32
+addi x26, x26, 2
+addi x23, x23, 32
 blt x9, x8, oram_st_for_loop_1
 WFI
