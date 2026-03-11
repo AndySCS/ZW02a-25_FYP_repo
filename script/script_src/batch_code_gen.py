@@ -283,9 +283,9 @@ def gen_fc_layer_for_loop(f: TextIOWrapper, fc_layer_info: fc_layer_info) -> Non
     global fc_last_row_reg
 
     fc_layer_for_loop_thd = math.ceil(fc_layer_info.perceptron_cnt / 16)
-    dram_wdata_last_addr = fc_layer_info.dram_wdata_addr + 16 * fc_layer_info.input_size * (fc_layer_for_loop_thd - 1)
+    dram_wdata_last_addr = fc_layer_info.dram_wdata_addr + 16 * (fc_layer_info.input_size + 1) * (fc_layer_for_loop_thd - 1)
     dram_wdata_last_addr_qual = fc_layer_info.dram_wdata_addr if fc_layer_for_loop_thd == 1 else dram_wdata_last_addr
-    fc_layer_wdata_dram_inc = 16 * fc_layer_info.input_size
+    fc_layer_wdata_dram_inc = 16 * (fc_layer_info.input_size + 1)
     fc_last_row = 512*15
     perceptron_last_info = perceptron_info(
         input_len = fc_layer_info.input_size,
@@ -325,10 +325,10 @@ def gen_fc_layer_for_loop(f: TextIOWrapper, fc_layer_info: fc_layer_info) -> Non
     f.write(f"beq x{fc_layer_for_loop_iter_reg}, x{fc_layer_for_loop_thd_reg}, fc_layer_for_loop_{fc_layer_for_loop_cnt}_last_iter_br\n")
     
     gen_perceptron_for_loop(f = f, info = perceptron_non_last_info)
-    f.write(f"add x{dram_wdata_addr_reg}, x{fc_dram_wdata_addr_reg}, x{fc_layer_wdata_dram_inc_reg}\n")
-    f.write(f"add x{fc_dram_wdata_addr_reg}, x{fc_dram_wdata_addr_reg}, x{fc_layer_wdata_dram_inc_reg}\n")
     if fc_layer_info.relu:
         f.write(f"act 0\n")
+    f.write(f"add x{dram_wdata_addr_reg}, x{fc_dram_wdata_addr_reg}, x{fc_layer_wdata_dram_inc_reg}\n")
+    f.write(f"add x{fc_dram_wdata_addr_reg}, x{fc_dram_wdata_addr_reg}, x{fc_layer_wdata_dram_inc_reg}\n")
     f.write(f"STMT x{oram_addr_reg}, x0, 0, 15, 0\n")
     f.write(f"bge x{oram_addr_reg}, x{fc_last_row_reg}, fc_layer_for_loop_{fc_layer_for_loop_cnt}_oram_update_sp\n")
     f.write(f"addi x{oram_addr_reg}, x{oram_addr_reg}, 512\n")
