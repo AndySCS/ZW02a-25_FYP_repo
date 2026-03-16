@@ -33,7 +33,7 @@ endif
 img_seed = $(shell expr $(seed) % 1000)
 
 
-fsdb_file_name = $(tc)
+fsdb_file_name = $(tc)_$(seed)
 #TC Name
 #ifeq ($(tc), tc_riscdv)
 #	fsdb_file_name = $(tc)_$(riscdv_test)_$(seed)
