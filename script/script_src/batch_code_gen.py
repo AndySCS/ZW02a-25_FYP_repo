@@ -653,7 +653,68 @@ def gen_cnn_layer_for_loop(f: TextIOWrapper, cnn_input_info: cnn_input_info, cnn
     
     fc_layer_for_loop_cnt += 1
 
+def gen_fc_layer(f: TextIOWrapper, config: configparser.ConfigParser, i: int) -> None:
+    
+    input_size = int(config["INPUT_SIZE"][f"layer{i}_input_size"])
+    input_num  = 256 if input_size > 256 else input_size
+    dram_idata_addr = int(config["INPUT_DRAM_ADDR"][f"layer{i}_input_addr"])
+    input_info = ldt_info(
+        num = input_num,
+        len = 1,
+        stride = 1,
+        dest_addr_reg = sram_idata_addr_reg,
+        dram_addr_reg = dram_idata_addr_reg
+    )
+    gen_set_data(f = f, data = dram_idata_addr, reg = dram_idata_addr_reg)
+    gen_load_idata_for_loop(f = f, idata_size = input_size, info = input_info)
+        
+    output_num = int(config["OUTPUT_SIZE"][f"layer{i}_output_size"])
+    dram_wdata_addr = int(config["WEIGHT_DRAM_ADDR"][f"layer{i}_wgt_addr"])
+    relu = config.getboolean("ACT_SETUP", f"layer{i}_relu")
+    fc_info = fc_layer_info(
+        perceptron_cnt = output_num,
+        input_size = input_size,
+        dram_idata_addr = dram_idata_addr,
+        dram_wdata_addr = dram_wdata_addr,
+        relu = relu
+    )
+    gen_fc_layer_for_loop(f = f, fc_layer_info = fc_info)
 
+    st_dram_addr = int(config["OUTPUT_DRAM_ADDR"][f"layer{i}_output_addr"])
+    gen_oram_st_for_loop(f = f, st_cnt = output_num, st_dram_addr = st_dram_addr)
+
+def gen_cnn_layer(f: TextIOWrapper, config: configparser.ConfigParser, i: int) -> None:
+    
+    input_size = int(config["INPUT_SIZE"][f"layer{i}_input_size"])
+    input_num  = 256 if input_size > 256 else input_size
+    dram_idata_addr = int(config["INPUT_DRAM_ADDR"][f"layer{i}_input_addr"])
+    output_num = int(config["OUTPUT_SIZE"][f"layer{i}_output_size"])
+    dram_wdata_addr = int(config["WEIGHT_DRAM_ADDR"][f"layer{i}_wgt_addr"])
+    relu = config.getboolean("ACT_SETUP", f"layer{i}_relu")
+    st_dram_addr = int(config["OUTPUT_DRAM_ADDR"][f"layer{i}_output_addr"])
+
+    cnn_input = cnn_input_info(
+        img_width = int(config["CNN_INPUT_INFO"][f"layer{i}_img_width"]),
+        img_len = int(config["CNN_INPUT_INFO"][f"layer{i}_img_len"]),
+        cnn_window_width = int(config["CNN_INPUT_INFO"][f"layer{i}_cnn_window_width"]),
+        cnn_window_len = int(config["CNN_INPUT_INFO"][f"layer{i}_cnn_window_len"])
+    )
+    cnn_layer = cnn_layer_info(
+        perceptron_cnt = int(config["OUTPUT_SIZE"][f"layer{i}_output_size"]),
+        dram_wdata_addr = int(config["WEIGHT_DRAM_ADDR"][f"layer{i}_wgt_addr"]),
+        st_dram_addr = int(config["OUTPUT_DRAM_ADDR"][f"layer{i}_output_addr"]),
+        perceptron_cnt = output_num,
+        input_size = input_size,
+        dram_idata_addr = dram_idata_addr,
+        dram_wdata_addr = dram_wdata_addr,
+        relu = relu
+    )
+    gen_cnn_layer_for_loop(f = f, cnn_input_info = cnn_input, cnn_layer_info = cnn_layer)
+
+gen_layer = {
+    "fc": gen_fc_layer,
+    "cnn": gen_cnn_layer
+}
 
 if __name__ == "__main__":
     config = configparser.ConfigParser()
@@ -665,33 +726,8 @@ if __name__ == "__main__":
 
     for i in range(int(config["MODEL_CONFIG"]["num_layers"])):
 
-        input_size = int(config["INPUT_SIZE"][f"layer{i}_input_size"])
-        input_num  = 256 if input_size > 256 else input_size
-        dram_idata_addr = int(config["INPUT_DRAM_ADDR"][f"layer{i}_input_addr"])
-        input_info = ldt_info(
-            num = input_num,
-            len = 1,
-            stride = 1,
-            dest_addr_reg = sram_idata_addr_reg,
-            dram_addr_reg = dram_idata_addr_reg
-        )
-        gen_set_data(f = f, data = dram_idata_addr, reg = dram_idata_addr_reg)
-        gen_load_idata_for_loop(f = f, idata_size = input_size, info = input_info)
-        
-        output_num = int(config["OUTPUT_SIZE"][f"layer{i}_output_size"])
-        dram_wdata_addr = int(config["WEIGHT_DRAM_ADDR"][f"layer{i}_wgt_addr"])
-        relu = config.getboolean("ACT_SETUP", f"layer{i}_relu")
-        fc_info = fc_layer_info(
-            perceptron_cnt = output_num,
-            input_size = input_size,
-            dram_idata_addr = dram_idata_addr,
-            dram_wdata_addr = dram_wdata_addr,
-            relu = relu
-        )
-        gen_fc_layer_for_loop(f = f, fc_layer_info = fc_info)
-
-        st_dram_addr = int(config["OUTPUT_DRAM_ADDR"][f"layer{i}_output_addr"])
-        gen_oram_st_for_loop(f = f, st_cnt = output_num, st_dram_addr = st_dram_addr)
+        input_type = config["INPUT_TYPE"][f"layer{i}_input_type"]
+        gen_layer[input_type](f = f, config = config, i = i)
 
     f.close()
         
