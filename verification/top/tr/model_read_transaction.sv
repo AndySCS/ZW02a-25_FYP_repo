@@ -25,8 +25,10 @@ function void model_read_transaction::read_img();
     string       line;
     string       line_rest;
     int          value;
-
-    fd = $fopen ("sample.csv", "r");
+    int          seed;
+    
+    seed = $get_initial_random_seed();
+    fd = $fopen ($sformatf("sim_tmp/sample%0d.csv",seed), "r");
 
     while (!$feof(fd)) begin
         

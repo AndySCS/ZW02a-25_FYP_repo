@@ -30,15 +30,18 @@ task top_sc::main_phase(uvm_phase phase);
     model_output_transaction exp_tr;
     model_output_transaction act_tr;
     model_output_transaction tmp_tr;
+    int seed;
 
     int softmax_output;
-	int fd;
+    int fd;
 
     bit check_first_layer_flag = 0;
 
     super.main_phase(phase);
 
     check_first_layer_flag = $test$plusargs("ffn_clip");
+    seed = $get_initial_random_seed();
+
 	
     fork
 	while(1)begin
@@ -58,7 +61,7 @@ task top_sc::main_phase(uvm_phase phase);
                 end
                 check_second_layer(tmp_tr, act_tr);
                 softmax_output = softmax(tmp_tr.model_output);
-                fd = $fopen("model_output.txt", "w");
+                fd = $fopen($sformatf("sim_tmp/model_output%0d.txt",seed), "w");
                 $fdisplay(fd, $sformatf("%d", softmax_output));
                 $fclose(fd);
             end
