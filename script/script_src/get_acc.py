@@ -1,5 +1,5 @@
 import argparse
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import os
 import re
 
@@ -8,8 +8,8 @@ class AccuracyResult:
     total_num: int = 0
     correct_num: int = 0
     accuracy: float = 0.0
-    exp_cnt: dict = {i:0 for i in range(10)}
-    act_cnt: dict = {i:0 for i in range(10)}
+    exp_cnt: dict = field(default_factory=lambda:{i:0 for i in range(10)})
+    act_cnt: dict = field(default_factory=lambda:{i:0 for i in range(10)})
 
 def get_addr() -> str:
     parser = argparse.ArgumentParser()

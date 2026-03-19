@@ -12,7 +12,7 @@ class top_sc extends uvm_scoreboard;
     extern virtual task main_phase(uvm_phase phase);
     extern virtual function void final_phase(uvm_phase phase);
 
-    extern virtual function int softmax(bit[9:0][7:0] softmax_input);
+    extern virtual function int softmax(bit[9:0][15:0] softmax_input);
     extern virtual function void check_first_layer(model_output_transaction exp_tr, model_output_transaction act_tr);
     extern virtual function void check_second_layer(model_output_transaction exp_tr, model_output_transaction act_tr);
 
@@ -60,7 +60,7 @@ task top_sc::main_phase(uvm_phase phase);
                     continue;
                 end
                 check_second_layer(tmp_tr, act_tr);
-                softmax_output = softmax(tmp_tr.model_output);
+                softmax_output = softmax(tmp_tr.model_output_int16);
                 fd = $fopen($sformatf("sim_tmp/model_output%0d.txt",seed), "w");
                 $fdisplay(fd, $sformatf("%d", softmax_output));
                 $fclose(fd);
@@ -94,20 +94,24 @@ function void top_sc::final_phase(uvm_phase phase);
     if(exp_result_q.size() > 0) `uvm_error("top_sc", $sformatf("exp_result_q is not empty when tc ends, exp_result_q size is %d", exp_result_q.size()))
 endfunction
 
-function int top_sc::softmax(bit[9:0][7:0] softmax_input);
+function int top_sc::softmax(bit[9:0][15:0] softmax_input);
 
     real data[9:0];
+    real softmax_input_quant[9:0];
     real sum = 0;
     real cur_max = 0;
     int max_idx;
 
     for(int i = 0; i < 10; i++)begin
-        data[i] = $exp(real'(softmax_input[i]));
+        softmax_input_quant[i] =  (real'($signed(softmax_input[i])) - 34.511 ) * 254.898;
+        `uvm_info(get_name(), $sformatf("softmax_input[%0d] is: %0.3f", i,softmax_input_quant[i]), UVM_NONE)
+        data[i] = $exp(softmax_input_quant[i]);
         sum += data[i];
     end
 
     for(int i = 0; i < 10; i++)begin
         data[i] = data[i]/sum;
+        `uvm_info(get_name(), $sformatf("data[%0d] is: %0.3f", i,data[i]), UVM_NONE)
     end
     
     for(int i = 0; i < 10; i++)begin
