@@ -283,6 +283,15 @@ module tpu(
     wire [3:0] ARREGION;
     wire  ARVALID;
     wire ARREADY;
+    wire [`AWADDR_WIDTH-1:0] ARADDR_ff;
+    wire [2:0] ARSIZE_ff;
+    wire [`AWADDR_WIDTH-1:0] ARADDR_2ff;
+    wire [2:0] ARSIZE_2ff;
+    wire [`AWADDR_WIDTH-1:0] ARADDR_qual;
+    wire [7:0] ARLEN_qual;
+    wire [11:0] RSRAM;
+    wire [15:0] RSRAM_en;
+    wire [31:0] sram_buff [15:0];
 
     //write data channel
     wire [`WDATA_WIDTH-1:0] WDATA;
@@ -294,9 +303,11 @@ module tpu(
     //read data channel
     wire [`AWID_WIDTH-1:0] RID;
     wire [`WDATA_WIDTH-1:0] RDATA;
+    wire [`WDATA_WIDTH-1:0] RDATA_raw;
     wire [1:0] RRESP;
     wire RLAST;
     wire RVALID;
+    wire RVALID_raw;
     wire RREADY; 
     //write response channel
     wire [`AWID_WIDTH-1:0] BID;
@@ -776,6 +787,8 @@ module tpu(
         .RLAST                                (RLAST),
         .RVALID                               (RVALID),
         .RREADY                               (RREADY),
+        .RSRAM                                (RSRAM),
+        .RSRAM_en                             (RSRAM_en),
         .lsu_axi_arid                         (lsu_axi_arid),
         .lsu_axi_araddr                       (lsu_axi_araddr),
         .lsu_axi_arlen                        (lsu_axi_arlen),
@@ -858,8 +871,8 @@ module tpu(
         .s_axi_awvalid  (AWVALID),
         .s_axi_awready  (AWREADY),
         .s_axi_arid     (ARID),
-        .s_axi_araddr   (ARADDR),
-        .s_axi_arlen    (ARLEN),
+        .s_axi_araddr   (ARADDR_qual),
+        .s_axi_arlen    (ARLEN_qual),
         .s_axi_arsize   (ARSIZE),
         .s_axi_arburst  (ARBURST),
         .s_axi_arvalid  (ARVALID),
@@ -871,11 +884,11 @@ module tpu(
         .s_axi_wvalid   (WVALID),
         .s_axi_wready   (WREADY),
         // read interface
-        .s_axi_rid  (RID),
-        .s_axi_rdata    (RDATA),
+        .s_axi_rid      (RID),
+        .s_axi_rdata    (RDATA_raw),
         .s_axi_rresp    (RRESP),
         .s_axi_rlast    (RLAST),
-        .s_axi_rvalid   (RVALID),
+        .s_axi_rvalid   (RVALID_raw),
         .s_axi_rready   (RREADY),
         // wresp interface
         .s_axi_bid      (BID),
@@ -883,6 +896,113 @@ module tpu(
         .s_axi_bvalid   (BVALID),
         .s_axi_bready   (BREADY)
     );
+
+    genvar i;
+    generate;
+        for(i = 0; i < 16; i=i+1)begin
+
+            DFFE #(.WIDTH(32))
+            ff_RSRAM (
+                .clk(clk),
+                .en(RSRAM_en[i]),
+                .d(ARADDR),
+                .q(sram_buff[i])
+            );
+        end
+    endgenerate
+    
+    wire RVALID_raw_ff;
+    wire RVALID_raw_2ff;
+    wire [63:0] RDATA_raw_ff;
+
+    DFFR #(.WIDTH(`AWADDR_WIDTH))
+    ff_ARADDR(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(ARADDR),
+        .q(ARADDR_ff)
+    );
+    DFFR #(.WIDTH(`AWADDR_WIDTH))
+    ff_ARADDR2(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(ARADDR_ff),
+        .q(ARADDR_2ff)
+    );
+
+    DFFR #(.WIDTH(3))
+    ff_ARSIZE(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(ARSIZE),
+        .q(ARSIZE_ff)
+    );
+
+    DFFR #(.WIDTH(1))
+    ff_RVALID_raw(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(RVALID_raw),
+        .q(RVALID_raw_ff)
+    );
+
+    DFFR #(.WIDTH(1))
+    ff_RVALID_raw_2(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(RVALID_raw_ff),
+        .q(RVALID_raw_2ff)
+    );
+
+    DFFRE #(.WIDTH(64))
+    ff_RDATA_raw(
+        .clk(clk),
+        .rst_n(rst_n),
+	.en(~RLAST),
+        .d(RDATA_raw),
+        .q(RDATA_raw_ff)
+    );
+
+    wire [63:0] RDATA_0;
+    wire [63:0] RDATA_3_raw;
+
+    assign ARLEN_qual= ~(|ARSIZE) ? ARLEN : (|ARADDR[2:0]) ? ARLEN+1 : ARLEN;
+    assign ARADDR_qual= ~(|ARSIZE) ? ARADDR : ARADDR;
+
+    /*
+    assign RDATA_0 = (ARSIZE_ff == 3) ? RDATA_raw
+                 : (ARADDR_ff[2:0]==0) ? RDATA_raw[7:0] 
+                 : (ARADDR_ff[2:0]==1) ? RDATA_raw[15:8]
+                 : (ARADDR_ff[2:0]==2) ? RDATA_raw[23:16]
+                 : (ARADDR_ff[2:0]==3) ? RDATA_raw[31:24]
+                 : (ARADDR_ff[2:0]==4) ? RDATA_raw[39:32]
+                 : (ARADDR_ff[2:0]==5) ? RDATA_raw[47:40]
+                 : (ARADDR_ff[2:0]==6) ? RDATA_raw[55:48]
+                 :  RDATA_raw[63:56];
+    */
+    assign RDATA_0 = (ARSIZE_ff == 3) ? RDATA_raw
+                 : (sram_buff[RID][2:0]==0) ? RDATA_raw[7:0] 
+                 : (sram_buff[RID][2:0]==1) ? RDATA_raw[15:8]
+                 : (sram_buff[RID][2:0]==2) ? RDATA_raw[23:16]
+                 : (sram_buff[RID][2:0]==3) ? RDATA_raw[31:24]
+                 : (sram_buff[RID][2:0]==4) ? RDATA_raw[39:32]
+                 : (sram_buff[RID][2:0]==5) ? RDATA_raw[47:40]
+                 : (sram_buff[RID][2:0]==6) ? RDATA_raw[55:48]
+                 :  RDATA_raw[63:56];
+
+    // n
+    assign RDATA_3_raw = (ARADDR_2ff[2:0]==0) ? RDATA_raw_ff
+                 : (ARADDR_2ff[2:0]==1) ? {RDATA_raw[7:0],RDATA_raw_ff[63:8]}
+                 : (ARADDR_2ff[2:0]==2) ? {RDATA_raw[15:0],RDATA_raw_ff[63:16]}
+                 : (ARADDR_2ff[2:0]==3) ? {RDATA_raw[23:0],RDATA_raw_ff[63:24]}
+                 : (ARADDR_2ff[2:0]==4) ? {RDATA_raw[31:0],RDATA_raw_ff[63:32]}
+                 : (ARADDR_2ff[2:0]==5) ? {RDATA_raw[39:0],RDATA_raw_ff[63:40]}
+                 : (ARADDR_2ff[2:0]==6) ? {RDATA_raw[47:0],RDATA_raw_ff[63:48]}
+                 : {RDATA_raw[55:0],RDATA_raw_ff[63:56]};
+
+    assign RVALID = (ARSIZE_ff == 0) ? RVALID_raw : (|ARADDR_ff[2:0]) ? RVALID_raw_ff : RVALID_raw; 
+    assign RDATA = (ARSIZE_ff == 0) ? RDATA_0 : (|ARADDR_ff[2:0]) ? RDATA_3_raw : RDATA_raw;
+              
 endmodule
 `else
 module tpu(

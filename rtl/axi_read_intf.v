@@ -17,6 +17,8 @@ module AXI_READ_INFT(
     RLAST,
     RVALID,
     RREADY,
+    RSRAM,
+    RSRAM_en,
     //lsu interface
     lsu_axi_arid,
     lsu_axi_araddr,
@@ -61,6 +63,8 @@ module AXI_READ_INFT(
     input RLAST;
     input RVALID;
     output RREADY; 
+    output [11:0]RSRAM;
+    output [15:0]RSRAM_en;
     //lsu->axi intf
     input [7:0] lsu_axi_arid;
     input [ARADDR_WIDTH-1:0] lsu_axi_araddr;
@@ -152,13 +156,13 @@ module AXI_READ_INFT(
 
     assign axi_invld = ~axi_vld;
     assign axi_alloc_en = {16{axi_alloc_vld}} & axi_alloc_ptr & axi_invld;
-    assign axi_alloc_vld = lsu_axi_arvld_qual | axi_doing_ld;
+    assign axi_alloc_vld = (lsu_axi_arvld_qual | axi_doing_ld) & ARREADY;
     assign axi_vld_nxt = axi_alloc_en | axi_vld & ~({16{lsu_resp_recv}} & axi_recv_ptr);
     assign axi_sent_nxt = {16{ARVALID_sent}} & axi_sent_ptr | axi_sent & ~axi_alloc_en;
     assign axi_recv_nxt = {16{RVALID_qual}} | axi_recv & ~axi_alloc_en; 
     assign axi_sent_ptr_nxt = {axi_sent_ptr[14:0], axi_sent_ptr[15]};
     assign axi_alloc_ptr_nxt = {axi_alloc_ptr[14:0], axi_alloc_ptr[15]};
-    assign axi_alloc_ptr_en  = |axi_alloc_en;
+    assign axi_alloc_ptr_en  = (|axi_alloc_en) & ARREADY;
     assign axi_sent_en = axi_alloc_vld | ARVALID_sent;
     assign axi_recv_en = axi_alloc_vld | RVALID_qual;
 
@@ -269,7 +273,6 @@ module AXI_READ_INFT(
                 .d(dram_addr_nxt),
                 .q(dram_addr[i])
             );
-
         end
     endgenerate
    
@@ -400,7 +403,8 @@ module AXI_READ_INFT(
                              : axi_rlast_cnt;
 
     assign axi_lsu_axi_done = (axi_rlast_cnt > arnum);
-
+    assign RSRAM = lsu_axi_sram_addr;
+    
     //FIXME rid
     DFFRE #(.WIDTH(8))
     ff_axi_lsu_rid (
@@ -460,6 +464,14 @@ module AXI_READ_INFT(
         .rst_n(rst_n),
         .d(axi_lsu_rvld_nxt),
         .q(axi_lsu_rvld)
+    ); 
+    //assign RSRAM_en = ram_addr_en;
+    DFFR #(.WIDTH(16))
+    ff_RSRAM_en(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(ram_addr_en),
+        .q(RSRAM_en)
     ); 
 
 endmodule

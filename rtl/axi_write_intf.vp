@@ -159,13 +159,13 @@ module AXI_WRITE_INFT(
 
     assign axi_invld = ~axi_vld;
     assign axi_alloc_en = {16{axi_alloc_vld}} & axi_alloc_ptr & axi_invld;
-    assign axi_alloc_vld = lsu_axi_awvld_qual | axi_doing_st;
+    assign axi_alloc_vld = lsu_axi_awvld_qual | axi_doing_st & AWREADY;
     assign axi_vld_nxt = axi_alloc_en | axi_vld & ~({16{lsu_resp_recv}} & axi_recv_ptr);
     assign axi_sent_nxt = {16{AWVALID_sent}} & axi_sent_ptr | axi_sent & ~axi_alloc_en;
     assign axi_recv_nxt = {16{BVALID_qual}} & BID_16 | axi_recv & ~axi_alloc_en; 
     assign axi_sent_ptr_nxt = {axi_sent_ptr[14:0], axi_sent_ptr[15]};
     assign axi_alloc_ptr_nxt = {axi_alloc_ptr[14:0], axi_alloc_ptr[15]};
-    assign axi_alloc_ptr_en = |axi_alloc_en;
+    assign axi_alloc_ptr_en = (|axi_alloc_en) & AWREADY;;
     assign axi_sent_en = axi_alloc_vld | AWVALID_sent;
     assign axi_recv_en = axi_alloc_vld | BVALID_qual;
     assign oram_addr_nxt = lsu_axi_awvld_qual ? lsu_axi_oram_addr: oram_addr_cur + 12'b1;
