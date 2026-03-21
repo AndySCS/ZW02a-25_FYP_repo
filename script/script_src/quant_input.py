@@ -17,7 +17,9 @@ def read_csv(path: str) -> list:
 def quant_input(input_data: list, quant_rng: int) -> list:
     min_val, max_val = min(input_data), max(input_data)
     scale = (max_val - min_val) / (2**quant_rng - 1) if max_val != min_val else 1.0
-    zero_point = int(round(-(2**(quant_rng - 1)) - min_val / scale))
+    quant_min = round(-1*(2**(quant_rng - 1))) 
+    #zero_point = int(quant_min - min_val / scale)
+    zero_point = 0
     q_data = [int(round(x / scale + zero_point)) for x in input_data]
     return q_data
 

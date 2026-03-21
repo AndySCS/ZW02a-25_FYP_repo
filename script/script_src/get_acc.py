@@ -30,7 +30,7 @@ def get_all_seed(addr: str)-> list:
     return seeds
 
 def get_software_result(addr: str, seed: int) -> float:
-    sample_path = os.path.join(addr, f"sample{seed}.txt")
+    sample_path = os.path.join(addr, f"sample{seed}.csv")
     def read_input_from_file(path: str) -> list:
         with open(sample_path, 'r') as f:
             number = [int(line.strip()) for line in f]
@@ -101,6 +101,7 @@ def print_result(accuracy_result: AccuracyResult) -> None:
     print(f"Correct predictions: {accuracy_result.correct_num}")
     print(f"Software Correct predictions: {accuracy_result.software_correct_num}")
     print(f"Accuracy: {accuracy_result.accuracy:.4f}")
+    print(f"Software Accuracy: {accuracy_result.software_correct_num / accuracy_result.total_num:.4f}")
     print(f"Expected count per class: {accuracy_result.exp_cnt}")
     print(f"Actual count per class: {accuracy_result.act_cnt}")
     print(f"Software Actual count per class: {accuracy_result.software_cnt}")
