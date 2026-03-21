@@ -1584,7 +1584,11 @@ module lsu(
     wire [255:0] lsu_st_type1_oram_din;
     wire [255:0] lsu_st_type1_oram_din_raw;
     wire [3:0]   lsu_st_type1_oram_din_shift; 
-    wire [3:0]   lsu_st_type1_oram_din_start_x;
+    //wire [3:0]   lsu_st_type1_oram_din_start_x;
+    wire [7:0]   lsu_st_type1_oram_din_start_x;
+    wire [7:0]   lsu_st_type1_oram_din_start_x_ff;
+    wire [255:0] lsu_st_type1_oram_din_raw_ff;
+    wire [3:0]   lsu_st_type1_oram_din_shift_ff; 
 
     wire [31:0]  lsu_st_type1_oram_we_ff;
     wire         lsu_st_type1_oram_ce_ff;
@@ -1604,6 +1608,7 @@ module lsu(
     assign lsu_st_type1_oram_addr         = lsu_st_type1_qual   ? lsu_ld_st_addr_ff[12:5] : lsu_st_type1_oram_addr_inc[12:5];
     assign lsu_st_type1_oram_addr_inc_nxt = lsu_st_type1_qual    ? lsu_ld_st_addr_ff[12:0] + 13'h20 : lsu_st_type1_oram_addr_inc + 13'h20;
     assign lsu_st_type1_oram_addr_inc_en  = |lsu_st_type1_oram_ce;
+
     //assign lsu_st_type1_oram_din_start_x = lsu_st_type1_mxu_start_col;
     //assign lsu_st_type1_oram_din_shift   = lsu_st_type1_qual ? lsu_ld_st_addr_ff[3:0] : lsu_st_type1_oram_addr_inc[3:0];
     //assign lsu_st_type1_oram_din_raw     = lsu_st_type1_low ? {64'b0, lsu_st_type1_din_int8_raw_qual} << {lsu_st_type1_oram_din_start_x, 3'b000} 
@@ -2657,3 +2662,5 @@ module lsu(
     assign lsu_rf_wb_data = lsu_riscv_ld_vld_ff ? lsu_riscv_dout : lsu_wb_data_ff;
      
 endmodule   
+
+
