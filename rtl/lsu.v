@@ -2857,6 +2857,7 @@ module lsu(
     //2/ do the size shift
     //3/ out with size extend
     wire [6:0] lsu_riscv_ld_data_shift;
+    wire [6:0] lsu_riscv_ld_data_shift_ff;
     wire [127:0] lsu_riscv_dout_shift_raw;
     wire [31:0] lsu_riscv_dout;
     wire [127:0] lsu_riscv_dout_raw;
@@ -2866,14 +2867,19 @@ module lsu(
     assign lsu_riscv_dout_raw = {128{lsu_riscv_ld_vld_ff}} & (({128{lsu_ld_iram_ff}} & lsu_iram_dout) | 
                                                           ({128{lsu_ld_wram_ff}} & lsu_wram_dout) | 
                                                           ({128{lsu_ld_oram_ff}} & lsu_oram_lo_dout & {128{~lsu_ld_st_addr_ff[12]}}) |
-                                                          ({128{lsu_ld_oram_ff}} & lsu_oram_hi_dout & {128{lsu_ld_st_addr_ff[12]}}));
-							  
-
-    assign lsu_riscv_ld_data_shift = (lsu_lb_op_ff | lsu_lbu_op_ff) ? lsu_ld_st_addr_ff[3:0] 
-                                                   : (lsu_lh_op_ff | lsu_lhu_op_ff) ? {lsu_ld_st_addr_ff[3:1],1'b0}
-                                                   : lsu_lw_op_ff ? {lsu_ld_st_addr_ff[3:2],2'b00}
+                                                          ({128{lsu_ld_oram_ff}} & lsu_oram_hi_dout & {128{lsu_ld_st_addr_ff[12]}}));							  
+    assign lsu_riscv_ld_data_shift = (alu_lsu_lb_op | alu_lsu_lbu_op) ? alu_lsu_ld_st_addr[3:0] 
+                                                   : (alu_lsu_lh_op | alu_lsu_lhu_op) ? {alu_lsu_ld_st_addr[3:1],1'b0}
+                                                   : alu_lsu_lw_op ? {alu_lsu_ld_st_addr[3:2],2'b00}
                                                    : {7{1'b0}};
-    assign lsu_riscv_dout_shift_raw = lsu_riscv_dout_raw >> (lsu_riscv_ld_data_shift*4'd8);
+    DFFR #(.WIDTH(7))
+    ff_lsu_riscv_dout_ld_data_shift (
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(lsu_riscv_ld_data_shift),
+        .q(lsu_riscv_ld_data_shift_ff)
+    );
+    assign lsu_riscv_dout_shift_raw = lsu_riscv_dout_raw >> (lsu_riscv_ld_data_shift_ff*4'd8);
     assign lsu_riscv_dout = lsu_lb_op_ff ? {{24{lsu_riscv_dout_shift_raw[7]}},lsu_riscv_dout_shift_raw[7:0]}
                                          : lsu_lbu_op_ff ? {{24{1'b0}},lsu_riscv_dout_shift_raw[7:0]}
                                          : lsu_lh_op_ff ? {{16{lsu_riscv_dout_shift_raw[15]}},lsu_riscv_dout_shift_raw[15:0]}
