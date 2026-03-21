@@ -91,7 +91,7 @@ cmp:
 	$(VCS) 
 
 sim:  
-	cp $(MINITPU_FOLDER)/ffn_test/mnist_data/csv/img$(img_seed).csv sim_tmp/sample$(seed).csv
+	python3 $(MINITPU_SCRIPT)/script_src/quant_input.py -src_addr $(MINITPU_FOLDER)/ffn_test/mnist_data/csv/img$(img_seed).csv -dest_addr sim_tmp/sample$(seed).csv -quant_rng 8
 	cp $(MINITPU_FOLDER)/ffn_test/mnist_data/label/label$(img_seed).txt sim_tmp/sample_label${seed}.txt
 	./$(mode)/simv +UVM_TESTNAME=tc_base                  \
                    +ntb_random_seed=$(seed)             \
@@ -107,7 +107,7 @@ sim:
                    $(tc_opt)
 
 regress: 
-	cp $(MINITPU_FOLDER)/ffn_test/mnist_data/csv/img$(img_seed).csv sim_tmp/sample$(seed).csv
+	python3 $(MINITPU_SCRIPT)/script_src/quant_input.py -src_addr $(MINITPU_FOLDER)/ffn_test/mnist_data/csv/img$(img_seed).csv -dest_addr sim_tmp/sample$(seed).csv -quant_rng 8
 	cp $(MINITPU_FOLDER)/ffn_test/mnist_data/label/label$(img_seed).txt sim_tmp/sample_label${seed}.txt
 	./$(mode)/simv +UVM_TESTNAME=tc_base                  \
                    +ntb_random_seed=$(seed)             \

@@ -30,7 +30,7 @@ def get_all_seed(addr: str)-> list:
     return seeds
 
 def get_software_result(addr: str, seed: int) -> float:
-    sample_path = os.path.join(addr, f"sample_label{seed}.txt")
+    sample_path = os.path.join(addr, f"sample{seed}.txt")
     def read_input_from_file(path: str) -> list:
         with open(sample_path, 'r') as f:
             number = [int(line.strip()) for line in f]
