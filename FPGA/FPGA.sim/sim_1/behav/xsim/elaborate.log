@@ -5,7 +5,6 @@ Running: /usr/eelocal/xilinx/Vivado/2023.1/bin/unwrapped/lnx64.o/xelab --incr --
 Using 8 slave threads.
 Starting static elaboration
 Pass Through NonSizing Optimizer
-WARNING: [VRFC 10-5021] port 's_aresetn' is not connected on this instance [/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/tpu.v:848]
 Completed static elaboration
 Starting simulation data flow analysis
 Completed simulation data flow analysis
@@ -127,7 +126,8 @@ Compiling module blk_mem_gen_v8_4_6.blk_mem_gen_v8_4_6_softecc_outpu...
 Compiling module blk_mem_gen_v8_4_6.blk_mem_gen_v8_4_6_mem_module(C_...
 Compiling module blk_mem_gen_v8_4_6.blk_mem_gen_v8_4_6(C_FAMILY="zyn...
 Compiling module xil_defaultlib.extern_bram
-Compiling module xil_defaultlib.tpu
+Compiling module xil_defaultlib.DFFR(WIDTH=3)
+Compiling module xil_defaultlib.tpu_default
 Compiling module xil_defaultlib.top_tb
 Compiling module xil_defaultlib.glbl
 Built simulation snapshot top_tb_behav

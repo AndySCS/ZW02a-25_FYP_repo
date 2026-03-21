@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<GenRun Id="impl_1" LaunchPart="xc7z020clg484-1" LaunchTime="1773151139">
+<GenRun Id="impl_1" LaunchPart="xc7z020clg484-1" LaunchTime="1774093479">
   <File Type="ROUTE-RQS-RPT" Name="route_report_qor_suggestions_0.rpt"/>
   <File Type="POSTROUTE-PHYSOPT-RQS" Name="tpu_postroute_physopted.rqs"/>
   <File Type="ROUTE-RQS" Name="tpu_routed.rqs"/>
@@ -311,6 +311,7 @@
     <Config>
       <Option Name="DesignMode" Val="RTL"/>
       <Option Name="TopModule" Val="tpu"/>
+      <Option Name="TopAutoSet" Val="TRUE"/>
     </Config>
   </FileSet>
   <FileSet Name="constrs_in" Type="Constrs" RelSrcDir="$PSRCDIR/constrs_1" RelGenDir="$PGENDIR/constrs_1">
@@ -340,16 +341,22 @@
     </Config>
   </FileSet>
   <Strategy Version="1" Minor="2">
-    <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2023">
-      <Desc>Default settings for Implementation.</Desc>
+    <StratHandle Name="Performance_ExtraTimingOpt" Flow="Vivado Implementation 2023">
+      <Desc>Includes alternate algorithms for timing-driven optimization</Desc>
     </StratHandle>
     <Step Id="init_design"/>
     <Step Id="opt_design"/>
     <Step Id="power_opt_design"/>
-    <Step Id="place_design"/>
+    <Step Id="place_design">
+      <Option Id="Directive">8</Option>
+    </Step>
     <Step Id="post_place_power_opt_design"/>
-    <Step Id="phys_opt_design"/>
-    <Step Id="route_design"/>
+    <Step Id="phys_opt_design">
+      <Option Id="Directive">0</Option>
+    </Step>
+    <Step Id="route_design">
+      <Option Id="Directive">1</Option>
+    </Step>
     <Step Id="post_route_phys_opt_design"/>
     <Step Id="write_bitstream"/>
   </Strategy>

@@ -46,7 +46,7 @@ module top_tb(
     // Initialize
     rst_n      = 0;
     start_vld  = 0;
-    start_addr = 12'h1;
+    start_addr = 12'h0;
     
 
     // Apply reset
@@ -61,19 +61,16 @@ module top_tb(
     start_addr = 12'h0;
     @(posedge clk);
     start_vld  = 0;
-
-    // Observe for some cycles
-    #5472000;
-    $finish;
     // End simulation
     //$finish;
   end
 
   // Optional: simple monitor to print signals each clock
   always @(posedge clk) begin
-    $display("time=%0t clk=%0b rst_n=%0b start_vld=%0b addr=%h wfi=%0b",
-             $time, clk, rst_n, start_vld, start_addr, wfi);
-  end
-
-    
+    //$display("time=%0t clk=%0b rst_n=%0b start_vld=%0b addr=%h wfi=%0b",
+             //$time, clk, rst_n, start_vld, start_addr, wfi);
+        if(top_tpu.u_lsu.axi_lsu_rvld)begin
+            $display("rid=%h addr=%h rdata=%0h ", top_tpu.u_lsu.axi_lsu_rid, top_tpu.u_lsu.axi_lsu_sram_addr, top_tpu.u_lsu.axi_lsu_rdata);
+        end
+    end
 endmodule
