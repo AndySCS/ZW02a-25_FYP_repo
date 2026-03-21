@@ -12,7 +12,8 @@ class top_sc extends uvm_scoreboard;
     extern virtual task main_phase(uvm_phase phase);
     extern virtual function void final_phase(uvm_phase phase);
 
-    extern virtual function int softmax(bit[9:0][15:0] softmax_input);
+    //extern virtual function int softmax(int softmax_input[9:0]);
+    extern virtual function int softmax(bit [9:0][15:0] softmax_input);
     extern virtual function void check_first_layer(model_output_transaction exp_tr, model_output_transaction act_tr);
     extern virtual function void check_second_layer(model_output_transaction exp_tr, model_output_transaction act_tr);
 
@@ -94,18 +95,24 @@ function void top_sc::final_phase(uvm_phase phase);
     if(exp_result_q.size() > 0) `uvm_error("top_sc", $sformatf("exp_result_q is not empty when tc ends, exp_result_q size is %d", exp_result_q.size()))
 endfunction
 
+//function int top_sc::softmax(int softmax_input[9:0]);
 function int top_sc::softmax(bit[9:0][15:0] softmax_input);
 
     real data[9:0];
     real softmax_input_quant[9:0];
     real sum = 0;
-    real cur_max = 0;
+    real cur_max = -1;
+    int max_val = -1e30;
     int max_idx;
+    
+    for(int i = 0; i < 10; i++)begin
+        softmax_input_quant[i] = real'($signed(softmax_input[i]));
+        `uvm_info(get_name(), $sformatf("softmax_input[%0d] is: %0d", i,softmax_input_quant[i]), UVM_NONE)
+        if(softmax_input_quant[i] > max_val) max_val = softmax_input_quant[i];
+    end
 
     for(int i = 0; i < 10; i++)begin
-        softmax_input_quant[i] =  (real'($signed(softmax_input[i])) - 34.511 ) * 254.898;
-        `uvm_info(get_name(), $sformatf("softmax_input[%0d] is: %0.3f", i,softmax_input_quant[i]), UVM_NONE)
-        data[i] = $exp(softmax_input_quant[i]);
+        data[i] = $exp(softmax_input_quant[i] - max_val);
         sum += data[i];
     end
 
@@ -120,6 +127,25 @@ function int top_sc::softmax(bit[9:0][15:0] softmax_input);
             max_idx = i;
         end
     end
+
+    //for(int i = 0; i < 10; i++)begin
+    //    softmax_input_quant[i] =  (real'($signed(softmax_input[i])) - 34.511 ) * 254.898;
+    //    `uvm_info(get_name(), $sformatf("softmax_input[%0d] is: %0.3f", i,softmax_input_quant[i]), UVM_NONE)
+    //    data[i] = $exp(softmax_input_quant[i]);
+    //    sum += data[i];
+    //end
+
+    //for(int i = 0; i < 10; i++)begin
+    //    data[i] = data[i]/sum;
+    //    `uvm_info(get_name(), $sformatf("data[%0d] is: %0.3f", i,data[i]), UVM_NONE)
+    //end
+    //
+    //for(int i = 0; i < 10; i++)begin
+    //    if(data[i] > cur_max)begin
+    //        cur_max = data[i];
+    //        max_idx = i;
+    //    end
+    //end
 
     return max_idx;
 

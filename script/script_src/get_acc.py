@@ -45,8 +45,8 @@ def get_software_result(addr: str, seed: int) -> float:
         for weight in weights:
             sum = 0
             for j in range(len(input_data) - 1):
-                sum += input_data[j] * weight[j]
-            output.append(sum + weight[-1])  # Add bias term
+                sum += input_data[j] * int(weight[j])
+            output.append(sum + int(weight[-1]))  # Add bias term
         return output
     def relu_activation(data: list) -> list:
         return [max(0, x) for x in data]
@@ -99,9 +99,11 @@ def print_result(accuracy_result: AccuracyResult) -> None:
     accuracy_result.accuracy = accuracy_result.correct_num / accuracy_result.total_num if accuracy_result.total_num > 0 else 0.0
     print(f"Total samples: {accuracy_result.total_num}")
     print(f"Correct predictions: {accuracy_result.correct_num}")
+    print(f"Software Correct predictions: {accuracy_result.software_correct_num}")
     print(f"Accuracy: {accuracy_result.accuracy:.4f}")
     print(f"Expected count per class: {accuracy_result.exp_cnt}")
     print(f"Actual count per class: {accuracy_result.act_cnt}")
+    print(f"Software Actual count per class: {accuracy_result.software_cnt}")
 
 
 if __name__ == '__main__':
