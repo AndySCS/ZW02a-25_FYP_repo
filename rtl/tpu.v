@@ -275,6 +275,7 @@ module tpu(
     wire  AWVALID;
     wire AWREADY;
 
+    //address write channel 
     wire [`AWID_WIDTH-1:0] ARID;
     wire [`AWADDR_WIDTH-1:0] ARADDR;
     wire [7:0] ARLEN;
@@ -688,7 +689,7 @@ module tpu(
         .lsu_axi_arburst                      (lsu_axi_arburst),
         .lsu_axi_arstr                        (lsu_axi_arstr),
         .lsu_axi_arnum                        (lsu_axi_arnum),
-	 .lsu_axi_sram_addr		      (lsu_axi_sram_addr),
+	    .lsu_axi_sram_addr		              (lsu_axi_sram_addr),
         .lsu_axi_arvld                        (lsu_axi_arvld),
         .lsu_axi_rrdy                         (lsu_axi_rrdy),
         .lsu_idu_wb_vld                       (lsu_idu_wb_vld),
@@ -1004,6 +1005,7 @@ module tpu(
     assign RDATA = (ARSIZE_ff == 0) ? RDATA_0 : (|ARADDR_ff[2:0]) ? RDATA_3_raw : RDATA_raw;
               
 endmodule
+
 `else
 module tpu(
     clk,
@@ -1887,3 +1889,4 @@ module tpu(
     );
 endmodule
 `endif
+
