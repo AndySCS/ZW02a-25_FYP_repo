@@ -21,7 +21,7 @@ def download_sample() -> None:
         sample_image, sample_label = x_train[idx], str(y_train[idx])
         img = sample_image.convert("L")   # "L" mode = 8-bit pixels, black and white
         # Convert to NumPy array
-        arr = np.array(img, dtype=np.int8)
+        arr = np.array(img, dtype=np.float32)
         # Flatten into 1D
         flat_arr = arr.flatten()
         img.save(f"ffn_test/mnist_data/img/img{_}.png")
