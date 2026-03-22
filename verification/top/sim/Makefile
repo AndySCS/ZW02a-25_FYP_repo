@@ -91,7 +91,7 @@ cmp:
 	$(VCS) 
 
 sim:  
-	python3 $(MINITPU_SCRIPT)/script_src/quant_input.py -src_addr $(MINITPU_FOLDER)/ffn_test/mnist_data/csv/img$(img_seed).csv -dest_addr sim_tmp/sample$(seed).csv -quant_rng 8
+	python3 $(MINITPU_SCRIPT)/script_src/quant_input.py -src_addr $(MINITPU_FOLDER)/ffn_test/mnist_data/csv/img$(img_seed).csv -dest_addr sim_tmp/sample$(seed).csv -quant_rng 7
 	cp $(MINITPU_FOLDER)/ffn_test/mnist_data/label/label$(img_seed).txt sim_tmp/sample_label${seed}.txt
 	./$(mode)/simv +UVM_TESTNAME=tc_base                  \
                    +ntb_random_seed=$(seed)             \
@@ -107,7 +107,7 @@ sim:
                    $(tc_opt)
 
 regress: 
-	python3 $(MINITPU_SCRIPT)/script_src/quant_input.py -src_addr $(MINITPU_FOLDER)/ffn_test/mnist_data/csv/img$(img_seed).csv -dest_addr sim_tmp/sample$(seed).csv -quant_rng 8
+	python3 $(MINITPU_SCRIPT)/script_src/quant_input.py -src_addr $(MINITPU_FOLDER)/ffn_test/mnist_data/csv/img$(img_seed).csv -dest_addr sim_tmp/sample$(seed).csv -quant_rng 7
 	cp $(MINITPU_FOLDER)/ffn_test/mnist_data/label/label$(img_seed).txt sim_tmp/sample_label${seed}.txt
 	./$(mode)/simv +UVM_TESTNAME=tc_base                  \
                    +ntb_random_seed=$(seed)             \
@@ -116,8 +116,8 @@ regress:
                    -cg_coverage_control=$(sim_fcov_opts)\
                    $(sim_ccov_opts)                     \
                    +max_chk=$(max_chk)                  \
-                   +define+FLASH_DEPTH=$(flash_depth) \ 
-	           $(tc_opt)
+		   +define+FLASH_DEPTH=$(flash_depth)   \
+	   	   $(tc_opt)
 
 run: cmp sim
 

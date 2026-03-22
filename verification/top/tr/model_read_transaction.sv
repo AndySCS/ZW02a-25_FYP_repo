@@ -57,7 +57,7 @@ function void model_read_transaction::read_layer1();
     int          value;
     int 	 line_num;
 
-    fd = $fopen ("csv/mnist_kernel_785_128.csv", "r");
+    fd = $fopen ("csv/model_layer_weight0_int7.csv", "r");
 
     while (!$feof(fd)) begin
         
@@ -87,7 +87,7 @@ function void model_read_transaction::read_layer2();
     string       line_rest;
     int          value;
 
-    fd = $fopen ("csv/mnist_kernel_129_10.csv", "r");
+    fd = $fopen ("csv//model_layer_weight1_int7.csv", "r");
 
     while (!$feof(fd)) begin
         

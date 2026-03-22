@@ -16,7 +16,7 @@ class model_output_transaction extends uvm_sequence_item;
     function int_arr rescale_data();
     
         int max_val = model_first_layer_output_int16[0];
-        int min_val = model_first_layer_output_int16[0];
+        int min_val = 0;
         real scale_fac;
         int z_fac;
     
@@ -27,13 +27,13 @@ class model_output_transaction extends uvm_sequence_item;
             if(model_first_layer_output_int16[i] < min_val) min_val = model_first_layer_output_int16[i];
         end
     
-        scale_fac = (max_val - min_val)/255.0;
-        z_fac = -128 + $rtoi(min_val/scale_fac);
+        scale_fac = (max_val - min_val)/127.0;
+        z_fac = -64 + $rtoi(min_val/scale_fac);
     
     
     
         for(int i = 0; i < 56; i++)begin
-            output_data[i] = $rtoi((model_first_layer_output_int16[i] - min_val)/scale_fac) + z_fac;
+            output_data[i] = $rtoi((model_first_layer_output_int16[i] - min_val)/scale_fac + z_fac);
             if (output_data[i] > 127) output_data[i] = 127;
             if (output_data[i] < -128) output_data[i] = -128;
         end
@@ -59,17 +59,17 @@ class model_output_transaction extends uvm_sequence_item;
         end
     
         if (max_val != min_val)begin
-            scale_fac = (max_val - min_val)/255.0;
+            scale_fac = (max_val - min_val)/127.0;
         end
         else begin
             scale_fac = 1;
         end
-        z_fac = -128 + $rtoi(min_val/scale_fac);
+        z_fac = -64 + $rtoi(min_val/scale_fac);
     
     
     
         for(int i = 0; i < 10; i++)begin
-            output_data[i] = $rtoi((input_data[i] - min_val)/scale_fac) + z_fac;
+            output_data[i] = $rtoi((input_data[i] - min_val)/scale_fac + z_fac);
             if (output_data[i] > 127) output_data[i] = 127;
             if (output_data[i] < -128) output_data[i] = -128;
         end
