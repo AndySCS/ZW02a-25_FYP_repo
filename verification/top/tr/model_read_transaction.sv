@@ -3,9 +3,11 @@ class model_read_transaction extends uvm_sequence_item;
     bit [783:0][7:0] img_array;
     bit [43959:0][7:0] first_layer_weight;
     bit [569:0][7:0] second_layer_weight;
+    int quant_rng = 8;
 
     function new(string name = "model_read_transaction");
         super.new(name);
+        $value$plusargs("quant_rng=%0d", quant_rng);
         read_img();
         read_layer1();
         read_layer2();
@@ -57,7 +59,7 @@ function void model_read_transaction::read_layer1();
     int          value;
     int 	 line_num;
 
-    fd = $fopen ("csv/model_layer_weight0_int7.csv", "r");
+    fd = $fopen ($sformatf("csv/model_layer_weight0_int%0d.csv",quant_rng), "r");
 
     while (!$feof(fd)) begin
         
@@ -87,7 +89,7 @@ function void model_read_transaction::read_layer2();
     string       line_rest;
     int          value;
 
-    fd = $fopen ("csv//model_layer_weight1_int7.csv", "r");
+    fd = $fopen ($sformatf("csv/model_layer_weight1_int%0d.csv", quant_rng), "r");
 
     while (!$feof(fd)) begin
         

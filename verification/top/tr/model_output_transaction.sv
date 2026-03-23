@@ -5,9 +5,11 @@ class model_output_transaction extends uvm_sequence_item;
     bit [55:0][15:0] model_first_layer_output_int16;
     bit [9:0][7:0]   model_output;
     bit [9:0][15:0]  model_output_int16;
+    int quant_rng;
 
     function new(string name = "model_output_transaction");
        super.new(name);
+       $value$plusargs("quant_rng=%0d", quant_rng);;
     endfunction //new()
 
     extern function bit [55:0][7:0] cal_first_layer(model_read_transaction model_rd_tr);
@@ -27,8 +29,8 @@ class model_output_transaction extends uvm_sequence_item;
             if(model_first_layer_output_int16[i] < min_val) min_val = model_first_layer_output_int16[i];
         end
     
-        scale_fac = (max_val - min_val)/127.0;
-        z_fac = -64 + $rtoi(min_val/scale_fac);
+        scale_fac = (max_val - min_val)/(2**quant_rng - 1);
+        z_fac = 0;//-128 + $rtoi(min_val/scale_fac);
     
     
     
@@ -59,12 +61,12 @@ class model_output_transaction extends uvm_sequence_item;
         end
     
         if (max_val != min_val)begin
-            scale_fac = (max_val - min_val)/127.0;
+            scale_fac = (max_val - min_val)/(2**quant_rng - 1);
         end
         else begin
             scale_fac = 1;
         end
-        z_fac = -64 + $rtoi(min_val/scale_fac);
+        z_fac = -(2**(quant_rng-1)) + $rtoi(min_val/scale_fac);
     
     
     
