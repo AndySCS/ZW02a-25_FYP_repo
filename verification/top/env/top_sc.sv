@@ -42,6 +42,7 @@ task top_sc::main_phase(uvm_phase phase);
 
     check_first_layer_flag = $test$plusargs("ffn_clip");
     seed = $get_initial_random_seed();
+    `uvm_info(get_name(), $sformatf("check_first_layer_flag is %d", check_first_layer_flag), UVM_NONE);
 
 	
     fork

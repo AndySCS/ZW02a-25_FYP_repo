@@ -1,4 +1,4 @@
 [
 {"mode":"reg"},
-{"tc_name" : "tc_clip"              , "num": 200}
+{"tc_name" : "tc_ffn_clip"      , "num": 200}
 ]
