@@ -13,7 +13,7 @@ dbname = cov
 flash_depth = 2048 
 max_chk = 15000
 tc_opt = 
-quant_rng = 7
+quant_rng = 4
 
 tc_opt_dir = ../tc/$(tc).opt
 

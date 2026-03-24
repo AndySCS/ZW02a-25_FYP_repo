@@ -37,12 +37,12 @@ def regtask(tc_name):
     for line in sim_result:
         #print(line)
         if(type(line) == str):
-            if(re.search("TC PASS", line)):
-                result = "PASS"
-            elif (re.search("TC ERROR", line)):
+            if (re.search("TC ERROR", line)):
                 result = "FAIL"
-            else:
+            elif(re.search("TC PASS", line)):
                 result = "PASS"
+            else:
+                result = "FAIL"
     return result, cmd, tc_name; 
 
 def write_rpt():
