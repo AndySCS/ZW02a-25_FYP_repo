@@ -1,7 +1,7 @@
 class axi_rd_driver extends uvm_driver; 
 
     virtual axi_rd_intf axi_rd_if;
-    uvm_blocking_get_port #(model_output_transaction) axi_wr_port;
+    ram_block ram_blk;
 
     model_output_transaction axi_wr_tr;
     model_read_transaction model_rd_tr;
@@ -31,9 +31,11 @@ endclass //className extends superClass
 function void axi_rd_driver::build_phase(uvm_phase phase);
     super.build_phase(phase);
     model_rd_tr = new();
-    axi_wr_port = new("axi_wr_port", this);
     if(!uvm_config_db#(virtual axi_rd_intf)::get(this, "", "axi_rd_if", axi_rd_if))begin
         `uvm_fatal("axi_rd_driver", "axi_rd driver fail to get axi_rd if")
+    end
+    if(!uvm_config_db#(ram_block)::get(this, "", "ram_blk", ram_blk))begin
+        `uvm_fatal("axi_rd_driver", "axi_rd driver fail to get ram_blk")
     end
 endfunction
 
@@ -152,27 +154,9 @@ function bit[63:0] axi_rd_driver::get_data(axi_transaction axi_tr);
 
     arsize_convert = 1 << axi_tr.AxSIZE;
 
-    if(axi_tr.AxADDR < 784)begin
-        for(int i = 0; i < arsize_convert; i++)begin
-            rdata_tmp[i] = model_rd_tr.img_array[axi_tr.AxADDR+i];
-        end
+    for(int i =0; i < arsize_convert; i++)begin
+        rdata_tmp[i] = ram_blk.read_data(axi_tr.AxADDR + i)[7:0];
     end
-    else if(axi_tr.AxADDR < 1000)begin
-        for(int i = 0; i < arsize_convert; i++)begin
-            rdata_tmp[i] = first_layer_ouptut[axi_tr.AxADDR+i - 784];
-        end
-    end
-    else if (axi_tr.AxADDR < 45000) begin 
-        for(int i = 0; i < arsize_convert; i++)begin
-            rdata_tmp[i] = model_rd_tr.first_layer_weight[axi_tr.AxADDR-1000+i];
-        end
-    end
-    else begin
-        for(int i = 0; i < arsize_convert; i++)begin
-            rdata_tmp[i] = model_rd_tr.second_layer_weight[axi_tr.AxADDR-45000+i];
-        end
-    end
-
     return rdata_tmp;
 
 endfunction

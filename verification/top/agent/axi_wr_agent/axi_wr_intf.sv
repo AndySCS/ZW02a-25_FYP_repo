@@ -29,7 +29,7 @@ interface axi_wr_intf(
     input [2:0] AWSIZE;
     input [1:0] AWBURST;
     input [3:0] AWREGION;
-    input  AWVALID;
+    input AWVALID;
     input AWREADY;
 
     //write data channel
