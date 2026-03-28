@@ -36,7 +36,19 @@ function void env::build_phase(uvm_phase phase);
     cmd_hdlr = cmd_handler::type_id::create("cmd_hdlr", this);
     uvm_config_db#(cmd_handler)::set(this, "rm", "cmd_hdlr", cmd_hdlr);
     uvm_config_db#(cmd_handler)::set(this, "sc", "cmd_hdlr", cmd_hdlr);
+    uvm_config_db#(cmd_handler)::set(this, "model_rd", "cmd_hdlr", cmd_hdlr);
     uvm_config_db#(cmd_handler)::set(this, "axi_wr_agt.axi_wr_mon", "cmd_hdlr", cmd_hdlr);
+
+    
+    ram_blk = ram_block::type_id::create("ram_blk", this);
+    //ram_blk.build();
+    uvm_config_db#(ram_block)::set(this, "model_rd", "ram_blk", ram_blk);
+    uvm_config_db#(ram_block)::set(this, "axi_wr_agt.axi_wr_mon", "ram_blk", ram_blk);
+    uvm_config_db#(ram_block)::set(this, "axi_rd_agt.axi_rd_drv", "ram_blk", ram_blk);
+
+    model_rd = model_reader::type_id::create("model_rd", this);
+    uvm_config_db#(model_reader)::set(this, "rm", "model_rd", model_rd);
+    
 
     top_agt = top_agent::type_id::create("top_agt", this);
     axi_wr_agt = axi_wr_agent::type_id::create("axi_wr_agt", this);
@@ -45,21 +57,12 @@ function void env::build_phase(uvm_phase phase);
     rm = top_rm::type_id::create("rm", this);
     sc = top_sc::type_id::create("sc", this);
     force_agt = force_agent::type_id::create("force_agt", this);
-    model_rd = model_reader::type_id::create("model_rd", this);
 
-    ram_blk = ram_block::type_id::create("ram_blk", this);
-    ram_blk.build();
-    ram_blk.lock_model();
-    //ram_blk.set_default_access(UVM_BACKDOOR);
-    uvm_config_db#(ram_block)::set(this, "model_rd", "ram_blk", ram_blk);
-    uvm_config_db#(ram_block)::set(this, "axi_wr_agt.axi_wr_mon", "ram_blk", ram_blk);
-    uvm_config_db#(ram_block)::set(this, "axi_rd_agt.axi_rd_drv", "ram_blk", ram_blk);
     
     agt_rm_fifo = new("agt_rm_fifo",this);
     agt_sc_fifo = new("agt_sc_fifo",this);
     rm_sc_fifo = new("rm_sc_fifo",this);
 
-    uvm_config_db#(model_reader)::set(this, "rm", "model_rd", model_rd);
 
     `uvm_info(get_name(), "build phase ends", UVM_LOW);
 

@@ -40,9 +40,12 @@ function void cmd_handler::build_phase(uvm_phase phase);
     $value$plusargs("img_dir=%s", img_dir);
     $value$plusargs("weights_dir=%s", weights_dir);
 
+    weights_row = new[layer_num];
+    weights_col = new[layer_num];
     for(int i = 0; i < layer_num; i++) begin
-        $value$plusargs($sformatf("weights%0d_row=%s", i, "%0d"), weights_row[i]);
-        $value$plusargs($sformatf("weights%0d_col=%s", i, "%0d"), weights_col[i]);
+        $value$plusargs($sformatf("weight%0d_row=%s", i, "%0d"), weights_row[i]);
+        $value$plusargs($sformatf("weight%0d_col=%s", i, "%0d"), weights_col[i]);
+        `uvm_info(get_name(), $sformatf("weights_row[%0d] is %0d", i, weights_row[i]), UVM_NONE)
     end
 
     relu = new[layer_num];

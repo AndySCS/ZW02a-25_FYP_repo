@@ -15,12 +15,14 @@ class file_read_transaction extends uvm_sequence_item;
 endclass //file_read_transaction extends uvm_sequence_item
 
 function void file_read_transaction::read_file(string file_path, int row, int col);
-    int 	     fd; 			// Variable for file descriptor handle
+    int 	 fd; 			// Variable for file descriptor handle
     int          arr_pos;
     string       line;
     string       line_rest;
     int          value;
+    int          total_data_num;
 
+    total_data_num = row * col;
     this.row = row;
     this.col = col;
     read_data = new[row];
@@ -38,6 +40,7 @@ function void file_read_transaction::read_file(string file_path, int row, int co
         while ($sscanf(line, "%d,%s", value, line_rest) == 2 || $sscanf(line, "%d", value, line_rest) == 1) begin
             read_data[arr_pos / col][arr_pos % col] = value;
             arr_pos++;
+            if($sscanf(line, "%d,%s", value, line_rest) == 1) break;
             line = line_rest;
         end
 
@@ -45,6 +48,6 @@ function void file_read_transaction::read_file(string file_path, int row, int co
     end
     $fclose(fd);
 
-    if(arr_pos != row * col) `uvm_error(get_name(), $sformatf("img read is not correct, actual read cnt = %d", arr_pos));
+    if(arr_pos != total_data_num) `uvm_error(get_name(), $sformatf("img read is not correct, actual read cnt = %d, exp read cnt = %0d", arr_pos, total_data_num));
 
 endfunction
