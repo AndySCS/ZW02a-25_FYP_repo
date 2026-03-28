@@ -41,31 +41,31 @@ function void cmd_handler::build_phase(uvm_phase phase);
     $value$plusargs("weights_dir=%s", weights_dir);
 
     for(int i = 0; i < layer_num; i++) begin
-        $value$plusargs($sformatf("weights%0d_row=%0d", i), weights_row[i]);
-        $value$plusargs($sformatf("weights%0d_col=%0d", i), weights_col[i]);
+        $value$plusargs($sformatf("weights%0d_row=%s", i, "%0d"), weights_row[i]);
+        $value$plusargs($sformatf("weights%0d_col=%s", i, "%0d"), weights_col[i]);
     end
 
-    relu = new[model_rd.layer_num];
-    for(int i = 0; i < model_rd.layer_num; i++) begin
-        $value$plusargs($sformatf("relu_layer%0d=%%b", i), relu[i]);
+    relu = new[layer_num];
+    for(int i = 0; i < layer_num; i++) begin
+        $value$plusargs($sformatf("relu_layer%0d=%s", i, "%b"), relu[i]);
     end
 
     $value$plusargs("img_data_addr=%0d", img_data_addr);
     weight_data_addr = new[layer_num];
     for(int i = 0; i < layer_num; i++) begin
-        $value$plusargs($sformatf("weight_data_addr_layer%0d=%0d", i), weight_data_addr[i]);
+        $value$plusargs($sformatf("weight_data_addr_layer%0d=%s", i, "%0d"), weight_data_addr[i]);
     end
 
     output_layer_num = clip ? layer_num : 1;
 
     output_data_addr = new[output_layer_num];
     for(int i = 0; i < output_layer_num; i++) begin
-        $value$plusargs($sformatf("output_data_addr_layer%0d=%0d", i), output_data_addr[i]);
+        $value$plusargs($sformatf("output_data_addr_layer%0d=%s", i, "%0d"), output_data_addr[i]);
     end
 
     output_len = new[output_layer_num];
     for(int i = 0; i < output_layer_num; i++) begin
-        $value$plusargs($sformatf("output_len_layer%0d=%0d", i), output_len[i]);
+        $value$plusargs($sformatf("output_len_layer%0d=%s", i, "%0d"), output_len[i]);
     end
 
     seed = $get_initial_random_seed();

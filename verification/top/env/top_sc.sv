@@ -28,9 +28,9 @@ function void top_sc::build_phase(uvm_phase phase);
 endfunction
 
 task top_sc::main_phase(uvm_phase phase);
-    model_output_transaction exp_tr;
-    model_output_transaction act_tr;
-    model_output_transaction tmp_tr;
+    ffn_operator exp_tr;
+    ffn_operator act_tr;
+    ffn_operator tmp_tr;
 
     int softmax_output;
     int check_cnt;

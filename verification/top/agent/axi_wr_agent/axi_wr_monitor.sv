@@ -21,8 +21,8 @@ class axi_wr_monitor extends uvm_monitor;
     
     extern function void build_phase(uvm_phase phase);
     extern virtual task main_phase(uvm_phase phase);
-    extern function void mon_layer();
-    extern function void mon_output(ffn_operator tr);
+    extern task mon_layer();
+    extern task mon_output(ffn_operator tr);
     
 endclass //axi_wr_input_monitor extends superClass
 
@@ -41,7 +41,6 @@ function void axi_wr_monitor::build_phase(uvm_phase phase);
         `uvm_fatal(get_name(), "axi_wr_monitor fail to get ram_blk")
     end
     ap = new("ap", this);
-    axi_wr_port = new("axi_wr_port", this);
 endfunction
 
 task axi_wr_monitor::main_phase(uvm_phase phase);
@@ -60,7 +59,7 @@ task axi_wr_monitor::main_phase(uvm_phase phase);
         end
         if(mon_fsm == 2'b01)begin
             mon_layer();
-            if(topp_if.wfi)begin
+            if(top_if.wfi)begin
                 mon_output(tr);
                 mon_fsm = 2'b00;
             end
@@ -69,7 +68,7 @@ task axi_wr_monitor::main_phase(uvm_phase phase);
 
 endtask
 
-function void axi_wr_monitor::mon_layer();
+task axi_wr_monitor::mon_layer();
     int alloc_data_q[$];
     int alloc_addr_q[$];
 
@@ -87,15 +86,23 @@ function void axi_wr_monitor::mon_layer();
             end
         end
     end
-endfunction
+endtask
 
-function void axi_wr_monitor::mon_output(ffn_operator tr);
+task axi_wr_monitor::mon_output(ffn_operator tr);
+    int tmp_data;
+    bit[15:0] bit_data;
+    int alloc_ptr_nxt;
+
     tr = new();
 
-    tr.layer_output = new[1][cmd_hdlr.output_len[output_layer]];
+    tr.layer_output = new[1];
+    tr.layer_output[0] = new[cmd_hdlr.output_len[output_layer]];
     alloc_ptr = cmd_hdlr.output_data_addr[output_layer];
+    alloc_ptr_nxt = alloc_ptr+1;
     for(int i = 0; i < cmd_hdlr.output_len[output_layer]; i++)begin
-        tr.layer_output[0][i] = int'($signed({ram_blk.read_data(alloc_ptr + 1), ram_blk.read_data(alloc_ptr)}));
+        ram_blk.read_data(bit_data[15:0], alloc_ptr_nxt);
+        ram_blk.read_data(bit_data[7:0], alloc_ptr);
+        tr.layer_output[0][i] = int'($signed(bit_data));
         alloc_ptr = alloc_ptr + 2;
     end
     ap.write(tr);
@@ -106,4 +113,4 @@ function void axi_wr_monitor::mon_output(ffn_operator tr);
         ram_blk.write_data(tr.quant_data[i][j], cmd_hdlr.output_data_addr[output_layer-1] + i*cmd_hdlr.output_len[output_layer-1]*2 + j*2);
     end
 
-endfunction
+endtask

@@ -48,6 +48,9 @@ function void env::build_phase(uvm_phase phase);
     model_rd = model_reader::type_id::create("model_rd", this);
 
     ram_blk = ram_block::type_id::create("ram_blk", this);
+    ram_blk.build();
+    ram_blk.lock_model();
+    //ram_blk.set_default_access(UVM_BACKDOOR);
     uvm_config_db#(ram_block)::set(this, "model_rd", "ram_blk", ram_blk);
     uvm_config_db#(ram_block)::set(this, "axi_wr_agt.axi_wr_mon", "ram_blk", ram_blk);
     uvm_config_db#(ram_block)::set(this, "axi_rd_agt.axi_rd_drv", "ram_blk", ram_blk);
@@ -55,7 +58,6 @@ function void env::build_phase(uvm_phase phase);
     agt_rm_fifo = new("agt_rm_fifo",this);
     agt_sc_fifo = new("agt_sc_fifo",this);
     rm_sc_fifo = new("rm_sc_fifo",this);
-    axi_agt_fifo = new("axi_agt_fifo",this);
 
     uvm_config_db#(model_reader)::set(this, "rm", "model_rd", model_rd);
 

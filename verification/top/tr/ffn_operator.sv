@@ -45,16 +45,27 @@ function void ffn_operator::rescale_data(ref int input_data[]);
 endfunction
 
 function void ffn_operator::rescale_layer();
-    quant_data = new[layer_output.size()][layer_output[0].size()];
+    quant_data = new[layer_output.size()];
     foreach (layer_output[i]) begin
-        quant_data[i] = rescale_data(layer_output[i]);
+        quant_data = new[layer_output[0].size()];
+    end
+    foreach (layer_output[i,j]) begin
+        quant_data[i][j] = layer_output[i][j];
+    end
+    foreach (layer_output[i]) begin
+        rescale_data(quant_data[i]);
     end
 endfunction
 
 function void ffn_operator::cal_layer(int input_data[][], int wgt_data[][], bit relu, bit add_last_wgt);
 
-    layer_output = new[input_data.size()][wgt_data.size()];
-    quant_data = new[input_data.size()][wgt_data.size()];
+    layer_output = new[1];
+    quant_data = new[1];
+
+    foreach(layer_output[i])begin
+        layer_output[i] = new[wgt_data.size()];
+        quant_data[i] = new[wgt_data.size()];
+    end
 
     for(int i = 0; i < layer_output.size(); i++)begin
         for(int j = 0; j < wgt_data.size(); j++)begin
@@ -84,10 +95,12 @@ endfunction
 
 function void ffn_operator::copy(ffn_operator rhs);
     this.quant_rng = rhs.quant_rng;
-    this.layer_output = new[rhs.layer_output.size()][rhs.layer_output[0].size()];
-    this.quant_data = new[rhs.quant_data.size()][rhs.quant_data[0].size()];
+    this.layer_output = new[rhs.layer_output.size()];
+    this.quant_data = new[rhs.quant_data.size()];
 
     for(int i = 0; i < layer_output.size(); i++)begin
+        this.layer_output[i] = new[rhs.quant_data[0].size()];
+        this.quant_data[i] = new[rhs.quant_data[0].size()];
         for(int j = 0; j < layer_output[0].size(); j++)begin
             this.layer_output[i][j] = rhs.layer_output[i][j];
             this.quant_data[i][j] = rhs.quant_data[i][j];

@@ -46,13 +46,13 @@ task top_rm::main_phase(uvm_phase phase);
     for(int i = 0; i < cmd_hdlr.layer_num; i++) begin
         ffn_op[i] = ffn_operator::type_id::create($sformatf("ffn_op_%0d", i));
         if(i ==0)begin
-            ffn_op[i].cal_layer(model_rd.img_data.data, model_rd.weights_data[i].data, cmd_hdlr.relu[i], 1);
+            ffn_op[i].cal_layer(model_rd.img_data.read_data, model_rd.weights_data[i].read_data, cmd_hdlr.relu[i], 1);
         end
         else if (cmd_hdlr.clip)begin
-            ffn_op[i].cal_layer(ffn_op[i-1].quant_data, model_rd.weights_data[i].data, cmd_hdlr.relu[i], 0);
+            ffn_op[i].cal_layer(ffn_op[i-1].quant_data, model_rd.weights_data[i].read_data, cmd_hdlr.relu[i], 0);
         end
         else begin
-            ffn_op[i].cal_layer(ffn_op[i-1].layer_output, model_rd.weights_data[i].data, cmd_hdlr.relu[i], 0);
+            ffn_op[i].cal_layer(ffn_op[i-1].layer_output, model_rd.weights_data[i].read_data, cmd_hdlr.relu[i], 0);
         end
     end
 
