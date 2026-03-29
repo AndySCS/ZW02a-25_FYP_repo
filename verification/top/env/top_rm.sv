@@ -60,9 +60,9 @@ task top_rm::main_phase(uvm_phase phase);
     while(1)begin
         port.get(tr);
         tr.copy(ffn_op[send_layer]);
-        send_layer+=1;
-        `uvm_info(get_name(), "write exp output to sc", UVM_NONE);
+        `uvm_info(get_name(), $sformatf("write exp output %0d to sc", send_layer), UVM_NONE);
         ap.write(tr);
+        send_layer+=1;
     end
 
 endtask

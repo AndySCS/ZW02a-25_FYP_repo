@@ -81,6 +81,7 @@ function void ffn_operator::cal_layer(int input_data[][], int wgt_data[][], bit 
                 layer_output[i][j] += input_data[i][k] * wgt_data[j][k];
                 if(layer_output[i][j] > 32767)  layer_output[i][j] = 32767;
                 if(layer_output[i][j] < -32768) layer_output[i][j] = -32768;
+                `uvm_info(get_name(), $sformatf("update data[%0d, %0d] with inpt data[%0d. %0d] and wgt data[%0d, %0d]", i, j, i, k, j, k), UVM_DEBUG)
             end
             if (add_last_wgt) begin
                 layer_output[i][j] += wgt_data[j][wgt_data[0].size()-1];
@@ -88,6 +89,7 @@ function void ffn_operator::cal_layer(int input_data[][], int wgt_data[][], bit 
                 if(layer_output[i][j] < -32768) layer_output[i][j] = -32768;
             end
             if(relu && layer_output[i][j] < 0) layer_output[i][j] = 0;
+            `uvm_info(get_name(), $sformatf("done cal [%0d, %0d] data, data is %0d", i, j, layer_output[i][j]), UVM_DEBUG)
         end
     end
 

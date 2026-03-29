@@ -39,7 +39,7 @@ function void file_read_transaction::read_file(string file_path, int row, int co
 
         while ($sscanf(line, "%d,%s", value, line_rest) == 2 || $sscanf(line, "%d", value, line_rest) == 1) begin
             read_data[arr_pos / col][arr_pos % col] = value;
-            `uvm_info(get_name(), $sformatf("read data %0d", value), UVM_DEBUG);
+            `uvm_info(get_name(), $sformatf("read data %0d", read_data[arr_pos / col][arr_pos % col]), UVM_DEBUG);
             arr_pos++;
             if($sscanf(line, "%d,%s", value, line_rest) == 1) break;
             line = line_rest;

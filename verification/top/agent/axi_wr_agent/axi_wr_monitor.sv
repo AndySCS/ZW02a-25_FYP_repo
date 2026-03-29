@@ -79,10 +79,11 @@ task axi_wr_monitor::mon_layer();
         wsize = 1 << axi_wr_if.AWSIZE;
     end
     if(axi_wr_if.WVALID & axi_wr_if.WREADY)begin
-        for(int i = 0; i < wsize/8; i++)begin
+        for(int i = 0; i < wsize; i++)begin
             if(axi_wr_if.WSTRB[i])begin
                 wdata_len = wdata_len - 1;
                 ram_blk.write_data(int'($signed(axi_wr_if.WDATA[i*8 +: 8])), waddr);
+                `uvm_info(get_name(), $sformatf("write data %0d to addr %0d", int'($signed(axi_wr_if.WDATA[i*8 +: 8])), waddr), UVM_DEBUG)
                 waddr = waddr + 1;
             end
         end
@@ -91,7 +92,8 @@ endtask
 
 task axi_wr_monitor::mon_output(ffn_operator tr);
     int tmp_data;
-    bit[15:0] bit_data;
+    int bit_data_hi;
+    int bit_data_lo;
     int alloc_ptr_nxt;
 
     tr = new();
@@ -99,19 +101,20 @@ task axi_wr_monitor::mon_output(ffn_operator tr);
     tr.layer_output = new[1];
     tr.layer_output[0] = new[cmd_hdlr.output_len[output_layer]];
     alloc_ptr = cmd_hdlr.output_data_addr[output_layer];
-    alloc_ptr_nxt = alloc_ptr+1;
     for(int i = 0; i < cmd_hdlr.output_len[output_layer]; i++)begin
-        ram_blk.read_data(bit_data[15:0], alloc_ptr_nxt);
-        ram_blk.read_data(bit_data[7:0], alloc_ptr);
-        tr.layer_output[0][i] = int'($signed(bit_data));
+        alloc_ptr_nxt = alloc_ptr+1;
+        ram_blk.read_data(bit_data_hi, alloc_ptr_nxt);
+        ram_blk.read_data(bit_data_lo, alloc_ptr);
+        tr.layer_output[0][i] = int'($signed({bit_data_hi[7:0], bit_data_lo[7:0]}));
+        `uvm_info(get_name(), $sformatf("read data %0d at %0d and %0d", tr.layer_output[0][i], alloc_ptr, alloc_ptr_nxt), UVM_DEBUG)
         alloc_ptr = alloc_ptr + 2;
     end
     ap.write(tr);
-    output_layer++;
 
     tr.rescale_layer();
     foreach (tr.quant_data[i,j]) begin
-        ram_blk.write_data(tr.quant_data[i][j], cmd_hdlr.output_data_addr[output_layer-1] + i*cmd_hdlr.output_len[output_layer-1]*2 + j*2);
+        ram_blk.write_data(tr.quant_data[i][j], cmd_hdlr.output_data_addr[output_layer] + i*tr.quant_data[0].size() + j);
     end
+    output_layer++;
 
 endtask
