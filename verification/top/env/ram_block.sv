@@ -1,6 +1,6 @@
 class ram_block extends uvm_component;//_reg_block;
 
-    logic [7:0] ram [65535];
+    int ram [65535:0];
 
     function new(string name = "ram_block", uvm_component parent = null);
         super.new(name, parent);
@@ -9,7 +9,7 @@ class ram_block extends uvm_component;//_reg_block;
     //extern virtual function void build();
     extern task write_data(int input_data, int addr);
     extern task write_2d_array(int input_data[][], int addr);
-    extern task read_data(output int data, int addr);
+    extern task read_data(output int data,input int addr);
 
     `uvm_component_utils(ram_block)
     //`uvm_object_utils(ram_block)
@@ -29,7 +29,7 @@ endclass
 task ram_block::write_data(int input_data, int addr);
     //uvm_status_e status;
     //ram.write(status, addr, input_data, UVM_BACKDOOR);
-    ram[addr] = input_data[7:0];
+    ram[addr] = input_data;
     //if(status != UVM_IS_OK) begin
     //    `uvm_error(get_name(), $sformatf("Failed to write data to ram, addr = %0d, data = %0d", addr, input_data))
     //end
@@ -48,7 +48,7 @@ task ram_block::write_2d_array(int input_data[][], int addr);
 
 endtask
 
-task ram_block::read_data(output int data, int addr);
+task ram_block::read_data(output int data,input int addr);
     data = int'($signed(ram[addr]));
     //uvm_status_e status;
     //ram.read(status, addr, data, UVM_BACKDOOR);

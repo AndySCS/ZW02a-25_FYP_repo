@@ -3,6 +3,7 @@ class ffn_operator extends uvm_sequence_item;
     int quant_rng;
     int layer_output[][];
     int quant_data[][];
+    int sat_output[][];
 
     function new(string name = "ffn_operator");
        super.new(name);
@@ -59,23 +60,30 @@ endfunction
 
 function void ffn_operator::cal_layer(int input_data[][], int wgt_data[][], bit relu, bit add_last_wgt);
 
+    int data_tmp;
     layer_output = new[1];
     quant_data = new[1];
+    sat_output = new[1];
 
     foreach(layer_output[i])begin
         layer_output[i] = new[wgt_data.size()];
         quant_data[i] = new[wgt_data.size()];
+        sat_output[i] = new[wgt_data.size()];
     end
+   
+    `uvm_info(get_name(), $sformatf("input data shape is (%0d, %0d)", input_data.size(), input_data[0].size()), UVM_NONE)
+    `uvm_info(get_name(), $sformatf("wgt data shape is (%0d, %0d)", wgt_data.size(), wgt_data[0].size()), UVM_NONE)
+    `uvm_info(get_name(), $sformatf("layer output shape is (%0d, %0d)", layer_output.size(), layer_output[0].size()), UVM_NONE)
 
     for(int i = 0; i < layer_output.size(); i++)begin
         for(int j = 0; j < wgt_data.size(); j++)begin
             for(int k = 0; k < input_data[0].size(); k++)begin
-                layer_output[i][j] += input_data[i][k] * wgt_data[k][j];
+                layer_output[i][j] += input_data[i][k] * wgt_data[j][k];
                 if(layer_output[i][j] > 32767)  layer_output[i][j] = 32767;
                 if(layer_output[i][j] < -32768) layer_output[i][j] = -32768;
             end
             if (add_last_wgt) begin
-                layer_output[i][j] += wgt_data[i][wgt_data[0].size()-1];
+                layer_output[i][j] += wgt_data[j][wgt_data[0].size()-1];
                 if(layer_output[i][j] > 32767)  layer_output[i][j] = 32767;
                 if(layer_output[i][j] < -32768) layer_output[i][j] = -32768;
             end
@@ -85,6 +93,9 @@ function void ffn_operator::cal_layer(int input_data[][], int wgt_data[][], bit 
 
     foreach (layer_output[i,j]) begin
         quant_data[i][j] = layer_output[i][j];
+        sat_output[i][j] = (layer_output[i][j] > 127) ? 127
+                         : (layer_output[i][j] < -128) ? -128
+                         :  layer_output[i][j];
     end
     
     foreach (quant_data[i]) begin

@@ -41,24 +41,24 @@ task top_sc::main_phase(uvm_phase phase);
     fork
 	while(1)begin
 	    this.exp_port.get(exp_tr);
-    	`uvm_info("top_sc", "received exp matrix from rm", UVM_MEDIUM);
+    	    `uvm_info("top_sc", "received exp matrix from rm", UVM_MEDIUM);
 	    this.exp_result_q.push_back(exp_tr);
 	end
 	while(1)begin
 	    this.act_port.get(act_tr);
-    	`uvm_info("top_sc", "received act matrix from mon", UVM_MEDIUM);
+    	    `uvm_info("top_sc", "received act matrix from mon", UVM_MEDIUM);
 	    if(this.exp_result_q.size() > 0)begin
 	        tmp_tr = this.exp_result_q.pop_front();
-            check_layer(tmp_tr, act_tr);
-            check_cnt++;
-            if(cmd_hdlr.output_layer_num == check_cnt) softmax_output = softmax(tmp_tr.layer_output[0]);
-            fd = $fopen($sformatf("sim_tmp/model_output%0d.txt",cmd_hdlr.seed), "w");
-            $fdisplay(fd, $sformatf("%d", softmax_output));
-            $fclose(fd);
-        end
-        else begin
-            `uvm_error("top_sc", "exp_result_q is empty")
-        end
+                check_layer(tmp_tr, act_tr);
+                check_cnt++;
+                if(cmd_hdlr.output_layer_num == check_cnt) softmax_output = softmax(tmp_tr.layer_output[0]);
+                fd = $fopen($sformatf("sim_tmp/model_output%0d.txt",cmd_hdlr.seed), "w");
+                $fdisplay(fd, $sformatf("%d", softmax_output));
+                $fclose(fd);
+            end
+            else begin
+                `uvm_error("top_sc", "exp_result_q is empty")
+            end
 	end
     join
 
@@ -67,25 +67,18 @@ endtask
 function void top_sc::check_layer(ffn_operator exp_tr, ffn_operator act_tr);
     
     if(exp_tr.layer_output.size() != act_tr.layer_output.size()) begin
-        `uvm_error(get_name(), $sformatf("exp and act layer output size is not the same, act size = %d, exp size = %d", act_tr.layer_output.size(), exp_tr.layer_output.size()))
+        `uvm_error(get_name(), $sformatf("exp and act layer output row size is not the same, act size = %d, exp size = %d", act_tr.layer_output.size(), exp_tr.layer_output.size()))
         return;
     end
     if(exp_tr.layer_output[0].size() != act_tr.layer_output[0].size()) begin
-        `uvm_error(get_name(), $sformatf("exp and act layer output size is not the same, act size = %d, exp size = %d", act_tr.layer_output[0].size(), exp_tr.layer_output[0].size()))
+        `uvm_error(get_name(), $sformatf("exp and act layer output col size is not the same, act size = %d, exp size = %d", act_tr.layer_output[0].size(), exp_tr.layer_output[0].size()))
         return;
     end
 
     for(int i = 0; i < exp_tr.layer_output.size(); i++)begin
         for(int j = 0; j < exp_tr.layer_output[0].size(); j++)begin
-            if(cmd_hdlr.clip) begin
-	            if(exp_tr.quant_data[i][j] != act_tr.quant_data[i][j]) begin
-	                `uvm_error(get_name(), $sformatf("exp and act model [%0d][%0d] output is not the same, act output = %d, exp output = %d", i, j, act_tr.quant_data[i][j], exp_tr.quant_data[i][j]))
-                end
-            end
-            else begin
-	            if(exp_tr.layer_output[i][j] != act_tr.layer_output[i][j]) begin
-	                `uvm_error(get_name(), $sformatf("exp and act model [%0d][%0d] output is not the same, act output = %d, exp output = %d", i, j, act_tr.layer_output[i][j], exp_tr.layer_output[i][j]))
-                end
+	    if(exp_tr.layer_output[i][j] != act_tr.layer_output[i][j]) begin
+	        `uvm_error(get_name(), $sformatf("exp and act model [%0d][%0d] output is not the same, act output = %d, exp output = %d", i, j, act_tr.layer_output[i][j], exp_tr.layer_output[i][j]))
             end
         end
     end

@@ -39,6 +39,7 @@ endfunction
 task top_rm::main_phase(uvm_phase phase);
     
     ffn_operator tr;
+    int send_layer = cmd_hdlr.clip? 0: cmd_hdlr.layer_num-1;
 
     super.main_phase(phase);
 
@@ -49,16 +50,18 @@ task top_rm::main_phase(uvm_phase phase);
             ffn_op[i].cal_layer(model_rd.img_data.read_data, model_rd.weights_data[i].read_data, cmd_hdlr.relu[i], 1);
         end
         else if (cmd_hdlr.clip)begin
-            ffn_op[i].cal_layer(ffn_op[i-1].quant_data, model_rd.weights_data[i].read_data, cmd_hdlr.relu[i], 0);
+            ffn_op[i].cal_layer(ffn_op[i-1].quant_data, model_rd.weights_data[i].read_data, cmd_hdlr.relu[i], 1);
         end
         else begin
-            ffn_op[i].cal_layer(ffn_op[i-1].layer_output, model_rd.weights_data[i].read_data, cmd_hdlr.relu[i], 0);
+            ffn_op[i].cal_layer(ffn_op[i-1].sat_output, model_rd.weights_data[i].read_data, cmd_hdlr.relu[i], 1);
         end
     end
 
     while(1)begin
         port.get(tr);
-        tr.copy(ffn_op[cmd_hdlr.layer_num - 1]);
+        tr.copy(ffn_op[send_layer]);
+        send_layer+=1;
+        `uvm_info(get_name(), "write exp output to sc", UVM_NONE);
         ap.write(tr);
     end
 

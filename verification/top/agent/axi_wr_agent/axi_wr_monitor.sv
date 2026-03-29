@@ -56,6 +56,7 @@ task axi_wr_monitor::main_phase(uvm_phase phase);
         @(posedge axi_wr_if.clk);
         if(top_if.start_vld) begin
             mon_fsm++;
+            continue;
         end
         if(mon_fsm == 2'b01)begin
             mon_layer();

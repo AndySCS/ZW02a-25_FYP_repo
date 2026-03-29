@@ -38,8 +38,9 @@ task top_monitor::main_phase(uvm_phase phase);
             end
         end
         
+        
         ap.write(tr);
-        break;
+        //break;
 
     end
 

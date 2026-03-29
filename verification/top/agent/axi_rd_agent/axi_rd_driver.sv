@@ -134,6 +134,7 @@ task axi_rd_driver::assign_data2bus(axi_transaction axi_tr);
    
     bit [63:0] rdata;
  
+    `uvm_info(get_name(), $sformatf("axi_tr addr is : %0d", axi_tr.AxADDR), UVM_DEBUG)
     get_data(rdata, axi_tr);
     axi_rd_if.RVALID = 1;
     axi_rd_if.RID    = axi_tr.AxID;
@@ -152,10 +153,14 @@ task axi_rd_driver::get_data(output bit [63:0] rdata,input axi_transaction axi_t
 
     arsize_convert = 1 << axi_tr.AxSIZE;
 
+    `uvm_info(get_name(), $sformatf("axi_tr addr is : %0d", axi_tr.AxADDR), UVM_DEBUG)
+
     for(int i =0; i < arsize_convert; i++)begin
-        addr_tmp = axi_tr.AxADDR+1;
+        addr_tmp = int'(axi_tr.AxADDR)+i;
+        `uvm_info(get_name(), $sformatf("read data[%0d]", addr_tmp), UVM_DEBUG)
         ram_blk.read_data(tmp, addr_tmp);
         rdata_tmp[i] = tmp[7:0];
+        `uvm_info(get_name(), $sformatf("read data[%0d] : %0d", addr_tmp,tmp[7:0]), UVM_DEBUG)
     end
     rdata = rdata_tmp;
 

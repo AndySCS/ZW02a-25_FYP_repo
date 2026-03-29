@@ -68,7 +68,7 @@ function void cmd_handler::build_phase(uvm_phase phase);
 
     output_len = new[output_layer_num];
     for(int i = 0; i < output_layer_num; i++) begin
-        $value$plusargs($sformatf("output_len_layer%0d=%s", i, "%0d"), output_len[i]);
+        $value$plusargs($sformatf("output_len%0d=%s", i, "%0d"), output_len[i]);
     end
 
     seed = $get_initial_random_seed();
