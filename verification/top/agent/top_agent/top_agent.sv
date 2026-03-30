@@ -3,7 +3,7 @@ class top_agent extends uvm_agent;
     top_driver top_drv;
     top_sequencer top_sqr;
     top_monitor top_mon; //input monitor
-    uvm_analysis_port #(model_output_transaction) ap;
+    uvm_analysis_port #(ffn_operator) ap;
 
     function new(string name = "top_agent", uvm_component parent);
         super.new(name, parent);

@@ -5,9 +5,11 @@ class model_output_transaction extends uvm_sequence_item;
     bit [55:0][15:0] model_first_layer_output_int16;
     bit [9:0][7:0]   model_output;
     bit [9:0][15:0]  model_output_int16;
+    int quant_rng;
 
     function new(string name = "model_output_transaction");
        super.new(name);
+       $value$plusargs("quant_rng=%0d", quant_rng);;
     endfunction //new()
 
     extern function bit [55:0][7:0] cal_first_layer(model_read_transaction model_rd_tr);
@@ -16,7 +18,7 @@ class model_output_transaction extends uvm_sequence_item;
     function int_arr rescale_data();
     
         int max_val = model_first_layer_output_int16[0];
-        int min_val = model_first_layer_output_int16[0];
+        int min_val = 0;
         real scale_fac;
         int z_fac;
     
@@ -27,13 +29,49 @@ class model_output_transaction extends uvm_sequence_item;
             if(model_first_layer_output_int16[i] < min_val) min_val = model_first_layer_output_int16[i];
         end
     
-        scale_fac = (max_val - min_val)/255.0;
-        z_fac = -128 + $rtoi(min_val/scale_fac);
+        scale_fac = (max_val - min_val)/(2**quant_rng - 1);
+        z_fac = 0;//-128 + $rtoi(min_val/scale_fac);
     
     
     
         for(int i = 0; i < 56; i++)begin
-            output_data[i] = $rtoi((model_first_layer_output_int16[i] - min_val)/scale_fac) + z_fac;
+            output_data[i] = $rtoi((model_first_layer_output_int16[i] - min_val)/scale_fac + z_fac);
+            if (output_data[i] > 127) output_data[i] = 127;
+            if (output_data[i] < -128) output_data[i] = -128;
+        end
+    
+        return output_data;
+    
+    endfunction
+    
+    function int_arr rescale_data_layer2();
+    
+        int max_val = $signed(model_output_int16[0]);
+        int min_val = $signed(model_output_int16[0]);
+        real scale_fac;
+        int z_fac;
+    
+        int input_data[9:0];
+        int output_data[9:0];
+    
+        for(int i = 0; i < 10; i++)begin
+            input_data[i] = $signed( model_output_int16[i]);
+            if(input_data[i] > max_val) max_val = input_data[i];
+            if(input_data[i] < min_val) min_val = input_data[i];
+        end
+    
+        if (max_val != min_val)begin
+            scale_fac = (max_val - min_val)/(2**quant_rng - 1);
+        end
+        else begin
+            scale_fac = 1;
+        end
+        z_fac = -(2**(quant_rng-1)) + $rtoi(min_val/scale_fac);
+    
+    
+    
+        for(int i = 0; i < 10; i++)begin
+            output_data[i] = $rtoi((input_data[i] - min_val)/scale_fac + z_fac);
             if (output_data[i] > 127) output_data[i] = 127;
             if (output_data[i] < -128) output_data[i] = -128;
         end

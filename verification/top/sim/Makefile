@@ -13,6 +13,7 @@ dbname = cov
 flash_depth = 2048 
 max_chk = 15000
 tc_opt = 
+quant_rng = 7
 
 tc_opt_dir = ../tc/$(tc).opt
 
@@ -34,7 +35,7 @@ endif
 img_seed = $(shell expr $(seed) % 1000)
 
 
-fsdb_file_name = $(tc)
+fsdb_file_name = $(tc)_$(seed)
 #TC Name
 #ifeq ($(tc), tc_riscdv)
 #	fsdb_file_name = $(tc)_$(riscdv_test)_$(seed)
@@ -47,8 +48,6 @@ fsdb_file_name = $(tc)
 $(shell $(MINITPU_SCRIPT)/linux/file_extend -dir $(MINITPU_VER))
 $(shell $(MINITPU_SCRIPT)/linux/file_extend -dir $(MINITPU_RTL))
 $(shell $(MINITPU_FOLDER)/ffn_test/tpu_code/cmp_linux -srcDir $(ffn_code_dir) -binDir code.txt)
-$(shell cp $(MINITPU_FOLDER)/ffn_test/mnist_data/csv/img$(img_seed).csv sample.csv)
-$(shell cp $(MINITPU_FOLDER)/ffn_test/mnist_data/label/label$(img_seed).txt sample_label.txt)
 
 GEN_MODE = mkdir -p $(mode) $(mode)/log $(mode)/wave $(mode)/cov
 VCS = vcs -sverilog 	 		          \
@@ -88,10 +87,14 @@ endif
 
 #=======================================================================
 cmp: 
+	rm -rf sim_tmp
+	mkdir sim_tmp
 	$(GEN_MODE)
 	$(VCS) 
 
-sim: 
+sim:  
+	python3 $(MINITPU_SCRIPT)/script_src/quant_input.py -src_addr $(MINITPU_FOLDER)/ffn_test/mnist_data/csv/img$(img_seed).csv -dest_addr sim_tmp/sample$(seed).csv -quant_rng $(quant_rng)
+	cp $(MINITPU_FOLDER)/ffn_test/mnist_data/label/label$(img_seed).txt sim_tmp/sample_label${seed}.txt
 	./$(mode)/simv +UVM_TESTNAME=tc_base                  \
                    +ntb_random_seed=$(seed)             \
 				   +UVM_VERBOSITY=$(printlv)            \
@@ -102,13 +105,16 @@ sim:
                    -cg_coverage_control=$(sim_fcov_opts)\
                    $(sim_ccov_opts)                     \
                    +max_chk=$(max_chk)                  \
-                   +define+FLASH_DEPTH=$(flash_depth)   \
                    +vcs+loopreport+3 \
                    +vcs+loopdetect \
                    +vcs+verbose \
+                   +define+FLASH_DEPTH=$(flash_depth)  \
+                   +quant_rng=$(quant_rng)       \
                    $(tc_opt)
 
 regress: 
+	python3 $(MINITPU_SCRIPT)/script_src/quant_input.py -src_addr $(MINITPU_FOLDER)/ffn_test/mnist_data/csv/img$(img_seed).csv -dest_addr sim_tmp/sample$(seed).csv -quant_rng $(quant_rng)
+	cp $(MINITPU_FOLDER)/ffn_test/mnist_data/label/label$(img_seed).txt sim_tmp/sample_label${seed}.txt
 	./$(mode)/simv +UVM_TESTNAME=tc_base                  \
                    +ntb_random_seed=$(seed)             \
 				   +UVM_VERBOSITY=UVM_NONE              \
@@ -116,7 +122,9 @@ regress:
                    -cg_coverage_control=$(sim_fcov_opts)\
                    $(sim_ccov_opts)                     \
                    +max_chk=$(max_chk)                  \
-                   +define+FLASH_DEPTH=$(flash_depth)       
+		           +define+FLASH_DEPTH=$(flash_depth)   \
+                   +quant_rng=$(quant_rng)       \
+	   	           $(tc_opt)
 
 run: cmp sim
 
