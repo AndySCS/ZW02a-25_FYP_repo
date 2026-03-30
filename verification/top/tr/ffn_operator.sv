@@ -48,7 +48,7 @@ endfunction
 function void ffn_operator::rescale_layer();
     quant_data = new[layer_output.size()];
     foreach (layer_output[i]) begin
-        quant_data = new[layer_output[0].size()];
+        quant_data[i] = new[layer_output[0].size()];
     end
     foreach (layer_output[i,j]) begin
         quant_data[i][j] = layer_output[i][j];

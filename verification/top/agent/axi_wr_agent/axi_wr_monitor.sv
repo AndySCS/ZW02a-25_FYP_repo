@@ -114,6 +114,7 @@ task axi_wr_monitor::mon_output(ffn_operator tr);
     tr.rescale_layer();
     foreach (tr.quant_data[i,j]) begin
         ram_blk.write_data(tr.quant_data[i][j], cmd_hdlr.output_data_addr[output_layer] + i*tr.quant_data[0].size() + j);
+        `uvm_info(get_name(), $sformatf("write qaunt data %0d at %0d", tr.quant_data[i][j],cmd_hdlr.output_data_addr[output_layer] + i*tr.quant_data[0].size() + j), UVM_DEBUG)
     end
     output_layer++;
 
