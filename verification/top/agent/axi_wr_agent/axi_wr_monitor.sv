@@ -98,16 +98,20 @@ task axi_wr_monitor::mon_output(ffn_operator tr);
 
     tr = new();
 
-    tr.layer_output = new[1];
-    tr.layer_output[0] = new[cmd_hdlr.output_len[output_layer]];
+    tr.layer_output = new[cmd_hdlr.output_row[output_layer]];
+    foreach(tr.layer_output[i])begin
+        tr.layer_output[i] = new[cmd_hdlr.output_len[output_layer]];
+    end
     alloc_ptr = cmd_hdlr.output_data_addr[output_layer];
-    for(int i = 0; i < cmd_hdlr.output_len[output_layer]; i++)begin
-        alloc_ptr_nxt = alloc_ptr+1;
-        ram_blk.read_data(bit_data_hi, alloc_ptr_nxt);
-        ram_blk.read_data(bit_data_lo, alloc_ptr);
-        tr.layer_output[0][i] = int'($signed({bit_data_hi[7:0], bit_data_lo[7:0]}));
-        `uvm_info(get_name(), $sformatf("read data %0d at %0d and %0d", tr.layer_output[0][i], alloc_ptr, alloc_ptr_nxt), UVM_DEBUG)
-        alloc_ptr = alloc_ptr + 2;
+    for(int i = 0; i < cmd_hdlr.output_row[output_layer]; i++)begin
+         for(int j = 0; j < cmd_hdlr.output_len[output_layer]; j++)begin
+             alloc_ptr_nxt = alloc_ptr+1;
+             ram_blk.read_data(bit_data_hi, alloc_ptr_nxt);
+             ram_blk.read_data(bit_data_lo, alloc_ptr);
+             tr.layer_output[i][j] = int'($signed({bit_data_hi[7:0], bit_data_lo[7:0]}));
+             `uvm_info(get_name(), $sformatf("read data %0d at %0d and %0d", tr.layer_output[i][j], alloc_ptr, alloc_ptr_nxt), UVM_DEBUG)
+             alloc_ptr = alloc_ptr + 2;
+        end
     end
     ap.write(tr);
 

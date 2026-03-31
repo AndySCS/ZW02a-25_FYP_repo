@@ -16,8 +16,15 @@ class cmd_handler extends uvm_component;
     int weight_data_addr[];
 
     int output_data_addr[];
+    int output_row[];
     int output_len[];
     int output_layer_num;
+
+    int conv_layer[];
+    int conv_window_row[];
+    int conv_window_col[];
+    int conv_img_row[];
+    int conv_img_col[];
 
     function new(string name = "cmd_handler", uvm_component parent);
         super.new(name, parent);
@@ -66,9 +73,24 @@ function void cmd_handler::build_phase(uvm_phase phase);
         $value$plusargs($sformatf("output_addr%0d=%s", i, "%0d"), output_data_addr[i]);
     end
 
+    output_row = new[output_layer_num];
     output_len = new[output_layer_num];
     for(int i = 0; i < output_layer_num; i++) begin
+        $value$plusargs($sformatf("output_row%0d=%s", i, "%0d"), output_row[i]);
         $value$plusargs($sformatf("output_len%0d=%s", i, "%0d"), output_len[i]);
+    end
+
+    conv_layer = new[layer_num];
+    conv_window_row = new[layer_num];
+    conv_window_col = new[layer_num];
+    conv_img_row = new[layer_num];
+    conv_img_col = new[layer_num];
+    for(int i = 0; i < layer_num; i++) begin
+        $value$plusargs($sformatf("conv_layer%0d=%s", i, "%0d"), conv_layer[i]);
+        $value$plusargs($sformatf("conv_window_row%0d=%s", i, "%0d"), conv_window_row[i]);
+        $value$plusargs($sformatf("conv_window_col%0d=%s", i, "%0d"), conv_window_col[i]);
+        $value$plusargs($sformatf("conv_img_row%0d=%s", i, "%0d"), conv_img_row[i]);
+        $value$plusargs($sformatf("conv_img_col%0d=%s", i, "%0d"), conv_img_col[i]);
     end
 
     seed = $get_initial_random_seed();
