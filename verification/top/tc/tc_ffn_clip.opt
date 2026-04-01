@@ -13,7 +13,9 @@
 +weight1_data_addr=45000
 +output_addr0=784
 +output_addr1=50672
++output_row0=1
 +output_len0=56
++output_row1=1
 +output_len1=10
 +relu_layer0=1
 +relu_layer1=00
