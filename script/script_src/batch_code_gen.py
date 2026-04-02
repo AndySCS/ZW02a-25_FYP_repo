@@ -64,7 +64,7 @@ load_cnn_idata_dram_reg = idata_bias_reg
 load_cnn_idata_for_loop_inner_thd_reg = load_wdata_for_loop_thd_reg
 load_cnn_idata_for_loop_inner_iter_reg = load_wdata_for_loop_iter_reg
 load_cnn_idata_for_loop_inner_dest_update_thd_reg = wdata_size_reg
-load_cnn_idata_for_loop_inner_dram_update_thd_reg = wdata_size_reg
+load_cnn_idata_for_loop_inner_dram_update_thd_reg = idata_bias_reg
 
 cnn_perceptron_for_loop_iter_reg   = perceptron_for_loop_iter_reg  
 cnn_perceptron_for_loop_thd_reg    = perceptron_for_loop_thd_reg   
@@ -263,6 +263,13 @@ def gen_load_cnn_idata_for_loop(f: TextIOWrapper, ldt_info: ldt_info, cnn_input_
     global load_cnn_idata_for_loop_inner_dest_update_thd_reg
     global load_cnn_idata_for_loop_inner_dram_update_thd_reg
 
+    print(f"load_cnn_idata_dest_reg is {load_cnn_idata_dest_reg}")
+    print(f"load_cnn_idata_dram_reg is {load_cnn_idata_dram_reg}")
+    print(f"load_idata_for_loop_iter_reg is {load_idata_for_loop_iter_reg}")
+    print(f"load_idata_for_loop_thd_reg is {load_idata_for_loop_thd_reg}")
+    print(f"load_cnn_idata_for_loop_inner_dest_update_thd_reg is {load_cnn_idata_for_loop_inner_dest_update_thd_reg}")
+    print(f"load_cnn_idata_for_loop_inner_dram_update_thd_reg is {load_cnn_idata_for_loop_inner_dram_update_thd_reg}")
+
     idata_thd = load_thd
     cnn_window_size = cnn_input_info.cnn_window_len * cnn_input_info.cnn_window_width
     load_cnn_idata_for_loop_inner_dram_update_thd = cnn_input_info.img_width - cnn_input_info.cnn_window_width + 1
@@ -286,12 +293,12 @@ def gen_load_cnn_idata_for_loop(f: TextIOWrapper, ldt_info: ldt_info, cnn_input_
     # else update the dest by 1
     f.write(f"beq x{load_idata_for_loop_iter_reg}, x{load_cnn_idata_for_loop_inner_dest_update_thd_reg}, load_cnn_idata_for_loop_{load_cnn_idata_for_loop_cnt}_dest_update_else_br\n")
     f.write(f"addi x{load_cnn_idata_dest_reg}, x{load_cnn_idata_dest_reg}, 1\n")
-    f.write(f"jal x0, load_cnn_idata_for_loop_{load_cnn_idata_for_loop_cnt}_dest_update_if_end:\n")
+    f.write(f"jal x0, load_cnn_idata_for_loop_{load_cnn_idata_for_loop_cnt}_dest_update_if_end\n")
 
     f.write(f"load_cnn_idata_for_loop_{load_cnn_idata_for_loop_cnt}_dest_update_else_br:\n")
     f.write(f"addi x{load_cnn_idata_dest_reg}, x{load_cnn_idata_dest_reg}, {1 + 16*(cnn_window_size - 1)}\n")
     f.write(f"addi x{load_cnn_idata_for_loop_inner_dest_update_thd_reg}, x{load_cnn_idata_for_loop_inner_dest_update_thd_reg}, 16\n")
-    f.write(f"load_cnn_idata_for_loop_{load_cnn_idata_for_loop_cnt}_if_dest_update_end:\n")
+    f.write(f"load_cnn_idata_for_loop_{load_cnn_idata_for_loop_cnt}_dest_update_if_end:\n")
 
     # update dram addr for nxt iteration, 
     # if iter meets img width - kernel width + 1, 
@@ -299,7 +306,7 @@ def gen_load_cnn_idata_for_loop(f: TextIOWrapper, ldt_info: ldt_info, cnn_input_
     # else update the dram addr by 1
     f.write(f"beq x{load_idata_for_loop_iter_reg}, x{load_cnn_idata_for_loop_inner_dram_update_thd_reg}, load_cnn_idata_for_loop_{load_cnn_idata_for_loop_cnt}_dram_update_else_br\n")
     f.write(f"addi x{load_cnn_idata_dram_reg}, x{load_cnn_idata_dram_reg}, 1\n")
-    f.write(f"jal x0, load_cnn_idata_for_loop_{load_cnn_idata_for_loop_cnt}_dram_update_if_end:\n")
+    f.write(f"jal x0, load_cnn_idata_for_loop_{load_cnn_idata_for_loop_cnt}_dram_update_if_end\n")
 
     f.write(f"load_cnn_idata_for_loop_{load_cnn_idata_for_loop_cnt}_dram_update_else_br:\n")
     f.write(f"addi x{load_cnn_idata_dram_reg}, x{load_cnn_idata_dram_reg}, {cnn_input_info.cnn_window_width}\n")
