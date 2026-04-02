@@ -234,7 +234,7 @@ def gen_load_cnn_idata_inner_for_loop(f: TextIOWrapper, ldt_info: ldt_info, cnn_
     gen_load_data(f = f, info = ldt_info)
     f.write(f"addi x{ldt_info.dest_addr_reg}, x{ldt_info.dest_addr_reg}, {cnn_input_info.cnn_window_width * 16}\n")
     f.write(f"addi x{ldt_info.dram_addr_reg}, x{ldt_info.dram_addr_reg}, {cnn_input_info.img_width}\n")
-    f.write(f"blt x{load_cnn_idata_for_loop_inner_iter_reg}, x{load_cnn_idata_for_loop_inner_thd_reg}, load_cnn_idata_for_loop_{load_cnn_idata_for_loop_cnt}\n")
+    f.write(f"blt x{load_cnn_idata_for_loop_inner_iter_reg}, x{load_cnn_idata_for_loop_inner_thd_reg}, load_cnn_idata_for_loop_inner_{load_cnn_idata_for_loop_cnt}\n")
     if load_const:
         f.write(f"sb x{first_iter_reg}, x{ldt_info.dest_addr_reg}, 0\n")
 
@@ -589,8 +589,8 @@ def gen_cnn_window_for_loop(f: TextIOWrapper, cnn_input_info: cnn_input_info, cn
         num = cnn_input_info.cnn_window_width, 
         len = 1, 
         stride = 1, 
-        dest_addr_reg = sram_wdata_addr_reg, 
-        dram_addr_reg = dram_wdata_addr_reg
+        dest_addr_reg = sram_idata_addr_reg, 
+        dram_addr_reg = dram_idata_addr_reg
     )
     perceptron_ldt_wgt_info = ldt_info(
         num = 1, 
