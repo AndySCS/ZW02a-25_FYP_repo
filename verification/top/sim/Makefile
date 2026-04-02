@@ -13,7 +13,7 @@ dbname = cov
 flash_depth = 2048 
 max_chk = 15000
 tc_opt = 
-quant_rng = 7
+quant_rng = 4
 
 tc_opt_dir = ../tc/$(tc).opt
 
@@ -29,6 +29,10 @@ ifeq ($(tc), tc_ffn_no_clip)
 endif
 ifeq ($(tc), tc_ffn_clip)
 	ffn_code_dir = $(MINITPU_FOLDER)/ffn_test/tpu_code/code_clip_batch_code.tasmp
+	#ffn_code_dir = $(MINITPU_FOLDER)/ffn_test/tpu_code/code_clip.tasmp
+endif
+ifeq ($(tc), tc_cnn)
+	ffn_code_dir = $(MINITPU_FOLDER)/ffn_test/tpu_code/code_conv_batch_code.tasmp
 	#ffn_code_dir = $(MINITPU_FOLDER)/ffn_test/tpu_code/code_clip.tasmp
 endif
 

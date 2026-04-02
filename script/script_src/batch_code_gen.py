@@ -221,6 +221,8 @@ def gen_load_cnn_idata_inner_for_loop(f: TextIOWrapper, ldt_info: ldt_info, cnn_
     global idata_bias_reg
     global load_cnn_idata_for_loop_inner_iter_reg
     global load_cnn_idata_for_loop_inner_thd_reg
+    global load_cnn_idata_for_loop_inner_dest_update_thd_reg
+    global load_cnn_idata_for_loop_inner_dram_update_thd_reg
 
     idata_thd = cnn_input_info.cnn_window_len
 
@@ -654,6 +656,7 @@ def gen_cnn_layer_for_loop(f: TextIOWrapper, cnn_input_info: cnn_input_info, cnn
     f.write(f"beq x{fc_layer_for_loop_iter_reg}, x{fc_layer_for_loop_thd_reg}, fc_layer_for_loop_{fc_layer_for_loop_cnt}_last_iter_br\n")
     gen_cnn_window_for_loop(f = f, cnn_input_info = cnn_input_info, cnn_perceptron_cnt = 16, st_dram_addr = cnn_layer_info.st_dram_addr)
     f.write(f"jal x0, fc_layer_for_loop_{fc_layer_for_loop_cnt}_end\n")
+    f.write(f"fc_layer_for_loop_{fc_layer_for_loop_cnt}_last_iter_br:\n")
     gen_cnn_window_for_loop(f = f, cnn_input_info = cnn_input_info, cnn_perceptron_cnt = last_iter_cnn_perceptron_cnt, st_dram_addr = cnn_layer_info.st_dram_addr)
     f.write(f"fc_layer_for_loop_{fc_layer_for_loop_cnt}_end:\n")
     f.write(f"blt x{fc_layer_for_loop_iter_reg}, x{fc_layer_for_loop_thd_reg}, fc_layer_for_loop_{fc_layer_for_loop_cnt}\n")
@@ -704,19 +707,20 @@ def gen_cnn_layer(f: TextIOWrapper, config: configparser.ConfigParser, i: int) -
         img_width = int(config["CNN_INPUT_INFO"][f"layer{i}_img_width"]),
         img_len = int(config["CNN_INPUT_INFO"][f"layer{i}_img_len"]),
         cnn_window_width = int(config["CNN_INPUT_INFO"][f"layer{i}_cnn_window_width"]),
-        cnn_window_len = int(config["CNN_INPUT_INFO"][f"layer{i}_cnn_window_len"])
+        cnn_window_len = int(config["CNN_INPUT_INFO"][f"layer{i}_cnn_window_len"]),
+        relu = relu
     )
     cnn_layer = cnn_layer_info(
-        perceptron_cnt = int(config["OUTPUT_SIZE"][f"layer{i}_output_size"]),
-        dram_wdata_addr = int(config["WEIGHT_DRAM_ADDR"][f"layer{i}_wgt_addr"]),
+        perceptron_cnt = int(config["CNN_INPUT_INFO"][f"layer{i}_cnn_kernel_num"]),
+        cnn_perceptron_cnt = int(config["CNN_INPUT_INFO"][f"layer{i}_cnn_kernel_num"]),
         st_dram_addr = int(config["OUTPUT_DRAM_ADDR"][f"layer{i}_output_addr"]),
-        perceptron_cnt = output_num,
         input_size = input_size,
         dram_idata_addr = dram_idata_addr,
         dram_wdata_addr = dram_wdata_addr,
         relu = relu
     )
     gen_cnn_layer_for_loop(f = f, cnn_input_info = cnn_input, cnn_layer_info = cnn_layer)
+    f.write("WFI")
 
 gen_layer = {
     "fc": gen_fc_layer,
@@ -733,7 +737,7 @@ if __name__ == "__main__":
 
     for i in range(int(config["MODEL_CONFIG"]["num_layers"])):
 
-        input_type = config["INPUT_TYPE"][f"layer{i}_input_type"]
+        input_type = config["LAYER_TYPE"][f"layer{i}_type"]
         gen_layer[input_type](f = f, config = config, i = i)
 
     f.close()

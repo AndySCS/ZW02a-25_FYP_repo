@@ -20,11 +20,13 @@ class cmd_handler extends uvm_component;
     int output_len[];
     int output_layer_num;
 
-    int conv_layer[];
+    bit conv_layer[];
     int conv_window_row[];
     int conv_window_col[];
     int conv_img_row[];
     int conv_img_col[];
+    
+    bit add_last_wgt[];
 
     function new(string name = "cmd_handler", uvm_component parent);
         super.new(name, parent);
@@ -85,13 +87,16 @@ function void cmd_handler::build_phase(uvm_phase phase);
     conv_window_col = new[layer_num];
     conv_img_row = new[layer_num];
     conv_img_col = new[layer_num];
+    add_last_wgt = new[layer_num];
     for(int i = 0; i < layer_num; i++) begin
         $value$plusargs($sformatf("conv_layer%0d=%s", i, "%0d"), conv_layer[i]);
         $value$plusargs($sformatf("conv_window_row%0d=%s", i, "%0d"), conv_window_row[i]);
         $value$plusargs($sformatf("conv_window_col%0d=%s", i, "%0d"), conv_window_col[i]);
         $value$plusargs($sformatf("conv_img_row%0d=%s", i, "%0d"), conv_img_row[i]);
         $value$plusargs($sformatf("conv_img_col%0d=%s", i, "%0d"), conv_img_col[i]);
+        add_last_wgt[i] = ~conv_layer[i];
     end
+    
 
     seed = $get_initial_random_seed();
 

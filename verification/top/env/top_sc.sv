@@ -51,7 +51,7 @@ task top_sc::main_phase(uvm_phase phase);
 	        tmp_tr = this.exp_result_q.pop_front();
                 check_layer(tmp_tr, act_tr);
                 check_cnt++;
-                if(cmd_hdlr.output_layer_num == check_cnt) softmax_output = softmax(tmp_tr.layer_output[0]);
+                if(cmd_hdlr.output_layer_num == check_cnt & cmd_hdlr.clip) softmax_output = softmax(tmp_tr.layer_output[0]);
                 fd = $fopen($sformatf("sim_tmp/model_output%0d.txt",cmd_hdlr.seed), "w");
                 $fdisplay(fd, $sformatf("%d", softmax_output));
                 $fclose(fd);

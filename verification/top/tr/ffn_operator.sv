@@ -63,12 +63,12 @@ endfunction
 
 function void ffn_operator::conv_img(int input_data[], int wgt_data[], bit relu, int img_row, int img_col, int kernel_row, int kernel_col, ref int output_data[]);
 
-    output_row = img_row - kernel_row + 1;
-    output_col = img_col - kernel_col + 1;
-    output_size = (img_row - kernel_row + 1) * (img_col - kernel_col + 1);
+    int output_row = img_row - kernel_row + 1;
+    int output_col = img_col - kernel_col + 1;
+    int output_size = (img_row - kernel_row + 1) * (img_col - kernel_col + 1);
 
     for(int i = 0; i < output_row; i++)begin
-        for(int j = 0; j < output_col j++)begin
+        for(int j = 0; j < output_col; j++)begin
             for(int k = 0; k < kernel_row; k++)begin
                 for(int l = 0; l < kernel_col; l++)begin
                     output_data[i*output_col+j] += input_data[(i+k)*img_col+(j+l)] * wgt_data[k*kernel_col+l];

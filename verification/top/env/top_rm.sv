@@ -47,13 +47,13 @@ task top_rm::main_phase(uvm_phase phase);
     for(int i = 0; i < cmd_hdlr.layer_num; i++) begin
         ffn_op[i] = ffn_operator::type_id::create($sformatf("ffn_op_%0d", i));
         if(i ==0)begin
-            ffn_op[i].cal_layer(cmd_hdlr.conv_layer[i], model_rd.img_data.read_data, model_rd.weights_data[i].read_data, cmd_hdlr.relu[i], cmd_hdlr.add_last_wgt[i], model_rd.img_row, model_rd.img_col, model_rd.kernel_row, model_rd.kernel_col);
+            ffn_op[i].cal_layer(cmd_hdlr.conv_layer[i], model_rd.img_data.read_data, model_rd.weights_data[i].read_data, cmd_hdlr.relu[i], cmd_hdlr.add_last_wgt[i], cmd_hdlr.conv_img_row[i], cmd_hdlr.conv_img_col[i], cmd_hdlr.conv_window_row[i], cmd_hdlr.conv_window_col[i]);
         end
         else if (cmd_hdlr.clip)begin
-            ffn_op[i].cal_layer(cmd_hdlr.conv_layer[i], ffn_op[i-1].quant_data, model_rd.weights_data[i].read_data, cmd_hdlr.relu[i], cmd_hdlr.add_last_wgt[i], model_rd.img_row, model_rd.img_col, model_rd.kernel_row, model_rd.kernel_col);
+            ffn_op[i].cal_layer(cmd_hdlr.conv_layer[i], ffn_op[i-1].quant_data, model_rd.weights_data[i].read_data, cmd_hdlr.relu[i], cmd_hdlr.add_last_wgt[i], cmd_hdlr.conv_img_row[i], cmd_hdlr.conv_img_col[i], cmd_hdlr.conv_window_row[i], cmd_hdlr.conv_window_col[i]);
         end
         else begin
-            ffn_op[i].cal_layer(cmd_hdlr.conv_layer[i], ffn_op[i-1].sat_output, model_rd.weights_data[i].read_data, cmd_hdlr.relu[i], cmd_hdlr.add_last_wgt[i], model_rd.img_row, model_rd.img_col, model_rd.kernel_row, model_rd.kernel_col);
+            ffn_op[i].cal_layer(cmd_hdlr.conv_layer[i], ffn_op[i-1].sat_output, model_rd.weights_data[i].read_data, cmd_hdlr.relu[i], cmd_hdlr.add_last_wgt[i], cmd_hdlr.conv_img_row[i], cmd_hdlr.conv_img_col[i], cmd_hdlr.conv_window_row[i], cmd_hdlr.conv_window_col[i]);
         end
     end
 
