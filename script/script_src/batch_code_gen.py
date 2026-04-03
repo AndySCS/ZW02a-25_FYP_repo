@@ -64,7 +64,7 @@ load_cnn_idata_dram_reg = idata_bias_reg
 load_cnn_idata_for_loop_inner_thd_reg = load_wdata_for_loop_thd_reg
 load_cnn_idata_for_loop_inner_iter_reg = load_wdata_for_loop_iter_reg
 load_cnn_idata_for_loop_inner_dest_update_thd_reg = wdata_size_reg
-load_cnn_idata_for_loop_inner_dram_update_thd_reg = idata_bias_reg
+load_cnn_idata_for_loop_inner_dram_update_thd_reg = sram_wdata_addr_reg
 
 cnn_perceptron_for_loop_iter_reg   = perceptron_for_loop_iter_reg  
 cnn_perceptron_for_loop_thd_reg    = perceptron_for_loop_thd_reg   
