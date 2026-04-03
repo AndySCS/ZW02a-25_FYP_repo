@@ -1012,28 +1012,27 @@ module tpu(
     wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] max_idx;
     wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] softmax_input_quant[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0];
     wire[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0] softmax_input_quant_en;
-    wire[3:0] count;
-    wire[3:0] count_nxt;
+    wire[3:0] softmax_count;
+    wire[3:0] softmax_count_nxt;
+    wire softmax_quant_en;
 
     
-    assign count_nxt = count=='d15 ? count : count+1;
-    
+    assign softmax_count_nxt = softmax_count=='d15 ? softmax_count : softmax_count+1;
     DFFRE #(.WIDTH(4))
     ff_count(
         .clk(clk),
         .rst_n(rst_n),
 	    .en(WVALID&WREADY),
-        .d(count_nxt),
-        .q(count)
+        .d(softmax_count_nxt),
+        .q(softmax_count)
     );
     
     //assign the input_quant by the wdata
     genvar j;
     generate
-        for(j = 0; j < 16; j=j+1)begin
-            assign softmax_input_quant_en[j] = ((j == count) & (WVALID & WREADY));
-            
-            DFFE #(.WIDTH(64))
+        for(j = 0; j < `SOFT_MAX_INPUT_ADDR_WIDTH; j=j+1)begin
+            assign softmax_input_quant_en[j] = ((j == softmax_count) & (WVALID & WREADY));  
+            DFFE #(.WIDTH(`SOFT_MAX_INPUT_DATA_WIDTH))
             ff_RSRAM (
                 .clk(clk),
                 .en(softmax_input_quant_en[j]),
@@ -1042,6 +1041,21 @@ module tpu(
             );
         end
     endgenerate
+
+    //if the count reach the addr width(10)
+    //=> start the softmax
+    assign softmax_quant_en = softmax_count == `SOFT_MAX_INPUT_ADDR_WIDTH;
+    genvar k;
+    generate
+        if(softmax_quant_en)begin
+            assign max_data_init = 
+            for(k = 0; k < `SOFT_MAX_INPUT_ADDR_WIDTH; k=k+1)begin
+                assign max_data = softmax_input_quant[k] > max-;
+            end
+        end
+    endgenerate
+
+
     
 endmodule
 
