@@ -117,6 +117,7 @@ class cnn_input_info:
     cnn_window_width: int
     cnn_window_len: int
     relu: bool
+    dram_wdata_addr: int
 
 @dataclass
 class cnn_layer_info(fc_layer_info):
@@ -510,7 +511,7 @@ def gen_oram_st_for_loop(f: TextIOWrapper, st_cnt: int, st_dram_addr: int) -> No
     f.write("WFI\n")
     oram_st_for_loop_cnt += 1
 
-def gen_oram_cnn_st_for_loop(f: TextIOWrapper, st_num: int, st_dram_addr: int, st_col: int, cnn_output_size:int) -> None:
+def gen_oram_cnn_st_for_loop(f: TextIOWrapper, st_num: int, st_col: int, cnn_output_size:int) -> None:
     global oram_addr_reg
     global fc_oram_col_reg
     global fc_last_row_reg
@@ -523,7 +524,6 @@ def gen_oram_cnn_st_for_loop(f: TextIOWrapper, st_num: int, st_dram_addr: int, s
 
     gen_set_data(f = f, data = 0, reg = cnn_st_for_loop_iter_reg)
     gen_set_data(f = f, data = st_num, reg = cnn_st_for_loop_thd_reg)
-    gen_set_data(f = f, data = st_dram_addr, reg = st_dram_addr_reg)
     
     f.write(f"oram_st_for_loop_{oram_st_for_loop_cnt}:\n")
     f.write(f"addi x{cnn_st_for_loop_iter_reg}, x{cnn_st_for_loop_iter_reg}, 1\n")
@@ -531,16 +531,16 @@ def gen_oram_cnn_st_for_loop(f: TextIOWrapper, st_num: int, st_dram_addr: int, s
         f.write(f"add x{dram_addr_tmp_reg}, x0, x{st_dram_addr_reg}\n")
         for i in legal_len:
             if st_col - i >= 0:
-                f.write(f"STT x{oram_addr_reg}, x{st_dram_addr_reg},  0, {legal_len[i]}, 0, 1\n")
+                f.write(f"STT x{oram_addr_reg}, x{st_dram_addr_reg},  0, {legal_len[i]+1}, 0, 1\n")
                 f.write(f"addi x{st_dram_addr_reg}, x{st_dram_addr_reg}, {i * 2}\n")
-                f.write(f"addi x{oram_addr_reg}, x{oram_addr_reg}, {i}\n")
+                f.write(f"addi x{oram_addr_reg}, x{oram_addr_reg}, {i * 2}\n")
                 st_col -= i
         f.write(f"add x{st_dram_addr_reg}, x0, x{dram_addr_tmp_reg}\n")
-        f.write(f"andi x{oram_addr_reg}, x{oram_addr_reg}, 4080\n")
+        f.write(f"andi x{oram_addr_reg}, x{oram_addr_reg}, 4064\n")
     else:
-        f.write(f"STT x{oram_addr_reg}, x{st_dram_addr_reg},  0, {legal_len[st_col]}, 0, 1\n")
+        f.write(f"STT x{oram_addr_reg}, x{st_dram_addr_reg},  0, {legal_len[st_col]+1}, 0, 1\n")
     f.write(f"addi x{st_dram_addr_reg}, x{st_dram_addr_reg}, {cnn_output_size}\n")
-    f.write(f"addi x{oram_addr_reg}, x{oram_addr_reg}, 16\n")
+    f.write(f"addi x{oram_addr_reg}, x{oram_addr_reg}, 32\n")
     f.write(f"blt x{cnn_st_for_loop_iter_reg}, x{cnn_st_for_loop_thd_reg}, oram_st_for_loop_{oram_st_for_loop_cnt}\n")
 
     oram_st_for_loop_cnt += 1
@@ -557,7 +557,9 @@ def gen_cnn_mm_for_loop(f: TextIOWrapper, cnn_perceptron_cnt: int, input_cnt: in
     global oram_start_addr
 
     cnn_mm_for_loop_thd = math.ceil(input_cnt / 16)
+    print(f"cnn_mm_for_loop_thd is {cnn_mm_for_loop_thd}")
     cnn_last_iter_input_cnt = 16 if input_cnt % 16 == 0 else input_cnt % 16
+    print(f"cnn_last_iter_input_cnt is {cnn_last_iter_input_cnt}")
     cnn_wgt_size = cnn_input_info.cnn_window_len * cnn_input_info.cnn_window_width
     cnn_output_size = (cnn_input_info.img_len - cnn_input_info.cnn_window_len + 1) * (cnn_input_info.img_width - cnn_input_info.cnn_window_width + 1)
 
@@ -568,6 +570,7 @@ def gen_cnn_mm_for_loop(f: TextIOWrapper, cnn_perceptron_cnt: int, input_cnt: in
     gen_set_data(f = f, data = wram_start_addr, reg = sram_wdata_addr_reg)
 
     f.write(f"cnn_mm_for_loop_{cnn_mm_for_loop_cnt}:\n")
+    f.write(f"add {st_dram_addr_reg}, x{dram_addr_start_addr_reg}, x0\n")
     f.write(f"addi x{cnn_mm_for_loop_iter_reg}, x{cnn_mm_for_loop_iter_reg}, 1\n")
     gen_set_data(f = f, data = oram_start_addr, reg = oram_addr_reg)
 
@@ -576,22 +579,25 @@ def gen_cnn_mm_for_loop(f: TextIOWrapper, cnn_perceptron_cnt: int, input_cnt: in
     if cnn_input_info.relu:
         f.write(f"act 0\n")
     f.write(f"STMT x{oram_addr_reg}, x0, 15, {cnn_wgt_size - 1}, 0\n")
-    gen_oram_cnn_st_for_loop(f = f, st_num = cnn_perceptron_cnt, st_dram_addr = st_dram_addr_reg, st_col = 16, cnn_output_size = cnn_output_size)
+    gen_oram_cnn_st_for_loop(f = f, st_num = cnn_perceptron_cnt, st_col = 16, cnn_output_size = cnn_output_size)
+    f.write(f"addi x{dram_addr_start_addr_reg}, x{dram_addr_start_addr_reg}, {32}\n")
     #f.write(f"STT x{oram_addr_reg}, x{st_dram_addr_reg},  {cnn_wgt_size - 1}, 0, 5, 0\n")
+    f.write(f"addi x{st_dram_addr_reg}, x{st_dram_addr_reg}, {32}\n")
     f.write(f"addi x{sram_idata_addr_reg}, x{sram_idata_addr_reg}, {cnn_wgt_size * 16}\n")
     f.write(f"jal x0, cnn_mm_for_loop_{cnn_mm_for_loop_cnt}_end\n")
 
     f.write(f"cnn_mm_for_loop_{cnn_mm_for_loop_cnt}_last_iter_br:\n")
     f.write(f"MM x{sram_idata_addr_reg}, x{sram_wdata_addr_reg}, {cnn_wgt_size - 1}, {cnn_last_iter_input_cnt - 1}, {cnn_perceptron_cnt - 1}, 1\n")
     f.write(f"STMT x{oram_addr_reg}, x0, {cnn_last_iter_input_cnt - 1}, {cnn_wgt_size - 1}, 0\n")
-    gen_oram_cnn_st_for_loop(f = f, st_num =cnn_perceptron_cnt, st_dram_addr = st_dram_addr_reg, st_col = cnn_last_iter_input_cnt - 1, cnn_output_size = cnn_output_size)
+    gen_oram_cnn_st_for_loop(f = f, st_num =cnn_perceptron_cnt, st_col = cnn_last_iter_input_cnt, cnn_output_size = cnn_output_size)
+    f.write(f"addi x{dram_addr_start_addr_reg}, x{dram_addr_start_addr_reg}, {(cnn_last_iter_input_cnt - 1)*2}\n")
     f.write(f"cnn_mm_for_loop_{cnn_mm_for_loop_cnt}_end:\n")
 
     f.write(f"blt x{cnn_mm_for_loop_iter_reg}, x{cnn_mm_for_loop_thd_reg}, cnn_mm_for_loop_{cnn_mm_for_loop_cnt}\n")
 
     cnn_mm_for_loop_cnt += 1
 
-def gen_cnn_window_for_loop(f: TextIOWrapper, cnn_input_info: cnn_input_info, cnn_perceptron_cnt: int, st_dram_addr: int) -> None:    
+def gen_cnn_window_for_loop(f: TextIOWrapper, cnn_input_info: cnn_input_info, cnn_perceptron_cnt: int, st_dram_addr: int, dram_idata_addr: int) -> None:    
     global cnn_perceptron_for_loop_iter_reg   
     global cnn_perceptron_for_loop_thd_reg    
     global cnn_perceptron_input_len_reg       
@@ -607,6 +613,7 @@ def gen_cnn_window_for_loop(f: TextIOWrapper, cnn_input_info: cnn_input_info, cn
     cnn_wgt_size = cnn_input_info.cnn_window_len * cnn_input_info.cnn_window_width
     input_col_cnn_wgt_cnt = math.floor(256 / cnn_wgt_size)
     input_total_cnn_wgt_cnt = 16 * input_col_cnn_wgt_cnt
+    print(f"input_total_cnn_wgt_cnt is {input_total_cnn_wgt_cnt}")
     total_cnn_wgt_cnt = (cnn_input_info.img_width - 2) * (cnn_input_info.img_len - 2)
     cnn_perceptron_thd = math.ceil(total_cnn_wgt_cnt / input_total_cnn_wgt_cnt)
     last_iter_cnn_wgt_cnt_tmp = total_cnn_wgt_cnt % input_total_cnn_wgt_cnt
@@ -631,19 +638,18 @@ def gen_cnn_window_for_loop(f: TextIOWrapper, cnn_input_info: cnn_input_info, cn
     gen_set_data(f = f, data = 0, reg = perceptron_for_loop_iter_reg)
     gen_set_data(f = f, data = cnn_perceptron_thd, reg = perceptron_for_loop_thd_reg)
 
-    #gen_set_data(f = f, data = info.dram_wdata_addr, reg = perceptron_dram_wdata_addr_reg) 
+    gen_set_data(f = f, data = cnn_input_info.dram_wdata_addr, reg = perceptron_dram_wdata_addr_reg) 
     f.write(f"add x{dram_wdata_addr_reg}, x{perceptron_dram_wdata_addr_reg}, x0\n")
     gen_load_wdata_for_loop(f = f, perceptron_cnt = cnn_perceptron_cnt, ldt_info = perceptron_ldt_wgt_info, wdata_size = cnn_wgt_size)
 
     f.write(f"perceptron_for_loop_{perceptron_for_loop_cnt}:\n")
 
     f.write(f"addi x{perceptron_for_loop_iter_reg}, x{perceptron_for_loop_iter_reg}, 1\n")
-    f.write(f"add {st_dram_addr_reg}, x{dram_addr_start_addr_reg}, x0\n")
     f.write(f"beq x{perceptron_for_loop_iter_reg}, x{perceptron_for_loop_thd_reg}, perceptron_for_loop_{perceptron_for_loop_cnt}_last_iter_br\n")
 
+    gen_set_data(f = f, data = dram_idata_addr, reg = load_cnn_idata_dram_reg)
     gen_load_cnn_idata_for_loop(f = f, ldt_info = perceptron_ldt_input_info, cnn_input_info = cnn_input_info, load_thd = input_total_cnn_wgt_cnt)
     gen_cnn_mm_for_loop(f = f, cnn_perceptron_cnt = cnn_perceptron_cnt, input_cnt = input_total_cnn_wgt_cnt, cnn_input_info = cnn_input_info)
-    f.write(f"addi x{dram_addr_start_addr_reg}, x{dram_addr_start_addr_reg}, {input_total_cnn_wgt_cnt}\n")
     #gen_oram_cnn_st_for_loop(f = f, st_cnt = input_total_cnn_wgt_cnt, st_dram_addr = st_dram_addr)
     f.write(f"jal x0, perceptron_for_loop_{perceptron_for_loop_cnt}_end\n")
 
@@ -681,10 +687,10 @@ def gen_cnn_layer_for_loop(f: TextIOWrapper, cnn_input_info: cnn_input_info, cnn
     f.write(f"fc_layer_for_loop_{fc_layer_for_loop_cnt}:\n")
     f.write(f"addi x{fc_layer_for_loop_iter_reg}, x{fc_layer_for_loop_iter_reg}, 1\n")
     f.write(f"beq x{fc_layer_for_loop_iter_reg}, x{fc_layer_for_loop_thd_reg}, fc_layer_for_loop_{fc_layer_for_loop_cnt}_last_iter_br\n")
-    gen_cnn_window_for_loop(f = f, cnn_input_info = cnn_input_info, cnn_perceptron_cnt = 16, st_dram_addr = cnn_layer_info.st_dram_addr)
+    gen_cnn_window_for_loop(f = f, cnn_input_info = cnn_input_info, cnn_perceptron_cnt = 16, st_dram_addr = cnn_layer_info.st_dram_addr, dram_idata_addr = cnn_layer_info.dram_idata_addr)
     f.write(f"jal x0, fc_layer_for_loop_{fc_layer_for_loop_cnt}_end\n")
     f.write(f"fc_layer_for_loop_{fc_layer_for_loop_cnt}_last_iter_br:\n")
-    gen_cnn_window_for_loop(f = f, cnn_input_info = cnn_input_info, cnn_perceptron_cnt = last_iter_cnn_perceptron_cnt, st_dram_addr = cnn_layer_info.st_dram_addr)
+    gen_cnn_window_for_loop(f = f, cnn_input_info = cnn_input_info, cnn_perceptron_cnt = last_iter_cnn_perceptron_cnt, st_dram_addr = cnn_layer_info.st_dram_addr, dram_idata_addr = cnn_layer_info.dram_idata_addr)
     f.write(f"fc_layer_for_loop_{fc_layer_for_loop_cnt}_end:\n")
     f.write(f"blt x{fc_layer_for_loop_iter_reg}, x{fc_layer_for_loop_thd_reg}, fc_layer_for_loop_{fc_layer_for_loop_cnt}\n")
     
@@ -735,7 +741,8 @@ def gen_cnn_layer(f: TextIOWrapper, config: configparser.ConfigParser, i: int) -
         img_len = int(config["CNN_INPUT_INFO"][f"layer{i}_img_len"]),
         cnn_window_width = int(config["CNN_INPUT_INFO"][f"layer{i}_cnn_window_width"]),
         cnn_window_len = int(config["CNN_INPUT_INFO"][f"layer{i}_cnn_window_len"]),
-        relu = relu
+        relu = relu,
+        dram_wdata_addr = dram_wdata_addr
     )
     cnn_layer = cnn_layer_info(
         perceptron_cnt = int(config["CNN_INPUT_INFO"][f"layer{i}_cnn_kernel_num"]),
@@ -768,6 +775,8 @@ if __name__ == "__main__":
     print(f"oram_addr_reg is {oram_addr_reg}")
     print(f"cnn_st_for_loop_thd_reg is {cnn_st_for_loop_thd_reg}")
     print(f"cnn_st_for_loop_iter_reg is {cnn_st_for_loop_iter_reg}")
+    print(f"perceptron_for_loop_thd_reg is {perceptron_for_loop_thd_reg}")
+    print(f"perceptron_for_loop_iter_reg is {perceptron_for_loop_iter_reg}")
 
     config = configparser.ConfigParser()
     config.read(os.path.join(os.path.dirname(__file__), "batch_code_gen/config_cnn.ini"))
