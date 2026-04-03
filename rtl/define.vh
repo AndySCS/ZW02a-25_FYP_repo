@@ -251,3 +251,7 @@
 `define RAM_DATA_WIDTH = 16;
 
 `define FPGA
+//for FPGA softmax
+`define SOFT_MAX_INPUT_DATA_WIDTH 64
+`define SOFT_MAX_INPUT_ADDR_WIDTH 10
+
