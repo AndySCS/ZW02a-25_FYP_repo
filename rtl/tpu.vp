@@ -972,7 +972,46 @@ module tpu(
 
     assign RVALID = (ARSIZE_ff == 0) ? RVALID_raw : (|ARADDR_ff[2:0]) ? RVALID_raw_ff : RVALID_raw; 
     assign RDATA = (ARSIZE_ff == 0) ? RDATA_0 : (|ARADDR_ff[2:0]) ? RDATA_3_raw : RDATA_raw;
-              
+
+    //softmax
+    wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] data[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0];
+    wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] sum;
+    wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] cur_max;
+    wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] max_val;
+    wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] max_idx;
+    wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] softmax_input_quant[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0];
+    wire[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0] softmax_input_quant_en;
+    wire[3:0] count;
+    wire[3:0] count_nxt;
+
+    
+    assign count_nxt = count==(`SOFT_MAX_INPUT_DATA_WIDTH-1) ? count : count+1;
+    
+    DFFRE #(.WIDTH(4))
+    ff_count(
+        .clk(clk),
+        .rst_n(rst_n),
+	    .en(WVALID&WREADY),
+        .d(count_nxt),
+        .q(count)
+    );
+    
+    //assign the input_quant by the wdata
+    genvar j;
+    generate
+        for(j = 0; j < 16; j=j+1)begin
+            assign softmax_input_quant_en[j] = ((j == count) & (WVALID & WREADY));
+            
+            DFFE #(.WIDTH(64))
+            ff_RSRAM (
+                .clk(clk),
+                .en(softmax_input_quant_en[j]),
+                .d(WDATA),
+                .q(softmax_input_quant[j])
+            );
+        end
+    endgenerate
+
 endmodule
 
 `else
@@ -1828,5 +1867,44 @@ module tpu(
         .axi_lsu_bvld                         (axi_lsu_bvld),
         .axi_lsu_resp_oram_addr               (axi_lsu_resp_oram_addr)
     );
+    
+    //softmax
+    wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] data[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0];
+    wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] sum;
+    wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] cur_max;
+    wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] max_val;
+    wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] max_idx;
+    wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] softmax_input_quant[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0];
+    wire[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0] softmax_input_quant_en;
+    wire[3:0] count;
+    wire[3:0] count_nxt;
+
+    
+    assign count_nxt = count==(`SOFT_MAX_INPUT_DATA_WIDTH-1) ? count : count+1;
+    
+    DFFRE #(.WIDTH(4))
+    ff_count(
+        .clk(clk),
+        .rst_n(rst_n),
+	    .en(WVALID&WREADY),
+        .d(count_nxt),
+        .q(count)
+    );
+    
+    //assign the input_quant by the wdata
+    genvar j;
+    generate
+        for(j = 0; j < 16; j=j+1)begin
+            assign softmax_input_quant_en[j] = ((j == count) & (WVALID & WREADY));
+            
+            DFFE #(.WIDTH(64))
+            ff_RSRAM (
+                .clk(clk),
+                .en(softmax_input_quant_en[j]),
+                .d(WDATA),
+                .q(softmax_input_quant[j])
+            );
+        end
+    endgenerate
 endmodule
 `endif
