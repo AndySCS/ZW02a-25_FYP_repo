@@ -1,6 +1,6 @@
 module exp(
     clk,
-    rst,
+    rst_n,
     exp_vld,
     in_num,
     output_num,
@@ -14,7 +14,7 @@ module exp(
     parameter NUM_WIDTH = 32;
  
     input clk;
-    input rst;
+    input rst_n;
     input exp_vld;
     input [NUM_WIDTH-1:0] in_num;
     output [NUM_WIDTH-1:0] output_num;
@@ -76,22 +76,23 @@ module exp(
         .q(num_cnt)
     );
 
-    DFF #(.WIDTH(1)) ff_exp_done (
+    DFFR #(.WIDTH(1)) ff_exp_done (
         .clk(clk),
+	    .rst_n(rst_n),
         .d(exp_done_nxt),
         .q(exp_done)
     );
     
     DFFR #(.WIDTH(1)) ff_exp_doing (
         .clk(clk),
-        .rst(rst),
+        .rst_n(rst_n),
         .d(exp_doing_nxt),
         .q(exp_doing)
     );
 
     DFFR #(.WIDTH(1)) ff_exp_err (
         .clk(clk),
-        .rst(rst),
+        .rst_n(rst_n),
         .d(exp_err_nxt),
         .q(exp_err)
     );

@@ -3,8 +3,9 @@ module tpu(
     clk,
     rst_n,
     start_vld,
-    start_addr,
-    wfi
+    //start_addr,
+    wfi,
+    led
 );
 
     //parameter AWID_WIDTH = 4;
@@ -15,8 +16,12 @@ module tpu(
     input clk;
     input rst_n;
     input start_vld;
-    input [`IRAM_ADDR_WIDTH-1:0] start_addr;
+    //input [`IRAM_ADDR_WIDTH-1:0] start_addr;
     output wfi;
+    output [3:0] led;
+    
+    wire [`IRAM_ADDR_WIDTH-1:0] start_addr;
+    assign start_addr = 'b0;
 
     //ifu output
     wire ifu_idu_vld;
@@ -560,6 +565,7 @@ module tpu(
     lsu u_lsu(
         .clk                                  (clk),
         .rst_n                                (rst_n),
+        .start_vld                      (start_vld),
         .alu_lsu_vld                          (alu_lsu_vld),
         .alu_lsu_wb_vld                       (alu_lsu_wb_vld),
         .alu_lsu_lb_op                        (alu_lsu_lb_op),
@@ -1000,13 +1006,15 @@ module tpu(
 
     assign RVALID = (ARSIZE_ff == 0) ? RVALID_raw : (|ARADDR_ff[2:0]) ? RVALID_raw_ff : RVALID_raw; 
     assign RDATA = (ARSIZE_ff == 0) ? RDATA_0 : (|ARADDR_ff[2:0]) ? RDATA_3_raw : RDATA_raw;
-
+    
     //softmax
     wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] data[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0];
     wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] sum;
     wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] cur_max;
     wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] max_val;
-    wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] max_idx;
+    wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] max_val_nxt;
+    wire[3:0] max_idx;
+    wire[3:0] max_idx_nxt;
     wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] softmax_input_quant[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0];
     wire[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0] softmax_input_quant_en;
     wire[3:0] softmax_count;
@@ -1022,7 +1030,12 @@ module tpu(
     wire[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0] softmax_exp_rdy;
     wire[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0] softmax_exp_div;
     
-    assign softmax_count_nxt = softmax_count=='d15 ? softmax_count : softmax_count+1;
+    
+    wire[3:0] softmax_out_count;
+    wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] softmax_out_data[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0];
+    
+    
+    assign softmax_count_nxt = softmax_count=='d10 ? softmax_count : softmax_count+1;
     DFFRE #(.WIDTH(4))
     ff_count(
         .clk(clk),
@@ -1038,7 +1051,7 @@ module tpu(
         for(j = 0; j < `SOFT_MAX_INPUT_ADDR_WIDTH; j=j+1)begin
             assign softmax_input_quant_en[j] = ((j == softmax_count) & (WVALID & WREADY));  
             DFFE #(.WIDTH(`SOFT_MAX_INPUT_DATA_WIDTH))
-            ff_RSRAM (
+            ff_SOFTMAX_INPUT (
                 .clk(clk),
                 .en(softmax_input_quant_en[j]),
                 .d(WDATA),
@@ -1046,23 +1059,41 @@ module tpu(
             );
             //method2
             //test if can just dircetly use input define whicha have the most prob
-            if(softmax_count[j] > max_val)begin
-                assign max_val = softmax_count[j];
-                assign max_idx = j;
-            end
+            //if(softmax_input_quant[j] > max_val)begin
+            //    assign max_val = softmax_input_quant[j];
+            //    assign max_idx = j;
+            //end
         end
     endgenerate
+    assign max_val_nxt = WDATA > max_val ? WDATA : max_val;
+    assign max_idx_nxt = WDATA > max_val ? softmax_count : max_idx;
+    DFFRE #(.WIDTH(`SOFT_MAX_INPUT_DATA_WIDTH))
+            ff_MAX_VAL (
+                .clk(clk),
+                .rst_n(rst_n),
+		.en(WVALID&WREADY),
+                .d(max_val_nxt),
+                .q(max_val)
+            );
+    DFFRE #(.WIDTH(4))
+            ff_MAX_IDX (
+                .clk(clk),
+                .rst_n(rst_n),
+		.en(WVALID&WREADY),
+                .d(max_idx_nxt),
+                .q(max_idx)
+            );
 
     //method2
     //use expontenial do the work
     //if the count reach the addr width(10)
     //=> start the softmax
-
+/*
     assign softmax_exp_en = softmax_count == `SOFT_MAX_INPUT_ADDR_WIDTH;
     assign softmax_exp_vld_nxt = {`SOFT_MAX_INPUT_ADDR_WIDTH{softmax_quant_en}} & ~(softmax_exp_done);
 
     DFFR #(`SOFT_MAX_INPUT_ADDR_WIDTH)
-    ff_RSRAM (
+    ff_EXP_VLD (
         .clk(clk),
         .rst_n(rst_n),
         .d(softmax_exp_vld_nxt),
@@ -1072,7 +1103,7 @@ module tpu(
 
     exp u_exp0(
             .clk(clk),
-            .rst(rst),
+            .rst_n(rst_n),
             .exp_vld(softmax_exp_vld[0]),
             .in_num(softmax_input_quant[0]-max_val),
             .output_num(softmax_exp_output[0]),
@@ -1083,7 +1114,7 @@ module tpu(
     );
     exp u_exp1(
             .clk(clk),
-            .rst(rst),
+            .rst_n(rst_n),
             .exp_vld(softmax_exp_vld[1]),
             .in_num(softmax_input_quant[1]-max_val),
             .output_num(softmax_exp_output[1]),
@@ -1094,7 +1125,7 @@ module tpu(
     );
     exp u_exp2(
             .clk(clk),
-            .rst(rst),
+            .rst_n(rst_n),
             .exp_vld(softmax_exp_vld[2]),
             .in_num(softmax_input_quant[2]-max_val),
             .output_num(softmax_exp_output[2]),
@@ -1105,7 +1136,7 @@ module tpu(
     );
     exp u_exp3(
             .clk(clk),
-            .rst(rst),
+            .rst_n(rst_n),
             .exp_vld(softmax_exp_vld[3]),
             .in_num(softmax_input_quant[3]-max_val),
             .output_num(softmax_exp_output[3]),
@@ -1116,7 +1147,7 @@ module tpu(
     );
     exp u_exp4(
             .clk(clk),
-            .rst(rst),
+            .rst_n(rst_n),
             .exp_vld(softmax_exp_vld[4]),
             .in_num(softmax_input_quant[4]-max_val),
             .output_num(softmax_exp_output[4]),
@@ -1127,7 +1158,7 @@ module tpu(
     );
     exp u_exp5(
             .clk(clk),
-            .rst(rst),
+            .rst_n(rst_n),
             .exp_vld(softmax_exp_vld[5]),
             .in_num(softmax_input_quant[5]-max_val),
             .output_num(softmax_exp_output[5]),
@@ -1138,7 +1169,7 @@ module tpu(
     );
     exp u_exp6(
             .clk(clk),
-            .rst(rst),
+            .rst_n(rst_n),
             .exp_vld(softmax_exp_vld[6]),
             .in_num(softmax_input_quant[6]-max_val),
             .output_num(softmax_exp_output[6]),
@@ -1149,7 +1180,7 @@ module tpu(
     );
     exp u_exp7(
             .clk(clk),
-            .rst(rst),
+            .rst_n(rst_n),
             .exp_vld(softmax_exp_vld[7]),
             .in_num(softmax_input_quant[7]-max_val),
             .output_num(softmax_exp_output[7]),
@@ -1160,7 +1191,7 @@ module tpu(
     );
     exp u_exp8(
             .clk(clk),
-            .rst(rst),
+            .rst_n(rst_n),
             .exp_vld(softmax_exp_vld[8]),
             .in_num(softmax_input_quant[8]-max_val),
             .output_num(softmax_exp_output[8]),
@@ -1171,7 +1202,7 @@ module tpu(
     );
     exp u_exp9(
             .clk(clk),
-            .rst(rst),
+            .rst_n(rst_n),
             .exp_vld(softmax_exp_vld[9]),
             .in_num(softmax_input_quant[9]-max_val),
             .output_num(softmax_exp_output[9]),
@@ -1193,6 +1224,15 @@ module tpu(
    //     +  softmax_exp_output[8]
    //     +  softmax_exp_output[9];
 
+   //     +  softmax_exp_output[2]
+   //     +  softmax_exp_output[3]
+   //     +  softmax_exp_output[4]
+   //     +  softmax_exp_output[5]
+   //     +  softmax_exp_output[6]
+   //     +  softmax_exp_output[7]
+   //     +  softmax_exp_output[8]
+   //     +  softmax_exp_output[9];
+
     genvar k;
     generate
         for(k = 0; k < `SOFT_MAX_INPUT_ADDR_WIDTH; k=k+1)begin
@@ -1204,12 +1244,21 @@ module tpu(
     generate
         for(h = 0; h < `SOFT_MAX_INPUT_ADDR_WIDTH; h=h+1)begin
             assign data[h] = (&softmax_exp_done) ? softmax_exp_output[h]/sum : 'b0;
-        end
-        if(data[h] > cur_max)begin
-            assign cur_max = data[h];
-            assign max_idx = h;
+            DFFR #(`SOFT_MAX_INPUT_ADDR_WIDTH)
+            ff_out_data (
+                .clk(clk),
+                .rst_n(rst_n),
+                .d(data[h]),
+                .q(softmax_out_data[h])
+            );
         end
     endgenerate
+    */
+    assign led[0] = softmax_count==4'd10 ? max_idx[0] : 'b0;
+    assign led[1] = softmax_count==4'd10 ? max_idx[1] : 'b0;
+    assign led[2] = softmax_count==4'd10 ? max_idx[2] : 'b0;
+    assign led[3] = softmax_count==4'd10 ? max_idx[3] : 'b0;
+
 
 endmodule
 
