@@ -126,7 +126,7 @@ task axi_wr_monitor::mon_output(ffn_operator tr);
              ram_blk.read_data(bit_data_hi, alloc_ptr_nxt);
              ram_blk.read_data(bit_data_lo, alloc_ptr);
              tr.layer_output[i][j] = int'($signed({bit_data_hi[7:0], bit_data_lo[7:0]}));
-             `uvm_info(get_name(), $sformatf("read data[%0d][%0d] %0d at %0d and %0d",i, j, tr.layer_output[i][j], alloc_ptr, alloc_ptr_nxt), UVM_NONE)
+             `uvm_info(get_name(), $sformatf("read data[%0d][%0d] %0d at %0d and %0d",i, j, tr.layer_output[i][j], alloc_ptr, alloc_ptr_nxt), UVM_DEBUG)
              alloc_ptr = alloc_ptr + 2;
         end
     end
