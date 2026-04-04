@@ -1103,21 +1103,37 @@ module tpu(
     wfi
 );
 
+<<<<<<< HEAD
     //parameter AWID_WIDTH = 4;
     //parameter AWADDR_WIDTH = 32;
     //parameter WDATA_WIDTH = 64;
     //parameter WSTRB_WIDTH = WDATA_WIDTH/8; // should be WDATA_WIDTH/8
+=======
+    parameter AWID_WIDTH = 4;
+    parameter AWADDR_WIDTH = 32;
+    parameter WDATA_WIDTH = 64;
+    parameter WSTRB_WIDTH = WDATA_WIDTH/8; // should be WDATA_WIDTH/8
+>>>>>>> origin/main
 
     input clk;
     input rst_n;
     input start_vld;
+<<<<<<< HEAD
     input [`IRAM_ADDR_WIDTH-1:0] start_addr;
+=======
+    input [11:0] start_addr;
+>>>>>>> origin/main
     //parameter
 
     //inout bus
     //address write channel 
+<<<<<<< HEAD
     output [`AWID_WIDTH-1:0] AWID;
     output [`AWADDR_WIDTH-1:0] AWADDR;
+=======
+    output [AWID_WIDTH-1:0] AWID;
+    output [AWADDR_WIDTH-1:0] AWADDR;
+>>>>>>> origin/main
     output [7:0] AWLEN;
     output [2:0] AWSIZE;
     output [1:0] AWBURST;
@@ -1125,8 +1141,13 @@ module tpu(
     output  AWVALID;
     input AWREADY;
 
+<<<<<<< HEAD
     output [`AWID_WIDTH-1:0] ARID;
     output [`AWADDR_WIDTH-1:0] ARADDR;
+=======
+    output [AWID_WIDTH-1:0] ARID;
+    output [AWADDR_WIDTH-1:0] ARADDR;
+>>>>>>> origin/main
     output [7:0] ARLEN;
     output [2:0] ARSIZE;
     output [1:0] ARBURST;
@@ -1135,21 +1156,35 @@ module tpu(
     input ARREADY;
 
     //write data channel
+<<<<<<< HEAD
     output [`WDATA_WIDTH-1:0] WDATA;
     output [`WSTRB_WIDTH-1:0] WSTRB;
+=======
+    output [WDATA_WIDTH-1:0] WDATA;
+    output [WSTRB_WIDTH-1:0] WSTRB;
+>>>>>>> origin/main
     output WLAST;
     output WVALID;
     input WREADY;
 
     //read data channel
+<<<<<<< HEAD
     input [`AWID_WIDTH-1:0] RID;
     input [`WDATA_WIDTH-1:0] RDATA;
+=======
+    input [AWID_WIDTH-1:0] RID;
+    input [WDATA_WIDTH-1:0] RDATA;
+>>>>>>> origin/main
     input [1:0] RRESP;
     input RLAST;
     input RVALID;
     output RREADY; 
     //write response channel
+<<<<<<< HEAD
     input [`AWID_WIDTH-1:0] BID;
+=======
+    input [AWID_WIDTH-1:0] BID;
+>>>>>>> origin/main
     input [1:0] BRESP;
     input BVALID;
     output BREADY;
@@ -1326,7 +1361,11 @@ module tpu(
     wire lsu_axi_wvld;
     wire lsu_axi_brdy;
     wire [7:0] lsu_axi_arid;
+<<<<<<< HEAD
     wire [`AWADDR_WIDTH-1:0] lsu_axi_araddr;
+=======
+    wire [31:0] lsu_axi_araddr;
+>>>>>>> origin/main
     wire [7:0] lsu_axi_arlen;
     wire [2:0] lsu_axi_arsize;
     wire [1:0] lsu_axi_arburst;
@@ -1647,6 +1686,10 @@ module tpu(
     lsu u_lsu(
         .clk                                  (clk),
         .rst_n                                (rst_n),
+<<<<<<< HEAD
+=======
+        .start_vld                            (start_vld),
+>>>>>>> origin/main
         .alu_lsu_vld                          (alu_lsu_vld),
         .alu_lsu_wb_vld                       (alu_lsu_wb_vld),
         .alu_lsu_lb_op                        (alu_lsu_lb_op),
@@ -1851,9 +1894,15 @@ module tpu(
     );
 
     AXI_READ_INFT#(
+<<<<<<< HEAD
         .ARID_WIDTH  (`AWID_WIDTH), 
         .ARADDR_WIDTH(`AWADDR_WIDTH), 
         .RDATA_WIDTH (`WDATA_WIDTH)
+=======
+        .ARID_WIDTH  (4), 
+        .ARADDR_WIDTH(32), 
+        .RDATA_WIDTH (64)
+>>>>>>> origin/main
     )
     u_AXI_READ_INFT(
         .clk                                  (clk),
@@ -1894,9 +1943,15 @@ module tpu(
     );
 
     AXI_WRITE_INFT#(
+<<<<<<< HEAD
         .AWID_WIDTH  (`AWID_WIDTH), 
         .AWADDR_WIDTH(`AWADDR_WIDTH), 
         .WDATA_WIDTH (`WDATA_WIDTH)
+=======
+        .AWID_WIDTH  (4), 
+        .AWADDR_WIDTH(32), 
+        .WDATA_WIDTH (64)
+>>>>>>> origin/main
     )
     u_AXI_WRITE_INTF
     (
@@ -1940,6 +1995,7 @@ module tpu(
         .axi_lsu_bvld                         (axi_lsu_bvld),
         .axi_lsu_resp_oram_addr               (axi_lsu_resp_oram_addr)
     );
+<<<<<<< HEAD
 
     //softmax
     wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] data[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0];
@@ -1983,3 +2039,6 @@ endmodule
 
 `endif
 
+=======
+endmodule
+>>>>>>> origin/main

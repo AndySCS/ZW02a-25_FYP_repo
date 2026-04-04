@@ -13,14 +13,31 @@ dbname = cov
 flash_depth = 2048 
 max_chk = 15000
 tc_opt = 
+quant_rng = 4
 
 tc_opt_dir = ../tc/$(tc).opt
+
+ffn_code_dir = $(MINITPU_FOLDER)/ffn_test/tpu_code/code_no_clip.tasmp
 
 ifneq ($wildcard($(tc_opt_dir)),"")
 	tc_opt := $(shell cat $(tc_opt_dir))
 endif
 
-img_seed = $(shell expr $(seed) % 1000)
+
+ifeq ($(tc), tc_ffn_no_clip)
+	ffn_code_dir = $(MINITPU_FOLDER)/ffn_test/tpu_code/code_no_clip.tasmp
+endif
+ifeq ($(tc), tc_ffn_clip)
+	ffn_code_dir = $(MINITPU_FOLDER)/ffn_test/tpu_code/code_clip_batch_code.tasmp
+	#ffn_code_dir = $(MINITPU_FOLDER)/ffn_test/tpu_code/code_clip.tasmp
+endif
+ifeq ($(tc), tc_cnn)
+	ffn_code_dir = $(MINITPU_FOLDER)/ffn_test/tpu_code/code_conv_batch_code.tasmp
+	#ffn_code_dir = $(MINITPU_FOLDER)/ffn_test/tpu_code/code_clip.tasmp
+endif
+
+#img_seed = $(shell expr $(seed) % 1000)
+img_seed = 0
 
 
 fsdb_file_name = $(tc)
@@ -35,10 +52,7 @@ fsdb_file_name = $(tc)
 #Command
 $(shell $(MINITPU_SCRIPT)/linux/file_extend -dir $(MINITPU_VER))
 $(shell $(MINITPU_SCRIPT)/linux/file_extend -dir $(MINITPU_RTL))
-$(shell $(MINITPU_FOLDER)/ffn_test/tpu_code/cmp_linux -srcDir $(MINITPU_FOLDER)/ffn_test/tpu_code/code.tasmp -binDir code.txt)
-#$(shell cp $(MINITPU_FOLDER)/ffn_test/mnist_data/csv/img$(img_seed).csv sample.csv)
-$(shell cp $(MINITPU_FOLDER)/ffn_test/mnist_data/csv/img0.csv sample.csv)
-$(shell cp $(MINITPU_FOLDER)/ffn_test/mnist_data/label/label$(img_seed).txt sample_label.txt)
+$(shell $(MINITPU_FOLDER)/ffn_test/tpu_code/cmp_linux -srcDir $(ffn_code_dir) -binDir code.txt)
 
 GEN_MODE = mkdir -p $(mode) $(mode)/log $(mode)/wave $(mode)/cov
 VCS = vcs -sverilog 	 		          \
@@ -62,7 +76,7 @@ VCS = vcs -sverilog 	 		          \
           -cm_name $(fsdb_file_name)      \
           +max_chk=$(max_chk)             \
           +define+FLASH_DEPTH=$(flash_depth)\
-          +lint=TFIPC-L 
+          +lint=TFIPC-L  \
 
 #Make Mode
 ifeq ($(ccov), on)
@@ -78,10 +92,14 @@ endif
 
 #=======================================================================
 cmp: 
+	rm -rf sim_tmp
+	mkdir sim_tmp
 	$(GEN_MODE)
 	$(VCS) 
 
-sim: 
+sim:  
+	python3 $(MINITPU_SCRIPT)/script_src/quant_input.py -src_addr $(MINITPU_FOLDER)/ffn_test/mnist_data/csv/img$(img_seed).csv -dest_addr sim_tmp/sample$(seed).csv -quant_rng $(quant_rng)
+	cp $(MINITPU_FOLDER)/ffn_test/mnist_data/label/label$(img_seed).txt sim_tmp/sample_label${seed}.txt
 	./$(mode)/simv +UVM_TESTNAME=tc_base                  \
                    +ntb_random_seed=$(seed)             \
 				   +UVM_VERBOSITY=$(printlv)            \
@@ -92,10 +110,16 @@ sim:
                    -cg_coverage_control=$(sim_fcov_opts)\
                    $(sim_ccov_opts)                     \
                    +max_chk=$(max_chk)                  \
-                   +define+FLASH_DEPTH=$(flash_depth)   \
+                   +vcs+loopreport+3 \
+                   +vcs+loopdetect \
+                   +vcs+verbose \
+                   +define+FLASH_DEPTH=$(flash_depth)  \
+                   +quant_rng=$(quant_rng)       \
                    $(tc_opt)
 
 regress: 
+	python3 $(MINITPU_SCRIPT)/script_src/quant_input.py -src_addr $(MINITPU_FOLDER)/ffn_test/mnist_data/csv/img$(img_seed).csv -dest_addr sim_tmp/sample$(seed).csv -quant_rng $(quant_rng)
+	cp $(MINITPU_FOLDER)/ffn_test/mnist_data/label/label$(img_seed).txt sim_tmp/sample_label${seed}.txt
 	./$(mode)/simv +UVM_TESTNAME=tc_base                  \
                    +ntb_random_seed=$(seed)             \
 				   +UVM_VERBOSITY=UVM_NONE              \
@@ -103,7 +127,9 @@ regress:
                    -cg_coverage_control=$(sim_fcov_opts)\
                    $(sim_ccov_opts)                     \
                    +max_chk=$(max_chk)                  \
-                   +define+FLASH_DEPTH=$(flash_depth)       
+		           +define+FLASH_DEPTH=$(flash_depth)   \
+                   +quant_rng=$(quant_rng)       \
+	   	           $(tc_opt)
 
 run: cmp sim
 

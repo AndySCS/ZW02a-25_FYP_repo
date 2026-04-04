@@ -41,7 +41,7 @@ task mxu_sc::main_phase(uvm_phase phase);
 	end
 	while(1)begin
 		this.act_port.get(act_tr);
-    		`uvm_info("mxu_sc", "received act matrix from mon", UVM_MEDIUM);
+        `uvm_info("mxu_sc", "received act matrix from mon", UVM_MEDIUM);
 		if(this.exp_result_q.size() > 0)begin
 			tmp_tr = this.exp_result_q.pop_front();
 			if(!tmp_tr.compare(act_tr))begin //compare false

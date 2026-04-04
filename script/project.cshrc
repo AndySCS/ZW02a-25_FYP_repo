@@ -38,6 +38,7 @@ source /usr/eelocal/synopsys/vcs-vt2022.06-sp1-1/.cshrc
 source /usr/eelocal/synopsys/verdi-vv2023.12/.cshrc 
 #Vivaod Setup
 source /usr/eelocal/xilinx/Vitis/2023.1/.cshrc
+source /usr/eelocal/xilinx/Vivado/2023.1/settings64.csh
 
 # Alias
 alias prj_script_dir 'cd $MINITPU_SCRIPT'

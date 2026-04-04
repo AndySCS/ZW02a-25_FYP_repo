@@ -41,8 +41,8 @@ task mxu_monitor::main_phase(uvm_phase phase);
 
     int                   first_layer_ouput [55:0];
 
-    bit [7:0] second_layer_input [56:0];
-    bit mon_begin;
+    bit [56:0][7:0] second_layer_input;
+    int mon_begin;
     bit [2:0] input_fsm;
     bit [2:0] perceptron0to15  = 3'b000;
     bit [2:0] perceptron16to31 = 3'b001;
@@ -56,24 +56,16 @@ task mxu_monitor::main_phase(uvm_phase phase);
     int cur_pack_addr;
 
     model_read_transaction tr;
+    model_output_transaction tr_out;
+
+    int mon_thd = ($test$plusargs("ffn_clip")) ? 1 : 0;
 
     tr = model_read_transaction::type_id::create("tr");
+    tr_out = model_output_transaction::type_id::create("tr_out");
 
     iram_data_all      = {8'b1, tr.img_array};
 
-    for(int i = 0; i < 56; i++)begin
-        for(int j = 0; j < 785; j++)begin
-            first_layer_ouput[i] += int'($signed(iram_data_all[j]) * $signed(tr.first_layer_weight[j+i*785]));
-            if(first_layer_ouput[i] > 32767)  first_layer_ouput[i] = 32767;
-            if(first_layer_ouput[i] < -32768) first_layer_ouput[i] = -32768;
-        end
-        
-        if(first_layer_ouput[i] < 0) first_layer_ouput[i] = 0;
-
-        second_layer_input[i] = first_layer_ouput[i][7:0];
-        if(first_layer_ouput[i] > 127)  second_layer_input[i] = 127;
-        if(first_layer_ouput[i] < -128) second_layer_input[i] = -128;
-    end
+    second_layer_input[55:0] = tr_out.cal_first_layer(tr);
 
     second_layer_input[56] = 8'b1;
 
@@ -130,7 +122,7 @@ task mxu_monitor::main_phase(uvm_phase phase);
                 end
             end
         end
-        if(!(top_if.wfi & mon_begin))begin
+        if(!(top_if.wfi & mon_begin > mon_thd))begin
         end
         else if(iram_cnt != input_size * num_of_pack + 57) begin
             `uvm_error(get_name(), $sformatf("iram_cnt out of range: %0d", iram_cnt))
@@ -139,7 +131,7 @@ task mxu_monitor::main_phase(uvm_phase phase);
             `uvm_error(get_name(), $sformatf("wram_cnt out of range: %0d", wram_cnt))
         end
         if(top_if.start_vld)begin
-           mon_begin = 1;
+           mon_begin++;
         end
     end
 

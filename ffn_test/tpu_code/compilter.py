@@ -401,6 +401,9 @@ def convert_bin2ram(bin_list):
 def convert_src2bin(src_dir):
     f_list = convert_src2list(src_dir)
     addr_hash, line_hash = convert_list2hash(f_list)
+    with open("addr_hash.txt", 'w') as f:
+        for addr, line in line_hash.items():
+            f.write(f"addr: {addr}, line: {line}\n")
     bin_list = convert_hash2bin(addr_hash, line_hash)
     return bin_list
 

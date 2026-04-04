@@ -1,4 +1,4 @@
-class top_sequencer extends uvm_sequencer # (model_output_transaction);
+class top_sequencer extends uvm_sequencer # (top_tr);
 
     virtual top_intf top_if;
 

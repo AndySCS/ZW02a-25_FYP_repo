@@ -1,7 +1,7 @@
 class top_monitor extends uvm_monitor;
 
     virtual top_intf top_if;
-    uvm_analysis_port #(model_output_transaction) ap;
+    uvm_analysis_port #(ffn_operator) ap;
 
     `uvm_component_utils(top_monitor)
     function new(string name = "top_monitor", uvm_component parent = null);
@@ -23,14 +23,14 @@ endfunction
 
 task top_monitor::main_phase(uvm_phase phase);
     
-    model_output_transaction tr;
+    ffn_operator tr;
    // top_tr tr_send;
 
-    tr = model_output_transaction::type_id::create();
 //    tr_send = top_tr::type_id::create("imon_top_tr_send");
 
     while (1) begin 
 
+        tr = ffn_operator::type_id::create();
         while(1)begin
             @(posedge top_if.clk)
             if(top_if.start_vld) begin
@@ -38,7 +38,9 @@ task top_monitor::main_phase(uvm_phase phase);
             end
         end
         
+        
         ap.write(tr);
+        //break;
 
     end
 

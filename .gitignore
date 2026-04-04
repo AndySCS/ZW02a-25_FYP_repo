@@ -5,4 +5,5 @@ verification/**/sim/*
 !verification/**/sim/Makefile
 !verification/**/sim/img.txt
 !verification/**/sim/*.csv
+!verification/**/sim/csv/
 *.swp
