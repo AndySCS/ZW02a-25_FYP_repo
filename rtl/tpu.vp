@@ -981,34 +981,108 @@ module tpu(
     wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] max_idx;
     wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] softmax_input_quant[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0];
     wire[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0] softmax_input_quant_en;
-    wire[3:0] count;
-    wire[3:0] count_nxt;
+    wire[3:0] softmax_count;
+    wire[3:0] softmax_count_nxt;
+    wire softmax_quant_en;
+    wire [`SOFT_MAX_INPUT_ADDR_WIDTH-1:0] softmax_exp_vld_nxt;
+    wire [`SOFT_MAX_INPUT_ADDR_WIDTH-1:0] softmax_exp_vld;
+    wire softmax_exp_en;
+    wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] softmax_exp_output[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0];
 
+    wire[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0] softmax_exp_done;
+    wire[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0] softmax_exp_err;
+    wire[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0] softmax_exp_rdy;
+    wire[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0] softmax_exp_div;
     
-    assign count_nxt = count==(`SOFT_MAX_INPUT_DATA_WIDTH-1) ? count : count+1;
-    
+    assign softmax_count_nxt = softmax_count=='d15 ? softmax_count : softmax_count+1;
     DFFRE #(.WIDTH(4))
     ff_count(
         .clk(clk),
         .rst_n(rst_n),
 	    .en(WVALID&WREADY),
-        .d(count_nxt),
-        .q(count)
+        .d(softmax_count_nxt),
+        .q(softmax_count)
     );
     
     //assign the input_quant by the wdata
     genvar j;
     generate
-        for(j = 0; j < 16; j=j+1)begin
-            assign softmax_input_quant_en[j] = ((j == count) & (WVALID & WREADY));
-            
-            DFFE #(.WIDTH(64))
+        for(j = 0; j < `SOFT_MAX_INPUT_ADDR_WIDTH; j=j+1)begin
+            assign softmax_input_quant_en[j] = ((j == softmax_count) & (WVALID & WREADY));  
+            DFFE #(.WIDTH(`SOFT_MAX_INPUT_DATA_WIDTH))
             ff_RSRAM (
                 .clk(clk),
                 .en(softmax_input_quant_en[j]),
                 .d(WDATA),
                 .q(softmax_input_quant[j])
             );
+            //method2
+            //test if can just dircetly use input define whicha have the most prob
+            if(softmax_count[j] > max_val)begin
+                max_val = softmax_count[j];
+                max_idx = j;
+            end
+        end
+    endgenerate
+
+    //method2
+    //use expontenial do the work
+    //if the count reach the addr width(10)
+    //=> start the softmax
+
+    assign softmax_exp_en = softmax_count == `SOFT_MAX_INPUT_ADDR_WIDTH;
+    assign softmax_exp_vld_nxt = {`SOFT_MAX_INPUT_ADDR_WIDTH{softmax_quant_en}} & ~(softmax_exp_done);
+
+    DFFR #(`SOFT_MAX_INPUT_ADDR_WIDTH)
+    ff_RSRAM (
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(softmax_exp_vld_nxt),
+        .q(softmax_exp_vld)
+    );
+    //calcaulate the exp part
+
+    //:for($i=0;$i<`SOFT_MAX_INPUT_ADDR_WIDTH-1;$i++){
+    exp u_exp{$i}(
+            .clk(clk),
+            .rst(rst),
+            .exp_vld(softmax_exp_vld[{$i}]),
+            .in_num(softmax_input_quant[{$i}]-max_val),
+            .output_num(softmax_exp_output[{$i}]),
+            .exp_done(softmax_exp_done[{$i}]),
+            .exp_err(softmax_exp_err[{$i}]),
+            .exp_rdy(softmax_exp_rdy[{$i}]),
+            .exp_divide(softmax_exp_div[{$i}])
+    );
+    //:}
+
+   //only if all exp done cal then do next step
+   //sum = softmax_exp_output[0] 
+   //     +  softmax_exp_output[1]
+   //     +  softmax_exp_output[2]
+   //     +  softmax_exp_output[3]
+   //     +  softmax_exp_output[4]
+   //     +  softmax_exp_output[5]
+   //     +  softmax_exp_output[6]
+   //     +  softmax_exp_output[7]
+   //     +  softmax_exp_output[8]
+   //     +  softmax_exp_output[9];
+
+    genvar k;
+    generate
+        for(k = 0; k < `SOFT_MAX_INPUT_ADDR_WIDTH; k=k+1)begin
+            sum += softmax_exp_output[k]
+        end
+    endgenerate
+
+    genvar h;
+    generate
+        for(h = 0; h < `SOFT_MAX_INPUT_ADDR_WIDTH; h=h+1)begin
+            data[h] = (&softmax_exp_done) ? softmax_exp_output[h]/sum : 'b0;
+        end
+        if(data[h] > cur_max)begin
+            cur_max = data[h];
+            max_idx = h;
         end
     endgenerate
 
