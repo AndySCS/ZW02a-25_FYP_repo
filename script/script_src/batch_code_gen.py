@@ -531,15 +531,15 @@ def gen_oram_cnn_st_for_loop(f: TextIOWrapper, st_num: int, st_col: int, cnn_out
         f.write(f"add x{dram_addr_tmp_reg}, x0, x{st_dram_addr_reg}\n")
         for i in legal_len:
             if st_col - i >= 0:
-                f.write(f"STT x{oram_addr_reg}, x{st_dram_addr_reg},  0, {legal_len[i]+1}, 0, 1\n")
+                f.write(f"STT x{oram_addr_reg}, x{st_dram_addr_reg},  0, {legal_len[i]+1}, 0, 0\n")
                 f.write(f"addi x{st_dram_addr_reg}, x{st_dram_addr_reg}, {i * 2}\n")
                 f.write(f"addi x{oram_addr_reg}, x{oram_addr_reg}, {i * 2}\n")
                 st_col -= i
         f.write(f"add x{st_dram_addr_reg}, x0, x{dram_addr_tmp_reg}\n")
         f.write(f"andi x{oram_addr_reg}, x{oram_addr_reg}, 4064\n")
     else:
-        f.write(f"STT x{oram_addr_reg}, x{st_dram_addr_reg},  0, {legal_len[st_col]+1}, 0, 1\n")
-    f.write(f"addi x{st_dram_addr_reg}, x{st_dram_addr_reg}, {cnn_output_size}\n")
+        f.write(f"STT x{oram_addr_reg}, x{st_dram_addr_reg},  0, {legal_len[st_col]+1}, 0, 0\n")
+    f.write(f"addi x{st_dram_addr_reg}, x{st_dram_addr_reg}, {cnn_output_size*2}\n")
     f.write(f"addi x{oram_addr_reg}, x{oram_addr_reg}, 32\n")
     f.write(f"blt x{cnn_st_for_loop_iter_reg}, x{cnn_st_for_loop_thd_reg}, oram_st_for_loop_{oram_st_for_loop_cnt}\n")
 
@@ -578,19 +578,17 @@ def gen_cnn_mm_for_loop(f: TextIOWrapper, cnn_perceptron_cnt: int, input_cnt: in
     f.write(f"MM x{sram_idata_addr_reg}, x{sram_wdata_addr_reg}, {cnn_wgt_size - 1}, 15, {cnn_perceptron_cnt - 1}, 1\n")
     if cnn_input_info.relu:
         f.write(f"act 0\n")
-    f.write(f"STMT x{oram_addr_reg}, x0, 15, {cnn_wgt_size - 1}, 0\n")
+    f.write(f"STMT x{oram_addr_reg}, x0, 15, {cnn_perceptron_cnt - 1}, 0\n")
     gen_oram_cnn_st_for_loop(f = f, st_num = cnn_perceptron_cnt, st_col = 16, cnn_output_size = cnn_output_size)
     f.write(f"addi x{dram_addr_start_addr_reg}, x{dram_addr_start_addr_reg}, {32}\n")
-    #f.write(f"STT x{oram_addr_reg}, x{st_dram_addr_reg},  {cnn_wgt_size - 1}, 0, 5, 0\n")
-    f.write(f"addi x{st_dram_addr_reg}, x{st_dram_addr_reg}, {32}\n")
     f.write(f"addi x{sram_idata_addr_reg}, x{sram_idata_addr_reg}, {cnn_wgt_size * 16}\n")
     f.write(f"jal x0, cnn_mm_for_loop_{cnn_mm_for_loop_cnt}_end\n")
 
     f.write(f"cnn_mm_for_loop_{cnn_mm_for_loop_cnt}_last_iter_br:\n")
     f.write(f"MM x{sram_idata_addr_reg}, x{sram_wdata_addr_reg}, {cnn_wgt_size - 1}, {cnn_last_iter_input_cnt - 1}, {cnn_perceptron_cnt - 1}, 1\n")
-    f.write(f"STMT x{oram_addr_reg}, x0, {cnn_last_iter_input_cnt - 1}, {cnn_wgt_size - 1}, 0\n")
+    f.write(f"STMT x{oram_addr_reg}, x0, {cnn_last_iter_input_cnt - 1}, {cnn_perceptron_cnt - 1}, 0\n")
     gen_oram_cnn_st_for_loop(f = f, st_num =cnn_perceptron_cnt, st_col = cnn_last_iter_input_cnt, cnn_output_size = cnn_output_size)
-    f.write(f"addi x{dram_addr_start_addr_reg}, x{dram_addr_start_addr_reg}, {(cnn_last_iter_input_cnt - 1)*2}\n")
+    f.write(f"addi x{dram_addr_start_addr_reg}, x{dram_addr_start_addr_reg}, {(cnn_last_iter_input_cnt)*2}\n")
     f.write(f"cnn_mm_for_loop_{cnn_mm_for_loop_cnt}_end:\n")
 
     f.write(f"blt x{cnn_mm_for_loop_iter_reg}, x{cnn_mm_for_loop_thd_reg}, cnn_mm_for_loop_{cnn_mm_for_loop_cnt}\n")
@@ -611,8 +609,10 @@ def gen_cnn_window_for_loop(f: TextIOWrapper, cnn_input_info: cnn_input_info, cn
     global dram_addr_start_addr_reg
 
     cnn_wgt_size = cnn_input_info.cnn_window_len * cnn_input_info.cnn_window_width
+    output_width = (cnn_input_info.img_width - cnn_input_info.cnn_window_width + 1)
     input_col_cnn_wgt_cnt = math.floor(256 / cnn_wgt_size)
     input_total_cnn_wgt_cnt = 16 * input_col_cnn_wgt_cnt
+    input_total_cnn_wgt_cnt = math.floor(input_total_cnn_wgt_cnt/output_width) * output_width
     print(f"input_total_cnn_wgt_cnt is {input_total_cnn_wgt_cnt}")
     total_cnn_wgt_cnt = (cnn_input_info.img_width - 2) * (cnn_input_info.img_len - 2)
     cnn_perceptron_thd = math.ceil(total_cnn_wgt_cnt / input_total_cnn_wgt_cnt)
@@ -641,22 +641,21 @@ def gen_cnn_window_for_loop(f: TextIOWrapper, cnn_input_info: cnn_input_info, cn
     gen_set_data(f = f, data = cnn_input_info.dram_wdata_addr, reg = perceptron_dram_wdata_addr_reg) 
     f.write(f"add x{dram_wdata_addr_reg}, x{perceptron_dram_wdata_addr_reg}, x0\n")
     gen_load_wdata_for_loop(f = f, perceptron_cnt = cnn_perceptron_cnt, ldt_info = perceptron_ldt_wgt_info, wdata_size = cnn_wgt_size)
+    gen_set_data(f = f, data = dram_idata_addr, reg = load_cnn_idata_dram_reg)
 
     f.write(f"perceptron_for_loop_{perceptron_for_loop_cnt}:\n")
 
     f.write(f"addi x{perceptron_for_loop_iter_reg}, x{perceptron_for_loop_iter_reg}, 1\n")
     f.write(f"beq x{perceptron_for_loop_iter_reg}, x{perceptron_for_loop_thd_reg}, perceptron_for_loop_{perceptron_for_loop_cnt}_last_iter_br\n")
 
-    gen_set_data(f = f, data = dram_idata_addr, reg = load_cnn_idata_dram_reg)
     gen_load_cnn_idata_for_loop(f = f, ldt_info = perceptron_ldt_input_info, cnn_input_info = cnn_input_info, load_thd = input_total_cnn_wgt_cnt)
     gen_cnn_mm_for_loop(f = f, cnn_perceptron_cnt = cnn_perceptron_cnt, input_cnt = input_total_cnn_wgt_cnt, cnn_input_info = cnn_input_info)
-    #gen_oram_cnn_st_for_loop(f = f, st_cnt = input_total_cnn_wgt_cnt, st_dram_addr = st_dram_addr)
+
     f.write(f"jal x0, perceptron_for_loop_{perceptron_for_loop_cnt}_end\n")
 
     f.write(f"perceptron_for_loop_{perceptron_for_loop_cnt}_last_iter_br:\n")
     gen_load_cnn_idata_for_loop(f = f, ldt_info = perceptron_ldt_input_info, cnn_input_info = cnn_input_info, load_thd = last_iter_cnn_wgt_cnt)
     gen_cnn_mm_for_loop(f = f, cnn_perceptron_cnt = cnn_perceptron_cnt, input_cnt = last_iter_cnn_wgt_cnt, cnn_input_info = cnn_input_info)
-    #gen_oram_cnn_st_for_loop(f = f, st_cnt = last_iter_cnn_wgt_cnt, st_dram_addr = st_dram_addr)
     f.write(f"perceptron_for_loop_{perceptron_for_loop_cnt}_end:\n")
 
     f.write(f"blt x{perceptron_for_loop_iter_reg}, x{perceptron_for_loop_thd_reg}, perceptron_for_loop_{perceptron_for_loop_cnt}\n")
