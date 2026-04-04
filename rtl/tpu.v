@@ -16,9 +16,6 @@ module tpu(
     input rst_n;
     input start_vld;
     input [`IRAM_ADDR_WIDTH-1:0] start_addr;
-    //parameter
-
-    //inout bus
     output wfi;
 
     //ifu output
@@ -899,7 +896,7 @@ module tpu(
     );
 
     genvar i;
-    generate
+    generate;
         for(i = 0; i < 16; i=i+1)begin
 
             DFFE #(.WIDTH(32))
@@ -959,7 +956,7 @@ module tpu(
     ff_RDATA_raw(
         .clk(clk),
         .rst_n(rst_n),
-	     .en(~RLAST),
+	.en(~RLAST),
         .d(RDATA_raw),
         .q(RDATA_raw_ff)
     );
@@ -1003,7 +1000,7 @@ module tpu(
 
     assign RVALID = (ARSIZE_ff == 0) ? RVALID_raw : (|ARADDR_ff[2:0]) ? RVALID_raw_ff : RVALID_raw; 
     assign RDATA = (ARSIZE_ff == 0) ? RDATA_0 : (|ARADDR_ff[2:0]) ? RDATA_3_raw : RDATA_raw;
-              
+
     //softmax
     wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] data[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0];
     wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] sum;
@@ -1015,7 +1012,15 @@ module tpu(
     wire[3:0] softmax_count;
     wire[3:0] softmax_count_nxt;
     wire softmax_quant_en;
+    wire [`SOFT_MAX_INPUT_ADDR_WIDTH-1:0] softmax_exp_vld_nxt;
+    wire [`SOFT_MAX_INPUT_ADDR_WIDTH-1:0] softmax_exp_vld;
+    wire softmax_exp_en;
+    wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] softmax_exp_output[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0];
 
+    wire[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0] softmax_exp_done;
+    wire[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0] softmax_exp_err;
+    wire[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0] softmax_exp_rdy;
+    wire[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0] softmax_exp_div;
     
     assign softmax_count_nxt = softmax_count=='d15 ? softmax_count : softmax_count+1;
     DFFRE #(.WIDTH(4))
@@ -1039,24 +1044,173 @@ module tpu(
                 .d(WDATA),
                 .q(softmax_input_quant[j])
             );
-        end
-    endgenerate
-
-    //if the count reach the addr width(10)
-    //=> start the softmax
-    assign softmax_quant_en = softmax_count == `SOFT_MAX_INPUT_ADDR_WIDTH;
-    genvar k;
-    generate
-        if(softmax_quant_en)begin
-            assign max_data_init = 
-            for(k = 0; k < `SOFT_MAX_INPUT_ADDR_WIDTH; k=k+1)begin
-                assign max_data = softmax_input_quant[k] > max-;
+            //method2
+            //test if can just dircetly use input define whicha have the most prob
+            if(softmax_count[j] > max_val)begin
+                assign max_val = softmax_count[j];
+                assign max_idx = j;
             end
         end
     endgenerate
 
+    //method2
+    //use expontenial do the work
+    //if the count reach the addr width(10)
+    //=> start the softmax
 
-    
+    assign softmax_exp_en = softmax_count == `SOFT_MAX_INPUT_ADDR_WIDTH;
+    assign softmax_exp_vld_nxt = {`SOFT_MAX_INPUT_ADDR_WIDTH{softmax_quant_en}} & ~(softmax_exp_done);
+
+    DFFR #(`SOFT_MAX_INPUT_ADDR_WIDTH)
+    ff_RSRAM (
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(softmax_exp_vld_nxt),
+        .q(softmax_exp_vld)
+    );
+    //calcaulate the exp part
+
+    exp u_exp0(
+            .clk(clk),
+            .rst(rst),
+            .exp_vld(softmax_exp_vld[0]),
+            .in_num(softmax_input_quant[0]-max_val),
+            .output_num(softmax_exp_output[0]),
+            .exp_done(softmax_exp_done[0]),
+            .exp_err(softmax_exp_err[0]),
+            .exp_rdy(softmax_exp_rdy[0]),
+            .exp_divide(softmax_exp_div[0])
+    );
+    exp u_exp1(
+            .clk(clk),
+            .rst(rst),
+            .exp_vld(softmax_exp_vld[1]),
+            .in_num(softmax_input_quant[1]-max_val),
+            .output_num(softmax_exp_output[1]),
+            .exp_done(softmax_exp_done[1]),
+            .exp_err(softmax_exp_err[1]),
+            .exp_rdy(softmax_exp_rdy[1]),
+            .exp_divide(softmax_exp_div[1])
+    );
+    exp u_exp2(
+            .clk(clk),
+            .rst(rst),
+            .exp_vld(softmax_exp_vld[2]),
+            .in_num(softmax_input_quant[2]-max_val),
+            .output_num(softmax_exp_output[2]),
+            .exp_done(softmax_exp_done[2]),
+            .exp_err(softmax_exp_err[2]),
+            .exp_rdy(softmax_exp_rdy[2]),
+            .exp_divide(softmax_exp_div[2])
+    );
+    exp u_exp3(
+            .clk(clk),
+            .rst(rst),
+            .exp_vld(softmax_exp_vld[3]),
+            .in_num(softmax_input_quant[3]-max_val),
+            .output_num(softmax_exp_output[3]),
+            .exp_done(softmax_exp_done[3]),
+            .exp_err(softmax_exp_err[3]),
+            .exp_rdy(softmax_exp_rdy[3]),
+            .exp_divide(softmax_exp_div[3])
+    );
+    exp u_exp4(
+            .clk(clk),
+            .rst(rst),
+            .exp_vld(softmax_exp_vld[4]),
+            .in_num(softmax_input_quant[4]-max_val),
+            .output_num(softmax_exp_output[4]),
+            .exp_done(softmax_exp_done[4]),
+            .exp_err(softmax_exp_err[4]),
+            .exp_rdy(softmax_exp_rdy[4]),
+            .exp_divide(softmax_exp_div[4])
+    );
+    exp u_exp5(
+            .clk(clk),
+            .rst(rst),
+            .exp_vld(softmax_exp_vld[5]),
+            .in_num(softmax_input_quant[5]-max_val),
+            .output_num(softmax_exp_output[5]),
+            .exp_done(softmax_exp_done[5]),
+            .exp_err(softmax_exp_err[5]),
+            .exp_rdy(softmax_exp_rdy[5]),
+            .exp_divide(softmax_exp_div[5])
+    );
+    exp u_exp6(
+            .clk(clk),
+            .rst(rst),
+            .exp_vld(softmax_exp_vld[6]),
+            .in_num(softmax_input_quant[6]-max_val),
+            .output_num(softmax_exp_output[6]),
+            .exp_done(softmax_exp_done[6]),
+            .exp_err(softmax_exp_err[6]),
+            .exp_rdy(softmax_exp_rdy[6]),
+            .exp_divide(softmax_exp_div[6])
+    );
+    exp u_exp7(
+            .clk(clk),
+            .rst(rst),
+            .exp_vld(softmax_exp_vld[7]),
+            .in_num(softmax_input_quant[7]-max_val),
+            .output_num(softmax_exp_output[7]),
+            .exp_done(softmax_exp_done[7]),
+            .exp_err(softmax_exp_err[7]),
+            .exp_rdy(softmax_exp_rdy[7]),
+            .exp_divide(softmax_exp_div[7])
+    );
+    exp u_exp8(
+            .clk(clk),
+            .rst(rst),
+            .exp_vld(softmax_exp_vld[8]),
+            .in_num(softmax_input_quant[8]-max_val),
+            .output_num(softmax_exp_output[8]),
+            .exp_done(softmax_exp_done[8]),
+            .exp_err(softmax_exp_err[8]),
+            .exp_rdy(softmax_exp_rdy[8]),
+            .exp_divide(softmax_exp_div[8])
+    );
+    exp u_exp9(
+            .clk(clk),
+            .rst(rst),
+            .exp_vld(softmax_exp_vld[9]),
+            .in_num(softmax_input_quant[9]-max_val),
+            .output_num(softmax_exp_output[9]),
+            .exp_done(softmax_exp_done[9]),
+            .exp_err(softmax_exp_err[9]),
+            .exp_rdy(softmax_exp_rdy[9]),
+            .exp_divide(softmax_exp_div[9])
+    );
+
+   //only if all exp done cal then do next step
+   //sum = softmax_exp_output[0] 
+   //     +  softmax_exp_output[1]
+   //     +  softmax_exp_output[2]
+   //     +  softmax_exp_output[3]
+   //     +  softmax_exp_output[4]
+   //     +  softmax_exp_output[5]
+   //     +  softmax_exp_output[6]
+   //     +  softmax_exp_output[7]
+   //     +  softmax_exp_output[8]
+   //     +  softmax_exp_output[9];
+
+    genvar k;
+    generate
+        for(k = 0; k < `SOFT_MAX_INPUT_ADDR_WIDTH; k=k+1)begin
+            assign sum = sum + softmax_exp_output[k];
+        end
+    endgenerate
+
+    genvar h;
+    generate
+        for(h = 0; h < `SOFT_MAX_INPUT_ADDR_WIDTH; h=h+1)begin
+            assign data[h] = (&softmax_exp_done) ? softmax_exp_output[h]/sum : 'b0;
+        end
+        if(data[h] > cur_max)begin
+            assign cur_max = data[h];
+            assign max_idx = h;
+        end
+    endgenerate
+
 endmodule
 
 `else
@@ -1103,10 +1257,10 @@ module tpu(
     wfi
 );
 
-    parameter AWID_WIDTH = 4;
-    parameter AWADDR_WIDTH = 32;
-    parameter WDATA_WIDTH = 64;
-    parameter WSTRB_WIDTH = WDATA_WIDTH/8; // should be WDATA_WIDTH/8
+    //parameter AWID_WIDTH = 4;
+    //parameter AWADDR_WIDTH = 32;
+    //parameter WDATA_WIDTH = 64;
+    //parameter WSTRB_WIDTH = WDATA_WIDTH/8; // should be WDATA_WIDTH/8
 
     input clk;
     input rst_n;
@@ -1116,8 +1270,8 @@ module tpu(
 
     //inout bus
     //address write channel 
-    output [AWID_WIDTH-1:0] AWID;
-    output [AWADDR_WIDTH-1:0] AWADDR;
+    output [`AWID_WIDTH-1:0] AWID;
+    output [`AWADDR_WIDTH-1:0] AWADDR;
     output [7:0] AWLEN;
     output [2:0] AWSIZE;
     output [1:0] AWBURST;
@@ -1125,8 +1279,8 @@ module tpu(
     output  AWVALID;
     input AWREADY;
 
-    output [AWID_WIDTH-1:0] ARID;
-    output [AWADDR_WIDTH-1:0] ARADDR;
+    output [`AWID_WIDTH-1:0] ARID;
+    output [`AWADDR_WIDTH-1:0] ARADDR;
     output [7:0] ARLEN;
     output [2:0] ARSIZE;
     output [1:0] ARBURST;
@@ -1135,21 +1289,21 @@ module tpu(
     input ARREADY;
 
     //write data channel
-    output [WDATA_WIDTH-1:0] WDATA;
-    output [WSTRB_WIDTH-1:0] WSTRB;
+    output [`WDATA_WIDTH-1:0] WDATA;
+    output [`WSTRB_WIDTH-1:0] WSTRB;
     output WLAST;
     output WVALID;
     input WREADY;
 
     //read data channel
-    input [AWID_WIDTH-1:0] RID;
-    input [WDATA_WIDTH-1:0] RDATA;
+    input [`AWID_WIDTH-1:0] RID;
+    input [`WDATA_WIDTH-1:0] RDATA;
     input [1:0] RRESP;
     input RLAST;
     input RVALID;
     output RREADY; 
     //write response channel
-    input [AWID_WIDTH-1:0] BID;
+    input [`AWID_WIDTH-1:0] BID;
     input [1:0] BRESP;
     input BVALID;
     output BREADY;
@@ -1895,15 +2049,9 @@ module tpu(
     );
 
     AXI_WRITE_INFT#(
-<<<<<<< HEAD
         .AWID_WIDTH  (`AWID_WIDTH), 
         .AWADDR_WIDTH(`AWADDR_WIDTH), 
         .WDATA_WIDTH (`WDATA_WIDTH)
-=======
-        .AWID_WIDTH  (4), 
-        .AWADDR_WIDTH(32), 
-        .WDATA_WIDTH (64)
->>>>>>> origin/main
     )
     u_AXI_WRITE_INTF
     (
@@ -1947,46 +2095,6 @@ module tpu(
         .axi_lsu_bvld                         (axi_lsu_bvld),
         .axi_lsu_resp_oram_addr               (axi_lsu_resp_oram_addr)
     );
-
-    //softmax
-    wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] data[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0];
-    wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] sum;
-    wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] cur_max;
-    wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] max_val;
-    wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] max_idx;
-    wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] softmax_input_quant[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0];
-    wire[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0] softmax_input_quant_en;
-    wire[3:0] count;
-    wire[3:0] count_nxt;
-
     
-    assign count_nxt = count=='d15 ? count : count+1;
-    
-    DFFRE #(.WIDTH(4))
-    ff_count(
-        .clk(clk),
-        .rst_n(rst_n),
-	    .en(WVALID&WREADY),
-        .d(count_nxt),
-        .q(count)
-    );
-    
-    //assign the input_quant by the wdata
-    genvar j;
-    generate
-        for(j = 0; j < 16; j=j+1)begin
-            assign softmax_input_quant_en[j] = ((j == count) & (WVALID & WREADY));
-            
-            DFFE #(.WIDTH(64))
-            ff_RSRAM (
-                .clk(clk),
-                .en(softmax_input_quant_en[j]),
-                .d(WDATA),
-                .q(softmax_input_quant[j])
-            );
-        end
-    endgenerate
 endmodule
-
 `endif
-
