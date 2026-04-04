@@ -233,7 +233,7 @@ module mm_ctrl_buffer(
                 assign lsu_mm_buff_ent_data_raw[i] = lsu_mm_buff_ram_alloc_data_shifted;
             end
             else begin
-                assign lsu_mm_buff_ent_alloc_en[i] = lsu_mm_buff_mxu_vld[i-1] & (i <= lsu_mm_buff_ctrl_row_len_ff);
+                assign lsu_mm_buff_ent_alloc_en[i] = lsu_mm_buff_mxu_vld[i-1] & (i <= lsu_mm_buff_ctrl_col_len_ff);
                 assign lsu_mm_buff_mxu_vld_nxt[i]  = lsu_mm_buff_mxu_vld[i-1] & (i <= lsu_mm_buff_ctrl_col_len_ff);
                 assign lsu_mm_buff_ent_data_raw[i] = lsu_mm_buff_ent_data_raw_ff[i-1];
             end

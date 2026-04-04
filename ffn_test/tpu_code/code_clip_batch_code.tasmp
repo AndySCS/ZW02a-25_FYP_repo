@@ -1,0 +1,312 @@
+addi x31, x0, 1
+addi x10, x0, 0
+addi x12, x0, 0
+addi x5, x0, 0
+addi x4, x0, 4
+load_idata_for_loop_0:
+addi x5, x5, 1
+beq x5, x4, load_idata_for_loop_0_else_br
+load_idata_for_loop_0_if_br:
+LDT x12, x10, 255, 0, 0
+jal x0, 0_if_end:
+load_idata_for_loop_0_else_br:
+LDT x12, x10, 255, 0, 0
+load_idata_for_loop_0_if_end:
+addi x12, x12, 1
+addi x10, x10, 256
+blt x5, x4, load_idata_for_loop_0
+addi x7, x0, 259
+sb x31, x7, 0
+lui x23, 2
+addi x23, x23, 0
+addi x9, x0, 0
+addi x8, x0, 4
+addi x22, x0, 1000
+lui x21, 3
+addi x21, x21, 272
+addi x24, x0, 0
+lui x25, 4
+addi x25, x25, 3584
+fc_layer_for_loop_0:
+add x20, x22, x0
+addi x12, x0, 0
+addi x9, x9, 1
+beq x9, x8, fc_layer_for_loop_0_last_iter_br
+addi x14, x0, 0
+addi x15, x0, 50
+addi x17, x0, 1
+addi x18, x0, 0
+lui x19, 1
+addi x19, x19, 3840
+add x11, x20, x0
+perceptron_for_loop_0:
+addi x14, x14, 1
+beq x14, x15, perceptron_for_loop_0_last_iter_br
+beq x14, x31, perceptron_for_loop_0_first_iter_br
+lui x13, 4
+addi x13, x13, 0
+addi x2, x0, 0
+addi x1, x0, 16
+addi x3, x0, 785
+load_wdata_for_loop_0:
+LDT x13, x11, 0, 4, 4
+addi x13, x13, 16
+add x11, x11, x3
+addi x2, x2, 1
+blt x2, x1, load_wdata_for_loop_0
+lui x13, 4
+addi x13, x13, 0
+MM x12, x13, 15, 0, 15, 0
+jal x0, perceptron_for_loop_0_end
+perceptron_for_loop_0_last_iter_br:
+lui x13, 4
+addi x13, x13, 0
+addi x2, x0, 0
+addi x1, x0, 16
+addi x3, x0, 785
+load_wdata_for_loop_1:
+LDT x13, x11, 0, 0, 0
+addi x13, x13, 16
+add x11, x11, x3
+addi x2, x2, 1
+blt x2, x1, load_wdata_for_loop_1
+lui x13, 4
+addi x13, x13, 0
+MM x12, x13, 0, 0, 15, 0
+jal x0, perceptron_for_loop_0_end
+perceptron_for_loop_0_first_iter_br:
+lui x13, 4
+addi x13, x13, 0
+addi x2, x0, 0
+addi x1, x0, 16
+addi x3, x0, 785
+load_wdata_for_loop_2:
+LDT x13, x11, 0, 4, 4
+addi x13, x13, 16
+add x11, x11, x3
+addi x2, x2, 1
+blt x2, x1, load_wdata_for_loop_2
+lui x13, 4
+addi x13, x13, 0
+MM x12, x13, 15, 0, 15, 1
+perceptron_for_loop_0_end:
+bge x12, x19, perceptron_for_loop_0_iram_sp_update
+addi x12, x12, 256
+jal x0, perceptron_for_loop_0_iram_update_end
+perceptron_for_loop_0_iram_sp_update:
+add x18, x18, x17
+add x12, x0, x18
+perceptron_for_loop_0_iram_update_end:
+addi x11, x20, 16
+addi x20, x20, 16
+blt x14, x15, perceptron_for_loop_0
+act 0
+add x22, x22, x21
+STMT x23, x0, 0, 15, 0
+bge x23, x25, fc_layer_for_loop_0_oram_update_sp
+addi x23, x23, 512
+jal x0, fc_layer_for_loop_0_end
+fc_layer_for_loop_0_oram_update_sp:
+addi x23, x24, 1
+addi x24, x24, 1
+jal x0, fc_layer_for_loop_0_end
+fc_layer_for_loop_0_last_iter_br:
+addi x14, x0, 0
+addi x15, x0, 50
+addi x17, x0, 1
+addi x18, x0, 0
+lui x19, 1
+addi x19, x19, 3840
+add x11, x20, x0
+perceptron_for_loop_1:
+addi x14, x14, 1
+beq x14, x15, perceptron_for_loop_1_last_iter_br
+beq x14, x31, perceptron_for_loop_1_first_iter_br
+lui x13, 4
+addi x13, x13, 0
+addi x2, x0, 0
+addi x1, x0, 8
+addi x3, x0, 785
+load_wdata_for_loop_3:
+LDT x13, x11, 0, 4, 4
+addi x13, x13, 16
+add x11, x11, x3
+addi x2, x2, 1
+blt x2, x1, load_wdata_for_loop_3
+lui x13, 4
+addi x13, x13, 0
+MM x12, x13, 15, 0, 7, 0
+jal x0, perceptron_for_loop_1_end
+perceptron_for_loop_1_last_iter_br:
+lui x13, 4
+addi x13, x13, 0
+addi x2, x0, 0
+addi x1, x0, 8
+addi x3, x0, 785
+load_wdata_for_loop_4:
+LDT x13, x11, 0, 0, 0
+addi x13, x13, 16
+add x11, x11, x3
+addi x2, x2, 1
+blt x2, x1, load_wdata_for_loop_4
+lui x13, 4
+addi x13, x13, 0
+MM x12, x13, 0, 0, 7, 0
+jal x0, perceptron_for_loop_1_end
+perceptron_for_loop_1_first_iter_br:
+lui x13, 4
+addi x13, x13, 0
+addi x2, x0, 0
+addi x1, x0, 8
+addi x3, x0, 785
+load_wdata_for_loop_5:
+LDT x13, x11, 0, 4, 4
+addi x13, x13, 16
+add x11, x11, x3
+addi x2, x2, 1
+blt x2, x1, load_wdata_for_loop_5
+lui x13, 4
+addi x13, x13, 0
+MM x12, x13, 15, 0, 7, 1
+perceptron_for_loop_1_end:
+bge x12, x19, perceptron_for_loop_1_iram_sp_update
+addi x12, x12, 256
+jal x0, perceptron_for_loop_1_iram_update_end
+perceptron_for_loop_1_iram_sp_update:
+add x18, x18, x17
+add x12, x0, x18
+perceptron_for_loop_1_iram_update_end:
+addi x11, x20, 16
+addi x20, x20, 16
+blt x14, x15, perceptron_for_loop_1
+act 0
+STMT x23, x0, 0, 7, 0
+fc_layer_for_loop_0_end:
+blt x9, x8, fc_layer_for_loop_0
+lui x23, 2
+addi x23, x23, 0
+addi x9, x0, 0
+addi x8, x0, 56
+addi x26, x0, 784
+oram_st_for_loop_0:
+addi x9, x9, 1
+STT x23, x26,  0, 1, 0, 1
+addi x26, x26, 2
+addi x23, x23, 32
+blt x9, x8, oram_st_for_loop_0
+WFI
+addi x10, x0, 784
+addi x12, x0, 0
+addi x5, x0, 0
+addi x4, x0, 1
+load_idata_for_loop_1:
+addi x5, x5, 1
+beq x5, x4, load_idata_for_loop_1_else_br
+load_idata_for_loop_1_if_br:
+LDT x12, x10, 55, 0, 0
+jal x0, 1_if_end:
+load_idata_for_loop_1_else_br:
+LDT x12, x10, 55, 0, 0
+load_idata_for_loop_1_if_end:
+addi x12, x12, 1
+addi x10, x10, 256
+blt x5, x4, load_idata_for_loop_1
+addi x7, x0, 896
+sb x31, x7, 0
+lui x23, 2
+addi x23, x23, 0
+lui x20, 11
+addi x20, x20, 4040
+addi x12, x0, 0
+lui x11, 11
+addi x11, x11, 4040
+addi x14, x0, 0
+addi x15, x0, 4
+addi x17, x0, 1
+addi x18, x0, 0
+lui x19, 1
+addi x19, x19, 3840
+add x11, x20, x0
+perceptron_for_loop_2:
+addi x14, x14, 1
+beq x14, x15, perceptron_for_loop_2_last_iter_br
+beq x14, x31, perceptron_for_loop_2_first_iter_br
+lui x13, 4
+addi x13, x13, 0
+addi x2, x0, 0
+addi x1, x0, 10
+addi x3, x0, 57
+load_wdata_for_loop_6:
+LDT x13, x11, 0, 4, 4
+addi x13, x13, 16
+add x11, x11, x3
+addi x2, x2, 1
+blt x2, x1, load_wdata_for_loop_6
+lui x13, 4
+addi x13, x13, 0
+MM x12, x13, 15, 0, 9, 0
+jal x0, perceptron_for_loop_2_end
+perceptron_for_loop_2_last_iter_br:
+lui x13, 4
+addi x13, x13, 0
+addi x2, x0, 0
+addi x1, x0, 10
+addi x3, x0, 57
+load_wdata_for_loop_7:
+add x27, x0, x11
+LDT x13, x11, 0, 3, 0
+addi x13, x13, 8
+addi x11, x11, 8
+LDT x13, x11, 0, 0, 0
+addi x13, x13, 1
+addi x11, x11, 1
+add x11, x0, x27
+andi x13, x13, 4080
+addi x13, x13, 16
+add x11, x11, x3
+addi x2, x2, 1
+blt x2, x1, load_wdata_for_loop_7
+lui x13, 4
+addi x13, x13, 0
+MM x12, x13, 8, 0, 9, 0
+jal x0, perceptron_for_loop_2_end
+perceptron_for_loop_2_first_iter_br:
+lui x13, 4
+addi x13, x13, 0
+addi x2, x0, 0
+addi x1, x0, 10
+addi x3, x0, 57
+load_wdata_for_loop_8:
+LDT x13, x11, 0, 4, 4
+addi x13, x13, 16
+add x11, x11, x3
+addi x2, x2, 1
+blt x2, x1, load_wdata_for_loop_8
+lui x13, 4
+addi x13, x13, 0
+MM x12, x13, 15, 0, 9, 1
+perceptron_for_loop_2_end:
+bge x12, x19, perceptron_for_loop_2_iram_sp_update
+addi x12, x12, 256
+jal x0, perceptron_for_loop_2_iram_update_end
+perceptron_for_loop_2_iram_sp_update:
+add x18, x18, x17
+add x12, x0, x18
+perceptron_for_loop_2_iram_update_end:
+addi x11, x20, 16
+addi x20, x20, 16
+blt x14, x15, perceptron_for_loop_2
+STMT x23, x0, 0, 9, 0
+lui x23, 2
+addi x23, x23, 0
+addi x9, x0, 0
+addi x8, x0, 10
+lui x26, 12
+addi x26, x26, 1520
+oram_st_for_loop_1:
+addi x9, x9, 1
+STT x23, x26,  0, 1, 0, 1
+addi x26, x26, 2
+addi x23, x23, 32
+blt x9, x8, oram_st_for_loop_1
+WFI
