@@ -13,6 +13,7 @@ class axi_wr_monitor extends uvm_monitor;
     cmd_handler cmd_hdlr;
     ram_block ram_blk;
     int output_layer;
+    axi_transaction aw_q[$];
 
     `uvm_component_utils(axi_wr_monitor)
     function new(string name = "axi_wr_monitor", uvm_component parent = null);
@@ -70,22 +71,38 @@ task axi_wr_monitor::main_phase(uvm_phase phase);
 endtask
 
 task axi_wr_monitor::mon_layer();
-    int alloc_data_q[$];
-    int alloc_addr_q[$];
+    axi_transaction aw_tmp;
 
     if(axi_wr_if.AWVALID & axi_wr_if.AWREADY)begin
-        waddr = axi_wr_if.AWADDR;
-        wdata_len = axi_wr_if.AWLEN + 1;
-        wsize = 1 << axi_wr_if.AWSIZE;
+        aw_tmp = new();
+        aw_tmp.init_axi_tr(
+            .AxID        (axi_wr_if.AWID),
+            .AxADDR      (axi_wr_if.AWADDR),
+            .AxLEN       (axi_wr_if.AWLEN),
+            .AxSIZE      (axi_wr_if.AWSIZE),
+            .AxBURST     (axi_wr_if.AWBURST),
+            .AxREGION    (axi_wr_if.AWREGION)
+        );
+        aw_q.push_back(aw_tmp);
+	`uvm_info(get_name(), $sformatf("receive AW request, AWADDR = %0d, len = %0d, size = %0d", aw_tmp.AxADDR, aw_tmp.AxLEN, aw_q.size()), UVM_DEBUG)
     end
     if(axi_wr_if.WVALID & axi_wr_if.WREADY)begin
+        wsize = 1 << aw_q[0].AxSIZE;
         for(int i = 0; i < wsize; i++)begin
             if(axi_wr_if.WSTRB[i])begin
+                waddr = aw_q[0].AxADDR;
                 wdata_len = wdata_len - 1;
                 ram_blk.write_data(int'($signed(axi_wr_if.WDATA[i*8 +: 8])), waddr);
                 `uvm_info(get_name(), $sformatf("write data %0d to addr %0d", int'($signed(axi_wr_if.WDATA[i*8 +: 8])), waddr), UVM_DEBUG)
-                waddr = waddr + 1;
+                aw_q[0].AxADDR = waddr + 1;
             end
+        end
+        if(aw_q[0].AxLEN == 0)begin
+            aw_q.pop_front();
+        end
+        else begin
+            aw_q[0].AxLEN--;// -= 1;
+	    `uvm_info(get_name(), $sformatf("receive W request, update len = %0d", aw_q[0].AxLEN), UVM_DEBUG)
         end
     end
 endtask
@@ -109,7 +126,7 @@ task axi_wr_monitor::mon_output(ffn_operator tr);
              ram_blk.read_data(bit_data_hi, alloc_ptr_nxt);
              ram_blk.read_data(bit_data_lo, alloc_ptr);
              tr.layer_output[i][j] = int'($signed({bit_data_hi[7:0], bit_data_lo[7:0]}));
-             `uvm_info(get_name(), $sformatf("read data %0d at %0d and %0d", tr.layer_output[i][j], alloc_ptr, alloc_ptr_nxt), UVM_DEBUG)
+             `uvm_info(get_name(), $sformatf("read data[%0d][%0d] %0d at %0d and %0d",i, j, tr.layer_output[i][j], alloc_ptr, alloc_ptr_nxt), UVM_NONE)
              alloc_ptr = alloc_ptr + 2;
         end
     end
