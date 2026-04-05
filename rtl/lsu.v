@@ -612,11 +612,11 @@ module lsu(
 
     assign lsu_mm_finish_pulse = lsu_mm_finish & ~lsu_mm_finish_ff;
 
-    assign lsu_ld_st_addr_en = lsu_vld_qual & (alu_lsu_ld_iram | alu_lsu_ld_wram | alu_lsu_st_iram | alu_lsu_st_wram | alu_lsu_st_oram);
+    //assign lsu_ld_st_addr_en = lsu_vld_qual & (alu_lsu_ld_iram | alu_lsu_ld_wram | alu_lsu_st_iram | alu_lsu_st_wram | alu_lsu_st_oram);
     DFFE #(.WIDTH(13))
     ff_alu_lsu_ld_st_addr(
         .clk(clk),
-        .en(lsu_ld_st_addr_en),
+        .en(lsu_vld_qual),
         .d(alu_lsu_ld_st_addr),
         .q(lsu_ld_st_addr)
     );
@@ -702,7 +702,7 @@ module lsu(
         .clk(clk),
         .rst_n(rst_n),
 	.en(lsu_vld_qual),
-        .d(lsu_st_iram_pulse),
+        .d(alu_lsu_st_iram),
         .q(lsu_st_iram_ff)
     );
 
@@ -711,7 +711,7 @@ module lsu(
         .clk(clk),
         .rst_n(rst_n),
 	.en(lsu_vld_qual),
-        .d(lsu_st_wram_pulse),
+        .d(alu_lsu_st_wram),
         .q(lsu_st_wram_ff)
     );
 
@@ -720,7 +720,7 @@ module lsu(
         .clk(clk),
         .rst_n(rst_n),
 	.en(lsu_vld_qual),
-        .d(lsu_st_oram_pulse),
+        .d(alu_lsu_st_oram),
         .q(lsu_st_oram_ff)
     );
 
@@ -729,7 +729,7 @@ module lsu(
         .clk(clk),
         .rst_n(rst_n),
 	.en(lsu_vld_qual),
-        .d(lsu_st_dram_pulse),
+        .d(alu_lsu_st_dram),
         .q(lsu_st_dram_ff)
     );
 
@@ -738,7 +738,7 @@ module lsu(
         .clk(clk),
         .rst_n(rst_n),
 	.en(lsu_vld_qual),
-        .d(lsu_ld_iram_pulse),
+        .d(alu_lsu_ld_iram),
         .q(lsu_ld_iram_ff)
     );
 
@@ -747,7 +747,7 @@ module lsu(
         .clk(clk),
         .rst_n(rst_n),
 	.en(lsu_vld_qual),
-        .d(lsu_ld_wram_pulse),
+        .d(alu_lsu_ld_wram),
         .q(lsu_ld_wram_ff)
     );
 
@@ -756,7 +756,7 @@ module lsu(
         .clk(clk),
         .rst_n(rst_n),
 	    .en(lsu_vld_qual),
-        .d(lsu_ld_oram_pulse),
+        .d(alu_lsu_ld_oram),
         .q(lsu_ld_oram_ff)
     );
 

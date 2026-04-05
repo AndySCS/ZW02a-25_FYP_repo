@@ -78,7 +78,7 @@ module exp(
 
     DFFR #(.WIDTH(1)) ff_exp_done (
         .clk(clk),
-	    .rst_n(rst_n),
+	.rst_n(rst_n),
         .d(exp_done_nxt),
         .q(exp_done)
     );
