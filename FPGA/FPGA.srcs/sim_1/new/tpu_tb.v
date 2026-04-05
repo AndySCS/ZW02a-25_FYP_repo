@@ -34,7 +34,7 @@ module top_tb(
     .clk        (clk),
     .rst_n      (rst_n),
     .start_vld  (start_vld),
-    .start_addr (start_addr),
+    //.start_addr (start_addr),
     .wfi        (wfi)
   );
 
@@ -46,8 +46,8 @@ module top_tb(
     // Initialize
     rst_n      = 0;
     start_vld  = 0;
-    start_addr = 12'h0;
-    
+    //start_addr = 12'h0;
+    start_vld  = 1'b0;
 
     // Apply reset
     #20;
@@ -58,7 +58,7 @@ module top_tb(
 
     // Example stimulus: issue a start with a 12-bit address
     start_vld  = 1;
-    start_addr = 12'h0;
+    //start_addr = 12'h0;
     @(posedge clk);
     start_vld  = 0;
     // End simulation

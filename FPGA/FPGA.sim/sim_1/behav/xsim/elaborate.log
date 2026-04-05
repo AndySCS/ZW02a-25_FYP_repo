@@ -52,6 +52,7 @@ Compiling module xil_defaultlib.mux8(WIDTH=128)
 Compiling module xil_defaultlib.mux8(WIDTH=256)
 Compiling module xil_defaultlib.DFFR(WIDTH=16)
 Compiling module xil_defaultlib.DFFR(WIDTH=32)
+Compiling module xil_defaultlib.DFFR(WIDTH=4)
 Compiling module xil_defaultlib.data_byte_shift
 Compiling module xil_defaultlib.DFFE(WIDTH=128)
 Compiling module xil_defaultlib.mm_ctrl_buffer(RAM_TYPE="IRAM")
@@ -62,6 +63,7 @@ Compiling module xil_defaultlib.fpga_ram_mem_wrapper
 Compiling module xil_defaultlib.ram_mem_wrapper(DATA_WIDTH=128)
 Compiling module xil_defaultlib.DFFR(WIDTH=13)
 Compiling module xil_defaultlib.DFFR(WIDTH=5)
+Compiling module xil_defaultlib.DFFR(WIDTH=7)
 Compiling module xil_defaultlib.lsu
 Compiling module xil_defaultlib.DFFSE
 Compiling module xil_defaultlib.DFFE(WIDTH=16)

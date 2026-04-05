@@ -2,10 +2,10 @@
 // Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2023.1 (lin64) Build 3865809 Sun May  7 15:04:56 MDT 2023
-// Date        : Tue Mar 17 17:02:54 2026
+// Date        : Tue Mar 17 17:02:52 2026
 // Host        : ecelvd711.ece.local running 64-bit CentOS Linux release 7.9.2009 (Core)
-// Command     : write_verilog -force -mode synth_stub
-//               /dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/FPGA/FPGA.gen/sources_1/ip/extern_bram/extern_bram_stub.v
+// Command     : write_verilog -force -mode synth_stub -rename_top extern_bram -prefix
+//               extern_bram_ extern_bram_stub.v
 // Design      : extern_bram
 // Purpose     : Stub declaration of top-level module interface
 // Device      : xc7z020clg484-1

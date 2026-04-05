@@ -4,8 +4,8 @@
 // Tool Version: Vivado v.2023.1 (lin64) Build 3865809 Sun May  7 15:04:56 MDT 2023
 // Date        : Sat Mar 21 16:34:21 2026
 // Host        : ecelvd715.ece.local running 64-bit CentOS Linux release 7.9.2009 (Core)
-// Command     : write_verilog -force -mode synth_stub
-//               /dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/FPGA/FPGA.gen/sources_1/ip/fpga_ram_mem_wrapper/fpga_ram_mem_wrapper_stub.v
+// Command     : write_verilog -force -mode synth_stub -rename_top fpga_ram_mem_wrapper -prefix
+//               fpga_ram_mem_wrapper_ fpga_ram_mem_wrapper_stub.v
 // Design      : fpga_ram_mem_wrapper
 // Purpose     : Stub declaration of top-level module interface
 // Device      : xc7z020clg484-1

@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<GenRun Id="synth_1" LaunchPart="xc7z020clg484-1" LaunchTime="1774093479" LaunchIncrCheckpoint="$PSRCDIR/utils_1/imports/synth_1/tpu.dcp">
-  <File Type="VDS-TIMINGSUMMARY" Name="tpu_timing_summary_synth.rpt"/>
+<GenRun Id="synth_1" LaunchPart="xc7z020clg484-1" LaunchTime="1775380008" LaunchIncrCheckpoint="$PSRCDIR/utils_1/imports/synth_1/tpu.dcp">
   <File Type="RDS-DCP" Name="tpu.dcp"/>
   <File Type="RDS-UTIL-PB" Name="tpu_utilization_synth.pb"/>
-  <File Type="RDS-UTIL" Name="tpu_utilization_synth.rpt"/>
-  <File Type="RDS-PROPCONSTRS" Name="tpu_drc_synth.rpt"/>
-  <File Type="RDS-RDS" Name="tpu.vds"/>
-  <File Type="REPORTS-TCL" Name="tpu_reports.tcl"/>
-  <File Type="VDS-TIMING-PB" Name="tpu_timing_summary_synth.pb"/>
   <File Type="PA-TCL" Name="tpu.tcl"/>
+  <File Type="RDS-UTIL" Name="tpu_utilization_synth.rpt"/>
+  <File Type="REPORTS-TCL" Name="tpu_reports.tcl"/>
+  <File Type="RDS-RDS" Name="tpu.vds"/>
   <FileSet Name="sources" Type="DesignSrcs" RelSrcDir="$PSRCDIR/sources_1" RelGenDir="$PGENDIR/sources_1">
     <Filter Type="Srcs"/>
     <File Path="$PPRDIR/../rtl/define.vh">
@@ -215,6 +212,14 @@
         <Attr Name="UsedIn" Val="simulation"/>
       </FileInfo>
     </File>
+    <File Path="$PPRDIR/../rtl/lib/exp.v">
+      <FileInfo>
+        <Attr Name="AutoDisabled" Val="1"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
     <File Path="$PPRDIR/iram_mem.coe">
       <FileInfo>
         <Attr Name="UsedIn" Val="synthesis"/>
@@ -266,12 +271,10 @@
     </Config>
   </FileSet>
   <Strategy Version="1" Minor="2">
-    <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2023">
-      <Desc>Vivado Synthesis Defaults</Desc>
-    </StratHandle>
+    <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2023"/>
     <Step Id="synth_design"/>
   </Strategy>
-  <BlockFileSet Type="BlockSrcs" Name="fpga_ram_mem_wrapper"/>
-  <BlockFileSet Type="BlockSrcs" Name="extern_bram"/>
   <BlockFileSet Type="BlockSrcs" Name="fpga_mem_wrapper"/>
+  <BlockFileSet Type="BlockSrcs" Name="extern_bram"/>
+  <BlockFileSet Type="BlockSrcs" Name="fpga_ram_mem_wrapper"/>
 </GenRun>
