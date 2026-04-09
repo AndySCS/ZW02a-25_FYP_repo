@@ -1,14 +1,24 @@
 #-----------------------------------------------------------
-# Vivado v2023.1 (64-bit)
-# SW Build 3865809 on Sun May  7 15:04:56 MDT 2023
-# IP Build 3864474 on Sun May  7 20:36:21 MDT 2023
-# SharedData Build 3865790 on Sun May 07 13:33:03 MDT 2023
-# Start of session at: Sun Apr  5 02:58:52 2026
-# Process ID: 47676
-# Current directory: /dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/FPGA/FPGA.runs/extern_bram_synth_1
-# Command line: vivado -log extern_bram.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source extern_bram.tcl
-# Log file: /dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/FPGA/FPGA.runs/extern_bram_synth_1/extern_bram.vds
-# Journal file: /dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/FPGA/FPGA.runs/extern_bram_synth_1/vivado.jou
-# Running On: ecelvd713.ece.local, OS: Linux, CPU Frequency: 2593.905 MHz, CPU Physical cores: 32, Host memory: 270292 MB
+# Vivado v2025.2 (64-bit)
+# SW Build 6299465 on Fri Nov 14 19:35:11 GMT 2025
+# IP Build 6300035 on Fri Nov 14 10:48:45 MST 2025
+# SharedData Build 6298862 on Thu Nov 13 04:50:51 MST 2025
+# Start of session at: Thu Apr  9 20:16:44 2026
+# Process ID         : 8580
+# Current directory  : C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.runs/extern_bram_synth_1
+# Command line       : vivado.exe -log extern_bram.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source extern_bram.tcl
+# Log file           : C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.runs/extern_bram_synth_1/extern_bram.vds
+# Journal file       : C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.runs/extern_bram_synth_1\vivado.jou
+# Running On         : CCVDIAISB0045
+# Platform           : Windows Server 2016 or Windows 10
+# Operating System   : 22631
+# Processor Detail   : Intel(R) Xeon(R) Gold 6348 CPU @ 2.60GHz
+# CPU Frequency      : 2594 MHz
+# CPU Physical cores : 4
+# CPU Logical cores  : 4
+# Host memory        : 17174 MB
+# Swap memory        : 17179 MB
+# Total Virtual      : 34354 MB
+# Available Virtual  : 23361 MB
 #-----------------------------------------------------------
 source extern_bram.tcl -notrace

@@ -1,5 +1,5 @@
 # compile verilog/system verilog design source files
-verilog xil_defaultlib "/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/rtl/define.vh" --include "../../../../../rtl" \
+verilog xil_defaultlib "C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/define.vh" --include "../../../../../../../../../../AMDDesignTools/2025.2/Vivado/data/rsb/busdef" --include "../../../../../rtl" \
 "../../../../FPGA.gen/sources_1/ip/extern_bram/sim/extern_bram.v" \
 "../../../../FPGA.gen/sources_1/ip/fpga_ram_mem_wrapper/sim/fpga_ram_mem_wrapper.v" \
 "../../../../FPGA.gen/sources_1/ip/fpga_mem_wrapper/sim/fpga_mem_wrapper.v" \
@@ -7,6 +7,7 @@ verilog xil_defaultlib "/dfs/usrhome/twipaa/Documents/big_ram/ZW02a-25_FYP_repo/
 "../../../../../rtl/lib/DFFR.v" \
 "../../../../../rtl/lib/DFFRE.v" \
 "../../../../../rtl/lib/DFFSE.v" \
+"../../../../../rtl/lib/Debounce_btn.v" \
 "../../../../../rtl/acc.v" \
 "../../../../../rtl/act_mod.v" \
 "../../../../../rtl/alu.v" \

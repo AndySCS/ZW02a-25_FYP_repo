@@ -1,2 +1,2 @@
-fpga_ram_mem_wrapper.v,verilog,xil_defaultlib,../../../../FPGA.gen/sources_1/ip/fpga_ram_mem_wrapper/sim/fpga_ram_mem_wrapper.v,
+fpga_ram_mem_wrapper.v,verilog,xil_defaultlib,../../../../FPGA.gen/sources_1/ip/fpga_ram_mem_wrapper/sim/fpga_ram_mem_wrapper.v,incdir="../../../../../../../../../../AMDDesignTools/2025.2/Vivado/data/rsb/busdef"
 glbl.v,Verilog,xil_defaultlib,glbl.v

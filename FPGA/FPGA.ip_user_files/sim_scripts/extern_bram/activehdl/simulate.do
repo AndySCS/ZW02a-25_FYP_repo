@@ -3,11 +3,11 @@ onbreak {quit -force}
 onerror {quit -force}
 transcript on
 
-asim +access +r +m+extern_bram  -L xpm -L blk_mem_gen_v8_4_6 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip -O2 xil_defaultlib.extern_bram xil_defaultlib.glbl
+asim +access +r +m+extern_bram  -L xil_defaultlib -L xpm -L blk_mem_gen_v8_4_12 -L unisims_ver -L unimacro_ver -L secureip -O5 xil_defaultlib.extern_bram xil_defaultlib.glbl
 
 do {extern_bram.udo}
 
-run
+run 1000ns
 
 endsim
 
