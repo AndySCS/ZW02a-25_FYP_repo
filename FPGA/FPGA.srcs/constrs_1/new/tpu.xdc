@@ -35,12 +35,10 @@ create_clock -add -name sys_clk_pin -period 10.00 -waveform {0.000 5.000} [get_p
 #create_clock -add -name sys_clk_pin -period 10.00 -waveform {0 5} [get_ports clk_in]
 
 #button
-set_property PACKAGE_PIN T18 [get_ports {rst_n}]
-set_property IOSTANDARD LVCMOS33 [get_ports {rst_n}]
-set_property PACKAGE_PIN P16 [get_ports {start_vld}]
-set_property IOSTANDARD LVCMOS33 [get_ports {start_vld}]
-set_property PACKAGE_PIN R16 [get_ports {wfi}]
-set_property IOSTANDARD LVCMOS33 [get_ports {wfi}]
+set_property PACKAGE_PIN T18 [get_ports {rst_n_in}]
+set_property IOSTANDARD LVCMOS33 [get_ports {rst_n_in}]
+set_property PACKAGE_PIN P16 [get_ports {start_vld_in}]
+set_property IOSTANDARD LVCMOS33 [get_ports {start_vld_in}]
 
 # Led0
 set_property PACKAGE_PIN T22 [get_ports {led[0]}]
@@ -51,6 +49,9 @@ set_property PACKAGE_PIN U22 [get_ports {led[2]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {led[2]}]
 set_property PACKAGE_PIN U21 [get_ports {led[3]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {led[3]}]
+
+set_property PACKAGE_PIN U12 [get_ports {wfi}]
+set_property IOSTANDARD LVCMOS33 [get_ports {wfi}]
 
 #solve combinational loop
 set_property ALLOW_COMBINATORIAL_LOOPS TRUE [get_nets u_lsu/ff_lsu_mxu_act_vld/q_reg[0]_1];
