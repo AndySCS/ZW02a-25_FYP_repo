@@ -1,10 +1,15 @@
 <?xml version="1.0"?>
 <ProcessHandle Version="1" Minor="0">
-    <Process Command="vivado" Owner="twipaa" Host="ecelvd713.ece.local" Pid="6945" HostCore="56" HostMemory="263957964">
+    <Process Command="vivado.bat" Owner="twipaa" Host="CCVDIAISB0045" Pid="3916" HostCore="4" HostMemory="017174663168">
     </Process>
 </ProcessHandle>
 <?xml version="1.0"?>
 <ProcessHandle Version="1" Minor="0">
-    <Process Command="vivado" Owner="twipaa" Host="ecelvd713.ece.local" Pid="123672" HostCore="56" HostMemory="263957964">
+    <Process Command="vivado.bat" Owner="twipaa" Host="CCVDIAISB0033" Pid="1620" HostCore="4" HostMemory="017174663168">
+    </Process>
+</ProcessHandle>
+<?xml version="1.0"?>
+<ProcessHandle Version="1" Minor="0">
+    <Process Command="vivado.bat" Owner="twipaa" Host="CCVDIAISB0033" Pid="6164" HostCore="4" HostMemory="017174663168">
     </Process>
 </ProcessHandle>

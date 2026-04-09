@@ -1,8 +1,8 @@
-Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
 ---------------------------------------------------------------------------------------------------------------------------------------------
-| Tool Version : Vivado v.2023.1 (lin64) Build 3865809 Sun May  7 15:04:56 MDT 2023
-| Date         : Sun Apr  5 17:09:39 2026
-| Host         : ecelvd713.ece.local running 64-bit CentOS Linux release 7.9.2009 (Core)
+| Tool Version : Vivado v.2025.2 (win64) Build 6299465 Fri Nov 14 19:35:11 GMT 2025
+| Date         : Thu Apr  9 20:37:09 2026
+| Host         : CCVDIAISB0045 running 64-bit major release  (build 9200)
 | Command      : report_drc -file tpu_drc_opted.rpt -pb tpu_drc_opted.pb -rpx tpu_drc_opted.rpx
 | Design       : tpu
 | Device       : xc7z020clg484-1
@@ -23,16 +23,16 @@ Table of Contents
           Floorplan: design_1
       Design limits: <entire design considered>
            Ruledeck: default
-             Max violations: <unlimited>
-             Violations found: 24
-+-----------+----------+----------------------------+------------+
-| Rule      | Severity | Description                | Violations |
-+-----------+----------+----------------------------+------------+
-| CHECK-3   | Warning  | Report rule limit reached  | 1          |
-| LUTLP-2   | Warning  | Combinatorial Loop Allowed | 2          |
-| REQP-1839 | Warning  | RAMB36 async control check | 20         |
-| ZPS7-1    | Warning  | PS7 block required         | 1          |
-+-----------+----------+----------------------------+------------+
+             Max checks: <unlimited>
+             Checks found: 24
++-----------+----------+----------------------------+--------+
+| Rule      | Severity | Description                | Checks |
++-----------+----------+----------------------------+--------+
+| CHECK-3   | Warning  | Report rule limit reached  | 1      |
+| LUTLP-2   | Warning  | Combinatorial Loop Allowed | 2      |
+| REQP-1839 | Warning  | RAMB36 async control check | 20     |
+| ZPS7-1    | Warning  | PS7 block required         | 1      |
++-----------+----------+----------------------------+--------+
 
 2. REPORT DETAILS
 -----------------
@@ -43,24 +43,24 @@ Related violations: <none>
 
 LUTLP-2#1 Warning
 Combinatorial Loop Allowed  
-12 LUT cells form a combinatorial loop. This can create a race condition. Timing analysis may not be accurate. The preferred resolution is to modify the design to remove combinatorial logic loops. This loop has been identified in the constraints as being known and understood by use of the ALLOW_COMBINATORIAL_LOOPS property on a net in the loop. The cells in the loop are: u_lsu/ff_lsu_mxu_act_vld/q[15]_i_3__2,
-u_mxu/ff_mxu_conv_awake_cnt/q[0]_i_3__9,
-u_mxu/u_pe_row11_col4/ff_c1_vld/q[0]_i_7__2,
-u_mxu/u_pe_row13_col4/ff_c1_vld/q[0]_i_4__7,
-u_mxu/u_pe_row15_col4/ff_c1_vld/q[0]_i_3__11,
-u_mxu/u_pe_row3_col7/ff_c1_vld/q[0]_i_17,
-u_mxu/u_pe_row3_col7/ff_c1_vld/q[0]_i_2__17,
-u_mxu/u_pe_row3_col7/ff_c1_vld/q[0]_i_5__5,
-u_mxu/u_pe_row5_col4/ff_c1_vld/q[0]_i_6__4,
-u_mxu/u_pe_row6_col7/ff_c1_vld/q[0]_i_20,
-u_mxu/u_pe_row7_col11/ff_c1_vld/q[0]_i_21
-u_mxu/u_pe_row9_col4/ff_c1_vld/q[0]_i_4__8.
+12 LUT cells form a combinatorial loop. This can create a race condition. Timing analysis may not be accurate. The preferred resolution is to modify the design to remove combinatorial logic loops. This loop has been identified in the constraints as being known and understood by use of the ALLOW_COMBINATORIAL_LOOPS property on a net in the loop. The cells in the loop are: u_lsu/ff_lsu_mxu_act_vld/q[15]_i_3, u_mxu/ff_mxu_conv_awake_cnt/q[0]_i_3,
+u_mxu/u_pe_row11_col4/ff_c1_vld/q[0]_i_3__16,
+u_mxu/u_pe_row13_col4/ff_c1_vld/q[0]_i_6__9,
+u_mxu/u_pe_row15_col4/ff_c1_vld/q[0]_i_7__6,
+u_mxu/u_pe_row3_col7/ff_c1_vld/q[0]_i_17__0,
+u_mxu/u_pe_row3_col7/ff_c1_vld/q[0]_i_2__38,
+u_mxu/u_pe_row3_col7/ff_c1_vld/q[0]_i_5__10,
+u_mxu/u_pe_row5_col4/ff_c1_vld/q[0]_i_4__10,
+u_mxu/u_pe_row6_col7/ff_c1_vld/q[0]_i_20__1,
+u_mxu/u_pe_row7_col11/ff_c1_vld/q[0]_i_21__1
+u_mxu/u_pe_row9_col4/ff_c1_vld/q[0]_i_8__7.
 Related violations: <none>
 
 LUTLP-2#2 Warning
 Combinatorial Loop Allowed  
-3 LUT cells form a combinatorial loop. This can create a race condition. Timing analysis may not be accurate. The preferred resolution is to modify the design to remove combinatorial logic loops. This loop has been identified in the constraints as being known and understood by use of the ALLOW_COMBINATORIAL_LOOPS property on a net in the loop. The cells in the loop are: u_alu/ff_alu_lsu_wb_vld/q[0]_i_2__5, u_lsu/ff_mxu_lsu_rdy/q[0]_i_1__54
-u_lsu/ff_mxu_lsu_rdy/q[0]_i_2__3.
+3 LUT cells form a combinatorial loop. This can create a race condition. Timing analysis may not be accurate. The preferred resolution is to modify the design to remove combinatorial logic loops. This loop has been identified in the constraints as being known and understood by use of the ALLOW_COMBINATORIAL_LOOPS property on a net in the loop. The cells in the loop are: u_alu/ff_alu_lsu_wb_vld/q[0]_i_2__21,
+u_lsu/ff_lsu_instr_finish/q[0]_i_1__365
+u_lsu/ff_lsu_instr_finish/q[0]_i_2__34.
 Related violations: <none>
 
 REQP-1839#1 Warning
