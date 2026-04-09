@@ -15,6 +15,8 @@ class top_sc extends uvm_scoreboard;
 
     extern virtual function int softmax(int softmax_input[]);
     extern virtual function void check_layer(ffn_operator exp_tr, ffn_operator act_tr);
+    extern virtual function void write_result(int result_data[], string result_file);
+    extern virtual function void write_file(string f_name, string wr_line);
 
     `uvm_component_utils(top_sc)
 
@@ -36,17 +38,29 @@ task top_sc::main_phase(uvm_phase phase);
     int check_cnt;
     int fd;
 
+    int exp_tr_cnt;
+    string output_file_name;
+
     super.main_phase(phase);
 
     fork
 	while(1)begin
 	    this.exp_port.get(exp_tr);
     	    `uvm_info("top_sc", "received exp matrix from rm", UVM_MEDIUM);
+            foreach(exp_tr.layer_output[i])begin
+                output_file_name = $sformatf("output%0d_%0d", exp_tr_cnt, i);
+                write_result(exp_tr.layer_output[i], output_file_name);
+            end
+            exp_tr_cnt++;
 	    this.exp_result_q.push_back(exp_tr);
 	end
 	while(1)begin
 	    this.act_port.get(act_tr);
     	    `uvm_info("top_sc", "received act matrix from mon", UVM_MEDIUM);
+            foreach(act_tr.layer_output[i])begin
+                output_file_name = $sformatf("act_output%0d_%0d", check_cnt, i);
+                write_result(act_tr.layer_output[i], output_file_name);
+            end
 	    if(this.exp_result_q.size() > 0)begin
 	        tmp_tr = this.exp_result_q.pop_front();
                 check_layer(tmp_tr, act_tr);
@@ -129,3 +143,31 @@ function int top_sc::softmax(int softmax_input[]);
     return max_idx;
 
 endfunction
+
+function void top_sc::write_result(int result_data[], string result_file);
+
+	string wr_line = "";
+	
+	for(int i = 0; i < result_data.size(); i++)begin
+            wr_line  = {wr_line , $sformatf("%d", result_data [i])};
+	    if(i < (result_data.size() - 1))begin
+	        wr_line = {wr_line, ","};
+	    end
+	end
+	
+	write_file($sformatf("%s.csv", result_file) , wr_line );
+
+endfunction
+
+function void top_sc::write_file(string f_name, string wr_line);
+	
+	int fd;
+
+	fd = $fopen(f_name, "w");
+
+	$fdisplay(fd, wr_line);
+
+	$fclose(fd);
+
+endfunction
+
