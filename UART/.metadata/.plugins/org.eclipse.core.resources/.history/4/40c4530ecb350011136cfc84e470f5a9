@@ -1,0 +1,13 @@
+#include <stdlib.h>
+#include "xil_types.h"
+
+#define inputSize 64*783
+#define headerSize 1080
+/*total 50112 bit data need assign
+ * C3C0 in hex
+ * */
+
+int main(){
+	u8 *inputData;
+	inputData = malloc(szieof(u8)*(inputSize));
+}
