@@ -39,12 +39,11 @@ module uart (
     wire rx_data_en;
     wire [1:0] rx_fsm;
     wire [1:0] rx_fsm_nxt;
-    wire rx_fsm_en;
     wire rx_begin;
     wire rx_vld_nxt;
     wire rx_data_en;
 
-    one_in_one_out_fifo #(
+    one_in_one_out_fifo_lib #(
         .ENT_NUM(16),
         .DATA_SIZE(8)
     ) tx_fifo (
@@ -52,8 +51,8 @@ module uart (
         .rst_n(rst_n),
         .in_vld(tx_vld),
         .in_data(tx_data_in),
-        .out_vld(tx_data_nxt),
-        .out_data(tx_nxt),
+        .out_vld(tx_fifo_out_vld),
+        .out_data(tx_data_nxt),
         .fifo_full(tx_fifo_full),
         .pick_rdy(tx_fifo_pick_rdy)
     );
