@@ -13,8 +13,8 @@ module one_in_one_out_fifo_lib(
     //need to implement qualify logic if do not want overwrite occur
     //parameter
     parameter ENT_NUM = 4;
-    parameter ENT_NUM_WIDTH = $clog2(ENT_NUM);
     parameter DATA_SIZE = 32;
+    localparam ENT_NUM_WIDTH = $clog2(ENT_NUM);
 
     //inout
     input clk;
@@ -76,10 +76,6 @@ module one_in_one_out_fifo_lib(
         end
     endgenerate
 
-    assign out_data = ent_data[pick_ptr];
-
-
-
-     
+    assign out_data = ent_data[pick_ptr]; 
 
 endmodule
