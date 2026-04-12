@@ -1,75 +1,100 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<GenRun Id="impl_1" LaunchPart="xc7z020clg484-1" LaunchTime="1775737851">
+<GenRun Id="impl_1" LaunchPart="xc7z020clg484-1" LaunchTime="1776005323">
+  <File Type="PA-TCL" Name="tpu.tcl"/>
   <File Type="REPORTS-TCL" Name="tpu_reports.tcl"/>
-  <File Type="ROUTE-PWR-SUM" Name="tpu_power_summary_routed.pb"/>
-  <File Type="BITSTR-MMI" Name="tpu.mmi"/>
+  <File Type="INIT-TIMING" Name="tpu_timing_summary_init.rpt"/>
+  <File Type="OPT-DCP" Name="tpu_opt.dcp"/>
   <File Type="OPT-DRC" Name="tpu_drc_opted.rpt"/>
-  <File Type="BG-DRC" Name="tpu.drc"/>
-  <File Type="ROUTE-STATUS-PB" Name="tpu_route_status.pb"/>
-  <File Type="BG-BGN" Name="tpu.bgn"/>
+  <File Type="OPT-UTIL" Name="tpu_utilization_opted.rpt"/>
+  <File Type="OPT-UTIL-PB" Name="tpu_utilization_opted.pb"/>
+  <File Type="OPT-METHODOLOGY-DRC" Name="tpu_methodology_drc_opted.rpt"/>
+  <File Type="OPT-HWDEF" Name="tpu.hwdef"/>
+  <File Type="OPT-TIMING" Name="tpu_timing_summary_opted.rpt"/>
+  <File Type="OPT-RQA-PB" Name="tpu_rqa_opted.pb"/>
+  <File Type="PWROPT-DCP" Name="tpu_pwropt.dcp"/>
+  <File Type="PWROPT-DRC" Name="tpu_drc_pwropted.rpt"/>
+  <File Type="PWROPT-TIMING" Name="tpu_timing_summary_pwropted.rpt"/>
+  <File Type="PLACE-DCP" Name="tpu_placed.dcp"/>
+  <File Type="PLACE-IO" Name="tpu_io_placed.rpt"/>
+  <File Type="PLACE-CLK" Name="tpu_clock_utilization_placed.rpt"/>
   <File Type="PLACE-UTIL" Name="tpu_utilization_placed.rpt"/>
   <File Type="PLACE-UTIL-PB" Name="tpu_utilization_placed.pb"/>
-  <File Type="PLACE-IO" Name="tpu_io_placed.rpt"/>
-  <File Type="BG-BIN" Name="tpu.bin"/>
   <File Type="PLACE-CTRL" Name="tpu_control_sets_placed.rpt"/>
-  <File Type="ROUTE-PWR-RPX" Name="tpu_power_routed.rpx"/>
-  <File Type="BITSTR-MSK" Name="tpu.msk"/>
-  <File Type="BITSTR-RBT" Name="tpu.rbt"/>
-  <File Type="ROUTE-TIMINGSUMMARY" Name="tpu_timing_summary_routed.rpt"/>
-  <File Type="ROUTE-TIMING-RPX" Name="tpu_timing_summary_routed.rpx"/>
-  <File Type="ROUTE-STATUS" Name="tpu_route_status.rpt"/>
-  <File Type="PA-TCL" Name="tpu.tcl"/>
-  <File Type="ROUTE-PWR" Name="tpu_power_routed.rpt"/>
+  <File Type="PLACE-SIMILARITY" Name="tpu_incremental_reuse_placed.rpt"/>
+  <File Type="PLACE-PRE-SIMILARITY" Name="tpu_incremental_reuse_pre_placed.rpt"/>
+  <File Type="PLACE-TIMING" Name="tpu_timing_summary_placed.rpt"/>
+  <File Type="PLACE-RQA-PB" Name="tpu_rqa_placed.pb"/>
+  <File Type="POSTPLACE-PWROPT-DCP" Name="tpu_postplace_pwropt.dcp"/>
+  <File Type="POSTPLACE-PWROPT-TIMING" Name="tpu_timing_summary_postplace_pwropted.rpt"/>
+  <File Type="PHYSOPT-DCP" Name="tpu_physopt.dcp"/>
+  <File Type="PHYSOPT-DRC" Name="tpu_drc_physopted.rpt"/>
+  <File Type="PHYSOPT-TIMING" Name="tpu_timing_summary_physopted.rpt"/>
+  <File Type="ROUTE-ERROR-DCP" Name="tpu_routed_error.dcp"/>
+  <File Type="ROUTE-DCP" Name="tpu_routed.dcp"/>
+  <File Type="ROUTE-BLACKBOX-DCP" Name="tpu_routed_bb.dcp"/>
+  <File Type="ROUTE-UTIL" Name="tpu_utilization_routed.rpt"/>
+  <File Type="ROUTE-UTIL-PB" Name="tpu_utilization_routed.pb"/>
   <File Type="ROUTE-DRC" Name="tpu_drc_routed.rpt"/>
-  <File Type="ROUTE-DRC-RPX" Name="tpu_drc_routed.rpx"/>
   <File Type="ROUTE-DRC-PB" Name="tpu_drc_routed.pb"/>
-  <File Type="BITSTR-SYSDEF" Name="tpu.sysdef"/>
+  <File Type="ROUTE-DRC-RPX" Name="tpu_drc_routed.rpx"/>
   <File Type="ROUTE-METHODOLOGY-DRC" Name="tpu_methodology_drc_routed.rpt"/>
   <File Type="ROUTE-METHODOLOGY-DRC-RPX" Name="tpu_methodology_drc_routed.rpx"/>
-  <File Type="BITSTR-LTX" Name="debug_nets.ltx"/>
-  <File Type="BITSTR-LTX" Name="tpu.ltx"/>
   <File Type="ROUTE-METHODOLOGY-DRC-PB" Name="tpu_methodology_drc_routed.pb"/>
+  <File Type="ROUTE-PWR" Name="tpu_power_routed.rpt"/>
+  <File Type="ROUTE-PWR-SUM" Name="tpu_power_summary_routed.pb"/>
+  <File Type="ROUTE-PWR-RPX" Name="tpu_power_routed.rpx"/>
+  <File Type="ROUTE-STATUS" Name="tpu_route_status.rpt"/>
+  <File Type="ROUTE-STATUS-PB" Name="tpu_route_status.pb"/>
+  <File Type="ROUTE-TIMINGSUMMARY" Name="tpu_timing_summary_routed.rpt"/>
+  <File Type="ROUTE-TIMING-PB" Name="tpu_timing_summary_routed.pb"/>
+  <File Type="ROUTE-TIMING-RPX" Name="tpu_timing_summary_routed.rpx"/>
   <File Type="ROUTE-SIMILARITY" Name="tpu_incremental_reuse_routed.rpt"/>
-  <File Type="RDI-RDI" Name="tpu.vdi"/>
   <File Type="ROUTE-CLK" Name="tpu_clock_utilization_routed.rpt"/>
   <File Type="ROUTE-BUS-SKEW" Name="tpu_bus_skew_routed.rpt"/>
-  <File Type="ROUTE-BUS-SKEW-RPX" Name="tpu_bus_skew_routed.rpx"/>
   <File Type="ROUTE-BUS-SKEW-PB" Name="tpu_bus_skew_routed.pb"/>
-  <File Type="POSTROUTE-PHYSOPT-TIMING" Name="tpu_timing_summary_postroute_physopted.rpt"/>
-  <File Type="POSTROUTE-PHYSOPT-TIMING-RPX" Name="tpu_timing_summary_postroute_physopted.rpx"/>
-  <File Type="POSTROUTE-PHYSOPT-TIMING-PB" Name="tpu_timing_summary_postroute_physopted.pb"/>
-  <File Type="POSTROUTE-PHYSOPT-BUS-SKEW" Name="tpu_bus_skew_postroute_physopted.rpt"/>
-  <File Type="POSTROUTE-PHYSOPT-BUS-SKEW-RPX" Name="tpu_bus_skew_postroute_physopted.rpx"/>
-  <File Type="BG-BIT" Name="tpu.bit"/>
-  <File Type="POSTROUTE-PHYSOPT-BUS-SKEW-PB" Name="tpu_bus_skew_postroute_physopted.pb"/>
-  <File Type="BITSTR-NKY" Name="tpu.nky"/>
-  <File Type="BITSTR-BMM" Name="tpu_bd.bmm"/>
-  <File Type="WBT-USG" Name="usage_statistics_webtalk.html"/>
-  <File Type="OPT-HWDEF" Name="tpu.hwdef"/>
-  <File Type="PLACE-PRE-SIMILARITY" Name="tpu_incremental_reuse_pre_placed.rpt"/>
-  <File Type="ROUTE-DCP" Name="tpu_routed.dcp"/>
-  <File Type="ROUTE-ERROR-DCP" Name="tpu_routed_error.dcp"/>
-  <File Type="ROUTE-BLACKBOX-DCP" Name="tpu_routed_bb.dcp"/>
-  <File Type="ROUTE-TIMING-PB" Name="tpu_timing_summary_routed.pb"/>
-  <File Type="OPT-DCP" Name="tpu_opt.dcp"/>
-  <File Type="PLACE-DCP" Name="tpu_placed.dcp"/>
-  <File Type="PWROPT-DCP" Name="tpu_pwropt.dcp"/>
-  <File Type="POSTPLACE-PWROPT-DCP" Name="tpu_postplace_pwropt.dcp"/>
-  <File Type="PHYSOPT-DCP" Name="tpu_physopt.dcp"/>
+  <File Type="ROUTE-BUS-SKEW-RPX" Name="tpu_bus_skew_routed.rpx"/>
+  <File Type="ROUTE-RQS-PB" Name="tpu_rqs_routed.pb"/>
   <File Type="POSTROUTE-PHYSOPT-DCP" Name="tpu_postroute_physopt.dcp"/>
   <File Type="POSTROUTE-PHYSOPT-BLACKBOX-DCP" Name="tpu_postroute_physopt_bb.dcp"/>
+  <File Type="POSTROUTE-PHYSOPT-TIMING" Name="tpu_timing_summary_postroute_physopted.rpt"/>
+  <File Type="POSTROUTE-PHYSOPT-TIMING-PB" Name="tpu_timing_summary_postroute_physopted.pb"/>
+  <File Type="POSTROUTE-PHYSOPT-TIMING-RPX" Name="tpu_timing_summary_postroute_physopted.rpx"/>
+  <File Type="POSTROUTE-PHYSOPT-BUS-SKEW" Name="tpu_bus_skew_postroute_physopted.rpt"/>
+  <File Type="POSTROUTE-PHYSOPT-BUS-SKEW-PB" Name="tpu_bus_skew_postroute_physopted.pb"/>
+  <File Type="POSTROUTE-PHYSOPT-BUS-SKEW-RPX" Name="tpu_bus_skew_postroute_physopted.rpx"/>
+  <File Type="NOC_TRAFFIC_SPEC_FILE" Name="tpu.nts"/>
+  <File Type="NOC_SOLUTION_FILE" Name="tpu.ncr"/>
+  <File Type="BG-BIT" Name="tpu.bit"/>
+  <File Type="BG-BIN" Name="tpu.bin"/>
+  <File Type="BITSTR-MSK" Name="tpu.msk"/>
+  <File Type="BITSTR-RBT" Name="tpu.rbt"/>
+  <File Type="BITSTR-NKY" Name="tpu.nky"/>
+  <File Type="BITSTR-BMM" Name="tpu_bd.bmm"/>
+  <File Type="BITSTR-MMI" Name="tpu.mmi"/>
   <File Type="PDI-FILE" Name="tpu.pdi"/>
   <File Type="BOOT-PDI-FILE" Name="tpu_boot.pdi"/>
   <File Type="PL-PDI-FILE" Name="tpu_pld.pdi"/>
   <File Type="RCFI_FILE" Name="tpu.rcfi"/>
   <File Type="CFI_FILE" Name="tpu.cfi"/>
   <File Type="RNPI_FILE" Name="tpu.rnpi"/>
+  <File Type="RCDO-FILE" Name="tpu.rcdo"/>
+  <File Type="MARKER-RNPI-FILE" Name="tpu_markers.rnpi"/>
+  <File Type="MARKER-RCDO-FILE" Name="tpu_markers.rcdo"/>
+  <File Type="BOOT_RNPI_FILE" Name="tpu_boot.rnpi"/>
+  <File Type="BOOT_MARKER_RNPI_FILE" Name="tpu_boot_markers.rnpi"/>
+  <File Type="PL_RNPI_FILE" Name="tpu_pld.rnpi"/>
+  <File Type="PL_MARKER_RNPI_FILE" Name="tpu_pld_markers.rnpi"/>
+  <File Type="PL_MASK_RNPI_FILE" Name="tpu_pld_mask.rnpi"/>
+  <File Type="PL_SHUTDOWN_RNPI_FILE" Name="tpu_pld_shutdown.rnpi"/>
+  <File Type="PL_UNMASK_RNPI_FILE" Name="tpu_pld_unmask.rnpi"/>
+  <File Type="PL-RCDO-FILE" Name="tpu_pld.rcdo"/>
+  <File Type="PL-CLEAR-RCDO-FILE" Name="tpu_pld_clear.rcdo"/>
+  <File Type="PL_MARKER_RCDO_FILE" Name="tpu_pld_markers.rcdo"/>
+  <File Type="PL_MASK_RCDO_FILE" Name="tpu_pld_mask.rcdo"/>
+  <File Type="PL_UNMASK_MARKER_RCDO_FILE" Name="tpu_pld_unmask_markers.rcdo"/>
+  <File Type="PL_UNMASK_RCDO_FILE" Name="tpu_pld_unmask.rcdo"/>
   <File Type="NPI_FILE" Name="tpu.npi"/>
   <File Type="RBD_FILE" Name="tpu.rbd"/>
-  <File Type="ROUTE-RQS" Name="tpu_routed.rqs"/>
-  <File Type="POSTROUTE-PHYSOPT-RQS" Name="tpu_postroute_physopted.rqs"/>
-  <File Type="ROUTE-RQS-RPT" Name="route_report_qor_suggestions_0.rpt"/>
-  <File Type="POSTROUTE-PHYSOPT-RQS-RPT" Name="postroute_physopt_report_qor_suggestions_0.rpt"/>
   <File Type="MMI-FILE" Name="tpu.mmi"/>
   <File Type="BIF-FILE" Name="tpu.bif"/>
   <File Type="BOOT-BIF-FILE" Name="tpu_boot.bif"/>
@@ -77,34 +102,19 @@
   <File Type="LTX-FILE" Name="tpu.ltx"/>
   <File Type="BOOT-LTX-FILE" Name="tpu_boot.ltx"/>
   <File Type="PL-LTX-FILE" Name="tpu_pld.ltx"/>
-  <File Type="RCDO-FILE" Name="tpu.rcdo"/>
-  <File Type="MARKER-RCDO-FILE" Name="tpu_markers.rcdo"/>
-  <File Type="PL-RCDO-FILE" Name="tpu_pld.rcdo"/>
-  <File Type="MARKER-RNPI-FILE" Name="tpu_markers.rnpi"/>
-  <File Type="BOOT_RNPI_FILE" Name="tpu_boot.rnpi"/>
-  <File Type="PL_RNPI_FILE" Name="tpu_pld.rnpi"/>
-  <File Type="BOOT_MARKER_RNPI_FILE" Name="tpu_boot_markers.rnpi"/>
-  <File Type="PL_MARKER_RNPI_FILE" Name="tpu_pld_markers.rnpi"/>
-  <File Type="PL_MASK_RNPI_FILE" Name="tpu_pld_mask.rnpi"/>
-  <File Type="PL_SHUTDOWN_RNPI_FILE" Name="tpu_pld_shutdown.rnpi"/>
-  <File Type="PL_UNMASK_RNPI_FILE" Name="tpu_pld_unmask.rnpi"/>
-  <File Type="PL-CLEAR-RCDO-FILE" Name="tpu_pld_clear.rcdo"/>
-  <File Type="PL_MARKER_RCDO_FILE" Name="tpu_pld_markers.rcdo"/>
-  <File Type="PL_MASK_RCDO_FILE" Name="tpu_pld_mask.rcdo"/>
-  <File Type="PL_UNMASK_MARKER_RCDO_FILE" Name="tpu_pld_unmask_markers.rcdo"/>
-  <File Type="PL_UNMASK_RCDO_FILE" Name="tpu_pld_unmask.rcdo"/>
-  <File Type="NOC_TRAFFIC_SPEC_FILE" Name="tpu.nts"/>
-  <File Type="NOC_SOLUTION_FILE" Name="tpu.ncr"/>
+  <File Type="BITSTR-LTX" Name="debug_nets.ltx"/>
+  <File Type="BITSTR-LTX" Name="tpu.ltx"/>
+  <File Type="BITSTR-SYSDEF" Name="tpu.sysdef"/>
+  <File Type="BG-BGN" Name="tpu.bgn"/>
+  <File Type="BG-DRC" Name="tpu.drc"/>
+  <File Type="RDI-RDI" Name="tpu.vdi"/>
+  <File Type="WBT-USG" Name="usage_statistics_webtalk.html"/>
+  <File Type="ROUTE-RQS" Name="tpu_routed.rqs"/>
+  <File Type="POSTROUTE-PHYSOPT-RQS" Name="tpu_postroute_physopted.rqs"/>
+  <File Type="ROUTE-RQS-RPT" Name="route_report_qor_suggestions_0.rpt"/>
+  <File Type="POSTROUTE-PHYSOPT-RQS-RPT" Name="postroute_physopt_report_qor_suggestions_0.rpt"/>
   <FileSet Name="sources" Type="DesignSrcs" RelSrcDir="$PSRCDIR/sources_1" RelGenDir="$PGENDIR/sources_1">
     <Filter Type="Srcs"/>
-    <File Path="$PPRDIR/../rtl/lib/exp.v">
-      <FileInfo>
-        <Attr Name="AutoDisabled" Val="1"/>
-        <Attr Name="UsedIn" Val="synthesis"/>
-        <Attr Name="UsedIn" Val="implementation"/>
-        <Attr Name="UsedIn" Val="simulation"/>
-      </FileInfo>
-    </File>
     <File Path="$PPRDIR/iram_mem.coe">
       <FileInfo>
         <Attr Name="UsedIn" Val="synthesis"/>

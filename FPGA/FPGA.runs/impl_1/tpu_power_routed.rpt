@@ -1,8 +1,8 @@
 Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
 -------------------------------------------------------------------------------------------------------------------------------------------------
 | Tool Version     : Vivado v.2025.2 (win64) Build 6299465 Fri Nov 14 19:35:11 GMT 2025
-| Date             : Thu Apr  9 22:31:17 2026
-| Host             : CCVDIAISB0033 running 64-bit major release  (build 9200)
+| Date             : Sun Apr 12 23:27:33 2026
+| Host             : CCVDIAISB0054 running 64-bit major release  (build 9200)
 | Command          : report_power -file tpu_power_routed.rpt -pb tpu_power_summary_routed.pb -rpx tpu_power_routed.rpx
 | Design           : tpu
 | Device           : xc7z020clg484-1
@@ -30,11 +30,11 @@ Table of Contents
 ----------
 
 +--------------------------+--------------+
-| Total On-Chip Power (W)  | 0.470        |
+| Total On-Chip Power (W)  | 0.467        |
 | Design Power Budget (W)  | Unspecified* |
 | Power Budget Margin (W)  | NA           |
-| Dynamic (W)              | 0.351        |
-| Device Static (W)        | 0.120        |
+| Dynamic (W)              | 0.348        |
+| Device Static (W)        | 0.119        |
 | Effective TJA (C/W)      | 11.5         |
 | Max Ambient (C)          | 79.6         |
 | Junction Temperature (C) | 30.4         |
@@ -53,18 +53,18 @@ Table of Contents
 | On-Chip                  | Power (W) | Used     | Available | Utilization (%) |
 +--------------------------+-----------+----------+-----------+-----------------+
 | Clocks                   |     0.085 |        3 |       --- |             --- |
-| Slice Logic              |     0.100 |    79184 |       --- |             --- |
-|   LUT as Logic           |     0.089 |    37047 |     53200 |           69.64 |
+| Slice Logic              |     0.100 |    79185 |       --- |             --- |
+|   LUT as Logic           |     0.089 |    37023 |     53200 |           69.59 |
 |   CARRY4                 |     0.009 |     4214 |     13300 |           31.68 |
 |   Register               |     0.002 |    24992 |    106400 |           23.49 |
 |   F7/F8 Muxes            |    <0.001 |     1215 |     53200 |            2.28 |
 |   LUT as Distributed RAM |    <0.001 |        4 |     17400 |            0.02 |
 |   Others                 |     0.000 |     2967 |       --- |             --- |
-| Signals                  |     0.136 |    58636 |       --- |             --- |
+| Signals                  |     0.133 |    58654 |       --- |             --- |
 | Block RAM                |     0.029 |      138 |       140 |           98.57 |
-| I/O                      |    <0.001 |        8 |       200 |            4.00 |
-| Static Power             |     0.120 |          |           |                 |
-| Total                    |     0.470 |          |           |                 |
+| I/O                      |    <0.001 |       10 |       200 |            5.00 |
+| Static Power             |     0.119 |          |           |                 |
+| Total                    |     0.467 |          |           |                 |
 +--------------------------+-----------+----------+-----------+-----------------+
 
 
@@ -74,7 +74,7 @@ Table of Contents
 +-----------+-------------+-----------+-------------+------------+-------------+-------------+------------+
 | Source    | Voltage (V) | Total (A) | Dynamic (A) | Static (A) | Powerup (A) | Budget (A)  | Margin (A) |
 +-----------+-------------+-----------+-------------+------------+-------------+-------------+------------+
-| Vccint    |       1.000 |     0.359 |       0.348 |      0.011 |       NA    | Unspecified | NA         |
+| Vccint    |       1.000 |     0.356 |       0.345 |      0.011 |       NA    | Unspecified | NA         |
 | Vccaux    |       1.800 |     0.011 |       0.000 |      0.011 |       NA    | Unspecified | NA         |
 | Vcco33    |       3.300 |     0.001 |       0.000 |      0.001 |       NA    | Unspecified | NA         |
 | Vcco25    |       2.500 |     0.000 |       0.000 |      0.000 |       NA    | Unspecified | NA         |
@@ -150,42 +150,42 @@ Table of Contents
 +-----------------------------------------------+-----------+
 | Name                                          | Power (W) |
 +-----------------------------------------------+-----------+
-| tpu                                           |     0.351 |
-|   external_mem                                |     0.039 |
-|     U0                                        |     0.039 |
-|       inst_blk_mem_gen                        |     0.039 |
+| tpu                                           |     0.348 |
+|   external_mem                                |     0.037 |
+|     U0                                        |     0.037 |
+|       inst_blk_mem_gen                        |     0.037 |
 |   ff_RDATA_raw                                |     0.001 |
 |   u_AXI_READ_INFT                             |     0.005 |
-|     ff_axi_lsu_rdata                          |     0.002 |
+|     ff_axi_lsu_rdata                          |     0.001 |
 |     ff_axi_lsu_rvld                           |     0.001 |
 |   u_AXI_WRITE_INTF                            |     0.004 |
-|     ff_WDATA                                  |     0.003 |
+|     ff_WDATA                                  |     0.002 |
 |   u_idu                                       |     0.002 |
 |   u_ifu                                       |     0.005 |
 |     ifu_mem_wrap_256x128                      |     0.005 |
 |       ifu_mem_wrap_256x128                    |     0.002 |
-|   u_lsu                                       |     0.110 |
+|   u_lsu                                       |     0.107 |
 |     ff_lsu_axi_asize                          |     0.002 |
 |     ff_lsu_st_type1_iram_din                  |     0.001 |
 |     ff_lsu_st_type1_mxu_start_col             |     0.009 |
 |     ff_lsu_st_type1_oram_din_raw_ff           |     0.002 |
-|     ff_lsu_st_type1_oram_din_start_x          |     0.001 |
-|     iram                                      |     0.008 |
-|       iram                                    |     0.008 |
+|     iram                                      |     0.007 |
+|       iram                                    |     0.007 |
 |     matrix_iram_load_buffer                   |     0.007 |
 |       ram_data_byte_shift                     |     0.002 |
 |     matrix_wram_load_buffer                   |     0.033 |
-|       ff_lsu_mm_buff_ctrl_addr_cnt            |     0.011 |
-|       genblk1[14].ff_lsu_mm_buff_ent_data_raw |     0.001 |
+|       ff_lsu_mm_buff_ctrl_addr_cnt            |     0.012 |
+|       genblk1[10].ff_lsu_mm_buff_ent_data_raw |     0.001 |
+|       genblk1[11].ff_lsu_mm_buff_ent_data_raw |     0.001 |
 |       genblk1[15].ff_lsu_mm_buff_ent_data_raw |     0.001 |
 |       ram_data_byte_shift                     |     0.004 |
-|     oram_hi                                   |     0.010 |
+|     oram_hi                                   |     0.009 |
 |       iram                                    |     0.005 |
 |     oram_lo                                   |     0.005 |
 |       iram                                    |     0.005 |
-|     wram                                      |     0.005 |
-|       iram                                    |     0.005 |
-|   u_mxu                                       |     0.177 |
+|     wram                                      |     0.004 |
+|       iram                                    |     0.004 |
+|   u_mxu                                       |     0.178 |
 |   u_rf                                        |     0.004 |
 +-----------------------------------------------+-----------+
 

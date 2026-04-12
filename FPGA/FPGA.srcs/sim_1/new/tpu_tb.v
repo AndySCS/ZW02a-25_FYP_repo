@@ -1,4 +1,4 @@
-`timescale 10ns / 10ps
+`timescale 1ns / 1ns
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
@@ -53,12 +53,13 @@ module top_tb(
     rst_n_in = 1;
 
     // Wait a couple of clock edges
-    repeat (3) @(posedge clk);
+    repeat (50) @(posedge clk);
     rst_n_in = 0;
-
+    repeat (10) @(posedge clk);
     // Example stimulus: issue a start with a 12-bit address
     start_vld_in  = 1;
     //start_addr = 12'h0;
+    //repeat (1) @(posedge clk);
     repeat (2000000) @(posedge clk);
     start_vld_in  = 0;
     // End simulation
@@ -70,9 +71,9 @@ module top_tb(
   $display(" cnt=%0d ", top_tpu.u_start_vld.cnt_debounce);
     //$display("time=%0t clk=%0b rst_n=%0b start_vld=%0b addr=%h wfi=%0b",
              //$time, clk, rst_n, start_vld, start_addr, wfi);
-        if(top_tpu.u_lsu.axi_lsu_rvld)begin
-            $display("rid=%h addr=%h rdata=%0h ", top_tpu.u_lsu.axi_lsu_rid, top_tpu.u_lsu.axi_lsu_sram_addr, top_tpu.u_lsu.axi_lsu_rdata);
+        //if(top_tpu.u_lsu.axi_lsu_rvld)begin
+            //$display("rid=%0h addr=%0h rdata=%0h ", top_tpu.u_lsu.axi_lsu_rid, top_tpu.u_lsu.axi_lsu_dram_addr, top_tpu.u_lsu.axi_lsu_rdata);
             
-        end
+        //end
     end
 endmodule

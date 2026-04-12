@@ -66,6 +66,6 @@ INFO: [VRFC 10-311] analyzing module rf
 WARNING: [VRFC 10-8956] extra semicolon is not allowed here in this dialect; use SystemVerilog mode instead [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/rf.v:33]
 INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/tpu.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module tpu
-WARNING: [VRFC 10-8956] extra semicolon is not allowed here in this dialect; use SystemVerilog mode instead [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/tpu.v:911]
+WARNING: [VRFC 10-8956] extra semicolon is not allowed here in this dialect; use SystemVerilog mode instead [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/tpu.v:918]
 INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.srcs/sim_1/new/tpu_tb.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module top_tb

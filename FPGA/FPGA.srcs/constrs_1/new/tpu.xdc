@@ -49,6 +49,13 @@ set_property PACKAGE_PIN U22 [get_ports {led[2]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {led[2]}]
 set_property PACKAGE_PIN U21 [get_ports {led[3]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {led[3]}]
+
+set_property PACKAGE_PIN W22 [get_ports {start_led}];  
+set_property IOSTANDARD LVCMOS33 [get_ports {start_led}]
+
+set_property PACKAGE_PIN U19 [get_ports {rst_led}]; 
+set_property IOSTANDARD LVCMOS33 [get_ports {rst_led}]
+
 set_property PACKAGE_PIN U14 [get_ports {wfi}]
 set_property IOSTANDARD LVCMOS33 [get_ports {wfi}]
 

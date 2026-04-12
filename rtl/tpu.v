@@ -5,7 +5,9 @@ module tpu(
     start_vld_in,
     //start_addr,
     wfi,
-    led
+    led,
+    start_led,
+    rst_led
 );
 
     //parameter AWID_WIDTH = 4;
@@ -19,6 +21,8 @@ module tpu(
     //input [`IRAM_ADDR_WIDTH-1:0] start_addr;
     output wfi;
     output [3:0] led;
+    output start_led;
+    output rst_led;
     wire rst_n;
     wire start_vld;
     wire [`IRAM_ADDR_WIDTH-1:0] start_addr;
@@ -323,6 +327,9 @@ module tpu(
     //Debounce_btn u_rst_n      (.clk_in(clk), .btn_in(rst_n_in), .btn_out(rst_n));
     Debounce_btn u_start_vld  (.clk_in(clk), .btn_in(start_vld_in), .btn_out(start_vld));
     assign rst_n = ~rst_n_in;
+    //assign start_vld = start_vld_in;
+    assign start_led = start_vld_in;
+    assign rst_led = rst_n_in;
     //assign start_vld = start_vld_in;
     ifu u_ifu(
         .clk            (clk),
@@ -1071,8 +1078,8 @@ module tpu(
             //end
         end
     endgenerate
-    assign max_val_nxt = WDATA > max_val ? WDATA : max_val;
-    assign max_idx_nxt = WDATA > max_val ? softmax_count : max_idx;
+    assign max_val_nxt = ({64{~(&WDATA[15:12])}} & WDATA) > max_val ? WDATA : max_val;
+    assign max_idx_nxt = ({64{~(&WDATA[15:12])}} & WDATA) > max_val ? softmax_count : max_idx;
     DFFRE #(.WIDTH(`SOFT_MAX_INPUT_DATA_WIDTH))
             ff_MAX_VAL (
                 .clk(clk),

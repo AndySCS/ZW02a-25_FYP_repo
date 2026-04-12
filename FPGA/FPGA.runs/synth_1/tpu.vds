@@ -3,13 +3,13 @@
 # SW Build 6299465 on Fri Nov 14 19:35:11 GMT 2025
 # IP Build 6300035 on Fri Nov 14 10:48:45 MST 2025
 # SharedData Build 6298862 on Thu Nov 13 04:50:51 MST 2025
-# Start of session at: Thu Apr  9 20:30:54 2026
-# Process ID         : 1292
+# Start of session at: Sun Apr 12 22:48:47 2026
+# Process ID         : 6448
 # Current directory  : C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.runs/synth_1
 # Command line       : vivado.exe -log tpu.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source tpu.tcl
 # Log file           : C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.runs/synth_1/tpu.vds
 # Journal file       : C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.runs/synth_1\vivado.jou
-# Running On         : CCVDIAISB0045
+# Running On         : CCVDIAISB0054
 # Platform           : Windows Server 2016 or Windows 10
 # Operating System   : 22631
 # Processor Detail   : Intel(R) Xeon(R) Gold 6348 CPU @ 2.60GHz
@@ -19,10 +19,10 @@
 # Host memory        : 17174 MB
 # Swap memory        : 17179 MB
 # Total Virtual      : 34354 MB
-# Available Virtual  : 22661 MB
+# Available Virtual  : 20491 MB
 #-----------------------------------------------------------
 source tpu.tcl -notrace
-create_project: Time (s): cpu = 00:00:11 ; elapsed = 00:00:08 . Memory (MB): peak = 591.645 ; gain = 219.762
+create_project: Time (s): cpu = 00:00:11 ; elapsed = 00:00:10 . Memory (MB): peak = 590.152 ; gain = 217.418
 Command: read_checkpoint -auto_incremental -incremental C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.srcs/utils_1/imports/synth_1/tpu.dcp
 INFO: [Vivado 12-5825] Read reference checkpoint from C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.srcs/utils_1/imports/synth_1/tpu.dcp for incremental synthesis
 INFO: [Vivado 12-7989] Please ensure there are no constraint changes
@@ -30,13 +30,12 @@ Command: synth_design -top tpu -part xc7z020clg484-1
 Starting synth_design
 Attempting to get a license for feature 'Synthesis' and/or device 'xc7z020'
 INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7z020'
-WARNING: [Vivado_Tcl 4-1809] The reference checkpoint is from an old version of Vivado; A full resynthesis flow will be run
 INFO: [Device 21-403] Loading part xc7z020clg484-1
 INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 2 processes.
 INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
-INFO: [Synth 8-7075] Helper process launched with PID 7600
+INFO: [Synth 8-7075] Helper process launched with PID 14300
 ---------------------------------------------------------------------------------
-Starting RTL Elaboration : Time (s): cpu = 00:00:07 ; elapsed = 00:00:07 . Memory (MB): peak = 1375.734 ; gain = 540.066
+Starting RTL Elaboration : Time (s): cpu = 00:00:07 ; elapsed = 00:00:07 . Memory (MB): peak = 1380.504 ; gain = 541.223
 ---------------------------------------------------------------------------------
 WARNING: [Synth 8-10714] extra semicolon is not allowed here in this dialect; use SystemVerilog mode instead [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/axi_read_intf.v:257]
 WARNING: [Synth 8-10714] extra semicolon is not allowed here in this dialect; use SystemVerilog mode instead [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/axi_write_intf.v:181]
@@ -52,7 +51,7 @@ INFO: [Synth 8-11241] undeclared symbol 'lsu_ld_vld', assumed default net type '
 INFO: [Synth 8-11241] undeclared symbol 'lsu_ld_sram_chunk_cnt_nxt', assumed default net type 'wire' [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lsu.v:2173]
 INFO: [Synth 8-11241] undeclared symbol 'acc_clr_qual', assumed default net type 'wire' [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/mxu.v:244]
 WARNING: [Synth 8-10714] extra semicolon is not allowed here in this dialect; use SystemVerilog mode instead [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/rf.v:33]
-WARNING: [Synth 8-10714] extra semicolon is not allowed here in this dialect; use SystemVerilog mode instead [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/tpu.v:911]
+WARNING: [Synth 8-10714] extra semicolon is not allowed here in this dialect; use SystemVerilog mode instead [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/tpu.v:918]
 INFO: [Synth 8-6157] synthesizing module 'tpu' [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/tpu.v:2]
 INFO: [Synth 8-6157] synthesizing module 'DFFE' [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:1]
 	Parameter WIDTH bound to: 32 - type: integer 
@@ -72,8 +71,8 @@ INFO: [Synth 8-6155] done synthesizing module 'DFFE__parameterized1' (0#1) [C:/U
 INFO: [Synth 8-6157] synthesizing module 'mem_wrapper' [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/mem_wrapper/mem_wrapper.v:1]
 	Parameter ADDR_WIDTH bound to: 8 - type: integer 
 	Parameter DATA_WIDTH bound to: 128 - type: integer 
-INFO: [Synth 8-6157] synthesizing module 'fpga_mem_wrapper' [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.runs/synth_1/.Xil/Vivado-1292-CCVDIAISB0045/realtime/fpga_mem_wrapper_stub.v:6]
-INFO: [Synth 8-6155] done synthesizing module 'fpga_mem_wrapper' (0#1) [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.runs/synth_1/.Xil/Vivado-1292-CCVDIAISB0045/realtime/fpga_mem_wrapper_stub.v:6]
+INFO: [Synth 8-6157] synthesizing module 'fpga_mem_wrapper' [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.runs/synth_1/.Xil/Vivado-6448-CCVDIAISB0054/realtime/fpga_mem_wrapper_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'fpga_mem_wrapper' (0#1) [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.runs/synth_1/.Xil/Vivado-6448-CCVDIAISB0054/realtime/fpga_mem_wrapper_stub.v:6]
 INFO: [Synth 8-6155] done synthesizing module 'mem_wrapper' (0#1) [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/mem_wrapper/mem_wrapper.v:1]
 INFO: [Synth 8-6155] done synthesizing module 'ifu' (0#1) [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/ifu.v:1]
 INFO: [Synth 8-6157] synthesizing module 'idu' [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/idu.v:1]
@@ -226,8 +225,8 @@ INFO: [Synth 8-6157] synthesizing module 'mm_ctrl_buffer__parameterized0' [C:/Us
 INFO: [Synth 8-6155] done synthesizing module 'mm_ctrl_buffer__parameterized0' (0#1) [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/mm_ctrl_buffer.v:1]
 INFO: [Synth 8-6157] synthesizing module 'ram_mem_wrapper' [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/mem_wrapper/ram_mem_wrapper.v:1]
 	Parameter DATA_WIDTH bound to: 128 - type: integer 
-INFO: [Synth 8-6157] synthesizing module 'fpga_ram_mem_wrapper' [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.runs/synth_1/.Xil/Vivado-1292-CCVDIAISB0045/realtime/fpga_ram_mem_wrapper_stub.v:6]
-INFO: [Synth 8-6155] done synthesizing module 'fpga_ram_mem_wrapper' (0#1) [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.runs/synth_1/.Xil/Vivado-1292-CCVDIAISB0045/realtime/fpga_ram_mem_wrapper_stub.v:6]
+INFO: [Synth 8-6157] synthesizing module 'fpga_ram_mem_wrapper' [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.runs/synth_1/.Xil/Vivado-6448-CCVDIAISB0054/realtime/fpga_ram_mem_wrapper_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'fpga_ram_mem_wrapper' (0#1) [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.runs/synth_1/.Xil/Vivado-6448-CCVDIAISB0054/realtime/fpga_ram_mem_wrapper_stub.v:6]
 INFO: [Synth 8-6155] done synthesizing module 'ram_mem_wrapper' (0#1) [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/mem_wrapper/ram_mem_wrapper.v:1]
 INFO: [Synth 8-6157] synthesizing module 'DFFR__parameterized6' [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lib/DFFR.v:1]
 	Parameter WIDTH bound to: 13 - type: integer 
@@ -283,8 +282,8 @@ INFO: [Synth 8-6157] synthesizing module 'mux16' [C:/Users/twipaa/Documents/GitH
 	Parameter WIDTH bound to: 13 - type: integer 
 INFO: [Synth 8-6155] done synthesizing module 'mux16' (0#1) [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lib/mux16.v:1]
 INFO: [Synth 8-6155] done synthesizing module 'AXI_WRITE_INFT' (0#1) [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/axi_write_intf.v:1]
-INFO: [Synth 8-6157] synthesizing module 'extern_bram' [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.runs/synth_1/.Xil/Vivado-1292-CCVDIAISB0045/realtime/extern_bram_stub.v:6]
-INFO: [Synth 8-6155] done synthesizing module 'extern_bram' (0#1) [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.runs/synth_1/.Xil/Vivado-1292-CCVDIAISB0045/realtime/extern_bram_stub.v:6]
+INFO: [Synth 8-6157] synthesizing module 'extern_bram' [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.runs/synth_1/.Xil/Vivado-6448-CCVDIAISB0054/realtime/extern_bram_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'extern_bram' (0#1) [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.runs/synth_1/.Xil/Vivado-6448-CCVDIAISB0054/realtime/extern_bram_stub.v:6]
 INFO: [Synth 8-6157] synthesizing module 'DFFR__parameterized9' [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lib/DFFR.v:1]
 	Parameter WIDTH bound to: 3 - type: integer 
 INFO: [Synth 8-6155] done synthesizing module 'DFFR__parameterized9' (0#1) [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lib/DFFR.v:1]
@@ -404,18 +403,18 @@ WARNING: [Synth 8-7129] Port lsu_axi_arid[3] in module lsu is either unconnected
 WARNING: [Synth 8-7129] Port lsu_axi_arid[2] in module lsu is either unconnected or has no load
 INFO: [Common 17-14] Message 'Synth 8-7129' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
 ---------------------------------------------------------------------------------
-Finished RTL Elaboration : Time (s): cpu = 00:00:11 ; elapsed = 00:00:11 . Memory (MB): peak = 1578.699 ; gain = 743.031
+Finished RTL Elaboration : Time (s): cpu = 00:00:11 ; elapsed = 00:00:12 . Memory (MB): peak = 1580.703 ; gain = 741.422
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Handling Custom Attributes
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Handling Custom Attributes : Time (s): cpu = 00:00:11 ; elapsed = 00:00:11 . Memory (MB): peak = 1578.699 ; gain = 743.031
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:11 ; elapsed = 00:00:12 . Memory (MB): peak = 1580.703 ; gain = 741.422
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:11 ; elapsed = 00:00:11 . Memory (MB): peak = 1578.699 ; gain = 743.031
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:11 ; elapsed = 00:00:12 . Memory (MB): peak = 1580.703 ; gain = 741.422
 ---------------------------------------------------------------------------------
-Netlist sorting complete. Time (s): cpu = 00:00:02 ; elapsed = 00:00:01 . Memory (MB): peak = 1578.699 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:02 ; elapsed = 00:00:01 . Memory (MB): peak = 1580.703 ; gain = 0.000
 INFO: [Project 1-570] Preparing netlist for logic optimization
 
 Processing XDC Constraints
@@ -433,20 +432,20 @@ Finished Parsing XDC File [c:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FP
 Parsing XDC File [c:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.gen/sources_1/ip/fpga_mem_wrapper/fpga_mem_wrapper/fpga_mem_wrapper_in_context.xdc] for cell 'u_ifu/ifu_mem_wrap_256x128/ifu_mem_wrap_256x128'
 Finished Parsing XDC File [c:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.gen/sources_1/ip/fpga_mem_wrapper/fpga_mem_wrapper/fpga_mem_wrapper_in_context.xdc] for cell 'u_ifu/ifu_mem_wrap_256x128/ifu_mem_wrap_256x128'
 Parsing XDC File [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.srcs/constrs_1/new/tpu.xdc]
-WARNING: [Vivado 12-507] No nets matched 'u_lsu/ff_lsu_mxu_act_vld/q_reg[0]_1'. [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.srcs/constrs_1/new/tpu.xdc:56]
-WARNING: [Vivado 12-507] No nets matched 'u_alu/ff_alu_lsu_wb_vld/lsu_riscv_finish'. [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.srcs/constrs_1/new/tpu.xdc:57]
-WARNING: [Vivado 12-507] No nets matched 'u_lsu/ff_lsu_mxu_act_vld/q_reg[0]_90'. [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.srcs/constrs_1/new/tpu.xdc:58]
+WARNING: [Vivado 12-507] No nets matched 'u_lsu/ff_lsu_mxu_act_vld/q_reg[0]_1'. [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.srcs/constrs_1/new/tpu.xdc:63]
+WARNING: [Vivado 12-507] No nets matched 'u_alu/ff_alu_lsu_wb_vld/lsu_riscv_finish'. [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.srcs/constrs_1/new/tpu.xdc:64]
+WARNING: [Vivado 12-507] No nets matched 'u_lsu/ff_lsu_mxu_act_vld/q_reg[0]_90'. [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.srcs/constrs_1/new/tpu.xdc:65]
 Finished Parsing XDC File [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.srcs/constrs_1/new/tpu.xdc]
 WARNING: [Project 1-498] One or more constraints failed evaluation while reading constraint file [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.srcs/constrs_1/new/tpu.xdc] and the design contains unresolved black boxes. These constraints will be read post-synthesis (as long as their source constraint file is marked as used_in_implementation) and should be applied correctly then. You should review the constraints listed in the file [.Xil/tpu_propImpl.xdc] and check the run log file to verify that these constraints were correctly applied.
 INFO: [Project 1-236] Implementation specific constraints were found while reading constraint file [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.srcs/constrs_1/new/tpu.xdc]. These constraints will be ignored for synthesis but will be used in implementation. Impacted constraints are listed in the file [.Xil/tpu_propImpl.xdc].
 Resolution: To avoid this warning, move constraints listed in [.Xil/tpu_propImpl.xdc] to another XDC file and exclude this new file from synthesis with the used_in_synthesis property (File Properties dialog in GUI) and re-run elaboration/synthesis.
 Completed Processing XDC Constraints
 
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.049 . Memory (MB): peak = 1685.477 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.039 . Memory (MB): peak = 1686.398 ; gain = 0.000
 INFO: [Project 1-111] Unisim Transformation Summary:
 No Unisim elements were transformed.
 
-Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.567 . Memory (MB): peak = 1685.477 ; gain = 0.000
+Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.567 . Memory (MB): peak = 1686.398 ; gain = 0.000
 WARNING: [Timing 38-316] Clock period '20.000' specified during out-of-context synthesis of instance 'external_mem' at clock pin 's_aclk' is different from the actual clock period '10.000', this can lead to different synthesis results.
 WARNING: [Timing 38-316] Clock period '20.000' specified during out-of-context synthesis of instance 'u_ifu/ifu_mem_wrap_256x128/ifu_mem_wrap_256x128' at clock pin 'clka' is different from the actual clock period '10.000', this can lead to different synthesis results.
 WARNING: [Timing 38-316] Clock period '20.000' specified during out-of-context synthesis of instance 'u_lsu/iram/iram' at clock pin 'clka' is different from the actual clock period '10.000', this can lead to different synthesis results.
@@ -454,24 +453,34 @@ WARNING: [Timing 38-316] Clock period '20.000' specified during out-of-context s
 WARNING: [Timing 38-316] Clock period '20.000' specified during out-of-context synthesis of instance 'u_lsu/oram_lo/iram' at clock pin 'clka' is different from the actual clock period '10.000', this can lead to different synthesis results.
 WARNING: [Timing 38-316] Clock period '20.000' specified during out-of-context synthesis of instance 'u_lsu/wram/iram' at clock pin 'clka' is different from the actual clock period '10.000', this can lead to different synthesis results.
 ---------------------------------------------------------------------------------
-Finished Constraint Validation : Time (s): cpu = 00:00:35 ; elapsed = 00:00:35 . Memory (MB): peak = 1700.660 ; gain = 864.992
+Finished Constraint Validation : Time (s): cpu = 00:00:35 ; elapsed = 00:00:37 . Memory (MB): peak = 1702.281 ; gain = 863.000
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Loading Part and Timing Information
 ---------------------------------------------------------------------------------
 Loading part: xc7z020clg484-1
 ---------------------------------------------------------------------------------
-Finished Loading Part and Timing Information : Time (s): cpu = 00:00:35 ; elapsed = 00:00:35 . Memory (MB): peak = 1700.660 ; gain = 864.992
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:35 ; elapsed = 00:00:37 . Memory (MB): peak = 1702.281 ; gain = 863.000
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Applying 'set_property' XDC Constraints
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:35 ; elapsed = 00:00:35 . Memory (MB): peak = 1700.660 ; gain = 864.992
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:35 ; elapsed = 00:00:37 . Memory (MB): peak = 1702.281 ; gain = 863.000
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Preparing Guide Design
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-6702] IncrSynth : Design change found in an area of the design that prevents previous synthesis information being used, Reverting to default synthesis
+---------------------------------------------------------------------------------
+Finished Doing Graph Differ : Time (s): cpu = 00:00:37 ; elapsed = 00:00:38 . Memory (MB): peak = 1702.281 ; gain = 863.000
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Preparing Guide Design : Time (s): cpu = 00:00:37 ; elapsed = 00:00:38 . Memory (MB): peak = 1702.281 ; gain = 863.000
 ---------------------------------------------------------------------------------
 WARNING: [Synth 8-327] inferring latch for variable 'out_reg' [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lib/resp_assign.v:13]
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:38 ; elapsed = 00:00:38 . Memory (MB): peak = 1700.660 ; gain = 864.992
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:39 ; elapsed = 00:00:41 . Memory (MB): peak = 1702.281 ; gain = 863.000
 ---------------------------------------------------------------------------------
 INFO: [Synth 8-223] decloning instance 'u_lsu/ff_lsu_mm_buff_iram_ctrl_vld' (DFFRE) to 'u_lsu/ff_lsu_mm_buff_wram_ctrl_vld'
 INFO: [Synth 8-223] decloning instance 'u_lsu/ff_lsu_mm_buff_iram_ctrl_row_len' (DFFRE__parameterized1) to 'u_lsu/ff_lsu_mm_buff_wram_ctrl_col_len'
@@ -490,6 +499,16 @@ INFO: [Synth 8-223] decloning instance 'u_AXI_WRITE_INTF/ff_oram_addr_0' (DFFE__
 INFO: [Synth 8-223] decloning instance 'u_AXI_WRITE_INTF/ff_oram_addr_0' (DFFE__parameterized7) to 'u_AXI_WRITE_INTF/ff_oram_addr_13'
 INFO: [Synth 8-223] decloning instance 'u_AXI_WRITE_INTF/ff_oram_addr_0' (DFFE__parameterized7) to 'u_AXI_WRITE_INTF/ff_oram_addr_14'
 INFO: [Synth 8-223] decloning instance 'u_AXI_WRITE_INTF/ff_oram_addr_0' (DFFE__parameterized7) to 'u_AXI_WRITE_INTF/ff_oram_addr_15'
+
+
+Incremental Synthesis Report Summary:
+
+1. Incremental synthesis run: no
+
+   Reason for not running incremental synthesis : Design change found in an area of the design that prevents previous synthesis information being used
+
+
+INFO: [Synth 8-7130] Flow is switching to default flow due to incremental criteria not met. If you would like to alter this behaviour and have the flow terminate instead, please set the following parameter config_implementation {autoIncr.Synth.RejectBehavior Terminate}
 ---------------------------------------------------------------------------------
 Start RTL Component Statistics 
 ---------------------------------------------------------------------------------
@@ -904,20 +923,20 @@ INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_dram_addr/q_reg[2]' (FDE
 INFO: [Common 17-14] Message 'Synth 8-3886' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
 INFO: [Common 17-14] Message 'Synth 8-3886' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
 ---------------------------------------------------------------------------------
-Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:01:27 ; elapsed = 00:01:47 . Memory (MB): peak = 1729.863 ; gain = 894.195
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:01:30 ; elapsed = 00:01:50 . Memory (MB): peak = 1787.348 ; gain = 948.066
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Applying XDC Timing Constraints
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Applying XDC Timing Constraints : Time (s): cpu = 00:01:37 ; elapsed = 00:01:59 . Memory (MB): peak = 1895.199 ; gain = 1059.531
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:01:40 ; elapsed = 00:02:02 . Memory (MB): peak = 1955.055 ; gain = 1115.773
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Timing Optimization
 ---------------------------------------------------------------------------------
 WARNING: [Synth 8-326] inferred exception to break timing loop: 'set_false_path -through u_mxui_6/mxu_done0'
 ---------------------------------------------------------------------------------
-Finished Timing Optimization : Time (s): cpu = 00:02:12 ; elapsed = 00:02:35 . Memory (MB): peak = 1987.016 ; gain = 1151.348
+Finished Timing Optimization : Time (s): cpu = 00:02:16 ; elapsed = 00:02:40 . Memory (MB): peak = 2047.230 ; gain = 1207.949
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Technology Mapping
@@ -957,7 +976,7 @@ CRITICAL WARNING: [Synth 8-295] found timing loop. [C:/Users/twipaa/Documents/Gi
 Inferred a: "set_disable_timing -from I1 -to O i_1/i_4936"
 WARNING: [Synth 8-326] inferred exception to break timing loop: 'set_false_path -through i_3/mxu_lsu_rdy'
 ---------------------------------------------------------------------------------
-Finished Technology Mapping : Time (s): cpu = 00:02:24 ; elapsed = 00:03:02 . Memory (MB): peak = 2015.961 ; gain = 1180.293
+Finished Technology Mapping : Time (s): cpu = 00:02:30 ; elapsed = 00:03:13 . Memory (MB): peak = 2060.371 ; gain = 1221.090
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start IO Insertion
@@ -975,13 +994,13 @@ Start Final Netlist Cleanup
 Finished Final Netlist Cleanup
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished IO Insertion : Time (s): cpu = 00:02:38 ; elapsed = 00:03:16 . Memory (MB): peak = 2180.402 ; gain = 1344.734
+Finished IO Insertion : Time (s): cpu = 00:02:43 ; elapsed = 00:03:26 . Memory (MB): peak = 2235.117 ; gain = 1395.836
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Instances
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Instances : Time (s): cpu = 00:02:38 ; elapsed = 00:03:17 . Memory (MB): peak = 2180.402 ; gain = 1344.734
+Finished Renaming Generated Instances : Time (s): cpu = 00:02:43 ; elapsed = 00:03:26 . Memory (MB): peak = 2235.117 ; gain = 1395.836
 ---------------------------------------------------------------------------------
 Found timing loop:
      0: \q[0]_i_2__38 /O (LUT6)
@@ -1032,25 +1051,25 @@ Inferred a: "set_disable_timing -from I1 -to O \q[0]_i_2__34 "
 Start Rebuilding User Hierarchy
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Rebuilding User Hierarchy : Time (s): cpu = 00:02:52 ; elapsed = 00:03:30 . Memory (MB): peak = 2300.832 ; gain = 1465.164
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:02:56 ; elapsed = 00:03:39 . Memory (MB): peak = 2358.344 ; gain = 1519.062
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Ports
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Ports : Time (s): cpu = 00:02:53 ; elapsed = 00:03:31 . Memory (MB): peak = 2300.832 ; gain = 1465.164
+Finished Renaming Generated Ports : Time (s): cpu = 00:02:57 ; elapsed = 00:03:41 . Memory (MB): peak = 2358.344 ; gain = 1519.062
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Handling Custom Attributes
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Handling Custom Attributes : Time (s): cpu = 00:02:55 ; elapsed = 00:03:33 . Memory (MB): peak = 2300.832 ; gain = 1465.164
+Finished Handling Custom Attributes : Time (s): cpu = 00:02:59 ; elapsed = 00:03:43 . Memory (MB): peak = 2358.344 ; gain = 1519.062
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Nets
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Nets : Time (s): cpu = 00:02:55 ; elapsed = 00:03:34 . Memory (MB): peak = 2300.832 ; gain = 1465.164
+Finished Renaming Generated Nets : Time (s): cpu = 00:02:59 ; elapsed = 00:03:43 . Memory (MB): peak = 2358.344 ; gain = 1519.062
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Writing Synthesis Report
@@ -1077,41 +1096,41 @@ Report Cell Usage:
 |9     |LUT1                 |    18|
 |10    |LUT2                 | 10871|
 |11    |LUT3                 |  4537|
-|12    |LUT4                 |  7114|
-|13    |LUT5                 |  3290|
-|14    |LUT6                 | 19329|
+|12    |LUT4                 |  7051|
+|13    |LUT5                 |  3350|
+|14    |LUT6                 | 19333|
 |15    |MUXF7                |   948|
 |16    |MUXF8                |    75|
 |17    |FDCE                 | 12947|
 |18    |FDPE                 |     5|
 |19    |FDRE                 | 11970|
 |20    |IBUF                 |     3|
-|21    |OBUF                 |     5|
+|21    |OBUF                 |     7|
 +------+---------------------+------+
 ---------------------------------------------------------------------------------
-Finished Writing Synthesis Report : Time (s): cpu = 00:02:56 ; elapsed = 00:03:34 . Memory (MB): peak = 2300.832 ; gain = 1465.164
+Finished Writing Synthesis Report : Time (s): cpu = 00:02:59 ; elapsed = 00:03:43 . Memory (MB): peak = 2358.344 ; gain = 1519.062
 ---------------------------------------------------------------------------------
-Synthesis finished with 0 errors, 11 critical warnings and 297 warnings.
-Synthesis Optimization Runtime : Time (s): cpu = 00:02:29 ; elapsed = 00:03:19 . Memory (MB): peak = 2300.832 ; gain = 1343.203
-Synthesis Optimization Complete : Time (s): cpu = 00:02:56 ; elapsed = 00:03:35 . Memory (MB): peak = 2300.832 ; gain = 1465.164
+Synthesis finished with 0 errors, 11 critical warnings and 298 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:02:32 ; elapsed = 00:03:33 . Memory (MB): peak = 2358.344 ; gain = 1397.484
+Synthesis Optimization Complete : Time (s): cpu = 00:02:59 ; elapsed = 00:03:49 . Memory (MB): peak = 2358.344 ; gain = 1519.062
 INFO: [Project 1-571] Translating synthesized netlist
-Netlist sorting complete. Time (s): cpu = 00:00:02 ; elapsed = 00:00:02 . Memory (MB): peak = 2333.070 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:02 ; elapsed = 00:00:02 . Memory (MB): peak = 2390.816 ; gain = 0.000
 INFO: [Netlist 29-17] Analyzing 5235 Unisim elements for replacement
 INFO: [Netlist 29-28] Unisim Transformation completed in 1 CPU seconds
 INFO: [Project 1-570] Preparing netlist for logic optimization
 INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.042 . Memory (MB): peak = 2386.652 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.045 . Memory (MB): peak = 2448.992 ; gain = 0.000
 INFO: [Project 1-111] Unisim Transformation Summary:
 No Unisim elements were transformed.
 
-Synth Design complete | Checksum: ff1b31c0
+Synth Design complete | Checksum: 38c66909
 INFO: [Common 17-83] Releasing license: Synthesis
-304 Infos, 384 Warnings, 17 Critical Warnings and 0 Errors encountered.
+305 Infos, 384 Warnings, 17 Critical Warnings and 0 Errors encountered.
 synth_design completed successfully
-synth_design: Time (s): cpu = 00:03:27 ; elapsed = 00:04:09 . Memory (MB): peak = 2386.652 ; gain = 1782.816
+synth_design: Time (s): cpu = 00:03:31 ; elapsed = 00:04:36 . Memory (MB): peak = 2448.992 ; gain = 1844.074
 INFO: [runtcl-6] Synthesis results are not added to the cache due to CRITICAL_WARNING
-Write ShapeDB Complete: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.159 . Memory (MB): peak = 2386.652 ; gain = 0.000
+Write ShapeDB Complete: Time (s): cpu = 00:00:01 ; elapsed = 00:00:00.151 . Memory (MB): peak = 2448.992 ; gain = 0.000
 INFO: [Common 17-1381] The checkpoint 'C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.runs/synth_1/tpu.dcp' has been generated.
-write_checkpoint: Time (s): cpu = 00:00:11 ; elapsed = 00:00:09 . Memory (MB): peak = 2386.652 ; gain = 0.000
+write_checkpoint: Time (s): cpu = 00:00:11 ; elapsed = 00:00:11 . Memory (MB): peak = 2448.992 ; gain = 0.000
 INFO: [Vivado 12-24828] Executing command : report_utilization -file tpu_utilization_synth.rpt -pb tpu_utilization_synth.pb
-INFO: [Common 17-206] Exiting Vivado at Thu Apr  9 20:35:30 2026...
+INFO: [Common 17-206] Exiting Vivado at Sun Apr 12 22:54:03 2026...

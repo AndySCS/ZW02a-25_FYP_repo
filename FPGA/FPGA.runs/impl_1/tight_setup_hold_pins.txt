@@ -1,20 +1,10 @@
-+====================+===================+==============================================+
-| Launch Setup Clock | Launch Hold Clock | Pin                                          |
-+====================+===================+==============================================+
-| sys_clk_pin        | sys_clk_pin       | u_idu/ff_idu_alu_src1/q_reg[29]/D            |
-| sys_clk_pin        | sys_clk_pin       | u_AXI_READ_INFT/ff_axi_lsu_rdata/q_reg[42]/D |
-| sys_clk_pin        | sys_clk_pin       | u_AXI_READ_INFT/ff_axi_lsu_rdata/q_reg[38]/D |
-| sys_clk_pin        | sys_clk_pin       | u_AXI_READ_INFT/ff_axi_lsu_rdata/q_reg[2]/D  |
-| sys_clk_pin        | sys_clk_pin       | u_AXI_READ_INFT/ff_axi_lsu_rdata/q_reg[48]/D |
-| sys_clk_pin        | sys_clk_pin       | u_AXI_READ_INFT/ff_axi_lsu_rdata/q_reg[54]/D |
-| sys_clk_pin        | sys_clk_pin       | u_AXI_READ_INFT/ff_axi_lsu_rdata/q_reg[1]/D  |
-| sys_clk_pin        | sys_clk_pin       | u_AXI_READ_INFT/ff_axi_lsu_rdata/q_reg[49]/D |
-| sys_clk_pin        | sys_clk_pin       | u_AXI_READ_INFT/ff_axi_lsu_rdata/q_reg[55]/D |
-| sys_clk_pin        | sys_clk_pin       | u_idu/ff_idu_alu_src1/q_reg[14]/D            |
-| sys_clk_pin        | sys_clk_pin       | u_idu/ff_idu_alu_src1/q_reg[22]/D            |
-| sys_clk_pin        | sys_clk_pin       | u_AXI_READ_INFT/ff_axi_lsu_rdata/q_reg[3]/D  |
-| sys_clk_pin        | sys_clk_pin       | u_idu/ff_idu_alu_src1/q_reg[9]/D             |
-| sys_clk_pin        | sys_clk_pin       | u_AXI_READ_INFT/ff_axi_lsu_rdata/q_reg[7]/D  |
-| sys_clk_pin        | sys_clk_pin       | u_AXI_READ_INFT/ff_axi_lsu_rdata/q_reg[31]/D |
-| sys_clk_pin        | sys_clk_pin       | u_AXI_READ_INFT/ff_axi_lsu_rdata/q_reg[53]/D |
-+--------------------+-------------------+----------------------------------------------+
++====================+===================+===================================+
+| Launch Setup Clock | Launch Hold Clock | Pin                               |
++====================+===================+===================================+
+| sys_clk_pin        | sys_clk_pin       | u_idu/ff_idu_alu_src1/q_reg[23]/D |
+| sys_clk_pin        | sys_clk_pin       | u_idu/ff_idu_alu_src1/q_reg[12]/D |
+| sys_clk_pin        | sys_clk_pin       | u_idu/ff_idu_alu_src1/q_reg[21]/D |
+| sys_clk_pin        | sys_clk_pin       | u_idu/ff_idu_alu_src1/q_reg[30]/D |
+| sys_clk_pin        | sys_clk_pin       | u_idu/ff_idu_alu_src1/q_reg[29]/D |
+| sys_clk_pin        | sys_clk_pin       | u_idu/ff_idu_alu_src1/q_reg[11]/D |
++--------------------+-------------------+-----------------------------------+

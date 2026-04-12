@@ -11,205 +11,94 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="7,994.310277 us"></ZoomStartTime>
-      <ZoomEndTime time="8,002.337945 us"></ZoomEndTime>
-      <Cursor1Time time="8,001.000000 us"></Cursor1Time>
+      <ZoomStartTime time="716.290 ns"></ZoomStartTime>
+      <ZoomEndTime time="1,482.717 ns"></ZoomEndTime>
+      <Cursor1Time time="1,000.000 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="193"></NameColumnWidth>
-      <ValueColumnWidth column_width="126"></ValueColumnWidth>
+      <NameColumnWidth column_width="250"></NameColumnWidth>
+      <ValueColumnWidth column_width="94"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="48" />
-   <wvobject type="logic" fp_name="/top_tb/rst_n">
-      <obj_property name="ElementShortName">rst_n</obj_property>
-      <obj_property name="ObjectShortName">rst_n</obj_property>
+   <WVObjectSize size="20" />
+   <wvobject fp_name="/top_tb/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/top_tb/start_vld">
-      <obj_property name="ElementShortName">start_vld</obj_property>
-      <obj_property name="ObjectShortName">start_vld</obj_property>
+   <wvobject fp_name="/top_tb/rst_n_in" type="logic">
+      <obj_property name="ElementShortName">rst_n_in</obj_property>
+      <obj_property name="ObjectShortName">rst_n_in</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/top_tb/start_addr">
-      <obj_property name="ElementShortName">start_addr[11:0]</obj_property>
-      <obj_property name="ObjectShortName">start_addr[11:0]</obj_property>
+   <wvobject fp_name="/top_tb/start_vld_in" type="logic">
+      <obj_property name="ElementShortName">start_vld_in</obj_property>
+      <obj_property name="ObjectShortName">start_vld_in</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/top_tb/wfi">
+   <wvobject fp_name="/top_tb/wfi" type="logic">
       <obj_property name="ElementShortName">wfi</obj_property>
       <obj_property name="ObjectShortName">wfi</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/top_tb/top_tpu/ARID">
-      <obj_property name="ElementShortName">ARID[3:0]</obj_property>
-      <obj_property name="ObjectShortName">ARID[3:0]</obj_property>
+   <wvobject fp_name="/top_tb/top_tpu/led" type="array">
+      <obj_property name="ElementShortName">led[3:0]</obj_property>
+      <obj_property name="ObjectShortName">led[3:0]</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/top_tb/top_tpu/ARADDR">
-      <obj_property name="ElementShortName">ARADDR[31:0]</obj_property>
-      <obj_property name="ObjectShortName">ARADDR[31:0]</obj_property>
+   <wvobject fp_name="/top_tb/start_addr" type="array">
+      <obj_property name="ElementShortName">start_addr[11:0]</obj_property>
+      <obj_property name="ObjectShortName">start_addr[11:0]</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/top_tb/top_tpu/ARLEN">
-      <obj_property name="ElementShortName">ARLEN[7:0]</obj_property>
-      <obj_property name="ObjectShortName">ARLEN[7:0]</obj_property>
+   <wvobject fp_name="/top_tb/top_tpu/rst_n" type="logic">
+      <obj_property name="ElementShortName">rst_n</obj_property>
+      <obj_property name="ObjectShortName">rst_n</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/top_tb/top_tpu/ARSIZE">
-      <obj_property name="ElementShortName">ARSIZE[2:0]</obj_property>
-      <obj_property name="ObjectShortName">ARSIZE[2:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_tb/top_tpu/ARBURST">
-      <obj_property name="ElementShortName">ARBURST[1:0]</obj_property>
-      <obj_property name="ObjectShortName">ARBURST[1:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_tb/top_tpu/ARREGION">
-      <obj_property name="ElementShortName">ARREGION[3:0]</obj_property>
-      <obj_property name="ObjectShortName">ARREGION[3:0]</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_tb/top_tpu/ARVALID">
-      <obj_property name="ElementShortName">ARVALID</obj_property>
-      <obj_property name="ObjectShortName">ARVALID</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_tb/top_tpu/ARREADY">
-      <obj_property name="ElementShortName">ARREADY</obj_property>
-      <obj_property name="ObjectShortName">ARREADY</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_tb/top_tpu/u_AXI_READ_INFT/axi_vld">
-      <obj_property name="ElementShortName">axi_vld[15:0]</obj_property>
-      <obj_property name="ObjectShortName">axi_vld[15:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_tb/top_tpu/u_AXI_READ_INFT/axi_sent">
-      <obj_property name="ElementShortName">axi_sent[15:0]</obj_property>
-      <obj_property name="ObjectShortName">axi_sent[15:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_tb/top_tpu/u_AXI_READ_INFT/axi_sent_nxt">
-      <obj_property name="ElementShortName">axi_sent_nxt[15:0]</obj_property>
-      <obj_property name="ObjectShortName">axi_sent_nxt[15:0]</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_tb/top_tpu/u_AXI_READ_INFT/axi_sent_en">
-      <obj_property name="ElementShortName">axi_sent_en</obj_property>
-      <obj_property name="ObjectShortName">axi_sent_en</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_tb/top_tpu/u_AXI_READ_INFT/axi_alloc_vld">
-      <obj_property name="ElementShortName">axi_alloc_vld</obj_property>
-      <obj_property name="ObjectShortName">axi_alloc_vld</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_tb/top_tpu/u_AXI_READ_INFT/ARVALID_sent">
-      <obj_property name="ElementShortName">ARVALID_sent</obj_property>
-      <obj_property name="ObjectShortName">ARVALID_sent</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_tb/top_tpu/u_AXI_READ_INFT/lsu_axi_arvld_qual">
-      <obj_property name="ElementShortName">lsu_axi_arvld_qual</obj_property>
-      <obj_property name="ObjectShortName">lsu_axi_arvld_qual</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_tb/top_tpu/u_AXI_READ_INFT/lsu_axi_arvld">
-      <obj_property name="ElementShortName">lsu_axi_arvld</obj_property>
-      <obj_property name="ObjectShortName">lsu_axi_arvld</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_tb/top_tpu/u_AXI_READ_INFT/axi_lsu_arrdy">
-      <obj_property name="ElementShortName">axi_lsu_arrdy</obj_property>
-      <obj_property name="ObjectShortName">axi_lsu_arrdy</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_tb/top_tpu/u_lsu/lsu_axi_arvld_nxt">
-      <obj_property name="ElementShortName">lsu_axi_arvld_nxt</obj_property>
-      <obj_property name="ObjectShortName">lsu_axi_arvld_nxt</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_tb/top_tpu/u_lsu/alu_lsu_ld_iram">
-      <obj_property name="ElementShortName">alu_lsu_ld_iram</obj_property>
-      <obj_property name="ObjectShortName">alu_lsu_ld_iram</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_tb/top_tpu/u_lsu/alu_lsu_ld_wram">
-      <obj_property name="ElementShortName">alu_lsu_ld_wram</obj_property>
-      <obj_property name="ObjectShortName">alu_lsu_ld_wram</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_tb/top_tpu/u_lsu/lsu_axi_arvld">
-      <obj_property name="ElementShortName">lsu_axi_arvld</obj_property>
-      <obj_property name="ObjectShortName">lsu_axi_arvld</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_tb/top_tpu/u_lsu/axi_lsu_arrdy">
-      <obj_property name="ElementShortName">axi_lsu_arrdy</obj_property>
-      <obj_property name="ObjectShortName">axi_lsu_arrdy</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_tb/top_tpu/u_lsu/lsu_vld_qual">
-      <obj_property name="ElementShortName">lsu_vld_qual</obj_property>
-      <obj_property name="ObjectShortName">lsu_vld_qual</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_tb/top_tpu/u_lsu/alu_lsu_wb_vld">
-      <obj_property name="ElementShortName">alu_lsu_wb_vld</obj_property>
-      <obj_property name="ObjectShortName">alu_lsu_wb_vld</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_tb/top_tpu/u_lsu/alu_lsu_vld">
-      <obj_property name="ElementShortName">alu_lsu_vld</obj_property>
-      <obj_property name="ObjectShortName">alu_lsu_vld</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_tb/top_tpu/u_lsu/lsu_vld">
-      <obj_property name="ElementShortName">lsu_vld</obj_property>
-      <obj_property name="ObjectShortName">lsu_vld</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_tb/top_tpu/u_lsu/mxu_lsu_rdy_ff">
-      <obj_property name="ElementShortName">mxu_lsu_rdy_ff</obj_property>
-      <obj_property name="ObjectShortName">mxu_lsu_rdy_ff</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_tb/top_tpu/u_lsu/lsu_riscv_wb_vld">
-      <obj_property name="ElementShortName">lsu_riscv_wb_vld</obj_property>
-      <obj_property name="ObjectShortName">lsu_riscv_wb_vld</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_tb/top_tpu/u_lsu/lsu_riscv_st_vld">
-      <obj_property name="ElementShortName">lsu_riscv_st_vld</obj_property>
-      <obj_property name="ObjectShortName">lsu_riscv_st_vld</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_tb/top_tpu/u_lsu/lsu_alu_rdy">
-      <obj_property name="ElementShortName">lsu_alu_rdy</obj_property>
-      <obj_property name="ObjectShortName">lsu_alu_rdy</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_tb/top_tpu/u_lsu/lsu_vld">
-      <obj_property name="ElementShortName">lsu_vld</obj_property>
-      <obj_property name="ObjectShortName">lsu_vld</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_tb/top_tpu/u_lsu/lsu_vld_nxt">
-      <obj_property name="ElementShortName">lsu_vld_nxt</obj_property>
-      <obj_property name="ObjectShortName">lsu_vld_nxt</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_tb/top_tpu/u_lsu/start_vld">
+   <wvobject fp_name="/top_tb/top_tpu/start_vld" type="logic">
       <obj_property name="ElementShortName">start_vld</obj_property>
       <obj_property name="ObjectShortName">start_vld</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/top_tb/top_tpu/u_lsu/lsu_act_finish">
-      <obj_property name="ElementShortName">lsu_act_finish</obj_property>
-      <obj_property name="ObjectShortName">lsu_act_finish</obj_property>
+   <wvobject fp_name="/top_tb/top_tpu/start_led" type="logic">
+      <obj_property name="ElementShortName">start_led</obj_property>
+      <obj_property name="ObjectShortName">start_led</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/top_tb/top_tpu/u_lsu/lsu_riscv_finish">
-      <obj_property name="ElementShortName">lsu_riscv_finish</obj_property>
-      <obj_property name="ObjectShortName">lsu_riscv_finish</obj_property>
+   <wvobject fp_name="/top_tb/top_tpu/rst_led" type="logic">
+      <obj_property name="ElementShortName">rst_led</obj_property>
+      <obj_property name="ObjectShortName">rst_led</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/top_tb/top_tpu/u_lsu/lsu_instr_finish_ff">
-      <obj_property name="ElementShortName">lsu_instr_finish_ff</obj_property>
-      <obj_property name="ObjectShortName">lsu_instr_finish_ff</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_tb/top_tpu/u_lsu/lsu_vld_qual">
-      <obj_property name="ElementShortName">lsu_vld_qual</obj_property>
-      <obj_property name="ObjectShortName">lsu_vld_qual</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/top_tb/top_tpu/u_lsu/lsu_vld">
-      <obj_property name="ElementShortName">lsu_vld</obj_property>
-      <obj_property name="ObjectShortName">lsu_vld</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_tb/top_tpu/WDATA">
+   <wvobject fp_name="/top_tb/top_tpu/WDATA" type="array">
       <obj_property name="ElementShortName">WDATA[63:0]</obj_property>
       <obj_property name="ObjectShortName">WDATA[63:0]</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/top_tb/top_tpu/max_val">
-      <obj_property name="ElementShortName">max_val[63:0]</obj_property>
-      <obj_property name="ObjectShortName">max_val[63:0]</obj_property>
+   <wvobject fp_name="/top_tb/top_tpu/WVALID" type="logic">
+      <obj_property name="ElementShortName">WVALID</obj_property>
+      <obj_property name="ObjectShortName">WVALID</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/top_tb/top_tpu/max_idx">
-      <obj_property name="ElementShortName">max_idx[3:0]</obj_property>
-      <obj_property name="ObjectShortName">max_idx[3:0]</obj_property>
+   <wvobject fp_name="/top_tb/top_tpu/WREADY" type="logic">
+      <obj_property name="ElementShortName">WREADY</obj_property>
+      <obj_property name="ObjectShortName">WREADY</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/top_tb/top_tpu/softmax_input_quant">
+   <wvobject fp_name="/top_tb/top_tpu/RDATA" type="array">
+      <obj_property name="ElementShortName">RDATA[63:0]</obj_property>
+      <obj_property name="ObjectShortName">RDATA[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/ARREADY" type="logic">
+      <obj_property name="ElementShortName">ARREADY</obj_property>
+      <obj_property name="ObjectShortName">ARREADY</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/ARVALID" type="logic">
+      <obj_property name="ElementShortName">ARVALID</obj_property>
+      <obj_property name="ObjectShortName">ARVALID</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/RID" type="array">
+      <obj_property name="ElementShortName">RID[3:0]</obj_property>
+      <obj_property name="ObjectShortName">RID[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/axi_lsu_dram_addr" type="array">
+      <obj_property name="ElementShortName">axi_lsu_dram_addr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">axi_lsu_dram_addr[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/RDATA" type="array">
+      <obj_property name="ElementShortName">RDATA[63:0]</obj_property>
+      <obj_property name="ObjectShortName">RDATA[63:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/softmax_input_quant" type="array">
       <obj_property name="ElementShortName">softmax_input_quant[9:0][63:0]</obj_property>
       <obj_property name="ObjectShortName">softmax_input_quant[9:0][63:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_tb/top_tpu/softmax_count">
-      <obj_property name="ElementShortName">softmax_count[3:0]</obj_property>
-      <obj_property name="ObjectShortName">softmax_count[3:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/top_tb/top_tpu/led">
-      <obj_property name="ElementShortName">led[7:0]</obj_property>
-      <obj_property name="ObjectShortName">led[7:0]</obj_property>
+      <obj_property name="isExpanded"></obj_property>
    </wvobject>
 </wave_config>

@@ -13,11 +13,15 @@ set_property src_info {type:XDC file:1 line:48 export:INPUT save:INPUT read:READ
 set_property PACKAGE_PIN U22 [get_ports {led[2]}]
 set_property src_info {type:XDC file:1 line:50 export:INPUT save:INPUT read:READ} [current_design]
 set_property PACKAGE_PIN U21 [get_ports {led[3]}]
-set_property src_info {type:XDC file:1 line:52 export:INPUT save:INPUT read:READ} [current_design]
-set_property PACKAGE_PIN U12 [get_ports {wfi}]
+set_property src_info {type:XDC file:1 line:53 export:INPUT save:INPUT read:READ} [current_design]
+set_property PACKAGE_PIN W22 [get_ports {start_led}];
 set_property src_info {type:XDC file:1 line:56 export:INPUT save:INPUT read:READ} [current_design]
+set_property PACKAGE_PIN U19 [get_ports {rst_led}];
+set_property src_info {type:XDC file:1 line:59 export:INPUT save:INPUT read:READ} [current_design]
+set_property PACKAGE_PIN U14 [get_ports {wfi}]
+set_property src_info {type:XDC file:1 line:63 export:INPUT save:INPUT read:READ} [current_design]
 set_property ALLOW_COMBINATORIAL_LOOPS TRUE [get_nets u_lsu/ff_lsu_mxu_act_vld/q_reg[0]_1];
-set_property src_info {type:XDC file:1 line:57 export:INPUT save:INPUT read:READ} [current_design]
+set_property src_info {type:XDC file:1 line:64 export:INPUT save:INPUT read:READ} [current_design]
 set_property ALLOW_COMBINATORIAL_LOOPS TRUE [get_nets u_alu/ff_alu_lsu_wb_vld/lsu_riscv_finish];
-set_property src_info {type:XDC file:1 line:58 export:INPUT save:INPUT read:READ} [current_design]
+set_property src_info {type:XDC file:1 line:65 export:INPUT save:INPUT read:READ} [current_design]
 set_property ALLOW_COMBINATORIAL_LOOPS TRUE [get_nets u_lsu/ff_lsu_mxu_act_vld/q_reg[0]_90];
