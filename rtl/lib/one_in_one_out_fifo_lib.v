@@ -3,6 +3,7 @@ module one_in_one_out_fifo_lib(
     clk,
     rst_n,
     in_vld,
+    in_rdy,
     in_data,
     out_vld,
     out_data,
@@ -21,6 +22,7 @@ module one_in_one_out_fifo_lib(
     input rst_n;
     input in_vld;
     input [DATA_SIZE-1:0] in_data;
+    output in_rdy;
     output out_vld;
     output [DATA_SIZE-1:0] out_data;
     output fifo_full;
@@ -30,6 +32,7 @@ module one_in_one_out_fifo_lib(
     wire [ENT_NUM-1:0] alloc_ptr_oh;
     wire [ENT_NUM-1:0] alloc_ptr_oh_nxt;
     wire [ENT_NUM-1:0] alloc_ptr_oh_qual;
+    wire in_vld_qual;
     //pick logic
     wire [ENT_NUM-1:0] pick_ptr_oh;
     wire [ENT_NUM-1:0] pick_ptr_oh_nxt;
@@ -45,26 +48,27 @@ module one_in_one_out_fifo_lib(
     wire [DATA_SIZE-1:0] ent_data [ENT_NUM-1:0];
 
     //alloc logic
+    assign in_vld_qual = in_vld & in_rdy;
     assign alloc_ptr_oh_nxt = {alloc_ptr_oh[ENT_NUM-2:0], alloc_ptr_oh[ENT_NUM-1]}; //rr alloc
     DFFRE #(.WIDTH(ENT_NUM-1)) 
     ff_alloc_ptr_oh_hi (
         .clk(clk), 
         .rst_n(rst_n), 
-        .en(in_vld),
+        .en(in_vld_qual),
         .d(alloc_ptr_oh_nxt[ENT_NUM-1:1]), 
         .q(alloc_ptr_oh[ENT_NUM-1:1])
     );
     DFFSE ff_alloc_ptr_oh_lo (
         .clk(clk), 
         .rst_n(rst_n), 
-        .en(in_vld), 
+        .en(in_vld_qual), 
         .d(alloc_ptr_oh_nxt[0]), 
         .q(alloc_ptr_oh[0])
     );
     assign alloc_ptr_oh_qual = alloc_ptr_oh & {ENT_NUM{in_vld}};
     //pick logic
     assign ent_out = out_vld & pick_rdy;
-    assign pick_ptr_oh_update_en = ent_out | in_vld & (|(alloc_ptr_oh & pick_ptr_oh & ent_vld)); //overwrite on vld ent
+    assign pick_ptr_oh_update_en = ent_out;
     assign pick_ptr_oh_nxt = {pick_ptr_oh[ENT_NUM-2:0], pick_ptr_oh[ENT_NUM-1]}; //rr pick
     assign pick_ptr_nxt = pick_ptr + 'b1 ;
     DFFRE #(.WIDTH(ENT_NUM-1)) 
@@ -83,7 +87,7 @@ module one_in_one_out_fifo_lib(
         .q(pick_ptr_oh[0])
     );
     //vld logic
-    assign ent_update = in_vld | ent_out;
+    assign ent_update = in_vld_qual | ent_out;
     assign ent_vld_nxt = alloc_ptr_oh_qual | ent_vld & ~(pick_ptr_oh & {ENT_NUM{pick_rdy}});
     DFFRE #(.WIDTH(ENT_NUM)) 
     ff_ent_vld(
@@ -119,5 +123,6 @@ module one_in_one_out_fifo_lib(
 
     assign out_data = ent_data[pick_ptr]; 
     assign fifo_full = |(ent_vld & alloc_ptr_oh);
+    assign in_rdy = ~fifo_full;
 
 endmodule

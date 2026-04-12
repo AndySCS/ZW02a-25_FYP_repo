@@ -50,6 +50,7 @@ module uart (
         .clk(clk),
         .rst_n(rst_n),
         .in_vld(tx_vld),
+        .in_rdy(tx_ready),
         .in_data(tx_data_in),
         .out_vld(tx_fifo_out_vld),
         .out_data(tx_data_nxt),
@@ -57,7 +58,6 @@ module uart (
         .pick_rdy(tx_fifo_pick_rdy)
     );
 
-    assign tx_ready = ~tx_fifo_full;
     assign tx_fifo_pick_rdy = ~tx_doing;
 
     assign tx = tx_doing ? tx_data[tx_ptr] : 1'b1; //idle high
