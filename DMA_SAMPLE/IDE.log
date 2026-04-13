@@ -18,3 +18,17 @@
 15:52:24 INFO  : plnx-install-location is set to ''
 15:52:24 INFO  : Successfully done query RDI_DATADIR 
 15:52:24 INFO  : Successfully done setting workspace for the tool. 
+23:27:36 DEBUG : Logs will be stored at '/dfs/usrhome/twipaa/Documents/uart/ZW02a-25_FYP_repo/DMA_SAMPLE/IDE.log'.
+23:27:39 INFO  : Launching XSCT server: xsct -n  -interactive /dfs/usrhome/twipaa/Documents/uart/ZW02a-25_FYP_repo/DMA_SAMPLE/temp_xsdb_launch_script.tcl
+23:27:44 INFO  : Registering command handlers for Vitis TCF services
+23:27:46 INFO  : Platform repository initialization has completed.
+23:27:46 INFO  : XSCT server has started successfully.
+23:27:57 INFO  : Successfully done setting XSCT server connection channel  
+23:27:57 INFO  : Successfully done query RDI_DATADIR 
+23:27:57 INFO  : plnx-install-location is set to ''
+23:27:57 INFO  : Successfully done setting workspace for the tool. 
+23:41:56 INFO  : Result from executing command 'getProjects': dmaSystem_hw_platform
+23:41:56 INFO  : Result from executing command 'getPlatforms': dmaSystem_hw_platform|/dfs/usrhome/twipaa/Documents/uart/ZW02a-25_FYP_repo/DMA_SAMPLE/dmaSystem_hw_platform/export/dmaSystem_hw_platform/dmaSystem_hw_platform.xpfm;xilinx_vck190_base_202310_1|/dfs/app/xilinx/Vitis/2023.1/base_platforms/xilinx_vck190_base_202310_1/xilinx_vck190_base_202310_1.xpfm;xilinx_vck190_base_dfx_202310_1|/dfs/app/xilinx/Vitis/2023.1/base_platforms/xilinx_vck190_base_dfx_202310_1/xilinx_vck190_base_dfx_202310_1.xpfm;xilinx_vek280_es1_base_202310_1|/dfs/app/xilinx/Vitis/2023.1/base_platforms/xilinx_vek280_es1_base_202310_1/xilinx_vek280_es1_base_202310_1.xpfm;xilinx_vmk180_base_202310_1|/dfs/app/xilinx/Vitis/2023.1/base_platforms/xilinx_vmk180_base_202310_1/xilinx_vmk180_base_202310_1.xpfm;xilinx_zcu102_base_202310_1|/dfs/app/xilinx/Vitis/2023.1/base_platforms/xilinx_zcu102_base_202310_1/xilinx_zcu102_base_202310_1.xpfm;xilinx_zcu102_base_dfx_202310_1|/dfs/app/xilinx/Vitis/2023.1/base_platforms/xilinx_zcu102_base_dfx_202310_1/xilinx_zcu102_base_dfx_202310_1.xpfm;xilinx_zcu104_base_202310_1|/dfs/app/xilinx/Vitis/2023.1/base_platforms/xilinx_zcu104_base_202310_1/xilinx_zcu104_base_202310_1.xpfm
+23:42:00 INFO  : Checking for BSP changes to sync application flags for project 'dmaControl'...
+23:49:58 INFO  : Checking for BSP changes to sync application flags for project 'dmaControl'...
+00:00:35 INFO  : Checking for BSP changes to sync application flags for project 'dmaControl'...

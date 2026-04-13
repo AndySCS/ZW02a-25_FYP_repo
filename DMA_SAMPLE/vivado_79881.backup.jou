@@ -1,0 +1,18 @@
+#-----------------------------------------------------------
+# Vivado v2023.1 (64-bit)
+# SW Build 3865809 on Sun May  7 15:04:56 MDT 2023
+# IP Build 3864474 on Sun May  7 20:36:21 MDT 2023
+# SharedData Build 3865790 on Sun May 07 13:33:03 MDT 2023
+# Start of session at: Mon Apr 13 09:33:56 2026
+# Process ID: 79881
+# Current directory: /dfs/usrhome/twipaa/Documents/uart/ZW02a-25_FYP_repo/DMA_SAMPLE
+# Command line: vivado
+# Log file: /dfs/usrhome/twipaa/Documents/uart/ZW02a-25_FYP_repo/DMA_SAMPLE/vivado.log
+# Journal file: /dfs/usrhome/twipaa/Documents/uart/ZW02a-25_FYP_repo/DMA_SAMPLE/vivado.jou
+# Running On: ecelvd714.ece.local, OS: Linux, CPU Frequency: 2593.905 MHz, CPU Physical cores: 32, Host memory: 270292 MB
+#-----------------------------------------------------------
+start_gui
+open_project /dfs/usrhome/twipaa/Documents/uart/ZW02a-25_FYP_repo/DMA_SAMPLE/DMA_SYSTEM/DMA_SYSTEM.xpr
+update_compile_order -fileset sources_1
+open_bd_design {/dfs/usrhome/twipaa/Documents/uart/ZW02a-25_FYP_repo/DMA_SAMPLE/DMA_SYSTEM/DMA_SYSTEM.srcs/sources_1/bd/dmaSystem/dmaSystem.bd}
+write_hw_platform -fixed -include_bit -force -file /dfs/usrhome/twipaa/Documents/uart/ZW02a-25_FYP_repo/DMA_SAMPLE/DMA_SYSTEM/dmaSystem_wrapper.xsa

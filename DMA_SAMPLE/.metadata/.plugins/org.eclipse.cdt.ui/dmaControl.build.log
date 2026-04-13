@@ -1,0 +1,25 @@
+00:00:35 **** Incremental Build of configuration Debug for project dmaControl ****
+make all 
+make --no-print-directory pre-build
+a9-linaro-pre-build-step
+ 
+make --no-print-directory main-build
+Building file: ../src/dma_control.c
+Invoking: ARM v7 gcc compiler
+arm-none-eabi-gcc -Wall -O0 -g3 -c -fmessage-length=0 -MT"src/dma_control.o" -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -I/dfs/usrhome/twipaa/Documents/uart/ZW02a-25_FYP_repo/DMA_SAMPLE/dmaSystem_hw_platform/export/dmaSystem_hw_platform/sw/dmaSystem_hw_platform/standalone_domain/bspinclude/include -MMD -MP -MF"src/dma_control.d" -MT"src/dma_control.o" -o "src/dma_control.o" "../src/dma_control.c"
+Finished building: ../src/dma_control.c
+ 
+Building target: dmaControl.elf
+Invoking: ARM v7 gcc linker
+arm-none-eabi-gcc -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -Wl,-build-id=none -specs=Xilinx.spec -Wl,-T -Wl,../src/lscript.ld -L/dfs/usrhome/twipaa/Documents/uart/ZW02a-25_FYP_repo/DMA_SAMPLE/dmaSystem_hw_platform/export/dmaSystem_hw_platform/sw/dmaSystem_hw_platform/standalone_domain/bsplib/lib -o "dmaControl.elf"  ./src/dma_control.o   -Wl,--start-group,-lxil,-lgcc,-lc,--end-group
+Finished building target: dmaControl.elf
+ 
+Invoking: ARM v7 Print Size
+arm-none-eabi-size dmaControl.elf  |tee "dmaControl.elf.size"
+   text	   data	    bss	    dec	    hex	filename
+  34257	   2248	  22632	  59137	   e701	dmaControl.elf
+Finished building: dmaControl.elf.size
+ 
+
+00:00:35 Build Finished (took 229ms)
+
