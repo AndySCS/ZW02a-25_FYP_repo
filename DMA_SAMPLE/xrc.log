@@ -1,0 +1,12 @@
+Mon Apr 13 15:52:13 2026: Server was asked to start on port: '40666'
+Mon Apr 13 15:52:13 2026: Server is using token UUID: '38249541-5f88-44da-886a-00aae82d7728'
+Mon Apr 13 15:52:13 2026: Attempting to start server on port '40666'
+Mon Apr 13 15:52:13 2026: XRC main fifo: created main fifo '/tmp/xrcmain38249541-5f88-44da-886a-00aae82d7728', fd read = 11
+Mon Apr 13 15:52:13 2026: Running Rule Check Server
+Mon Apr 13 15:52:13 2026: Version 1.6.1
+Mon Apr 13 15:52:13 2026: Rule Check Server: Accepted socket connection from client
+Mon Apr 13 15:52:13 2026: EXCHANGE_TOKEN received, server token: 38249541-5f88-44da-886a-00aae82d7728, passed token: 38249541-5f88-44da-886a-00aae82d7728
+Mon Apr 13 15:58:00 2026: STOP_SERVER received, server token: 38249541-5f88-44da-886a-00aae82d7728, passed token: 38249541-5f88-44da-886a-00aae82d7728
+Mon Apr 13 15:58:00 2026: Socket received request to stop server.
+Mon Apr 13 15:58:00 2026: SERVER: destructor for server bound to port 40666
+Mon Apr 13 15:58:00 2026: XRC main fifo: Good unlink of /tmp/xrcmain38249541-5f88-44da-886a-00aae82d7728

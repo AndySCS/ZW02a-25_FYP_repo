@@ -3,8 +3,8 @@
 # SW Build 3865809 on Sun May  7 15:04:56 MDT 2023
 # IP Build 3864474 on Sun May  7 20:36:21 MDT 2023
 # SharedData Build 3865790 on Sun May 07 13:33:03 MDT 2023
-# Start of session at: Mon Apr 13 01:02:25 2026
-# Process ID: 113867
+# Start of session at: Mon Apr 13 09:33:56 2026
+# Process ID: 79881
 # Current directory: /dfs/usrhome/twipaa/Documents/uart/ZW02a-25_FYP_repo/DMA_SAMPLE
 # Command line: vivado
 # Log file: /dfs/usrhome/twipaa/Documents/uart/ZW02a-25_FYP_repo/DMA_SAMPLE/vivado.log
@@ -28,28 +28,38 @@ WARNING: [Board 49-26] cannot add Board Part xilinx.com:zcu208ld:part0:2.0 avail
 WARNING: [Board 49-26] cannot add Board Part xilinx.com:zcu216ld:part0:2.0 available at /dfs/app/xilinx/Vivado/2023.1/data/xhub/boards/XilinxBoardStore/boards/Xilinx/zcu216ld/production/2.0/board.xml as part xczu59dr-ffvf1760-2-i specified in board_part file is either invalid or not available
 WARNING: [Board 49-26] cannot add Board Part xilinx.com:zcu670:part0:2.0 available at /dfs/app/xilinx/Vivado/2023.1/data/xhub/boards/XilinxBoardStore/boards/Xilinx/zcu670/2.0/board.xml as part xczu67dr-fsve1156-2-i specified in board_part file is either invalid or not available
 WARNING: [Board 49-26] cannot add Board Part xilinx.com:zcu670ld:part0:1.0 available at /dfs/app/xilinx/Vivado/2023.1/data/xhub/boards/XilinxBoardStore/boards/Xilinx/zcu670ld/1.0/board.xml as part xczu57dr-fsve1156-2-i specified in board_part file is either invalid or not available
-open_project /dfs/usrhome/twipaa/Documents/uart/ZW02a-25_FYP_repo/DMA_SAMPLE/IP/inverter/inverter.xpr
-INFO: [filemgmt 56-3] Default IP Output Path : Could not find the directory '/dfs/usrhome/twipaa/Documents/uart/ZW02a-25_FYP_repo/DMA_SAMPLE/IP/inverter/inverter.gen/sources_1'.
+open_project /dfs/usrhome/twipaa/Documents/uart/ZW02a-25_FYP_repo/DMA_SAMPLE/DMA_SYSTEM/DMA_SYSTEM.xpr
 Scanning sources...
 Finished scanning sources
 INFO: [IP_Flow 19-234] Refreshing IP repositories
 INFO: [IP_Flow 19-1700] Loaded user IP repository '/dfs/usrhome/twipaa/Documents/uart/ZW02a-25_FYP_repo/ip_repo'.
 INFO: [IP_Flow 19-2313] Loaded Vivado IP repository '/usr/eelocal/xilinx/Vivado/2023.1/data/ip'.
-open_project: Time (s): cpu = 00:00:08 ; elapsed = 00:00:07 . Memory (MB): peak = 9113.332 ; gain = 137.770 ; free physical = 191273 ; free virtual = 221353
+open_project: Time (s): cpu = 00:00:13 ; elapsed = 00:01:35 . Memory (MB): peak = 9515.227 ; gain = 556.121 ; free physical = 196150 ; free virtual = 224267
 update_compile_order -fileset sources_1
-ipx::open_ipxact_file /dfs/usrhome/twipaa/Documents/uart/ZW02a-25_FYP_repo/ip_repo/component.xml
-WARNING: [IP_Flow 19-3898] File Group 'xilinx_anylanguagesynthesis (Synthesis)': File '/dfs/usrhome/twipaa/Documents/uart/ZW02a-25_FYP_repo/ip_repo/src/inverter.v' is not found in the project sources. It will be removed from the packaged IP when the sources are merged. If still required, please add this file to the project and re-package.
-WARNING: [IP_Flow 19-3898] File Group 'xilinx_anylanguagebehavioralsimulation (Simulation)': File '/dfs/usrhome/twipaa/Documents/uart/ZW02a-25_FYP_repo/ip_repo/src/inverter.v' is not found in the project sources. It will be removed from the packaged IP when the sources are merged. If still required, please add this file to the project and re-package.
-set_property core_revision 3 [ipx::current_core]
-ipx::create_xgui_files [ipx::current_core]
-ipx::update_checksums [ipx::current_core]
-ipx::check_integrity [ipx::current_core]
-INFO: [IP_Flow 19-7067] Note that bus interface 'axi_clk' has a fixed FREQ_HZ of '100000000'. This value will be respected whenever this IP is instantiated in IP Integrator.
-INFO: [IP_Flow 19-2181] Payment Required is not set for this core.
-INFO: [IP_Flow 19-2187] The Product Guide file is missing.
-INFO: [Ipptcl 7-1486] check_integrity: Integrity check passed.
-ipx::save_core [ipx::current_core]
-update_ip_catalog -rebuild -repo_path /dfs/usrhome/twipaa/Documents/uart/ZW02a-25_FYP_repo/ip_repo
-INFO: [IP_Flow 19-725] Reloaded user IP repository '/dfs/usrhome/twipaa/Documents/uart/ZW02a-25_FYP_repo/ip_repo'
+open_bd_design {/dfs/usrhome/twipaa/Documents/uart/ZW02a-25_FYP_repo/DMA_SAMPLE/DMA_SYSTEM/DMA_SYSTEM.srcs/sources_1/bd/dmaSystem/dmaSystem.bd}
+Reading block design file </dfs/usrhome/twipaa/Documents/uart/ZW02a-25_FYP_repo/DMA_SAMPLE/DMA_SYSTEM/DMA_SYSTEM.srcs/sources_1/bd/dmaSystem/dmaSystem.bd>...
+Adding component instance block -- xilinx.com:ip:processing_system7:5.5 - processing_system7_0
+Adding component instance block -- user.org:user:inverter:1.0 - inverter_0
+Adding component instance block -- xilinx.com:ip:axi_dma:7.1 - axi_dma_0
+Adding component instance block -- xilinx.com:ip:axi_interconnect:2.1 - ps7_0_axi_periph
+Adding component instance block -- xilinx.com:ip:axi_protocol_converter:2.1 - auto_pc
+Adding component instance block -- xilinx.com:ip:proc_sys_reset:5.0 - rst_ps7_0_50M
+Adding component instance block -- xilinx.com:ip:axi_interconnect:2.1 - axi_mem_intercon
+Adding component instance block -- xilinx.com:ip:axi_crossbar:2.1 - xbar
+Adding component instance block -- xilinx.com:ip:axi_dwidth_converter:2.1 - auto_us
+Adding component instance block -- xilinx.com:ip:axi_dwidth_converter:2.1 - auto_us
+Adding component instance block -- xilinx.com:ip:axi_protocol_converter:2.1 - auto_pc
+Adding component instance block -- xilinx.com:ip:system_ila:1.1 - system_ila_0
+Successfully read diagram <dmaSystem> from block design file </dfs/usrhome/twipaa/Documents/uart/ZW02a-25_FYP_repo/DMA_SAMPLE/DMA_SYSTEM/DMA_SYSTEM.srcs/sources_1/bd/dmaSystem/dmaSystem.bd>
+open_bd_design: Time (s): cpu = 00:00:04 ; elapsed = 00:00:17 . Memory (MB): peak = 9823.324 ; gain = 0.000 ; free physical = 195933 ; free virtual = 224074
+write_hw_platform -fixed -include_bit -force -file /dfs/usrhome/twipaa/Documents/uart/ZW02a-25_FYP_repo/DMA_SAMPLE/DMA_SYSTEM/dmaSystem_wrapper.xsa
+INFO: [Project 1-1918] Creating Hardware Platform: /dfs/usrhome/twipaa/Documents/uart/ZW02a-25_FYP_repo/DMA_SAMPLE/DMA_SYSTEM/dmaSystem_wrapper.xsa ...
+INFO: [Project 1-1943] The Hardware Platform can be used for Hardware
+INFO: [Project 1-1941] Successfully created Hardware Platform: /dfs/usrhome/twipaa/Documents/uart/ZW02a-25_FYP_repo/DMA_SAMPLE/DMA_SYSTEM/dmaSystem_wrapper.xsa
+INFO: [Hsi 55-2053] elapsed time for repository (/usr/eelocal/xilinx/Vivado/2023.1/data/embeddedsw) loading 14 seconds
+write_hw_platform: Time (s): cpu = 00:00:07 ; elapsed = 00:00:27 . Memory (MB): peak = 9823.324 ; gain = 0.000 ; free physical = 195795 ; free virtual = 223955
+INFO: [Vivado 12-8231] Launching Vitis
+INFO: [Vivado 12-417] Running vitis
+INFO: [Vivado 12-8232] Vitis launch initiated. Please check console for any further messages.
 exit
-INFO: [Common 17-206] Exiting Vivado at Mon Apr 13 01:55:17 2026...
+INFO: [Common 17-206] Exiting Vivado at Mon Apr 13 10:24:37 2026...

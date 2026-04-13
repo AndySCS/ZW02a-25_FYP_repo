@@ -1,0 +1,9 @@
+#include "xaxidma.h"
+#include "xparameters.h"
+
+int main(){
+	XAxiDma_Config *myDmaConfig;
+	XAxiDma myDma;
+	myDmaConfig =  XAxiDma_LookupConfigBaseAddr(XPAR_AXI_DMA_0_BASEADDR);
+	XAxiDma_CfgInitialize(&myDma, myDmaConfig);
+}
