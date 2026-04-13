@@ -1,8 +1,8 @@
 Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
 -----------------------------------------------------------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2025.2 (win64) Build 6299465 Fri Nov 14 19:35:11 GMT 2025
-| Date         : Sun Apr 12 23:27:07 2026
-| Host         : CCVDIAISB0054 running 64-bit major release  (build 9200)
+| Date         : Mon Apr 13 13:40:21 2026
+| Host         : CCVDIAISB0051 running 64-bit major release  (build 9200)
 | Command      : report_methodology -file tpu_methodology_drc_routed.rpt -pb tpu_methodology_drc_routed.pb -rpx tpu_methodology_drc_routed.rpx
 | Design       : tpu
 | Device       : xc7z020clg484-1
@@ -15437,7 +15437,7 @@ Related violations: <none>
 
 TIMING-23#2 Warning
 Combinational loop found  
-A timing loop has been detected on a combinational path. A timing arc has been disabled between u_mxu/u_pe_row9_col4/ff_c1_vld/q[0]_i_8__7/I4 and u_mxu/u_pe_row9_col4/ff_c1_vld/q[0]_i_8__7/O to disable the timing loop
+A timing loop has been detected on a combinational path. A timing arc has been disabled between u_mxu/u_pe_row3_col7/ff_c1_vld/q[0]_i_2__38/I2 and u_mxu/u_pe_row3_col7/ff_c1_vld/q[0]_i_2__38/O to disable the timing loop
 Related violations: <none>
 
 ULMTCS-1#1 Warning

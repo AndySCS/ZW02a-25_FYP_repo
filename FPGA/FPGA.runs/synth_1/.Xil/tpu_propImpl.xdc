@@ -1,6 +1,6 @@
 set_property SRC_FILE_INFO {cfile:C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.srcs/constrs_1/new/tpu.xdc rfile:../../../FPGA.srcs/constrs_1/new/tpu.xdc id:1} [current_design]
 set_property src_info {type:XDC file:1 line:31 export:INPUT save:INPUT read:READ} [current_design]
-set_property -dict { PACKAGE_PIN Y9   IOSTANDARD LVCMOS33 } [get_ports clk]
+set_property -dict { PACKAGE_PIN Y9 IOSTANDARD LVCMOS33 } [get_ports clk]
 set_property src_info {type:XDC file:1 line:38 export:INPUT save:INPUT read:READ} [current_design]
 set_property PACKAGE_PIN T18 [get_ports {rst_n_in}]
 set_property src_info {type:XDC file:1 line:40 export:INPUT save:INPUT read:READ} [current_design]

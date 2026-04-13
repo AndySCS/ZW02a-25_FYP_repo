@@ -3,13 +3,13 @@
 # SW Build 6299465 on Fri Nov 14 19:35:11 GMT 2025
 # IP Build 6300035 on Fri Nov 14 10:48:45 MST 2025
 # SharedData Build 6298862 on Thu Nov 13 04:50:51 MST 2025
-# Start of session at: Sun Apr 12 22:48:47 2026
-# Process ID         : 6448
+# Start of session at: Mon Apr 13 12:59:15 2026
+# Process ID         : 14860
 # Current directory  : C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.runs/synth_1
 # Command line       : vivado.exe -log tpu.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source tpu.tcl
 # Log file           : C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.runs/synth_1/tpu.vds
 # Journal file       : C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.runs/synth_1\vivado.jou
-# Running On         : CCVDIAISB0054
+# Running On         : CCVDIAISB0051
 # Platform           : Windows Server 2016 or Windows 10
 # Operating System   : 22631
 # Processor Detail   : Intel(R) Xeon(R) Gold 6348 CPU @ 2.60GHz
@@ -19,10 +19,10 @@
 # Host memory        : 17174 MB
 # Swap memory        : 17179 MB
 # Total Virtual      : 34354 MB
-# Available Virtual  : 20491 MB
+# Available Virtual  : 20234 MB
 #-----------------------------------------------------------
 source tpu.tcl -notrace
-create_project: Time (s): cpu = 00:00:11 ; elapsed = 00:00:10 . Memory (MB): peak = 590.152 ; gain = 217.418
+create_project: Time (s): cpu = 00:00:11 ; elapsed = 00:00:09 . Memory (MB): peak = 589.992 ; gain = 220.336
 Command: read_checkpoint -auto_incremental -incremental C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.srcs/utils_1/imports/synth_1/tpu.dcp
 INFO: [Vivado 12-5825] Read reference checkpoint from C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.srcs/utils_1/imports/synth_1/tpu.dcp for incremental synthesis
 INFO: [Vivado 12-7989] Please ensure there are no constraint changes
@@ -33,9 +33,9 @@ INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7z020
 INFO: [Device 21-403] Loading part xc7z020clg484-1
 INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 2 processes.
 INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
-INFO: [Synth 8-7075] Helper process launched with PID 14300
+INFO: [Synth 8-7075] Helper process launched with PID 12560
 ---------------------------------------------------------------------------------
-Starting RTL Elaboration : Time (s): cpu = 00:00:07 ; elapsed = 00:00:07 . Memory (MB): peak = 1380.504 ; gain = 541.223
+Starting RTL Elaboration : Time (s): cpu = 00:00:06 ; elapsed = 00:00:08 . Memory (MB): peak = 1375.562 ; gain = 538.914
 ---------------------------------------------------------------------------------
 WARNING: [Synth 8-10714] extra semicolon is not allowed here in this dialect; use SystemVerilog mode instead [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/axi_read_intf.v:257]
 WARNING: [Synth 8-10714] extra semicolon is not allowed here in this dialect; use SystemVerilog mode instead [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/axi_write_intf.v:181]
@@ -71,8 +71,8 @@ INFO: [Synth 8-6155] done synthesizing module 'DFFE__parameterized1' (0#1) [C:/U
 INFO: [Synth 8-6157] synthesizing module 'mem_wrapper' [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/mem_wrapper/mem_wrapper.v:1]
 	Parameter ADDR_WIDTH bound to: 8 - type: integer 
 	Parameter DATA_WIDTH bound to: 128 - type: integer 
-INFO: [Synth 8-6157] synthesizing module 'fpga_mem_wrapper' [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.runs/synth_1/.Xil/Vivado-6448-CCVDIAISB0054/realtime/fpga_mem_wrapper_stub.v:6]
-INFO: [Synth 8-6155] done synthesizing module 'fpga_mem_wrapper' (0#1) [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.runs/synth_1/.Xil/Vivado-6448-CCVDIAISB0054/realtime/fpga_mem_wrapper_stub.v:6]
+INFO: [Synth 8-6157] synthesizing module 'fpga_mem_wrapper' [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.runs/synth_1/.Xil/Vivado-14860-CCVDIAISB0051/realtime/fpga_mem_wrapper_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'fpga_mem_wrapper' (0#1) [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.runs/synth_1/.Xil/Vivado-14860-CCVDIAISB0051/realtime/fpga_mem_wrapper_stub.v:6]
 INFO: [Synth 8-6155] done synthesizing module 'mem_wrapper' (0#1) [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/mem_wrapper/mem_wrapper.v:1]
 INFO: [Synth 8-6155] done synthesizing module 'ifu' (0#1) [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/ifu.v:1]
 INFO: [Synth 8-6157] synthesizing module 'idu' [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/idu.v:1]
@@ -225,8 +225,8 @@ INFO: [Synth 8-6157] synthesizing module 'mm_ctrl_buffer__parameterized0' [C:/Us
 INFO: [Synth 8-6155] done synthesizing module 'mm_ctrl_buffer__parameterized0' (0#1) [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/mm_ctrl_buffer.v:1]
 INFO: [Synth 8-6157] synthesizing module 'ram_mem_wrapper' [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/mem_wrapper/ram_mem_wrapper.v:1]
 	Parameter DATA_WIDTH bound to: 128 - type: integer 
-INFO: [Synth 8-6157] synthesizing module 'fpga_ram_mem_wrapper' [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.runs/synth_1/.Xil/Vivado-6448-CCVDIAISB0054/realtime/fpga_ram_mem_wrapper_stub.v:6]
-INFO: [Synth 8-6155] done synthesizing module 'fpga_ram_mem_wrapper' (0#1) [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.runs/synth_1/.Xil/Vivado-6448-CCVDIAISB0054/realtime/fpga_ram_mem_wrapper_stub.v:6]
+INFO: [Synth 8-6157] synthesizing module 'fpga_ram_mem_wrapper' [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.runs/synth_1/.Xil/Vivado-14860-CCVDIAISB0051/realtime/fpga_ram_mem_wrapper_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'fpga_ram_mem_wrapper' (0#1) [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.runs/synth_1/.Xil/Vivado-14860-CCVDIAISB0051/realtime/fpga_ram_mem_wrapper_stub.v:6]
 INFO: [Synth 8-6155] done synthesizing module 'ram_mem_wrapper' (0#1) [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/mem_wrapper/ram_mem_wrapper.v:1]
 INFO: [Synth 8-6157] synthesizing module 'DFFR__parameterized6' [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lib/DFFR.v:1]
 	Parameter WIDTH bound to: 13 - type: integer 
@@ -282,8 +282,8 @@ INFO: [Synth 8-6157] synthesizing module 'mux16' [C:/Users/twipaa/Documents/GitH
 	Parameter WIDTH bound to: 13 - type: integer 
 INFO: [Synth 8-6155] done synthesizing module 'mux16' (0#1) [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lib/mux16.v:1]
 INFO: [Synth 8-6155] done synthesizing module 'AXI_WRITE_INFT' (0#1) [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/axi_write_intf.v:1]
-INFO: [Synth 8-6157] synthesizing module 'extern_bram' [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.runs/synth_1/.Xil/Vivado-6448-CCVDIAISB0054/realtime/extern_bram_stub.v:6]
-INFO: [Synth 8-6155] done synthesizing module 'extern_bram' (0#1) [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.runs/synth_1/.Xil/Vivado-6448-CCVDIAISB0054/realtime/extern_bram_stub.v:6]
+INFO: [Synth 8-6157] synthesizing module 'extern_bram' [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.runs/synth_1/.Xil/Vivado-14860-CCVDIAISB0051/realtime/extern_bram_stub.v:6]
+INFO: [Synth 8-6155] done synthesizing module 'extern_bram' (0#1) [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.runs/synth_1/.Xil/Vivado-14860-CCVDIAISB0051/realtime/extern_bram_stub.v:6]
 INFO: [Synth 8-6157] synthesizing module 'DFFR__parameterized9' [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lib/DFFR.v:1]
 	Parameter WIDTH bound to: 3 - type: integer 
 INFO: [Synth 8-6155] done synthesizing module 'DFFR__parameterized9' (0#1) [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lib/DFFR.v:1]
@@ -403,18 +403,18 @@ WARNING: [Synth 8-7129] Port lsu_axi_arid[3] in module lsu is either unconnected
 WARNING: [Synth 8-7129] Port lsu_axi_arid[2] in module lsu is either unconnected or has no load
 INFO: [Common 17-14] Message 'Synth 8-7129' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
 ---------------------------------------------------------------------------------
-Finished RTL Elaboration : Time (s): cpu = 00:00:11 ; elapsed = 00:00:12 . Memory (MB): peak = 1580.703 ; gain = 741.422
+Finished RTL Elaboration : Time (s): cpu = 00:00:10 ; elapsed = 00:00:13 . Memory (MB): peak = 1577.445 ; gain = 740.797
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Handling Custom Attributes
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Handling Custom Attributes : Time (s): cpu = 00:00:11 ; elapsed = 00:00:12 . Memory (MB): peak = 1580.703 ; gain = 741.422
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:10 ; elapsed = 00:00:13 . Memory (MB): peak = 1577.445 ; gain = 740.797
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:11 ; elapsed = 00:00:12 . Memory (MB): peak = 1580.703 ; gain = 741.422
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:10 ; elapsed = 00:00:13 . Memory (MB): peak = 1577.445 ; gain = 740.797
 ---------------------------------------------------------------------------------
-Netlist sorting complete. Time (s): cpu = 00:00:02 ; elapsed = 00:00:01 . Memory (MB): peak = 1580.703 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:01 ; elapsed = 00:00:01 . Memory (MB): peak = 1577.445 ; gain = 0.000
 INFO: [Project 1-570] Preparing netlist for logic optimization
 
 Processing XDC Constraints
@@ -441,11 +441,11 @@ INFO: [Project 1-236] Implementation specific constraints were found while readi
 Resolution: To avoid this warning, move constraints listed in [.Xil/tpu_propImpl.xdc] to another XDC file and exclude this new file from synthesis with the used_in_synthesis property (File Properties dialog in GUI) and re-run elaboration/synthesis.
 Completed Processing XDC Constraints
 
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.039 . Memory (MB): peak = 1686.398 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.039 . Memory (MB): peak = 1693.680 ; gain = 0.000
 INFO: [Project 1-111] Unisim Transformation Summary:
 No Unisim elements were transformed.
 
-Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.567 . Memory (MB): peak = 1686.398 ; gain = 0.000
+Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.569 . Memory (MB): peak = 1693.680 ; gain = 0.000
 WARNING: [Timing 38-316] Clock period '20.000' specified during out-of-context synthesis of instance 'external_mem' at clock pin 's_aclk' is different from the actual clock period '10.000', this can lead to different synthesis results.
 WARNING: [Timing 38-316] Clock period '20.000' specified during out-of-context synthesis of instance 'u_ifu/ifu_mem_wrap_256x128/ifu_mem_wrap_256x128' at clock pin 'clka' is different from the actual clock period '10.000', this can lead to different synthesis results.
 WARNING: [Timing 38-316] Clock period '20.000' specified during out-of-context synthesis of instance 'u_lsu/iram/iram' at clock pin 'clka' is different from the actual clock period '10.000', this can lead to different synthesis results.
@@ -453,121 +453,93 @@ WARNING: [Timing 38-316] Clock period '20.000' specified during out-of-context s
 WARNING: [Timing 38-316] Clock period '20.000' specified during out-of-context synthesis of instance 'u_lsu/oram_lo/iram' at clock pin 'clka' is different from the actual clock period '10.000', this can lead to different synthesis results.
 WARNING: [Timing 38-316] Clock period '20.000' specified during out-of-context synthesis of instance 'u_lsu/wram/iram' at clock pin 'clka' is different from the actual clock period '10.000', this can lead to different synthesis results.
 ---------------------------------------------------------------------------------
-Finished Constraint Validation : Time (s): cpu = 00:00:35 ; elapsed = 00:00:37 . Memory (MB): peak = 1702.281 ; gain = 863.000
+Finished Constraint Validation : Time (s): cpu = 00:00:34 ; elapsed = 00:00:37 . Memory (MB): peak = 1699.934 ; gain = 863.285
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Loading Part and Timing Information
 ---------------------------------------------------------------------------------
 Loading part: xc7z020clg484-1
 ---------------------------------------------------------------------------------
-Finished Loading Part and Timing Information : Time (s): cpu = 00:00:35 ; elapsed = 00:00:37 . Memory (MB): peak = 1702.281 ; gain = 863.000
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:34 ; elapsed = 00:00:37 . Memory (MB): peak = 1699.934 ; gain = 863.285
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Applying 'set_property' XDC Constraints
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:35 ; elapsed = 00:00:37 . Memory (MB): peak = 1702.281 ; gain = 863.000
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:35 ; elapsed = 00:00:38 . Memory (MB): peak = 1699.934 ; gain = 863.285
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Preparing Guide Design
 ---------------------------------------------------------------------------------
-WARNING: [Synth 8-6702] IncrSynth : Design change found in an area of the design that prevents previous synthesis information being used, Reverting to default synthesis
 ---------------------------------------------------------------------------------
-Finished Doing Graph Differ : Time (s): cpu = 00:00:37 ; elapsed = 00:00:38 . Memory (MB): peak = 1702.281 ; gain = 863.000
+Finished Doing Graph Differ : Time (s): cpu = 00:00:36 ; elapsed = 00:00:39 . Memory (MB): peak = 1699.934 ; gain = 863.285
+---------------------------------------------------------------------------------
+tpu__GC0mxu__GB3mxu__GB2mxu__GB1mxu__GB0lsu__GB1lsu__GB0---------------------------------------------------------------------------------
+Finished Preparing Guide Design : Time (s): cpu = 00:00:38 ; elapsed = 00:00:41 . Memory (MB): peak = 1699.934 ; gain = 863.285
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Preparing Guide Design : Time (s): cpu = 00:00:37 ; elapsed = 00:00:38 . Memory (MB): peak = 1702.281 ; gain = 863.000
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:38 ; elapsed = 00:00:41 . Memory (MB): peak = 1699.934 ; gain = 863.285
 ---------------------------------------------------------------------------------
-WARNING: [Synth 8-327] inferring latch for variable 'out_reg' [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lib/resp_assign.v:13]
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:39 ; elapsed = 00:00:41 . Memory (MB): peak = 1702.281 ; gain = 863.000
+Start Mimic Skeleton from Reference
 ---------------------------------------------------------------------------------
-INFO: [Synth 8-223] decloning instance 'u_lsu/ff_lsu_mm_buff_iram_ctrl_vld' (DFFRE) to 'u_lsu/ff_lsu_mm_buff_wram_ctrl_vld'
-INFO: [Synth 8-223] decloning instance 'u_lsu/ff_lsu_mm_buff_iram_ctrl_row_len' (DFFRE__parameterized1) to 'u_lsu/ff_lsu_mm_buff_wram_ctrl_col_len'
-INFO: [Synth 8-223] decloning instance 'u_AXI_WRITE_INTF/ff_oram_addr_0' (DFFE__parameterized7) to 'u_AXI_WRITE_INTF/ff_oram_addr_1'
-INFO: [Synth 8-223] decloning instance 'u_AXI_WRITE_INTF/ff_oram_addr_0' (DFFE__parameterized7) to 'u_AXI_WRITE_INTF/ff_oram_addr_2'
-INFO: [Synth 8-223] decloning instance 'u_AXI_WRITE_INTF/ff_oram_addr_0' (DFFE__parameterized7) to 'u_AXI_WRITE_INTF/ff_oram_addr_3'
-INFO: [Synth 8-223] decloning instance 'u_AXI_WRITE_INTF/ff_oram_addr_0' (DFFE__parameterized7) to 'u_AXI_WRITE_INTF/ff_oram_addr_4'
-INFO: [Synth 8-223] decloning instance 'u_AXI_WRITE_INTF/ff_oram_addr_0' (DFFE__parameterized7) to 'u_AXI_WRITE_INTF/ff_oram_addr_5'
-INFO: [Synth 8-223] decloning instance 'u_AXI_WRITE_INTF/ff_oram_addr_0' (DFFE__parameterized7) to 'u_AXI_WRITE_INTF/ff_oram_addr_6'
-INFO: [Synth 8-223] decloning instance 'u_AXI_WRITE_INTF/ff_oram_addr_0' (DFFE__parameterized7) to 'u_AXI_WRITE_INTF/ff_oram_addr_7'
-INFO: [Synth 8-223] decloning instance 'u_AXI_WRITE_INTF/ff_oram_addr_0' (DFFE__parameterized7) to 'u_AXI_WRITE_INTF/ff_oram_addr_8'
-INFO: [Synth 8-223] decloning instance 'u_AXI_WRITE_INTF/ff_oram_addr_0' (DFFE__parameterized7) to 'u_AXI_WRITE_INTF/ff_oram_addr_9'
-INFO: [Synth 8-223] decloning instance 'u_AXI_WRITE_INTF/ff_oram_addr_0' (DFFE__parameterized7) to 'u_AXI_WRITE_INTF/ff_oram_addr_10'
-INFO: [Synth 8-223] decloning instance 'u_AXI_WRITE_INTF/ff_oram_addr_0' (DFFE__parameterized7) to 'u_AXI_WRITE_INTF/ff_oram_addr_11'
-INFO: [Synth 8-223] decloning instance 'u_AXI_WRITE_INTF/ff_oram_addr_0' (DFFE__parameterized7) to 'u_AXI_WRITE_INTF/ff_oram_addr_12'
-INFO: [Synth 8-223] decloning instance 'u_AXI_WRITE_INTF/ff_oram_addr_0' (DFFE__parameterized7) to 'u_AXI_WRITE_INTF/ff_oram_addr_13'
-INFO: [Synth 8-223] decloning instance 'u_AXI_WRITE_INTF/ff_oram_addr_0' (DFFE__parameterized7) to 'u_AXI_WRITE_INTF/ff_oram_addr_14'
-INFO: [Synth 8-223] decloning instance 'u_AXI_WRITE_INTF/ff_oram_addr_0' (DFFE__parameterized7) to 'u_AXI_WRITE_INTF/ff_oram_addr_15'
+---------------------------------------------------------------------------------
+Finished Mimic Skeleton from Reference : Time (s): cpu = 00:00:39 ; elapsed = 00:00:42 . Memory (MB): peak = 1699.934 ; gain = 863.285
+---------------------------------------------------------------------------------
 
 
 Incremental Synthesis Report Summary:
 
-1. Incremental synthesis run: no
+1. Incremental synthesis run: yes
 
-   Reason for not running incremental synthesis : Design change found in an area of the design that prevents previous synthesis information being used
+   Stitch points used : changed
 
 
-INFO: [Synth 8-7130] Flow is switching to default flow due to incremental criteria not met. If you would like to alter this behaviour and have the flow terminate instead, please set the following parameter config_implementation {autoIncr.Synth.RejectBehavior Terminate}
+2. Change Summary
+
+Report Incremental Modules: 
++-+----------------+------------+----------+----------+
+| |Changed Modules |Replication |Instances |Changed % |
++-+----------------+------------+----------+----------+
++-+----------------+------------+----------+----------+
+
+
+   Full Design Size (number of cells) : 122068
+   Resynthesis Design Size (number of cells) : 0
+   Resynth % : 0.0000,  Reuse % : 100.0000
+
+3. Reference Checkpoint Information
+
++--------------------------------------------------------------------------------------------------------------------+
+| DCP Location:  | C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.srcs/utils_1/imports/synth_1/tpu.dcp |
++--------------------------------------------------------------------------------------------------------------------+
+
+
++--------------------------------+------------------------------+
+|         DCP Information        |             Value            |
++--------------------------------+------------------------------+
+| Vivado Version                 |                    v2025.2 |
+| DCP State                      |                              |
++--------------------------------+------------------------------+
+
+
+
+Report RTL Partitions: 
++------+-----------------+------------+----------+
+|      |RTL Partition    |Replication |Instances |
++------+-----------------+------------+----------+
+|1     |lsu__GB0_#REUSE# |           1|         0|
+|2     |lsu__GB1_#REUSE# |           1|         0|
+|3     |mxu__GB0_#REUSE# |           1|         0|
+|4     |mxu__GB1_#REUSE# |           1|         0|
+|5     |mxu__GB2_#REUSE# |           1|         0|
+|6     |mxu__GB3_#REUSE# |           1|         0|
+|7     |tpu__GC0_#REUSE# |           1|         0|
++------+-----------------+------------+----------+
 ---------------------------------------------------------------------------------
 Start RTL Component Statistics 
 ---------------------------------------------------------------------------------
 Detailed RTL Component Info : 
-+---Adders : 
-	   3 Input   32 Bit       Adders := 1     
-	   2 Input   32 Bit       Adders := 4     
-	   2 Input   21 Bit       Adders := 1     
-	   2 Input   16 Bit       Adders := 256   
-	   2 Input   15 Bit       Adders := 1     
-	   2 Input   13 Bit       Adders := 3     
-	   2 Input   12 Bit       Adders := 8     
-	   2 Input    9 Bit       Adders := 1     
-	   2 Input    8 Bit       Adders := 8     
-	   2 Input    5 Bit       Adders := 1     
-	   2 Input    4 Bit       Adders := 28    
-	   2 Input    3 Bit       Adders := 2     
-	   2 Input    2 Bit       Adders := 1     
-+---XORs : 
-	   2 Input     32 Bit         XORs := 2     
-	   2 Input      1 Bit         XORs := 1     
-+---Registers : 
-	              256 Bit    Registers := 17    
-	              128 Bit    Registers := 51    
-	               64 Bit    Registers := 14    
-	               32 Bit    Registers := 78    
-	               21 Bit    Registers := 1     
-	               16 Bit    Registers := 524   
-	               15 Bit    Registers := 4     
-	               13 Bit    Registers := 9     
-	               12 Bit    Registers := 30    
-	               10 Bit    Registers := 1     
-	                9 Bit    Registers := 2     
-	                8 Bit    Registers := 537   
-	                7 Bit    Registers := 1     
-	                5 Bit    Registers := 3     
-	                4 Bit    Registers := 54    
-	                3 Bit    Registers := 13    
-	                2 Bit    Registers := 10    
-	                1 Bit    Registers := 906   
-+---Muxes : 
-	   8 Input  256 Bit        Muxes := 1     
-	   2 Input  256 Bit        Muxes := 2     
-	   2 Input  128 Bit        Muxes := 19    
-	   2 Input   64 Bit        Muxes := 6     
-	   2 Input   32 Bit        Muxes := 17    
-	   2 Input   16 Bit        Muxes := 258   
-	   5 Input   16 Bit        Muxes := 256   
-	   2 Input   13 Bit        Muxes := 3     
-	   2 Input   12 Bit        Muxes := 6     
-	   2 Input    9 Bit        Muxes := 1     
-	   2 Input    8 Bit        Muxes := 21    
-	   3 Input    8 Bit        Muxes := 1     
-	   2 Input    6 Bit        Muxes := 1     
-	   2 Input    4 Bit        Muxes := 38    
-	   2 Input    3 Bit        Muxes := 8     
-	   2 Input    2 Bit        Muxes := 5     
-	   3 Input    2 Bit        Muxes := 1     
-	   2 Input    1 Bit        Muxes := 23    
 ---------------------------------------------------------------------------------
 Finished RTL Component Statistics 
 ---------------------------------------------------------------------------------
@@ -583,400 +555,40 @@ Finished Part Resource Summary
 ---------------------------------------------------------------------------------
 Start Cross Boundary and Area Optimization
 ---------------------------------------------------------------------------------
-INFO: [Synth 8-5546] ROM "out" won't be mapped to RAM because it is too sparse
-INFO: [Synth 8-5544] ROM "out" won't be mapped to Block RAM because address size (3) smaller than threshold (5)
-WARNING: [Synth 8-3936] Found unconnected internal register 'ff_lsu_mm_buff_ctrl_start_addr/q_reg' and it is trimmed from '12' to '4' bits. [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:17]
-WARNING: [Synth 8-3936] Found unconnected internal register 'ff_lsu_mm_buff_ctrl_start_addr/q_reg' and it is trimmed from '12' to '4' bits. [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:17]
-WARNING: [Synth 8-3936] Found unconnected internal register 'ff_lsu_st_type2_oram_addr_raw_d1/q_reg' and it is trimmed from '13' to '5' bits. [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:17]
-WARNING: [Synth 8-3936] Found unconnected internal register 'ff_alu_lsu_ld_st_addr/q_reg' and it is trimmed from '13' to '4' bits. [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:17]
-INFO: [Synth 8-3886] merging instance 'ff_lsu_st_type1_oram_din_start_x/q_reg[2]' (FDC) to 'ff_lsu_st_type1_oram_din_start_x/q_reg[1]'
-INFO: [Synth 8-3886] merging instance 'ff_lsu_riscv_dout_ld_data_shift/q_reg[6]' (FDC) to 'ff_lsu_st_type1_oram_din_start_x/q_reg[1]'
-INFO: [Synth 8-3886] merging instance 'ff_lsu_riscv_dout_ld_data_shift/q_reg[5]' (FDC) to 'ff_lsu_st_type1_oram_din_start_x/q_reg[1]'
-INFO: [Synth 8-3886] merging instance 'ff_lsu_riscv_dout_ld_data_shift/q_reg[4]' (FDC) to 'ff_lsu_st_type1_oram_din_start_x/q_reg[1]'
-INFO: [Synth 8-3886] merging instance 'ff_lsu_st_type1_oram_din_start_x/q_reg[1]' (FDC) to 'ff_lsu_st_type1_oram_din_start_x/q_reg[0]'
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (\ff_lsu_st_type1_oram_din_start_x/q_reg[0] )
-INFO: [Synth 8-3886] merging instance 'ff_lsu_axi_wstrb/q_reg[2]' (FDE) to 'ff_lsu_axi_wstrb/q_reg[3]'
-INFO: [Synth 8-3886] merging instance 'ff_lsu_axi_wstrb/q_reg[4]' (FDE) to 'ff_lsu_axi_wstrb/q_reg[5]'
-INFO: [Synth 8-3886] merging instance 'ff_lsu_axi_wstrb/q_reg[5]' (FDE) to 'ff_lsu_axi_wstrb/q_reg[6]'
-INFO: [Synth 8-3886] merging instance 'ff_lsu_axi_wstrb/q_reg[6]' (FDE) to 'ff_lsu_axi_wstrb/q_reg[7]'
-WARNING: [Synth 8-3332] Sequential element (out_reg[255]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[254]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[253]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[252]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[251]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[250]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[249]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[248]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[247]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[246]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[245]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[244]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[243]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[242]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[241]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[240]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[239]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[238]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[237]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[236]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[235]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[234]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[233]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[232]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[231]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[230]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[229]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[228]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[227]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[226]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[225]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[224]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[223]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[222]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[221]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[220]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[219]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[218]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[217]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[216]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[215]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[214]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[213]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[212]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[211]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[210]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[209]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[208]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[207]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[206]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[205]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[204]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[203]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[202]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[201]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[200]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[199]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[198]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[197]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[196]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[195]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[194]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[193]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[192]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[191]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[190]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[189]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[188]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[187]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[186]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[185]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[184]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[183]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[182]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[181]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[180]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[179]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[178]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[177]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[176]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[175]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[174]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[173]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[172]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[171]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[170]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[169]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[168]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[167]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[166]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[165]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[164]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[163]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[162]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[161]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[160]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[159]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[158]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[157]) is unused and will be removed from module resp_assign.
-WARNING: [Synth 8-3332] Sequential element (out_reg[156]) is unused and will be removed from module resp_assign.
-INFO: [Common 17-14] Message 'Synth 8-3332' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
-INFO: [Common 17-14] Message 'Synth 8-3332' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
-CRITICAL WARNING: [Synth 8-6859] multi-driven net on pin lsu_axi_arburst[1] with 1st driver pin 'ff_lsu_axi_aburst/q_reg[1]/Q' [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:17]
-CRITICAL WARNING: [Synth 8-6859] multi-driven net on pin lsu_axi_arburst[1] with 2nd driver pin 'GND' [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:17]
-CRITICAL WARNING: [Synth 8-6858] multi-driven net lsu_axi_arburst[1] is connected to at least one constant driver which has been preserved, other driver is ignored [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:17]
-CRITICAL WARNING: [Synth 8-6859] multi-driven net on pin lsu_axi_arburst[0] with 1st driver pin 'ff_lsu_axi_aburst/q_reg[0]/Q' [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:17]
-CRITICAL WARNING: [Synth 8-6859] multi-driven net on pin lsu_axi_arburst[0] with 2nd driver pin 'VCC' [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:17]
-CRITICAL WARNING: [Synth 8-6858] multi-driven net lsu_axi_arburst[0] is connected to at least one constant driver which has been preserved, other driver is ignored [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:17]
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[3][8] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[3][7] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[3][6] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[3][5] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[3][4] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[3][3] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[3][2] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[3][1] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[3][0] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[4][8] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[4][7] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[4][6] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[4][5] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[4][4] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[4][3] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[4][2] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[4][1] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[4][0] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[5][8] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[5][7] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[5][6] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[5][5] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[5][4] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[5][3] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[5][2] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[5][1] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[5][0] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[15][7] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[15][6] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[15][5] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[15][4] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[15][3] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[15][2] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[15][1] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[15][0] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[6][8] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[6][7] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[6][6] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[6][5] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[6][4] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[6][3] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[6][2] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[6][1] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[6][0] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[7][8] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[7][7] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[7][6] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[7][5] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[7][4] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[7][3] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[7][2] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[7][1] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[7][0] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[8][8] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[8][7] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[8][6] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[8][5] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[8][4] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[8][3] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[8][2] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[8][1] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[8][0] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[9][7] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[9][6] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[9][5] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[9][4] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[9][3] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[9][2] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[9][1] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[9][0] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[14][7] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[14][6] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[14][5] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[14][4] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[14][3] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[14][2] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[14][1] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[14][0] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[10][7] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[10][6] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[10][5] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[10][4] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[10][3] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[10][2] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[10][1] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[10][0] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[11][7] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[11][6] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[11][5] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[11][4] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[11][3] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[11][2] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[11][1] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[11][0] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[12][7] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[12][6] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[12][5] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[12][4] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[12][3] driven by constant 0
-WARNING: [Synth 8-3917] design mxu__GB0 has port pe_doing[12][2] driven by constant 0
-INFO: [Common 17-14] Message 'Synth 8-3917' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
-INFO: [Common 17-14] Message 'Synth 8-3917' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
-INFO: [Synth 8-5544] ROM "resp_RID_dec/out" won't be mapped to Block RAM because address size (4) smaller than threshold (5)
-INFO: [Synth 8-5544] ROM "resp_BID_dec/out" won't be mapped to Block RAM because address size (4) smaller than threshold (5)
-INFO: [Synth 8-5544] ROM "out_BID_dec/out" won't be mapped to Block RAM because address size (4) smaller than threshold (5)
-WARNING: [Synth 8-3936] Found unconnected internal register 'genblk1[15].ff_RSRAM/q_reg' and it is trimmed from '32' to '3' bits. [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:17]
-WARNING: [Synth 8-3936] Found unconnected internal register 'genblk1[14].ff_RSRAM/q_reg' and it is trimmed from '32' to '3' bits. [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:17]
-WARNING: [Synth 8-3936] Found unconnected internal register 'genblk1[13].ff_RSRAM/q_reg' and it is trimmed from '32' to '3' bits. [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:17]
-WARNING: [Synth 8-3936] Found unconnected internal register 'genblk1[12].ff_RSRAM/q_reg' and it is trimmed from '32' to '3' bits. [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:17]
-WARNING: [Synth 8-3936] Found unconnected internal register 'genblk1[11].ff_RSRAM/q_reg' and it is trimmed from '32' to '3' bits. [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:17]
-WARNING: [Synth 8-3936] Found unconnected internal register 'genblk1[10].ff_RSRAM/q_reg' and it is trimmed from '32' to '3' bits. [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:17]
-WARNING: [Synth 8-3936] Found unconnected internal register 'genblk1[9].ff_RSRAM/q_reg' and it is trimmed from '32' to '3' bits. [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:17]
-WARNING: [Synth 8-3936] Found unconnected internal register 'genblk1[8].ff_RSRAM/q_reg' and it is trimmed from '32' to '3' bits. [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:17]
-WARNING: [Synth 8-3936] Found unconnected internal register 'genblk1[7].ff_RSRAM/q_reg' and it is trimmed from '32' to '3' bits. [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:17]
-WARNING: [Synth 8-3936] Found unconnected internal register 'genblk1[6].ff_RSRAM/q_reg' and it is trimmed from '32' to '3' bits. [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:17]
-WARNING: [Synth 8-3936] Found unconnected internal register 'genblk1[5].ff_RSRAM/q_reg' and it is trimmed from '32' to '3' bits. [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:17]
-WARNING: [Synth 8-3936] Found unconnected internal register 'genblk1[4].ff_RSRAM/q_reg' and it is trimmed from '32' to '3' bits. [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:17]
-WARNING: [Synth 8-3936] Found unconnected internal register 'genblk1[3].ff_RSRAM/q_reg' and it is trimmed from '32' to '3' bits. [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:17]
-WARNING: [Synth 8-3936] Found unconnected internal register 'genblk1[2].ff_RSRAM/q_reg' and it is trimmed from '32' to '3' bits. [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:17]
-WARNING: [Synth 8-3936] Found unconnected internal register 'genblk1[1].ff_RSRAM/q_reg' and it is trimmed from '32' to '3' bits. [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:17]
-WARNING: [Synth 8-3936] Found unconnected internal register 'genblk1[0].ff_RSRAM/q_reg' and it is trimmed from '32' to '3' bits. [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:17]
-INFO: [Synth 8-3886] merging instance 'u_idu/ff_idu_alu_br_st_imm/q_reg[31]' (FDE) to 'u_idu/ff_idu_alu_br_st_imm/q_reg[14]'
-INFO: [Synth 8-3886] merging instance 'u_idu/ff_idu_alu_br_st_imm/q_reg[14]' (FDE) to 'u_idu/ff_idu_alu_br_st_imm/q_reg[12]'
-INFO: [Synth 8-3886] merging instance 'u_idu/ff_idu_alu_br_st_imm/q_reg[15]' (FDE) to 'u_idu/ff_idu_alu_br_st_imm/q_reg[12]'
-INFO: [Synth 8-3886] merging instance 'u_idu/ff_idu_alu_br_st_imm/q_reg[16]' (FDE) to 'u_idu/ff_idu_alu_br_st_imm/q_reg[12]'
-INFO: [Synth 8-3886] merging instance 'u_idu/ff_idu_alu_br_st_imm/q_reg[17]' (FDE) to 'u_idu/ff_idu_alu_br_st_imm/q_reg[12]'
-INFO: [Synth 8-3886] merging instance 'u_idu/ff_idu_alu_br_st_imm/q_reg[18]' (FDE) to 'u_idu/ff_idu_alu_br_st_imm/q_reg[12]'
-INFO: [Synth 8-3886] merging instance 'u_idu/ff_idu_alu_br_st_imm/q_reg[19]' (FDE) to 'u_idu/ff_idu_alu_br_st_imm/q_reg[12]'
-INFO: [Synth 8-3886] merging instance 'u_idu/ff_idu_alu_br_st_imm/q_reg[20]' (FDE) to 'u_idu/ff_idu_alu_br_st_imm/q_reg[12]'
-INFO: [Synth 8-3886] merging instance 'u_idu/ff_idu_alu_br_st_imm/q_reg[21]' (FDE) to 'u_idu/ff_idu_alu_br_st_imm/q_reg[12]'
-INFO: [Synth 8-3886] merging instance 'u_idu/ff_idu_alu_br_st_imm/q_reg[22]' (FDE) to 'u_idu/ff_idu_alu_br_st_imm/q_reg[12]'
-INFO: [Synth 8-3886] merging instance 'u_idu/ff_idu_alu_br_st_imm/q_reg[23]' (FDE) to 'u_idu/ff_idu_alu_br_st_imm/q_reg[12]'
-INFO: [Synth 8-3886] merging instance 'u_idu/ff_idu_alu_br_st_imm/q_reg[24]' (FDE) to 'u_idu/ff_idu_alu_br_st_imm/q_reg[12]'
-INFO: [Synth 8-3886] merging instance 'u_idu/ff_idu_alu_br_st_imm/q_reg[25]' (FDE) to 'u_idu/ff_idu_alu_br_st_imm/q_reg[12]'
-INFO: [Synth 8-3886] merging instance 'u_idu/ff_idu_alu_br_st_imm/q_reg[26]' (FDE) to 'u_idu/ff_idu_alu_br_st_imm/q_reg[12]'
-INFO: [Synth 8-3886] merging instance 'u_idu/ff_idu_alu_br_st_imm/q_reg[27]' (FDE) to 'u_idu/ff_idu_alu_br_st_imm/q_reg[12]'
-INFO: [Synth 8-3886] merging instance 'u_idu/ff_idu_alu_br_st_imm/q_reg[28]' (FDE) to 'u_idu/ff_idu_alu_br_st_imm/q_reg[12]'
-INFO: [Synth 8-3886] merging instance 'u_idu/ff_idu_alu_br_st_imm/q_reg[29]' (FDE) to 'u_idu/ff_idu_alu_br_st_imm/q_reg[12]'
-INFO: [Synth 8-3886] merging instance 'u_idu/ff_idu_alu_br_st_imm/q_reg[30]' (FDE) to 'u_idu/ff_idu_alu_br_st_imm/q_reg[12]'
-INFO: [Synth 8-3886] merging instance 'u_idu/ff_idu_alu_br_st_imm/q_reg[12]' (FDE) to 'u_idu/ff_idu_alu_br_st_imm/q_reg[13]'
-INFO: [Synth 8-3886] merging instance 'u_idu/ff_idu_alu_pc/q_reg[31]' (FDE) to 'u_idu/ff_idu_alu_pc/q_reg[30]'
-INFO: [Synth 8-3886] merging instance 'u_idu/ff_idu_alu_pc/q_reg[12]' (FDE) to 'u_idu/ff_idu_alu_pc/q_reg[30]'
-INFO: [Synth 8-3886] merging instance 'u_idu/ff_idu_alu_pc/q_reg[13]' (FDE) to 'u_idu/ff_idu_alu_pc/q_reg[30]'
-INFO: [Synth 8-3886] merging instance 'u_idu/ff_idu_alu_pc/q_reg[14]' (FDE) to 'u_idu/ff_idu_alu_pc/q_reg[30]'
-INFO: [Synth 8-3886] merging instance 'u_idu/ff_idu_alu_pc/q_reg[15]' (FDE) to 'u_idu/ff_idu_alu_pc/q_reg[30]'
-INFO: [Synth 8-3886] merging instance 'u_idu/ff_idu_alu_pc/q_reg[16]' (FDE) to 'u_idu/ff_idu_alu_pc/q_reg[30]'
-INFO: [Synth 8-3886] merging instance 'u_idu/ff_idu_alu_pc/q_reg[17]' (FDE) to 'u_idu/ff_idu_alu_pc/q_reg[30]'
-INFO: [Synth 8-3886] merging instance 'u_idu/ff_idu_alu_pc/q_reg[18]' (FDE) to 'u_idu/ff_idu_alu_pc/q_reg[30]'
-INFO: [Synth 8-3886] merging instance 'u_idu/ff_idu_alu_pc/q_reg[19]' (FDE) to 'u_idu/ff_idu_alu_pc/q_reg[30]'
-INFO: [Synth 8-3886] merging instance 'u_idu/ff_idu_alu_pc/q_reg[20]' (FDE) to 'u_idu/ff_idu_alu_pc/q_reg[30]'
-INFO: [Synth 8-3886] merging instance 'u_idu/ff_idu_alu_pc/q_reg[21]' (FDE) to 'u_idu/ff_idu_alu_pc/q_reg[30]'
-INFO: [Synth 8-3886] merging instance 'u_idu/ff_idu_alu_pc/q_reg[22]' (FDE) to 'u_idu/ff_idu_alu_pc/q_reg[30]'
-INFO: [Synth 8-3886] merging instance 'u_idu/ff_idu_alu_pc/q_reg[23]' (FDE) to 'u_idu/ff_idu_alu_pc/q_reg[30]'
-INFO: [Synth 8-3886] merging instance 'u_idu/ff_idu_alu_pc/q_reg[24]' (FDE) to 'u_idu/ff_idu_alu_pc/q_reg[30]'
-INFO: [Synth 8-3886] merging instance 'u_idu/ff_idu_alu_pc/q_reg[25]' (FDE) to 'u_idu/ff_idu_alu_pc/q_reg[30]'
-INFO: [Synth 8-3886] merging instance 'u_idu/ff_idu_alu_pc/q_reg[26]' (FDE) to 'u_idu/ff_idu_alu_pc/q_reg[30]'
-INFO: [Synth 8-3886] merging instance 'u_idu/ff_idu_alu_pc/q_reg[27]' (FDE) to 'u_idu/ff_idu_alu_pc/q_reg[30]'
-INFO: [Synth 8-3886] merging instance 'u_idu/ff_idu_alu_pc/q_reg[28]' (FDE) to 'u_idu/ff_idu_alu_pc/q_reg[30]'
-INFO: [Synth 8-3886] merging instance 'u_idu/ff_idu_alu_pc/q_reg[29]' (FDE) to 'u_idu/ff_idu_alu_pc/q_reg[30]'
-INFO: [Synth 8-3333] propagating constant 0 across sequential element (u_idu/\ff_idu_alu_pc/q_reg[30] )
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_mxu_clr/q_reg[0]' (FDE) to 'u_alu/ff_alu_lsu_st_low/q_reg[0]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_pool_size/q_reg[0]' (FDE) to 'u_alu/ff_alu_lsu_act_type/q_reg[0]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_pool_size/q_reg[1]' (FDE) to 'u_alu/ff_alu_lsu_act_type/q_reg[1]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_act_type/q_reg[0]' (FDE) to 'u_alu/ff_alu_lsu_col_len/q_reg[0]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_act_type/q_reg[1]' (FDE) to 'u_alu/ff_alu_lsu_col_len/q_reg[1]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_col_len/q_reg[0]' (FDE) to 'u_alu/ff_alu_lsu_st_col/q_reg[0]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_col_len/q_reg[1]' (FDE) to 'u_alu/ff_alu_lsu_st_col/q_reg[1]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_col_len/q_reg[2]' (FDE) to 'u_alu/ff_alu_lsu_st_col/q_reg[2]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_col_len/q_reg[3]' (FDE) to 'u_alu/ff_alu_lsu_st_col/q_reg[3]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_iram_row_len/q_reg[0]' (FDE) to 'u_alu/ff_alu_lsu_st_row/q_reg[0]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_iram_row_len/q_reg[1]' (FDE) to 'u_alu/ff_alu_lsu_st_row/q_reg[1]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_iram_row_len/q_reg[2]' (FDE) to 'u_alu/ff_alu_lsu_st_row/q_reg[2]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_iram_row_len/q_reg[3]' (FDE) to 'u_alu/ff_alu_lsu_st_row/q_reg[3]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_wram_row_len/q_reg[0]' (FDE) to 'u_alu/ff_alu_lsu_num/q_reg[2]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_wram_row_len/q_reg[1]' (FDE) to 'u_alu/ff_alu_lsu_num/q_reg[3]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_wram_row_len/q_reg[2]' (FDE) to 'u_alu/ff_alu_lsu_num/q_reg[4]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_wram_row_len/q_reg[3]' (FDE) to 'u_alu/ff_alu_lsu_num/q_reg[5]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_wram_start_addr/q_reg[0]' (FDE) to 'u_alu/ff_alu_lsu_start_y/q_reg[0]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_wram_start_addr/q_reg[1]' (FDE) to 'u_alu/ff_alu_lsu_start_y/q_reg[1]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_wram_start_addr/q_reg[2]' (FDE) to 'u_alu/ff_alu_lsu_start_y/q_reg[2]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_wram_start_addr/q_reg[3]' (FDE) to 'u_alu/ff_alu_lsu_start_y/q_reg[3]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_wram_start_addr/q_reg[4]' (FDE) to 'u_alu/ff_alu_lsu_dram_addr/q_reg[4]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_wram_start_addr/q_reg[5]' (FDE) to 'u_alu/ff_alu_lsu_dram_addr/q_reg[5]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_wram_start_addr/q_reg[6]' (FDE) to 'u_alu/ff_alu_lsu_dram_addr/q_reg[6]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_wram_start_addr/q_reg[7]' (FDE) to 'u_alu/ff_alu_lsu_dram_addr/q_reg[7]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_wram_start_addr/q_reg[8]' (FDE) to 'u_alu/ff_alu_lsu_dram_addr/q_reg[8]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_wram_start_addr/q_reg[9]' (FDE) to 'u_alu/ff_alu_lsu_dram_addr/q_reg[9]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_wram_start_addr/q_reg[10]' (FDE) to 'u_alu/ff_alu_lsu_dram_addr/q_reg[10]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_wram_start_addr/q_reg[11]' (FDE) to 'u_alu/ff_alu_lsu_dram_addr/q_reg[11]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_st_col/q_reg[0]' (FDE) to 'u_alu/ff_alu_lsu_str/q_reg[0]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_st_col/q_reg[1]' (FDE) to 'u_alu/ff_alu_lsu_str/q_reg[1]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_st_col/q_reg[2]' (FDE) to 'u_alu/ff_alu_lsu_str/q_reg[2]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_st_col/q_reg[3]' (FDE) to 'u_alu/ff_alu_lsu_len/q_reg[0]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_st_row/q_reg[0]' (FDE) to 'u_alu/ff_alu_lsu_len/q_reg[1]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_st_row/q_reg[1]' (FDE) to 'u_alu/ff_alu_lsu_len/q_reg[2]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_st_row/q_reg[2]' (FDE) to 'u_alu/ff_alu_lsu_num/q_reg[0]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_st_row/q_reg[3]' (FDE) to 'u_alu/ff_alu_lsu_num/q_reg[1]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_start_y/q_reg[0]' (FDE) to 'u_alu/ff_alu_lsu_start_x/q_reg[0]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_start_y/q_reg[1]' (FDE) to 'u_alu/ff_alu_lsu_start_x/q_reg[1]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_start_y/q_reg[2]' (FDE) to 'u_alu/ff_alu_lsu_start_x/q_reg[2]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_start_y/q_reg[3]' (FDE) to 'u_alu/ff_alu_lsu_start_x/q_reg[3]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_start_x/q_reg[0]' (FDE) to 'u_alu/ff_alu_lsu_dram_addr/q_reg[0]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_start_x/q_reg[1]' (FDE) to 'u_alu/ff_alu_lsu_dram_addr/q_reg[1]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_start_x/q_reg[2]' (FDE) to 'u_alu/ff_alu_lsu_dram_addr/q_reg[2]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_start_x/q_reg[3]' (FDE) to 'u_alu/ff_alu_lsu_dram_addr/q_reg[3]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_str/q_reg[0]' (FDE) to 'u_alu/ff_alu_lsu_wb_addr/q_reg[0]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_str/q_reg[1]' (FDE) to 'u_alu/ff_alu_lsu_wb_addr/q_reg[1]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_str/q_reg[2]' (FDE) to 'u_alu/ff_alu_lsu_wb_addr/q_reg[2]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_len/q_reg[0]' (FDE) to 'u_alu/ff_alu_lsu_wb_addr/q_reg[3]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_len/q_reg[1]' (FDE) to 'u_alu/ff_alu_lsu_wb_addr/q_reg[4]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_dram_addr/q_reg[0]' (FDE) to 'u_alu/ff_alu_lsu_src2/q_reg[0]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_dram_addr/q_reg[1]' (FDE) to 'u_alu/ff_alu_lsu_src2/q_reg[1]'
-INFO: [Synth 8-3886] merging instance 'u_alu/ff_alu_lsu_dram_addr/q_reg[2]' (FDE) to 'u_alu/ff_alu_lsu_src2/q_reg[2]'
-INFO: [Common 17-14] Message 'Synth 8-3886' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
-INFO: [Common 17-14] Message 'Synth 8-3886' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
+WARNING: [Synth 8-7077] IncrSyn: subsequent runs will still be incremental as the reference run was parallel and that data is reused
 ---------------------------------------------------------------------------------
-Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:01:30 ; elapsed = 00:01:50 . Memory (MB): peak = 1787.348 ; gain = 948.066
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:43 ; elapsed = 00:00:47 . Memory (MB): peak = 1699.934 ; gain = 863.285
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Stitch Unchanged AreaOpt Partitions
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Stitch Unchanged AreaOpt Partitions : Time (s): cpu = 00:00:44 ; elapsed = 00:00:48 . Memory (MB): peak = 1714.168 ; gain = 877.520
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Applying XDC Timing Constraints
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Applying XDC Timing Constraints : Time (s): cpu = 00:01:40 ; elapsed = 00:02:02 . Memory (MB): peak = 1955.055 ; gain = 1115.773
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:53 ; elapsed = 00:00:57 . Memory (MB): peak = 1914.367 ; gain = 1077.719
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Timing Optimization
 ---------------------------------------------------------------------------------
-WARNING: [Synth 8-326] inferred exception to break timing loop: 'set_false_path -through u_mxui_6/mxu_done0'
 ---------------------------------------------------------------------------------
-Finished Timing Optimization : Time (s): cpu = 00:02:16 ; elapsed = 00:02:40 . Memory (MB): peak = 2047.230 ; gain = 1207.949
+Finished Timing Optimization : Time (s): cpu = 00:00:53 ; elapsed = 00:00:58 . Memory (MB): peak = 1914.695 ; gain = 1078.047
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Technology Mapping
 ---------------------------------------------------------------------------------
-WARNING: [Synth 8-326] inferred exception to break timing loop: 'set_false_path -through i_6/\u_mxu/mxu_done0 '
-Found timing loop:
-     0: i_1/i_4935/O (LUT2)
-      [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lsu.v:559]
-     1: i_1/i_4935/I0 (LUT2)
-     2: i_1/i_4936/O (LUT2)
-      [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lsu.v:593]
-     3: i_1/i_4936/I1 (LUT2)
-     4: i_1/i_880/O (LUT3)
-      [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lsu.v:593]
-     5: i_1/i_880/I1 (LUT3)
-     6: i_1/i_883/O (LUT6)
-      [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lsu.v:2662]
-     7: i_1/i_883/I1 (LUT6)
-     8: i_1/i_4935/O (LUT2)
-      [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lsu.v:559]
-CRITICAL WARNING: [Synth 8-295] found timing loop. [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:17]
-Inferred a: "set_disable_timing -from I0 -to O i_1/i_4935"
-Found timing loop:
-     0: i_1/i_4936/O (LUT2)
-      [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lsu.v:593]
-     1: i_1/i_4936/I1 (LUT2)
-     2: i_1/i_880/O (LUT3)
-      [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lsu.v:593]
-     3: i_1/i_880/I1 (LUT3)
-     4: i_1/i_883/O (LUT6)
-      [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lsu.v:2662]
-     5: i_1/i_883/I1 (LUT6)
-     6: i_1/i_4935/O (LUT2)
-      [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lsu.v:559]
-     7: i_1/i_4935/O (LUT2)
-CRITICAL WARNING: [Synth 8-295] found timing loop. [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lib/DFFE.v:17]
-Inferred a: "set_disable_timing -from I1 -to O i_1/i_4936"
-WARNING: [Synth 8-326] inferred exception to break timing loop: 'set_false_path -through i_3/mxu_lsu_rdy'
+WARNING: [Synth 8-7077] IncrSyn: subsequent runs will still be incremental as the reference run was parallel and that data is reused
 ---------------------------------------------------------------------------------
-Finished Technology Mapping : Time (s): cpu = 00:02:30 ; elapsed = 00:03:13 . Memory (MB): peak = 2060.371 ; gain = 1221.090
+Finished Technology Mapping : Time (s): cpu = 00:00:53 ; elapsed = 00:00:58 . Memory (MB): peak = 1924.496 ; gain = 1087.848
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Stitch Unchanged Partitions
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Stitch Unchanged Partitions : Time (s): cpu = 00:00:54 ; elapsed = 00:00:59 . Memory (MB): peak = 1924.496 ; gain = 1087.848
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start IO Insertion
@@ -994,82 +606,37 @@ Start Final Netlist Cleanup
 Finished Final Netlist Cleanup
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished IO Insertion : Time (s): cpu = 00:02:43 ; elapsed = 00:03:26 . Memory (MB): peak = 2235.117 ; gain = 1395.836
+Finished IO Insertion : Time (s): cpu = 00:01:07 ; elapsed = 00:01:13 . Memory (MB): peak = 2162.688 ; gain = 1326.039
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Instances
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Instances : Time (s): cpu = 00:02:43 ; elapsed = 00:03:26 . Memory (MB): peak = 2235.117 ; gain = 1395.836
+Finished Renaming Generated Instances : Time (s): cpu = 00:01:08 ; elapsed = 00:01:13 . Memory (MB): peak = 2162.688 ; gain = 1326.039
 ---------------------------------------------------------------------------------
-Found timing loop:
-     0: \q[0]_i_2__38 /O (LUT6)
-      [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/mxu.v:181]
-     1: \q[0]_i_2__38 /I5 (LUT6)
-     2: \q[0]_i_8__7 /O (LUT5)
-      [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/mxu.v:181]
-     3: \q[0]_i_8__7 /I4 (LUT5)
-     4: \q[15]_i_3 /O (LUT2)
-      [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/mxu.v:245]
-     5: \q[15]_i_3 /I1 (LUT2)
-     6: \q[0]_i_3 /O (LUT6)
-      [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/mxu.v:228]
-     7: \q[0]_i_3 /I2 (LUT6)
-     8: \q[0]_i_2__38 /I5 (LUT6)
-      [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/mxu.v:181]
-     9: \q[0]_i_8__7 /O (LUT5)
-      [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/mxu.v:181]
-CRITICAL WARNING: [Synth 8-295] found timing loop. [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/tpu.v:2]
-Inferred a: "set_disable_timing -from I5 -to O \q[0]_i_2__38 "
-Found timing loop:
-     0: \q[0]_i_1__365 /O (LUT2)
-      [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lsu.v:559]
-     1: \q[0]_i_1__365 /I0 (LUT2)
-     2: \q[0]_i_2__34 /O (LUT4)
-      [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lsu.v:593]
-     3: \q[0]_i_2__34 /I1 (LUT4)
-     4: \q[0]_i_2__21 /O (LUT6)
-      [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lsu.v:2662]
-     5: \q[0]_i_2__21 /I1 (LUT6)
-     6: \q[0]_i_1__365 /O (LUT2)
-      [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lsu.v:559]
-CRITICAL WARNING: [Synth 8-295] found timing loop. [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/tpu.v:2]
-Inferred a: "set_disable_timing -from I0 -to O \q[0]_i_1__365 "
-Found timing loop:
-     0: \q[0]_i_2__34 /O (LUT4)
-      [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lsu.v:593]
-     1: \q[0]_i_2__34 /I1 (LUT4)
-     2: \q[0]_i_2__21 /O (LUT6)
-      [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lsu.v:2662]
-     3: \q[0]_i_2__21 /I1 (LUT6)
-     4: \q[0]_i_1__365 /O (LUT2)
-      [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/lsu.v:559]
-     5: \q[0]_i_1__365 /O (LUT2)
-CRITICAL WARNING: [Synth 8-295] found timing loop. [C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/rtl/tpu.v:2]
-Inferred a: "set_disable_timing -from I1 -to O \q[0]_i_2__34 "
 ---------------------------------------------------------------------------------
 Start Rebuilding User Hierarchy
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Rebuilding User Hierarchy : Time (s): cpu = 00:02:56 ; elapsed = 00:03:39 . Memory (MB): peak = 2358.344 ; gain = 1519.062
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:01:15 ; elapsed = 00:01:21 . Memory (MB): peak = 2222.094 ; gain = 1385.445
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Ports
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Ports : Time (s): cpu = 00:02:57 ; elapsed = 00:03:41 . Memory (MB): peak = 2358.344 ; gain = 1519.062
+Finished Renaming Generated Ports : Time (s): cpu = 00:01:16 ; elapsed = 00:01:22 . Memory (MB): peak = 2222.094 ; gain = 1385.445
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Handling Custom Attributes
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Handling Custom Attributes : Time (s): cpu = 00:02:59 ; elapsed = 00:03:43 . Memory (MB): peak = 2358.344 ; gain = 1519.062
+Finished Handling Custom Attributes : Time (s): cpu = 00:01:18 ; elapsed = 00:01:24 . Memory (MB): peak = 2222.094 ; gain = 1385.445
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Nets
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Nets : Time (s): cpu = 00:02:59 ; elapsed = 00:03:43 . Memory (MB): peak = 2358.344 ; gain = 1519.062
+Finished Renaming Generated Nets : Time (s): cpu = 00:01:18 ; elapsed = 00:01:25 . Memory (MB): peak = 2222.094 ; gain = 1385.445
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Writing Synthesis Report
@@ -1108,29 +675,29 @@ Report Cell Usage:
 |21    |OBUF                 |     7|
 +------+---------------------+------+
 ---------------------------------------------------------------------------------
-Finished Writing Synthesis Report : Time (s): cpu = 00:02:59 ; elapsed = 00:03:43 . Memory (MB): peak = 2358.344 ; gain = 1519.062
+Finished Writing Synthesis Report : Time (s): cpu = 00:01:18 ; elapsed = 00:01:25 . Memory (MB): peak = 2222.094 ; gain = 1385.445
 ---------------------------------------------------------------------------------
-Synthesis finished with 0 errors, 11 critical warnings and 298 warnings.
-Synthesis Optimization Runtime : Time (s): cpu = 00:02:32 ; elapsed = 00:03:33 . Memory (MB): peak = 2358.344 ; gain = 1397.484
-Synthesis Optimization Complete : Time (s): cpu = 00:02:59 ; elapsed = 00:03:49 . Memory (MB): peak = 2358.344 ; gain = 1519.062
+Synthesis finished with 0 errors, 0 critical warnings and 2 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:51 ; elapsed = 00:01:08 . Memory (MB): peak = 2222.094 ; gain = 1262.957
+Synthesis Optimization Complete : Time (s): cpu = 00:01:18 ; elapsed = 00:01:25 . Memory (MB): peak = 2222.094 ; gain = 1385.445
 INFO: [Project 1-571] Translating synthesized netlist
-Netlist sorting complete. Time (s): cpu = 00:00:02 ; elapsed = 00:00:02 . Memory (MB): peak = 2390.816 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:02 ; elapsed = 00:00:02 . Memory (MB): peak = 2252.352 ; gain = 0.000
 INFO: [Netlist 29-17] Analyzing 5235 Unisim elements for replacement
 INFO: [Netlist 29-28] Unisim Transformation completed in 1 CPU seconds
 INFO: [Project 1-570] Preparing netlist for logic optimization
 INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.045 . Memory (MB): peak = 2448.992 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.048 . Memory (MB): peak = 2326.371 ; gain = 0.000
 INFO: [Project 1-111] Unisim Transformation Summary:
 No Unisim elements were transformed.
 
-Synth Design complete | Checksum: 38c66909
+Synth Design complete | Checksum: a5fa6662
 INFO: [Common 17-83] Releasing license: Synthesis
-305 Infos, 384 Warnings, 17 Critical Warnings and 0 Errors encountered.
+174 Infos, 161 Warnings, 6 Critical Warnings and 0 Errors encountered.
 synth_design completed successfully
-synth_design: Time (s): cpu = 00:03:31 ; elapsed = 00:04:36 . Memory (MB): peak = 2448.992 ; gain = 1844.074
+synth_design: Time (s): cpu = 00:01:51 ; elapsed = 00:02:16 . Memory (MB): peak = 2326.371 ; gain = 1723.488
 INFO: [runtcl-6] Synthesis results are not added to the cache due to CRITICAL_WARNING
-Write ShapeDB Complete: Time (s): cpu = 00:00:01 ; elapsed = 00:00:00.151 . Memory (MB): peak = 2448.992 ; gain = 0.000
+Write ShapeDB Complete: Time (s): cpu = 00:00:01 ; elapsed = 00:00:00.157 . Memory (MB): peak = 2326.371 ; gain = 0.000
 INFO: [Common 17-1381] The checkpoint 'C:/Users/twipaa/Documents/GitHub/ZW02a-25_FYP_repo/FPGA/FPGA.runs/synth_1/tpu.dcp' has been generated.
-write_checkpoint: Time (s): cpu = 00:00:11 ; elapsed = 00:00:11 . Memory (MB): peak = 2448.992 ; gain = 0.000
+write_checkpoint: Time (s): cpu = 00:00:11 ; elapsed = 00:00:10 . Memory (MB): peak = 2326.371 ; gain = 0.000
 INFO: [Vivado 12-24828] Executing command : report_utilization -file tpu_utilization_synth.rpt -pb tpu_utilization_synth.pb
-INFO: [Common 17-206] Exiting Vivado at Sun Apr 12 22:54:03 2026...
+INFO: [Common 17-206] Exiting Vivado at Mon Apr 13 13:01:59 2026...

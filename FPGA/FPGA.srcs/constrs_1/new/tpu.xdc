@@ -28,7 +28,7 @@
 #set_property PACKAGE_PIN T18 [get_ports {BTNU}];  # "BTNU"
 
 #clk
-set_property -dict { PACKAGE_PIN Y9   IOSTANDARD LVCMOS33 } [get_ports clk]
+set_property -dict { PACKAGE_PIN Y9 IOSTANDARD LVCMOS33 } [get_ports clk]
 create_clock -add -name sys_clk_pin -period 10.00 -waveform {0.000 5.000} [get_ports clk]
 #create_clock -period 10.000 -name clk -waveform {0.000 5.000} -add [get_ports clk]
 #set_property -dict { PACKAGE_PIN W5   IOSTANDARD LVCMOS33 } [get_ports clk_in]
@@ -36,9 +36,9 @@ create_clock -add -name sys_clk_pin -period 10.00 -waveform {0.000 5.000} [get_p
 
 #button
 set_property PACKAGE_PIN T18 [get_ports {rst_n_in}]
-set_property IOSTANDARD LVCMOS33 [get_ports {rst_n_in}]
+set_property IOSTANDARD LVCMOS18 [get_ports {rst_n_in}]
 set_property PACKAGE_PIN P16 [get_ports {start_vld_in}]
-set_property IOSTANDARD LVCMOS33 [get_ports {start_vld_in}]
+set_property IOSTANDARD LVCMOS18 [get_ports {start_vld_in}]
 
 # Led0
 set_property PACKAGE_PIN T22 [get_ports {led[0]}]
