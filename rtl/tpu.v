@@ -1,11 +1,11 @@
 `ifdef FPGA
 module tpu(
     clk,
-    rst_n_in,
-    start_vld_in,
+    rst_n,
     //start_addr,
     wfi,
-    led
+    tx,
+    rx
 );
 
     //parameter AWID_WIDTH = 4;
@@ -14,12 +14,12 @@ module tpu(
     //parameter WSTRB_WIDTH = WDATA_WIDTH/8; // should be WDATA_WIDTH/8
 
     input clk;
-    input rst_n_in;
-    input start_vld_in;
+    input rst_n;
+    input rx;
+    output tx;
     //input [`IRAM_ADDR_WIDTH-1:0] start_addr;
     output wfi;
-    output [3:0] led;
-    wire rst_n;
+    
     wire start_vld;
     wire [`IRAM_ADDR_WIDTH-1:0] start_addr;
     assign start_addr = 'b0;
@@ -319,9 +319,6 @@ module tpu(
     wire BVALID;
     wire BREADY;
     
-    //debounce
-    //Debounce_btn u_rst_n      (.clk_in(clk), .btn_in(rst_n_in), .btn_out(rst_n));
-    Debounce_btn u_start_vld  (.clk_in(clk), .btn_in(start_vld_in), .btn_out(start_vld));
     assign rst_n = ~rst_n_in;
     //assign start_vld = start_vld_in;
     ifu u_ifu(

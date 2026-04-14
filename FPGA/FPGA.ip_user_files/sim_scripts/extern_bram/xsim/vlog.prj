@@ -1,7 +1,0 @@
-verilog xil_defaultlib -i "../../../../../../../../../../AMDDesignTools/2025.2/Vivado/data/rsb/busdef" \
-"../../../../FPGA.gen/sources_1/ip/extern_bram/sim/extern_bram.v" \
-
-verilog xil_defaultlib "glbl.v"
-
-# Do not sort compile order
-nosort
