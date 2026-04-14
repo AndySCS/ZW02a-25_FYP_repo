@@ -3,6 +3,7 @@ module one_in_one_out_fifo_lib(
     clk,
     rst_n,
     in_vld,
+    in_rdy,
     in_data,
     out_vld,
     out_data,
@@ -13,14 +14,15 @@ module one_in_one_out_fifo_lib(
     //need to implement qualify logic if do not want overwrite occur
     //parameter
     parameter ENT_NUM = 4;
-    parameter ENT_NUM_WIDTH = $clog2(ENT_NUM);
     parameter DATA_SIZE = 32;
+    localparam ENT_NUM_WIDTH = $clog2(ENT_NUM);
 
     //inout
     input clk;
     input rst_n;
     input in_vld;
     input [DATA_SIZE-1:0] in_data;
+    output in_rdy;
     output out_vld;
     output [DATA_SIZE-1:0] out_data;
     output fifo_full;
@@ -30,6 +32,7 @@ module one_in_one_out_fifo_lib(
     wire [ENT_NUM-1:0] alloc_ptr_oh;
     wire [ENT_NUM-1:0] alloc_ptr_oh_nxt;
     wire [ENT_NUM-1:0] alloc_ptr_oh_qual;
+    wire in_vld_qual;
     //pick logic
     wire [ENT_NUM-1:0] pick_ptr_oh;
     wire [ENT_NUM-1:0] pick_ptr_oh_nxt;
@@ -45,29 +48,71 @@ module one_in_one_out_fifo_lib(
     wire [DATA_SIZE-1:0] ent_data [ENT_NUM-1:0];
 
     //alloc logic
+    assign in_vld_qual = in_vld & in_rdy;
     assign alloc_ptr_oh_nxt = {alloc_ptr_oh[ENT_NUM-2:0], alloc_ptr_oh[ENT_NUM-1]}; //rr alloc
-    DFFRE #(.WIDTH(ENT_NUM-1)) ff_alloc_ptr_oh_hi (.clk(clk), .rst_n(rst_n), .en(in_vld),.d(alloc_ptr_oh_nxt[ENT_NUM-1:1]), .q(alloc_ptr_oh[ENT_NUM-1:1]));
-    DFFSE ff_alloc_ptr_oh_lo (.clk(clk), .rst_n(rst_n), .en(in_vld), .d(alloc_ptr_oh_nxt[0]), .q(alloc_ptr_oh[0]));
+    DFFRE #(.WIDTH(ENT_NUM-1)) 
+    ff_alloc_ptr_oh_hi (
+        .clk(clk), 
+        .rst_n(rst_n), 
+        .en(in_vld_qual),
+        .d(alloc_ptr_oh_nxt[ENT_NUM-1:1]), 
+        .q(alloc_ptr_oh[ENT_NUM-1:1])
+    );
+    DFFSE ff_alloc_ptr_oh_lo (
+        .clk(clk), 
+        .rst_n(rst_n), 
+        .en(in_vld_qual), 
+        .d(alloc_ptr_oh_nxt[0]), 
+        .q(alloc_ptr_oh[0])
+    );
     assign alloc_ptr_oh_qual = alloc_ptr_oh & {ENT_NUM{in_vld}};
     //pick logic
     assign ent_out = out_vld & pick_rdy;
-    assign pick_ptr_oh_update_en = ent_out | in_vld & (|(alloc_ptr_oh & pick_ptr_oh & ent_vld)); //overwrite on vld ent
+    assign pick_ptr_oh_update_en = ent_out;
     assign pick_ptr_oh_nxt = {pick_ptr_oh[ENT_NUM-2:0], pick_ptr_oh[ENT_NUM-1]}; //rr pick
     assign pick_ptr_nxt = pick_ptr + 'b1 ;
-    DFFRE #(.WIDTH(ENT_NUM-1)) ff_pick_ptr_oh_hi (.clk(clk), .rst_n(rst_n), .en(pick_ptr_oh_update_en),.d(pick_ptr_oh_nxt[ENT_NUM-1:1]), .q(pick_ptr_oh[ENT_NUM-1:1]));
-    DFFSE ff_alloc_ptr_oh_lo_pick (.clk(clk), .rst_n(rst_n), .en(pick_ptr_oh_update_en), .d(pick_ptr_oh_nxt[0]), .q(pick_ptr_oh[0]));
+    DFFRE #(.WIDTH(ENT_NUM-1)) 
+    ff_pick_ptr_oh_hi (
+        .clk(clk), 
+        .rst_n(rst_n), 
+        .en(pick_ptr_oh_update_en),
+        .d(pick_ptr_oh_nxt[ENT_NUM-1:1]), 
+        .q(pick_ptr_oh[ENT_NUM-1:1])
+    );
+    DFFSE ff_alloc_ptr_oh_lo_pick (
+        .clk(clk), 
+        .rst_n(rst_n), 
+        .en(pick_ptr_oh_update_en), 
+        .d(pick_ptr_oh_nxt[0]), 
+        .q(pick_ptr_oh[0])
+    );
     //vld logic
-    assign ent_update = in_vld | ent_out;
+    assign ent_update = in_vld_qual | ent_out;
     assign ent_vld_nxt = alloc_ptr_oh_qual | ent_vld & ~(pick_ptr_oh & {ENT_NUM{pick_rdy}});
-    DFFRE #(.WIDTH(ENT_NUM)) ff_ent_vld(.clk(clk), .rst_n(rst_n), .en(ent_update), .d(ent_vld_nxt), .q(ent_vld));
+    DFFRE #(.WIDTH(ENT_NUM)) 
+    ff_ent_vld(
+        .clk(clk), 
+        .rst_n(rst_n), 
+        .en(ent_update), 
+        .d(ent_vld_nxt), 
+        .q(ent_vld)
+    );
+    DFFRE #(.WIDTH(ENT_NUM_WIDTH)) 
+    ff_pick_ptr(
+        .clk(clk), 
+        .rst_n(rst_n), 
+        .en(pick_ptr_oh_update_en), 
+        .d(pick_ptr_nxt), 
+        .q(pick_ptr)
+    );
     //out logic 
     assign out_vld = |ent_vld;
 
     genvar i;
     generate
         for (i = 0; i < ENT_NUM ;i=i+1) begin: fifo_data
-            DFFE #(.WIDTH(DATA_SIZE)) ff_ent_data
-            (
+            DFFE #(.WIDTH(DATA_SIZE)) 
+            ff_ent_data(
                 .clk(clk), 
                 .en(alloc_ptr_oh_qual[i]), 
                 .d(in_data), 
@@ -76,10 +121,8 @@ module one_in_one_out_fifo_lib(
         end
     endgenerate
 
-    assign out_data = ent_data[pick_ptr];
-
-
-
-     
+    assign out_data = ent_data[pick_ptr]; 
+    assign fifo_full = |(ent_vld & alloc_ptr_oh);
+    assign in_rdy = ~fifo_full;
 
 endmodule
