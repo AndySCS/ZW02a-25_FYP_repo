@@ -53,10 +53,11 @@ module uart_ctrl (
     localparam WR_STATE_IDLE = 2'b00;
     localparam WR_STATE_ADDR = 2'b01;
     localparam WR_STATE_DATA = 2'b10;
+    localparam WR_STATE_SEND = 2'b11; //internal state to indicate we have received all data and can now send it to the FIFO
     localparam WR_SEND_DATA = 2'b11; //internal state to indicate we have received all data and can now send it to the FIFO
     localparam AW_CNT = 97; //number of 64-bit words in AXI address space (4KB/4B)
     localparam B_CNT = AW_CNT + 1; //number of 64-bit words in AXI address space (4KB/4B)
-    localparam AR_CNT = 5; //number of reads to issue after writes are done (one for each register we want to read back)
+    localparam AR_CNT = 10; //number of reads to issue after writes are done (one for each register we want to read back)
 
     wire [1:0] uart_wr_state;
     wire [1:0] uart_wr_state_nxt;
@@ -123,11 +124,17 @@ module uart_ctrl (
     wire tx_data_state_nxt;
     wire tx_data_tmp_en;
 
+    wire [3:0] rcnt;
+    wire [3:0] rcnt_nxt;
+    wire rcnt_en;
+
+    wire r_data_done;
+
     assign write_axi = rx_vld && (rx_data == AXI_WR);
     assign uart_wr_state_nxt = (uart_wr_state == WR_STATE_IDLE) ? (write_axi ? WR_STATE_ADDR : WR_STATE_IDLE) :
                                (uart_wr_state == WR_STATE_ADDR) ? (axi_addr_end ? WR_STATE_DATA : WR_STATE_ADDR) :
-                               (uart_wr_state == WR_STATE_DATA) ? ((w_data_done & ~wfi) ? WR_SEND_DATA : WR_STATE_DATA) :
-                               (uart_wr_state == WR_SEND_DATA) ? WR_STATE_IDLE : WR_STATE_IDLE; //after sending data to FIFO, go back to idle
+                               (uart_wr_state == WR_STATE_DATA) ? ((w_data_done & ~wfi) ? WR_STATE_SEND : WR_STATE_DATA) :
+                               (uart_wr_state == WR_STATE_SEND) ? (r_data_done ? WR_STATE_IDLE : WR_STATE_IDLE) : WR_STATE_IDLE; //after sending data to FIFO, go back to idle
     assign axi_write_addr_en = (uart_wr_state == WR_STATE_ADDR) && rx_vld;
 
     assign axi_write_addr_msk = {{8{addr_ptr[3]}}, {8{addr_ptr[2]}}, {8{addr_ptr[1]}}, {8{addr_ptr[0]}}}; //mask for 4-bit addr ptr
@@ -342,7 +349,7 @@ module uart_ctrl (
     assign tx_data_tmp_en = (rd_data_fifo_out_vld & rd_data_fifo_out_rdy) | tx_vld_tmp; //enable tx_data_tmp when we have new data from FIFO or when we are holding data to send
 
     assign tx_vld = tx_vld_tmp; //qualify tx_vld with tx_ready to ensure it stays high until the data is accepted
-    assign tx_data = tx_data_tmp[7:0]; //send the lower 8 bits of tx_data_tmp as UART can only send 8 bits at a time
+    assign tx_data_in = tx_data_tmp[7:0]; //send the lower 8 bits of tx_data_tmp as UART can only send 8 bits at a time
 
     DFFR #(.WIDTH(1))
     ff_tx_data_state (
@@ -350,7 +357,7 @@ module uart_ctrl (
         .rst_n(rst_n),
         .d(tx_data_state_nxt),
         .q(tx_data_state)
-    )
+    );
     DFFR #(.WIDTH(1))
     ff_tx_vld_tmp (
         .clk(clk),
@@ -366,6 +373,19 @@ module uart_ctrl (
         .d(tx_data_tmp_nxt),
         .q(tx_data_tmp)
     );
+
+    assign rcnt_en = (uart_wr_state == WR_STATE_DATA) & w_data_done | RVALID & RREADY; //enable rcnt when we are done with all writes to start issuing reads
+    assign rcnt_nxt = (uart_wr_state == WR_STATE_DATA) & w_data_done ? 0 : rcnt + 1; //increment rcnt after we are done with all writes to start issuing reads
+    DFFRE #(.WIDTH(4))
+    ff_rcnt (
+        .clk(clk),
+        .rst_n(rst_n),
+        .en(rcnt_en),
+        .d(rcnt_nxt),
+        .q(rcnt)
+    );
+
+    assign r_data_done = (rcnt == AR_CNT) & (uart_wr_state == WR_STATE_SEND); //we are done with all reads when we have received the expected number of read data beats
 
 
 endmodule

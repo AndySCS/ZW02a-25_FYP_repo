@@ -1,9 +1,7 @@
 `ifdef FPGA
 module tpu(
     clk,
-    rst_n,
-    //start_addr,
-    wfi,
+    rst,
     tx,
     rx
 );
@@ -14,7 +12,7 @@ module tpu(
     //parameter WSTRB_WIDTH = WDATA_WIDTH/8; // should be WDATA_WIDTH/8
 
     input clk;
-    input rst_n;
+    input rst;
     input rx;
     output tx;
     //input [`IRAM_ADDR_WIDTH-1:0] start_addr;
@@ -318,9 +316,157 @@ module tpu(
     wire [1:0] BRESP;
     wire BVALID;
     wire BREADY;
+
+    //address write channel 
+    wire [`AWID_WIDTH-1:0]   tpu_AWID;
+    wire [`AWADDR_WIDTH-1:0] tpu_AWADDR;
+    wire [7:0] tpu_AWLEN;
+    wire [2:0] tpu_AWSIZE;
+    wire [1:0] tpu_AWBURST;
+    wire [3:0] tpu_AWREGION;
+    wire tpu_AWVALID;
+    wire tpu_AWREADY;
+
+    //address write channel 
+    wire [`AWID_WIDTH-1:0]   tpu_ARID;
+    wire [`AWADDR_WIDTH-1:0] tpu_ARADDR;
+    wire [7:0] tpu_ARLEN;
+    wire [2:0] tpu_ARSIZE;
+    wire [1:0] tpu_ARBURST;
+    wire [3:0] tpu_ARREGION;
+    wire tpu_ARVALID;
+    wire tpu_ARREADY;
     
-    assign rst_n = ~rst_n_in;
-    //assign start_vld = start_vld_in;
+    //write data channel
+    wire [`WDATA_WIDTH-1:0] tpu_WDATA;
+    wire [`WSTRB_WIDTH-1:0] tpu_WSTRB;
+    wire tpu_WLAST;
+    wire tpu_WVALID;
+    wire tpu_WREADY;
+
+    //read data channel
+    wire [`AWID_WIDTH-1:0] tpu_RID;
+    wire [`WDATA_WIDTH-1:0] tpu_RDATA;
+    wire [`WDATA_WIDTH-1:0] tpu_RDATA_raw;
+    wire [1:0] tpu_RRESP;
+    wire tpu_RLAST;
+    wire tpu_RVALID;
+    wire tpu_RVALID_raw;
+    wire tpu_RREADY; 
+    //write response channel
+    wire [`AWID_WIDTH-1:0] tpu_BID;
+    wire [1:0] tpu_BRESP;
+    wire tpu_BVALID;
+    wire tpu_BREADY;
+
+    //uart related
+    wire rx;
+    wire [7:0] tx_data_in;
+    wire tx_vld;
+    wire tx;
+    wire [7:0] rx_data;
+    wire rx_vld;
+    wire tx_ready;
+    
+    wire        uart_AWREADY;
+    wire        uart_AWVALID;
+    wire [31:0] uart_AWADDR;
+    wire [7:0]  uart_AWLEN;
+    wire [2:0]  uart_AWSIZE;
+    wire [1:0]  uart_AWBURST;
+    wire [3:0]  uart_AWREGION;
+    wire [3:0]  uart_AWID;
+
+    wire        uart_ARREADY;
+    wire        uart_ARVALID;
+    wire [31:0] uart_ARADDR;
+    wire [7:0]  uart_ARLEN;
+    wire [2:0]  uart_ARSIZE;
+    wire [1:0]  uart_ARBURST;
+    wire [3:0]  uart_ARREGION;
+    wire [3:0]  uart_ARID;
+
+    wire        uart_RVALID;
+    wire [63:0] uart_RDATA;
+    wire [1:0]  uart_RRESP;
+    wire [3:0]  uart_RID;
+    wire        uart_RLAST;
+    wire        uart_RREADY;
+
+    wire        uart_WREADY;
+    wire        uart_WVALID;
+    wire [63:0] uart_WDATA;
+    wire [7:0]  uart_WSTRB;
+    wire        uart_WLAST;
+
+    wire       uart_BVALID;
+    wire [3:0] uart_BID;
+    wire [1:0] uart_BRESP;
+    wire       uart_BREADY;
+ 
+    assign rst_n = ~rst_n;
+
+
+    uart #(
+        .CLK_FREQ(100_000_000),
+        .BAUD_RATE(115200)
+    )
+    u_uart(
+        .clk(clk),
+        .rst_n(rst_n),
+        .rx(rx),
+        .tx_data_in(tx_data_in),
+        .tx_vld(tx_vld),
+        .tx(tx),
+        .rx_data(rx_data),
+        .rx_vld(rx_vld),
+        .tx_ready(tx_ready)
+    );
+
+    uart_ctrl u_uart_ctrl(
+        .clk(clk),
+        .rst_n(rst_n),
+        .rx_data(rx_data),
+        .rx_vld(rx_vld),
+        .tx_ready(tx_ready),
+        .tx_data_in(tx_data_in),
+        .tx_vld(tx_vld),
+        .AWREADY(uart_AWREADY),
+        .AWVALID(uart_AWVALID),
+        .AWADDR(uart_AWADDR),
+        .AWLEN(uart_AWLEN),
+        .AWSIZE(uart_AWSIZE),
+        .AWBURST(uart_AWBURST),
+        .AWREGION(uart_AWREGION),
+        .AWID(uart_AWID),
+        .ARREADY(uart_ARREADY),
+        .ARVALID(uart_ARVALID),
+        .ARADDR(uart_ARADDR),
+        .ARLEN(uart_ARLEN),
+        .ARSIZE(uart_ARSIZE),
+        .ARBURST(uart_ARBURST),
+        .ARREGION(uart_ARREGION),
+        .ARID(uart_ARID),
+        .RVALID(uart_RVALID),
+        .RDATA(uart_RDATA),
+        .RRESP(uart_RRESP),
+        .RID(uart_RID),
+        .RLAST(uart_RLAST),
+        .RREADY(uart_RREADY),
+        .WREADY(uart_WREADY),
+        .WVALID(uart_WVALID),
+        .WDATA(uart_WDATA),
+        .WSTRB(uart_WSTRB),
+        .WLAST(uart_WLAST),
+        .BVALID(uart_BVALID),
+        .BID(uart_BID),
+        .BRESP(uart_BRESP),
+        .BREADY(uart_BREADY),
+        .start_vld(start_vld),
+        .start_addr(start_addr),
+        .wfi(wfi)
+    );
+
     ifu u_ifu(
         .clk            (clk),
         .rst_n          (rst_n),
@@ -965,7 +1111,7 @@ module tpu(
     ff_RDATA_raw(
         .clk(clk),
         .rst_n(rst_n),
-	.en(~RLAST),
+	    .en(~RLAST),
         .d(RDATA_raw),
         .q(RDATA_raw_ff)
     );
@@ -973,20 +1119,108 @@ module tpu(
     wire [63:0] RDATA_0;
     wire [63:0] RDATA_3_raw;
 
+    axi_abritrator u_axi_arbitrator(
+        .clk(clk),
+        .rst_n(rst_n),
+        .wfi(wfi),
+        .tpu_AWID(tpu_AWID),
+        .tpu_AWADDR(tpu_AWADDR),
+        .tpu_AWLEN(tpu_AWLEN),
+        .tpu_AWSIZE(tpu_AWSIZE),
+        .tpu_AWBURST(tpu_AWBURST),
+        .tpu_AWREGION(tpu_AWREGION),
+        .tpu_AWVALID(tpu_AWVALID),
+        .tpu_AWREADY(tpu_AWREADY),
+        .tpu_ARID(tpu_ARID),
+        .tpu_ARADDR(tpu_ARADDR),
+        .tpu_ARLEN(tpu_ARLEN),
+        .tpu_ARSIZE(tpu_ARSIZE),
+        .tpu_ARBURST(tpu_ARBURST),
+        .tpu_ARREGION(tpu_ARREGION),
+        .tpu_ARVALID(tpu_ARVALID),
+        .tpu_ARREADY(tpu_ARREADY),
+        .tpu_WDATA(tpu_WDATA),
+        .tpu_WSTRB(tpu_WSTRB),
+        .tpu_WLAST(tpu_WLAST),
+        .tpu_WVALID(tpu_WVALID),
+        .tpu_WREADY(tpu_WREADY),
+        .tpu_RID(tpu_RID),
+        .tpu_RDATA(tpu_RDATA),
+        .tpu_RRESP(tpu_RRESP),
+        .tpu_RLAST(tpu_RLAST),
+        .tpu_RVALID(tpu_RVALID),
+        .tpu_RREADY(tpu_RREADY),
+        .tpu_BID(tpu_BID),
+        .tpu_BRESP(tpu_BRESP),
+        .tpu_BVALID(tpu_BVALID),
+        .tpu_BREADY(tpu_BREADY),
+        .uart_AWID(uart_AWID),
+        .uart_AWADDR(uart_AWADDR),
+        .uart_AWLEN(uart_AWLEN),
+        .uart_AWSIZE(uart_AWSIZE),
+        .uart_AWBURST(uart_AWBURST),
+        .uart_AWREGION(uart_AWREGION),
+        .uart_AWVALID(uart_AWVALID),
+        .uart_AWREADY(uart_AWREADY),
+        .uart_ARID(uart_ARID),
+        .uart_ARADDR(uart_ARADDR),
+        .uart_ARLEN(uart_ARLEN),
+        .uart_ARSIZE(uart_ARSIZE),
+        .uart_ARBURST(uart_ARBURST),
+        .uart_ARREGION(uart_ARREGION),
+        .uart_ARVALID(uart_ARVALID),
+        .uart_ARREADY(uart_ARREADY),
+        .uart_WDATA(uart_WDATA),
+        .uart_WSTRB(uart_WSTRB),
+        .uart_WLAST(uart_WLAST),
+        .uart_WVALID(uart_WVALID),
+        .uart_WREADY(uart_WREADY),
+        .uart_RID(uart_RID),
+        .uart_RDATA(uart_RDATA),
+        .uart_RRESP(uart_RRESP),
+        .uart_RLAST(uart_RLAST),
+        .uart_RVALID(uart_RVALID),
+        .uart_RREADY(uart_RREADY),
+        .uart_BID(uart_BID),
+        .uart_BRESP(uart_BRESP),
+        .uart_BVALID(uart_BVALID),
+        .uart_BREADY(uart_BREADY),
+        .AWID(AWID),
+        .AWADDR(AWADDR),
+        .AWLEN(AWLEN),
+        .AWSIZE(AWSIZE),
+        .AWBURST(AWBURST),
+        .AWREGION(AWREGION),
+        .AWVALID(AWVALID),
+        .AWREADY(AWREADY),
+        .ARID(ARID),
+        .ARADDR(ARADDR),
+        .ARLEN(ARLEN),
+        .ARSIZE(ARSIZE),
+        .ARBURST(ARBURST),
+        .ARREGION(ARREGION),
+        .ARVALID(ARVALID),
+        .ARREADY(ARREADY),
+        .WDATA(WDATA),
+        .WSTRB(WSTRB),
+        .WLAST(WLAST),
+        .WVALID(WVALID),
+        .WREADY(WREADY),
+        .RID(RID),
+        .RDATA(RDATA),
+        .RRESP(RRESP),
+        .RLAST(RLAST),
+        .RVALID(RVALID),
+        .RREADY(RREADY),
+        .BID(BID),
+        .BRESP(BRESP),
+        .BVALID(BVALID),
+        .BREADY(BREADY)
+    );
+
     assign ARLEN_qual= ~(|ARSIZE) ? ARLEN : (|ARADDR[2:0]) ? ARLEN+1 : ARLEN;
     assign ARADDR_qual= ~(|ARSIZE) ? ARADDR : ARADDR;
 
-    /*
-    assign RDATA_0 = (ARSIZE_ff == 3) ? RDATA_raw
-                 : (ARADDR_ff[2:0]==0) ? RDATA_raw[7:0] 
-                 : (ARADDR_ff[2:0]==1) ? RDATA_raw[15:8]
-                 : (ARADDR_ff[2:0]==2) ? RDATA_raw[23:16]
-                 : (ARADDR_ff[2:0]==3) ? RDATA_raw[31:24]
-                 : (ARADDR_ff[2:0]==4) ? RDATA_raw[39:32]
-                 : (ARADDR_ff[2:0]==5) ? RDATA_raw[47:40]
-                 : (ARADDR_ff[2:0]==6) ? RDATA_raw[55:48]
-                 :  RDATA_raw[63:56];
-    */
     assign RDATA_0 = (ARSIZE_ff == 3) ? RDATA_raw
                  : (sram_buff[RID][2:0]==0) ? RDATA_raw[7:0] 
                  : (sram_buff[RID][2:0]==1) ? RDATA_raw[15:8]
@@ -1010,258 +1244,6 @@ module tpu(
     assign RVALID = (ARSIZE_ff == 0) ? RVALID_raw : (|ARADDR_ff[2:0]) ? RVALID_raw_ff : RVALID_raw; 
     assign RDATA = (ARSIZE_ff == 0) ? RDATA_0 : (|ARADDR_ff[2:0]) ? RDATA_3_raw : RDATA_raw;
     
-    //softmax
-    wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] data[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0];
-    wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] sum;
-    wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] cur_max;
-    wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] max_val;
-    wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] max_val_nxt;
-    wire[3:0] max_idx;
-    wire[3:0] max_idx_nxt;
-    wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] softmax_input_quant[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0];
-    wire[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0] softmax_input_quant_en;
-    wire[3:0] softmax_count;
-    wire[3:0] softmax_count_nxt;
-    wire softmax_quant_en;
-    wire [`SOFT_MAX_INPUT_ADDR_WIDTH-1:0] softmax_exp_vld_nxt;
-    wire [`SOFT_MAX_INPUT_ADDR_WIDTH-1:0] softmax_exp_vld;
-    wire softmax_exp_en;
-    wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] softmax_exp_output[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0];
-
-    wire[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0] softmax_exp_done;
-    wire[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0] softmax_exp_err;
-    wire[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0] softmax_exp_rdy;
-    wire[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0] softmax_exp_div;
-    
-    
-    wire[3:0] softmax_out_count;
-    wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] softmax_out_data[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0];
-    
-    
-    assign softmax_count_nxt = softmax_count=='d10 ? softmax_count : softmax_count+1;
-    DFFRE #(.WIDTH(4))
-    ff_count(
-        .clk(clk),
-        .rst_n(rst_n),
-	    .en(WVALID&WREADY),
-        .d(softmax_count_nxt),
-        .q(softmax_count)
-    );
-    
-    //assign the input_quant by the wdata
-    genvar j;
-    generate
-        for(j = 0; j < `SOFT_MAX_INPUT_ADDR_WIDTH; j=j+1)begin
-            assign softmax_input_quant_en[j] = ((j == softmax_count) & (WVALID & WREADY));  
-            DFFE #(.WIDTH(`SOFT_MAX_INPUT_DATA_WIDTH))
-            ff_SOFTMAX_INPUT (
-                .clk(clk),
-                .en(softmax_input_quant_en[j]),
-                .d(WDATA),
-                .q(softmax_input_quant[j])
-            );
-            //method2
-            //test if can just dircetly use input define whicha have the most prob
-            //if(softmax_input_quant[j] > max_val)begin
-            //    assign max_val = softmax_input_quant[j];
-            //    assign max_idx = j;
-            //end
-        end
-    endgenerate
-    assign max_val_nxt = WDATA > max_val ? WDATA : max_val;
-    assign max_idx_nxt = WDATA > max_val ? softmax_count : max_idx;
-    DFFRE #(.WIDTH(`SOFT_MAX_INPUT_DATA_WIDTH))
-            ff_MAX_VAL (
-                .clk(clk),
-                .rst_n(rst_n),
-		.en(WVALID&WREADY),
-                .d(max_val_nxt),
-                .q(max_val)
-            );
-    DFFRE #(.WIDTH(4))
-            ff_MAX_IDX (
-                .clk(clk),
-                .rst_n(rst_n),
-		.en(WVALID&WREADY),
-                .d(max_idx_nxt),
-                .q(max_idx)
-            );
-
-    //method2
-    //use expontenial do the work
-    //if the count reach the addr width(10)
-    //=> start the softmax
-/*
-    assign softmax_exp_en = softmax_count == `SOFT_MAX_INPUT_ADDR_WIDTH;
-    assign softmax_exp_vld_nxt = {`SOFT_MAX_INPUT_ADDR_WIDTH{softmax_quant_en}} & ~(softmax_exp_done);
-
-    DFFR #(`SOFT_MAX_INPUT_ADDR_WIDTH)
-    ff_EXP_VLD (
-        .clk(clk),
-        .rst_n(rst_n),
-        .d(softmax_exp_vld_nxt),
-        .q(softmax_exp_vld)
-    );
-    //calcaulate the exp part
-
-    exp u_exp0(
-            .clk(clk),
-            .rst_n(rst_n),
-            .exp_vld(softmax_exp_vld[0]),
-            .in_num(softmax_input_quant[0]-max_val),
-            .output_num(softmax_exp_output[0]),
-            .exp_done(softmax_exp_done[0]),
-            .exp_err(softmax_exp_err[0]),
-            .exp_rdy(softmax_exp_rdy[0]),
-            .exp_divide(softmax_exp_div[0])
-    );
-    exp u_exp1(
-            .clk(clk),
-            .rst_n(rst_n),
-            .exp_vld(softmax_exp_vld[1]),
-            .in_num(softmax_input_quant[1]-max_val),
-            .output_num(softmax_exp_output[1]),
-            .exp_done(softmax_exp_done[1]),
-            .exp_err(softmax_exp_err[1]),
-            .exp_rdy(softmax_exp_rdy[1]),
-            .exp_divide(softmax_exp_div[1])
-    );
-    exp u_exp2(
-            .clk(clk),
-            .rst_n(rst_n),
-            .exp_vld(softmax_exp_vld[2]),
-            .in_num(softmax_input_quant[2]-max_val),
-            .output_num(softmax_exp_output[2]),
-            .exp_done(softmax_exp_done[2]),
-            .exp_err(softmax_exp_err[2]),
-            .exp_rdy(softmax_exp_rdy[2]),
-            .exp_divide(softmax_exp_div[2])
-    );
-    exp u_exp3(
-            .clk(clk),
-            .rst_n(rst_n),
-            .exp_vld(softmax_exp_vld[3]),
-            .in_num(softmax_input_quant[3]-max_val),
-            .output_num(softmax_exp_output[3]),
-            .exp_done(softmax_exp_done[3]),
-            .exp_err(softmax_exp_err[3]),
-            .exp_rdy(softmax_exp_rdy[3]),
-            .exp_divide(softmax_exp_div[3])
-    );
-    exp u_exp4(
-            .clk(clk),
-            .rst_n(rst_n),
-            .exp_vld(softmax_exp_vld[4]),
-            .in_num(softmax_input_quant[4]-max_val),
-            .output_num(softmax_exp_output[4]),
-            .exp_done(softmax_exp_done[4]),
-            .exp_err(softmax_exp_err[4]),
-            .exp_rdy(softmax_exp_rdy[4]),
-            .exp_divide(softmax_exp_div[4])
-    );
-    exp u_exp5(
-            .clk(clk),
-            .rst_n(rst_n),
-            .exp_vld(softmax_exp_vld[5]),
-            .in_num(softmax_input_quant[5]-max_val),
-            .output_num(softmax_exp_output[5]),
-            .exp_done(softmax_exp_done[5]),
-            .exp_err(softmax_exp_err[5]),
-            .exp_rdy(softmax_exp_rdy[5]),
-            .exp_divide(softmax_exp_div[5])
-    );
-    exp u_exp6(
-            .clk(clk),
-            .rst_n(rst_n),
-            .exp_vld(softmax_exp_vld[6]),
-            .in_num(softmax_input_quant[6]-max_val),
-            .output_num(softmax_exp_output[6]),
-            .exp_done(softmax_exp_done[6]),
-            .exp_err(softmax_exp_err[6]),
-            .exp_rdy(softmax_exp_rdy[6]),
-            .exp_divide(softmax_exp_div[6])
-    );
-    exp u_exp7(
-            .clk(clk),
-            .rst_n(rst_n),
-            .exp_vld(softmax_exp_vld[7]),
-            .in_num(softmax_input_quant[7]-max_val),
-            .output_num(softmax_exp_output[7]),
-            .exp_done(softmax_exp_done[7]),
-            .exp_err(softmax_exp_err[7]),
-            .exp_rdy(softmax_exp_rdy[7]),
-            .exp_divide(softmax_exp_div[7])
-    );
-    exp u_exp8(
-            .clk(clk),
-            .rst_n(rst_n),
-            .exp_vld(softmax_exp_vld[8]),
-            .in_num(softmax_input_quant[8]-max_val),
-            .output_num(softmax_exp_output[8]),
-            .exp_done(softmax_exp_done[8]),
-            .exp_err(softmax_exp_err[8]),
-            .exp_rdy(softmax_exp_rdy[8]),
-            .exp_divide(softmax_exp_div[8])
-    );
-    exp u_exp9(
-            .clk(clk),
-            .rst_n(rst_n),
-            .exp_vld(softmax_exp_vld[9]),
-            .in_num(softmax_input_quant[9]-max_val),
-            .output_num(softmax_exp_output[9]),
-            .exp_done(softmax_exp_done[9]),
-            .exp_err(softmax_exp_err[9]),
-            .exp_rdy(softmax_exp_rdy[9]),
-            .exp_divide(softmax_exp_div[9])
-    );
-
-   //only if all exp done cal then do next step
-   //sum = softmax_exp_output[0] 
-   //     +  softmax_exp_output[1]
-   //     +  softmax_exp_output[2]
-   //     +  softmax_exp_output[3]
-   //     +  softmax_exp_output[4]
-   //     +  softmax_exp_output[5]
-   //     +  softmax_exp_output[6]
-   //     +  softmax_exp_output[7]
-   //     +  softmax_exp_output[8]
-   //     +  softmax_exp_output[9];
-
-   //     +  softmax_exp_output[2]
-   //     +  softmax_exp_output[3]
-   //     +  softmax_exp_output[4]
-   //     +  softmax_exp_output[5]
-   //     +  softmax_exp_output[6]
-   //     +  softmax_exp_output[7]
-   //     +  softmax_exp_output[8]
-   //     +  softmax_exp_output[9];
-
-    genvar k;
-    generate
-        for(k = 0; k < `SOFT_MAX_INPUT_ADDR_WIDTH; k=k+1)begin
-            assign sum = sum + softmax_exp_output[k];
-        end
-    endgenerate
-
-    genvar h;
-    generate
-        for(h = 0; h < `SOFT_MAX_INPUT_ADDR_WIDTH; h=h+1)begin
-            assign data[h] = (&softmax_exp_done) ? softmax_exp_output[h]/sum : 'b0;
-            DFFR #(`SOFT_MAX_INPUT_ADDR_WIDTH)
-            ff_out_data (
-                .clk(clk),
-                .rst_n(rst_n),
-                .d(data[h]),
-                .q(softmax_out_data[h])
-            );
-        end
-    endgenerate
-    */
-    assign led[0] = softmax_count==4'd10 ? max_idx[0] : 'b0;
-    assign led[1] = softmax_count==4'd10 ? max_idx[1] : 'b0;
-    assign led[2] = softmax_count==4'd10 ? max_idx[2] : 'b0;
-    assign led[3] = softmax_count==4'd10 ? max_idx[3] : 'b0;
-
 
 endmodule
 
