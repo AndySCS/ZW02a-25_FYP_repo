@@ -129,6 +129,9 @@ module axi_abritrator (
     assign tpu_AWREADY = wfi ? 1'b0 : AWREADY;
     assign uart_ARREADY = wfi ? ARREADY : 1'b0; 
     assign uart_AWREADY = wfi ? AWREADY : 1'b0; 
+    assign uart_WREADY = wfi ? WREADY : 1'b0; 
+    assign tpu_WREADY = wfi ? WREADY : 1'b0; 
+
 
     assign AWVALID = wfi ? uart_AWVALID : tpu_AWVALID;
     assign ARVALID = wfi ? uart_ARVALID : tpu_ARVALID;

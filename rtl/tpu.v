@@ -16,7 +16,7 @@ module tpu(
     input rx;
     output tx;
     //input [`IRAM_ADDR_WIDTH-1:0] start_addr;
-    output wfi;
+    wire wfi;
     
     wire start_vld;
     wire [`IRAM_ADDR_WIDTH-1:0] start_addr;
@@ -404,7 +404,7 @@ module tpu(
     wire [1:0] uart_BRESP;
     wire       uart_BREADY;
  
-    assign rst_n = ~rst_n;
+    assign rst_n = ~rst;
 
 
     uart #(
@@ -926,20 +926,20 @@ module tpu(
     u_AXI_READ_INFT(
         .clk                                  (clk),
         .rst_n                                (rst_n),
-        .ARID                                 (ARID),
-        .ARADDR                               (ARADDR),
-        .ARLEN                                (ARLEN),
-        .ARSIZE                               (ARSIZE),
-        .ARBURST                              (ARBURST),
-        .ARREGION                             (ARREGION),
-        .ARVALID                              (ARVALID),
-        .ARREADY                              (ARREADY),
-        .RID                                  (RID),
-        .RDATA                                (RDATA),
-        .RRESP                                (RRESP),
-        .RLAST                                (RLAST),
-        .RVALID                               (RVALID),
-        .RREADY                               (RREADY),
+        .ARID                                 (tpu_ARID),
+        .ARADDR                               (tpu_ARADDR),
+        .ARLEN                                (tpu_ARLEN),
+        .ARSIZE                               (tpu_ARSIZE),
+        .ARBURST                              (tpu_ARBURST),
+        .ARREGION                             (tpu_ARREGION),
+        .ARVALID                              (tpu_ARVALID),
+        .ARREADY                              (tpu_ARREADY),
+        .RID                                  (tpu_RID),
+        .RDATA                                (tpu_RDATA),
+        .RRESP                                (tpu_RRESP),
+        .RLAST                                (tpu_RLAST),
+        .RVALID                               (tpu_RVALID),
+        .RREADY                               (tpu_RREADY),
         .RSRAM                                (RSRAM),
         .RSRAM_en                             (RSRAM_en),
         .lsu_axi_arid                         (lsu_axi_arid),
@@ -972,23 +972,23 @@ module tpu(
     (
         .clk                                  (clk),
         .rst_n                                (rst_n),
-        .AWID                                 (AWID),
-        .AWADDR                               (AWADDR),
-        .AWLEN                                (AWLEN),
-        .AWSIZE                               (AWSIZE),
-        .AWBURST                              (AWBURST),
-        .AWREGION                             (AWREGION),
-        .AWVALID                              (AWVALID),
-        .AWREADY                              (AWREADY),
-        .WDATA                                (WDATA),
-        .WSTRB                                (WSTRB),
-        .WLAST                                (WLAST),
-        .WVALID                               (WVALID),
-        .WREADY                               (WREADY),
-        .BID                                  (BID),
-        .BRESP                                (BRESP),
-        .BVALID                               (BVALID),
-        .BREADY                               (BREADY),
+        .AWID                                 (tpu_AWID),
+        .AWADDR                               (tpu_AWADDR),
+        .AWLEN                                (tpu_AWLEN),
+        .AWSIZE                               (tpu_AWSIZE),
+        .AWBURST                              (tpu_AWBURST),
+        .AWREGION                             (tpu_AWREGION),
+        .AWVALID                              (tpu_AWVALID),
+        .AWREADY                              (tpu_AWREADY),
+        .WDATA                                (tpu_WDATA),
+        .WSTRB                                (tpu_WSTRB),
+        .WLAST                                (tpu_WLAST),
+        .WVALID                               (tpu_WVALID),
+        .WREADY                               (tpu_WREADY),
+        .BID                                  (tpu_BID),
+        .BRESP                                (tpu_BRESP),
+        .BVALID                               (tpu_BVALID),
+        .BREADY                               (tpu_BREADY),
         .lsu_axi_awid                         (lsu_axi_awid),
         .lsu_axi_awaddr                       (lsu_axi_awaddr),
         .lsu_axi_awlen                        (lsu_axi_awlen),

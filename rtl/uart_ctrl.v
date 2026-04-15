@@ -55,7 +55,7 @@ module uart_ctrl (
     localparam WR_STATE_DATA = 2'b10;
     localparam WR_STATE_SEND = 2'b11; //internal state to indicate we have received all data and can now send it to the FIFO
     localparam WR_SEND_DATA = 2'b11; //internal state to indicate we have received all data and can now send it to the FIFO
-    localparam AW_CNT = 97; //number of 64-bit words in AXI address space (4KB/4B)
+    localparam AW_CNT = 8'd48; //number of 64-bit words in AXI address space (4KB/4B)
     localparam B_CNT = AW_CNT + 1; //number of 64-bit words in AXI address space (4KB/4B)
     localparam AR_CNT = 10; //number of reads to issue after writes are done (one for each register we want to read back)
 
@@ -86,7 +86,7 @@ module uart_ctrl (
     wire [63:0] wr_data_fifo_in_data;
 
     wire AWVALID_nxt;
-    wire AWADDR_nxt;
+    wire [31:0] AWADDR_nxt;
     wire AWVALID_qual;
     wire [7:0] awcnt;
     wire [7:0] awcnt_nxt;
@@ -177,7 +177,6 @@ module uart_ctrl (
     DFFE #(.WIDTH(64))
     ff_axi_write_data (
         .clk(clk),
-        .rst_n(rst_n),
         .en(axi_write_data_en),
         .d(axi_write_data_nxt),
         .q(axi_write_data)
@@ -186,12 +185,20 @@ module uart_ctrl (
     assign axi_write_data_nxt = axi_write_data & ~axi_write_data_msk | {8{rx_data}} & axi_write_data_msk; //update only the byte indicated by addr_ptr
     assign axi_write_data_msk = {{8{write_data_ptr[7]}}, {8{write_data_ptr[6]}}, {8{write_data_ptr[5]}}, {8{write_data_ptr[4]}},
                                 {8{write_data_ptr[3]}}, {8{write_data_ptr[2]}}, {8{write_data_ptr[1]}}, {8{write_data_ptr[0]}}}; //mask for 8-bit data ptr
-    assign write_data_ptr_nxt = write_axi ? 8'b00000001 : {write_data_ptr[6:0], write_data_ptr[7]}; //shift left to move to next byte
+    assign write_data_ptr_nxt = write_axi ? 8'b1 : write_data_ptr ^ 8'h3; //shift left to move to next byte
     assign write_data_ptr_en = rx_vld & (uart_wr_state == WR_STATE_DATA) | write_axi; //only shift data ptr when receiving data for address
     assign axi_write_data_en = rx_vld & (uart_wr_state == WR_STATE_DATA); //enable data latch when in data receiving state
 
-    assign wr_data_fifo_in_vld_nxt = (write_data_ptr == WR_STATE_DATA) & rx_vld & (write_data_ptr == 8'b10000000) | wr_data_fifo_in_vld & ~wr_data_fifo_in_rdy; //valid when we have received the last byte of data
+    assign wr_data_fifo_in_vld_nxt = (uart_wr_state == WR_STATE_DATA) & rx_vld & (write_data_ptr == 8'b00000010) | wr_data_fifo_in_vld & ~wr_data_fifo_in_rdy; //valid when we have received the last byte of data
     assign wr_data_fifo_in_data = axi_write_data;
+
+    DFFR #(.WIDTH(1))
+    ff_wr_data_fifo_in_vld (
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(wr_data_fifo_in_vld_nxt),
+        .q(wr_data_fifo_in_vld)
+    );
 
     one_in_one_out_fifo_lib #(
         .ENT_NUM(32), 
@@ -209,13 +216,13 @@ module uart_ctrl (
         .pick_rdy(WREADY)
     );
 
-    assign WSTRB = 8'hff; //always write full 64 bits
+    assign WSTRB = 8'h3; //always write full 64 bits
     assign WLAST = 1'b1; //each AXI write is a single beat
 
     assign awcnt_nxt = (uart_wr_state == WR_STATE_ADDR) & rx_vld ? 0 : awcnt+1; //increment awcnt for each byte of address received
     assign awcnt_en = (uart_wr_state == WR_STATE_ADDR) & rx_vld | AWVALID_qual; //enable awcnt when receiving address bytes or when waiting for AWREADY
-    assign AWVALID_nxt = axi_addr_end | (uart_wr_state == WR_STATE_DATA) & (awcnt != AW_CNT) | AWVALID & ~AWREADY; //assert AWVALID when we have a complete address or if it's already asserted and waiting for AWREADY
-    assign AWADDR_nxt = uart_wr_state == WR_STATE_ADDR ? axi_write_addr_nxt : AWADDR + 1; //update AWADDR only in address state
+    assign AWVALID_nxt = axi_addr_end & (uart_wr_state == WR_STATE_ADDR) | (uart_wr_state == WR_STATE_DATA) & (awcnt <= AW_CNT) | AWVALID & ~AWREADY; //assert AWVALID when we have a complete address or if it's already asserted and waiting for AWREADY
+    assign AWADDR_nxt = uart_wr_state == WR_STATE_ADDR ? axi_write_addr_nxt : AWADDR + 16; //update AWADDR only in address state
     assign AWVALID_qual = AWVALID & AWREADY; //qualify AWVALID with ~AWREADY to ensure it stays high until the address is accepted
     assign AWADDR_en = (uart_wr_state == WR_STATE_ADDR) & rx_vld | AWVALID_qual; //enable AWADDR update when receiving address bytes or when waiting for AWREADY
 
@@ -225,6 +232,12 @@ module uart_ctrl (
     assign AWSIZE = 3'h3; //64 bits
     assign AWBURST = 2'h1; //incr
     assign AWREGION = 4'h0; //no region
+    
+    assign ARLEN = 8'h0; //single beat
+    assign ARSIZE = 3'h1; //16 bits
+    assign ARBURST = 2'h1; //incr
+    assign ARREGION = 4'h0; //no region
+
 
     DFFRE #(.WIDTH(8))
     ff_awcnt (
