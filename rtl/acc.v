@@ -16,7 +16,7 @@ module acc(
     input acc_vld;
     input [15:0] acc_data;
     input load_vld;
-    output [15:0] load_data;
+    input [15:0] load_data;
     output [15:0] out_data_int16;
     output [7:0] out_data_int8;
 
