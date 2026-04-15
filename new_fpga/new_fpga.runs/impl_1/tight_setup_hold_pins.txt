@@ -1,0 +1,11 @@
++====================+===================+===================================+
+| Launch Setup Clock | Launch Hold Clock | Pin                               |
++====================+===================+===================================+
+| sys_clk_pin        | sys_clk_pin       | u_idu/ff_idu_alu_src1/q_reg[14]/D |
+| sys_clk_pin        | sys_clk_pin       | u_idu/ff_idu_alu_src1/q_reg[11]/D |
+| sys_clk_pin        | sys_clk_pin       | u_idu/ff_idu_alu_src1/q_reg[6]/D  |
+| sys_clk_pin        | sys_clk_pin       | u_idu/ff_idu_alu_src1/q_reg[5]/D  |
+| sys_clk_pin        | sys_clk_pin       | u_idu/ff_idu_alu_src1/q_reg[19]/D |
+| sys_clk_pin        | sys_clk_pin       | u_idu/ff_idu_alu_src1/q_reg[28]/D |
+| sys_clk_pin        | sys_clk_pin       | u_idu/ff_idu_alu_src1/q_reg[2]/D  |
++--------------------+-------------------+-----------------------------------+

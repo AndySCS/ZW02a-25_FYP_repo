@@ -1,0 +1,7 @@
+# compile verilog/system verilog design source files
+verilog xil_defaultlib  --include "../../../../../../../../../AMDDesignTools/2025.2/Vivado/data/rsb/busdef" --include "../../../../../rtl" \
+"top_tb_func_synth.v" \
+"../../../../../new_fpga.srcs/sim_1/new/tpu_tb.v" \
+
+# Do not sort compile order
+nosort

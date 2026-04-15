@@ -1,0 +1,2178 @@
+`ifdef FPGA
+module tpu(
+    clk,
+    rst_n_in,
+    start_vld_in,
+    //start_addr,
+    wfi,
+    led
+);
+
+    //parameter AWID_WIDTH = 4;
+    //parameter AWADDR_WIDTH = 32;
+    //parameter WDATA_WIDTH = 64;
+    //parameter WSTRB_WIDTH = WDATA_WIDTH/8; // should be WDATA_WIDTH/8
+
+    input clk;
+    input rst_n_in;
+    input start_vld_in;
+    //input [`IRAM_ADDR_WIDTH-1:0] start_addr;
+    output wfi;
+    output [3:0] led;
+
+    wire rst_n;
+    wire rst_n_pre;
+    wire start_vld;
+    wire [`IRAM_ADDR_WIDTH-1:0] start_addr;
+    assign start_addr = 'b0;
+
+    //ifu output
+    wire ifu_idu_vld;
+    wire [31:0] ifu_idu_ins;
+    wire [31:0] ifu_idu_pc;
+
+    //idu output
+    wire idu_ifu_rdy;
+    wire idu_ifu_wfi;
+    wire idu_alu_vld;
+    wire [31:0] idu_alu_src1;
+    wire [31:0] idu_alu_src2;
+    wire idu_alu_wb_vld;
+    wire idu_alu_add_op;
+    wire idu_alu_sub_op;
+    wire idu_alu_slt_op;
+    wire idu_alu_sltu_op;
+    wire idu_alu_xor_op;
+    wire idu_alu_or_op;
+    wire idu_alu_and_op;
+    wire idu_alu_sll_op;
+    wire idu_alu_srl_op;
+    wire idu_alu_sra_op;
+    wire idu_alu_beq_op;
+    wire idu_alu_bne_op;
+    wire idu_alu_blt_op;
+    wire idu_alu_bge_op;
+    wire idu_alu_bltu_op;
+    wire idu_alu_bgeu_op;
+    wire idu_alu_lb_op;
+    wire idu_alu_lh_op;
+    wire idu_alu_lw_op;
+    wire idu_alu_lbu_op;
+    wire idu_alu_lhu_op;
+    wire idu_alu_sb_op;
+    wire idu_alu_sh_op;
+    wire idu_alu_sw_op;
+    wire idu_alu_lui_op;
+    wire idu_alu_aui_op;
+    wire idu_alu_jal_op;
+    wire idu_alu_jalr_op;
+
+    wire [4:0] idu_alu_wb_addr;
+    wire [31:0] idu_alu_br_st_imm;
+    wire [31:0] idu_alu_pc;
+
+    wire idu_alu_ld_iram;
+    wire idu_alu_ld_wram;
+    wire idu_alu_st_iram;
+    wire idu_alu_st_wram;
+    wire idu_alu_st_oram;
+    wire idu_alu_st_dram;
+
+    wire idu_alu_conv;
+    wire idu_alu_act;
+    wire idu_alu_pool;
+    wire idu_alu_wfi;
+
+    wire [31:0] idu_alu_dram_addr;
+    wire [7:0] idu_alu_num;
+    wire [2:0] idu_alu_len;
+    wire [2:0] idu_alu_str;
+    wire [3:0] idu_alu_start_x;
+    wire [3:0] idu_alu_start_y;
+    wire [`SRAM_ADDR_SIZE-1:0] idu_alu_ld_st_addr;
+    wire idu_alu_st_low;
+    wire [11:0] idu_alu_iram_start_addr;
+    wire [11:0]idu_alu_wram_start_addr;
+    wire [3:0] idu_alu_wram_row_len;
+    wire [3:0] idu_alu_iram_row_len;
+    wire [3:0] idu_alu_col_len;
+    wire [3:0] idu_alu_st_row;
+    wire [3:0] idu_alu_st_col;
+
+    wire [1:0] idu_alu_act_type;
+    wire [1:0] idu_alu_pool_size;
+    wire idu_alu_mxu_clr;
+    
+    wire [4:0] idu_rf_src1_addr;
+    wire [4:0] idu_rf_src2_addr;
+
+    //alu output
+    wire alu_ifu_br_vld;
+    wire [11:0] alu_ifu_br_addr;
+
+    wire alu_idu_rdy;
+    wire alu_idu_flush_vld;
+    wire [4:0] alu_idu_wb_addr;
+    wire [31:0] alu_idu_wb_data;
+    wire alu_idu_wb_vld;
+    wire alu_idu_ld_vld;
+    wire alu_lsu_lb_op;
+    wire alu_lsu_lh_op;
+    wire alu_lsu_lw_op;
+    wire alu_lsu_lbu_op;
+    wire alu_lsu_lhu_op;
+    wire alu_lsu_sb_op;
+    wire alu_lsu_sh_op;
+    wire alu_lsu_sw_op;
+    
+    wire alu_lsu_vld;
+    wire alu_lsu_wb_vld;
+    wire [4:0]  alu_lsu_wb_addr;
+    wire [31:0] alu_lsu_wb_data;
+    wire [31:0] alu_lsu_src2;
+    wire [31:0] alu_lsu_ld_addr;
+
+    wire alu_lsu_ld_iram;
+    wire alu_lsu_ld_wram;
+    wire alu_lsu_ld_oram;
+    wire alu_lsu_st_iram;
+    wire alu_lsu_st_wram;
+    wire alu_lsu_st_oram;
+    wire alu_lsu_st_dram;
+    wire alu_lsu_conv;
+    wire alu_lsu_act;
+    wire alu_lsu_pool;
+    wire alu_lsu_wfi;
+
+    wire [31:0] alu_lsu_dram_addr;
+    wire [7:0]  alu_lsu_num;
+    wire [2:0]  alu_lsu_len;
+    wire [2:0]  alu_lsu_str;
+    wire [3:0]  alu_lsu_start_x;
+    wire [3:0]  alu_lsu_start_y;
+    wire [`SRAM_ADDR_SIZE-1:0] alu_lsu_ld_st_addr;
+    wire        alu_lsu_st_low;
+    wire [3:0]  alu_lsu_st_row;
+    wire [3:0]  alu_lsu_st_col;
+
+    wire [11:0] alu_lsu_iram_start_addr;
+    wire [11:0] alu_lsu_wram_start_addr;
+    wire [3:0]  alu_lsu_wram_row_len;
+    wire [3:0]  alu_lsu_iram_row_len;
+    wire [3:0]  alu_lsu_col_len;
+
+    wire [1:0]  alu_lsu_act_type;
+    wire [1:0]  alu_lsu_pool_size;
+    wire        alu_lsu_mxu_clr;
+
+    //lsu output 
+    wire lsu_alu_rdy;
+
+    wire lsu_mxu_vld;
+    wire lsu_mxu_clr;
+    wire [15:0] lsu_mxu_iram_vld;
+    wire [127:0] lsu_mxu_iram_pld;
+    wire [15:0] lsu_mxu_wram_vld;
+    wire [127:0] lsu_mxu_wram_pld;
+    wire lsu_mxu_pool_vld;
+    wire [1:0] lsu_mxu_pool_size;
+    wire lsu_mxu_act_vld;
+    wire [1:0] lsu_mxu_act_type;
+    wire lsu_mxu_wfi;
+    wire lsu_mxu_conv_vld;
+
+    wire [7:0] lsu_axi_awid;
+    wire [`AWADDR_WIDTH-1:0] lsu_axi_awaddr;
+    wire [7:0] lsu_axi_awlen;
+    wire [2:0] lsu_axi_awsize;
+    wire [1:0] lsu_axi_awburst;
+    wire [2:0] lsu_axi_awstr;
+    wire [7:0] lsu_axi_awnum;
+    wire lsu_axi_awvld;
+    wire [12:0] lsu_axi_oram_addr;
+    wire [63:0] lsu_axi_wdata;
+    wire [7:0] lsu_axi_wstrb;
+    wire lsu_axi_wlast;
+    wire lsu_axi_wvld;
+    wire lsu_axi_brdy;
+    wire [7:0] lsu_axi_arid;
+    wire [`AWADDR_WIDTH-1:0] lsu_axi_araddr;
+    wire [7:0] lsu_axi_arlen;
+    wire [2:0] lsu_axi_arsize;
+    wire [1:0] lsu_axi_arburst;
+    wire [2:0] lsu_axi_arstr;
+    wire [7:0] lsu_axi_arnum;
+    wire [11:0] lsu_axi_sram_addr;
+    wire lsu_axi_arvld;
+    wire lsu_axi_rrdy;
+
+    wire lsu_idu_wb_vld;
+    wire lsu_idu_ld_vld;
+    wire [4:0] lsu_idu_wb_addr;
+    wire [31:0] lsu_idu_wb_data;
+    wire lsu_rf_wb_vld;
+    wire [4:0] lsu_rf_wb_addr;
+    wire [31:0] lsu_rf_wb_data;
+
+    //rf output
+    wire [31:0] rf_idu_src1_data;
+    wire [31:0] rf_idu_src2_data;
+
+    wire [7:0] axi_lsu_rid;
+    wire [63:0] axi_lsu_rdata;
+    wire [1:0] axi_lsu_rresp;
+    wire axi_lsu_rlast;
+    wire axi_lsu_rvld;
+    wire axi_lsu_arrdy;
+    wire axi_lsu_awrdy;
+    wire [11:0] axi_lsu_sram_addr;
+    wire [31:0] axi_lsu_dram_addr;
+    wire axi_lsu_axi_done;
+    wire axi_lsu_wrdy;
+    wire axi_lsu_bid;
+    wire [1:0] axi_lsu_bresp;
+    wire axi_lsu_bvld;
+    wire [12:0] axi_lsu_resp_oram_addr;
+
+    //mxu outpu
+    wire [127:0] mxu_lsu_int8_row0_data;
+    wire [255:0] mxu_lsu_int16_row0_data;
+    wire [127:0] mxu_lsu_int8_row1_data;
+    wire [255:0] mxu_lsu_int16_row1_data;
+    wire [127:0] mxu_lsu_int8_row2_data;
+    wire [255:0] mxu_lsu_int16_row2_data;
+    wire [127:0] mxu_lsu_int8_row3_data;
+    wire [255:0] mxu_lsu_int16_row3_data;
+    wire [127:0] mxu_lsu_int8_row4_data;
+    wire [255:0] mxu_lsu_int16_row4_data;
+    wire [127:0] mxu_lsu_int8_row5_data;
+    wire [255:0] mxu_lsu_int16_row5_data;
+    wire [127:0] mxu_lsu_int8_row6_data;
+    wire [255:0] mxu_lsu_int16_row6_data;
+    wire [127:0] mxu_lsu_int8_row7_data;
+    wire [255:0] mxu_lsu_int16_row7_data;
+    wire [127:0] mxu_lsu_int8_row8_data;
+    wire [255:0] mxu_lsu_int16_row8_data;
+    wire [127:0] mxu_lsu_int8_row9_data;
+    wire [255:0] mxu_lsu_int16_row9_data;
+    wire [127:0] mxu_lsu_int8_row10_data;
+    wire [255:0] mxu_lsu_int16_row10_data;
+    wire [127:0] mxu_lsu_int8_row11_data;
+    wire [255:0] mxu_lsu_int16_row11_data;
+    wire [127:0] mxu_lsu_int8_row12_data;
+    wire [255:0] mxu_lsu_int16_row12_data;
+    wire [127:0] mxu_lsu_int8_row13_data;
+    wire [255:0] mxu_lsu_int16_row13_data;
+    wire [127:0] mxu_lsu_int8_row14_data;
+    wire [255:0] mxu_lsu_int16_row14_data;
+    wire [127:0] mxu_lsu_int8_row15_data;
+    wire [255:0] mxu_lsu_int16_row15_data;
+    wire mxu_lsu_data_rdy;
+    wire mxu_lsu_rdy;
+
+    //address write channel 
+    wire [`AWID_WIDTH-1:0] AWID;
+    wire [`AWADDR_WIDTH-1:0] AWADDR;
+    wire [7:0] AWLEN;
+    wire [2:0] AWSIZE;
+    wire [1:0] AWBURST;
+    wire [3:0] AWREGION;
+    wire  AWVALID;
+    wire AWREADY;
+
+    //address write channel 
+    wire [`AWID_WIDTH-1:0] ARID;
+    wire [`AWADDR_WIDTH-1:0] ARADDR;
+    wire [7:0] ARLEN;
+    wire [2:0] ARSIZE;
+    wire [1:0] ARBURST;
+    wire [3:0] ARREGION;
+    wire  ARVALID;
+    wire ARREADY;
+    wire [`AWADDR_WIDTH-1:0] ARADDR_ff;
+    wire [2:0] ARSIZE_ff;
+    wire [`AWADDR_WIDTH-1:0] ARADDR_2ff;
+    wire [2:0] ARSIZE_2ff;
+    wire [`AWADDR_WIDTH-1:0] ARADDR_qual;
+    wire [7:0] ARLEN_qual;
+    wire [11:0] RSRAM;
+    wire [15:0] RSRAM_en;
+    wire [31:0] sram_buff [15:0];
+
+    //write data channel
+    wire [`WDATA_WIDTH-1:0] WDATA;
+    wire [`WSTRB_WIDTH-1:0] WSTRB;
+    wire WLAST;
+    wire WVALID;
+    wire WREADY;
+
+    //read data channel
+    wire [`AWID_WIDTH-1:0] RID;
+    wire [`WDATA_WIDTH-1:0] RDATA;
+    wire [`WDATA_WIDTH-1:0] RDATA_raw;
+    wire [1:0] RRESP;
+    wire RLAST;
+    wire RVALID;
+    wire RVALID_raw;
+    wire RREADY; 
+    //write response channel
+    wire [`AWID_WIDTH-1:0] BID;
+    wire [1:0] BRESP;
+    wire BVALID;
+    wire BREADY;
+    
+    //debounce
+    //Debounce_btn u_rst_n      (.clk_in(clk), .btn_in(rst_n_in), .btn_out(rst_n));
+    
+    //debouncer #(
+    //    .COUNT_MAX(65535),
+    //    .COUNT_WIDTH(16)
+    //) get_start_vld (
+    //    .clk(clk),
+    //    .A(start_vld_in),
+    //    .B(start_vld)
+    //);
+    
+    //debouncer #(
+    //    .COUNT_MAX(65535),
+    //    .COUNT_WIDTH(16)
+    //) get_rst_n (
+    //    .clk(clk),
+    //    .A(rst_n_in),
+    //    .B(rst_n_pre)
+    //);
+   // assign rst_n = ~rst_n_pre;
+    Debounce_btn u_start_vld  (.clk_in(clk), .btn_in(start_vld_in), .btn_out(start_vld));
+    assign rst_n = ~rst_n_in;
+    //assign start_vld = start_vld_in;
+
+    //assign start_vld = start_vld_in;
+    ifu u_ifu(
+        .clk            (clk),
+        .rst_n          (rst_n),
+        .start_vld      (start_vld),
+        .start_addr     (start_addr),
+        .idu_ifu_rdy    (idu_ifu_rdy),
+        .idu_ifu_wfi    (idu_ifu_wfi),
+        .alu_ifu_br_vld (alu_ifu_br_vld),
+        .alu_ifu_br_addr(alu_ifu_br_addr),
+        .ifu_idu_vld    (ifu_idu_vld),
+        .ifu_idu_ins    (ifu_idu_ins),
+        .ifu_idu_pc     (ifu_idu_pc)
+
+    );
+    idu u_idu(
+        .clk                            (clk),
+        .rst_n                          (rst_n),
+        .start_vld                      (start_vld),
+        //ifu input,
+        .ifu_idu_vld                   (ifu_idu_vld),
+        .ifu_idu_ins                   (ifu_idu_ins),
+        .ifu_idu_pc                    (ifu_idu_pc),
+        //alu input,
+        .alu_idu_rdy                   (alu_idu_rdy),
+        .alu_idu_flush_vld             (alu_idu_flush_vld),
+        .alu_idu_wb_addr               (alu_idu_wb_addr),
+        .alu_idu_wb_data               (alu_idu_wb_data),
+        .alu_idu_wb_vld                (alu_idu_wb_vld),
+        .alu_idu_ld_vld                (alu_idu_ld_vld),
+        //lsu input,
+        .lsu_idu_wb_vld                (lsu_idu_wb_vld),
+        .lsu_idu_ld_vld                (lsu_idu_ld_vld),
+        .lsu_idu_wb_addr               (lsu_idu_wb_addr),
+        .lsu_idu_wb_data               (lsu_idu_wb_data),
+        .lsu_rf_wb_vld                 (lsu_rf_wb_vld),
+        .lsu_rf_wb_addr                (lsu_rf_wb_addr),
+        .lsu_rf_wb_data                (lsu_rf_wb_data),
+        //rf input ,
+        .rf_idu_src1_data              (rf_idu_src1_data),
+        .rf_idu_src2_data              (rf_idu_src2_data),
+        //ifu output,
+        .idu_ifu_rdy                   (idu_ifu_rdy),
+        .idu_ifu_wfi                   (idu_ifu_wfi),
+        //alu output,
+        .idu_alu_vld                   (idu_alu_vld),
+        .idu_alu_src1                  (idu_alu_src1),
+        .idu_alu_src2                  (idu_alu_src2),
+        //rsicv op,
+        .idu_alu_wb_vld                (idu_alu_wb_vld),
+        .idu_alu_add_op                (idu_alu_add_op),
+        .idu_alu_sub_op                (idu_alu_sub_op),
+        .idu_alu_slt_op                (idu_alu_slt_op),
+        .idu_alu_sltu_op               (idu_alu_sltu_op),
+        .idu_alu_xor_op                (idu_alu_xor_op),
+        .idu_alu_or_op                 (idu_alu_or_op),
+        .idu_alu_and_op                (idu_alu_and_op),
+        .idu_alu_sll_op                (idu_alu_sll_op),
+        .idu_alu_srl_op                (idu_alu_srl_op),
+        .idu_alu_sra_op                (idu_alu_sra_op),
+        .idu_alu_beq_op                (idu_alu_beq_op),
+        .idu_alu_bne_op                (idu_alu_bne_op),
+        .idu_alu_blt_op                (idu_alu_blt_op),
+        .idu_alu_bge_op                (idu_alu_bge_op),
+        .idu_alu_bltu_op               (idu_alu_bltu_op),
+        .idu_alu_bgeu_op               (idu_alu_bgeu_op),
+        .idu_alu_lb_op                 (idu_alu_lb_op),
+        .idu_alu_lh_op                 (idu_alu_lh_op),
+        .idu_alu_lw_op                 (idu_alu_lw_op),
+        .idu_alu_lbu_op                (idu_alu_lbu_op),
+        .idu_alu_lhu_op                (idu_alu_lhu_op),
+        .idu_alu_sb_op                 (idu_alu_sb_op),
+        .idu_alu_sh_op                 (idu_alu_sh_op),
+        .idu_alu_sw_op                 (idu_alu_sw_op),
+        .idu_alu_lui_op                (idu_alu_lui_op),
+        .idu_alu_aui_op                (idu_alu_aui_op),
+        .idu_alu_jal_op                (idu_alu_jal_op),
+        .idu_alu_jalr_op               (idu_alu_jalr_op),
+        //data pass,
+        .idu_alu_wb_addr               (idu_alu_wb_addr),
+        .idu_alu_br_st_imm             (idu_alu_br_st_imm),
+        .idu_alu_pc                    (idu_alu_pc),
+        //matrix multiplication,
+        //ld/st,
+        .idu_alu_ld_iram               (idu_alu_ld_iram),
+        .idu_alu_ld_wram               (idu_alu_ld_wram),
+        .idu_alu_st_iram               (idu_alu_st_iram),
+        .idu_alu_st_wram               (idu_alu_st_wram),
+        .idu_alu_st_oram               (idu_alu_st_oram),
+        .idu_alu_st_dram               (idu_alu_st_dram),
+        //mxu related,
+        .idu_alu_conv                  (idu_alu_conv),
+        .idu_alu_act                   (idu_alu_act),
+        .idu_alu_pool                  (idu_alu_pool),
+        .idu_alu_wfi                   (idu_alu_wfi),
+        //ld/st,
+        .idu_alu_dram_addr             (idu_alu_dram_addr),
+        .idu_alu_num                   (idu_alu_num),
+        .idu_alu_len                   (idu_alu_len),
+        .idu_alu_str                   (idu_alu_str),
+        .idu_alu_start_x               (idu_alu_start_x),
+        .idu_alu_start_y               (idu_alu_start_y),
+        .idu_alu_ld_st_addr            (idu_alu_ld_st_addr),
+        .idu_alu_st_low                (idu_alu_st_low),
+        .idu_alu_iram_start_addr       (idu_alu_iram_start_addr),
+        .idu_alu_wram_start_addr       (idu_alu_wram_start_addr),
+        .idu_alu_wram_row_len          (idu_alu_wram_row_len),
+        .idu_alu_iram_row_len          (idu_alu_iram_row_len),
+        .idu_alu_col_len               (idu_alu_col_len),
+        .idu_alu_st_row                (idu_alu_st_row),
+        .idu_alu_st_col                (idu_alu_st_col),
+        //mxu related,
+        .idu_alu_act_type              (idu_alu_act_type),
+        .idu_alu_pool_size             (idu_alu_pool_size),
+        .idu_alu_mxu_clr               (idu_alu_mxu_clr),
+        //rf output,
+        .idu_rf_src1_addr              (idu_rf_src1_addr),
+        .idu_rf_src2_addr              (idu_rf_src2_addr)
+    );
+    alu u_alu(
+        .clk                                (clk),
+        .rst_n                              (rst_n),
+        //idu input,
+        .idu_alu_vld                       (idu_alu_vld),
+        .idu_alu_src1                      (idu_alu_src1),
+        .idu_alu_src2                      (idu_alu_src2),
+        .idu_alu_wb_vld                    (idu_alu_wb_vld),
+        .idu_alu_add_op                    (idu_alu_add_op),
+        .idu_alu_sub_op                    (idu_alu_sub_op),
+        .idu_alu_slt_op                    (idu_alu_slt_op),
+        .idu_alu_sltu_op                   (idu_alu_sltu_op),
+        .idu_alu_xor_op                    (idu_alu_xor_op),
+        .idu_alu_or_op                     (idu_alu_or_op),
+        .idu_alu_and_op                    (idu_alu_and_op),
+        .idu_alu_sll_op                    (idu_alu_sll_op),
+        .idu_alu_srl_op                    (idu_alu_srl_op),
+        .idu_alu_sra_op                    (idu_alu_sra_op),
+        .idu_alu_beq_op                    (idu_alu_beq_op),
+        .idu_alu_bne_op                    (idu_alu_bne_op),
+        .idu_alu_blt_op                    (idu_alu_blt_op),
+        .idu_alu_bge_op                    (idu_alu_bge_op),
+        .idu_alu_bltu_op                   (idu_alu_bltu_op),
+        .idu_alu_bgeu_op                   (idu_alu_bgeu_op),
+        .idu_alu_lb_op                     (idu_alu_lb_op),
+        .idu_alu_lh_op                     (idu_alu_lh_op),
+        .idu_alu_lw_op                     (idu_alu_lw_op),
+        .idu_alu_lbu_op                    (idu_alu_lbu_op),
+        .idu_alu_lhu_op                    (idu_alu_lhu_op),
+        .idu_alu_sb_op                     (idu_alu_sb_op),
+        .idu_alu_sh_op                     (idu_alu_sh_op),
+        .idu_alu_sw_op                     (idu_alu_sw_op),
+        .idu_alu_lui_op                    (idu_alu_lui_op),
+        .idu_alu_aui_op                    (idu_alu_aui_op),
+        .idu_alu_jal_op                    (idu_alu_jal_op),
+        .idu_alu_jalr_op                   (idu_alu_jalr_op),
+        .idu_alu_wb_addr                   (idu_alu_wb_addr),
+        .idu_alu_br_st_imm                 (idu_alu_br_st_imm),
+        .idu_alu_pc                        (idu_alu_pc),
+        //by pass,
+        .idu_alu_ld_iram                   (idu_alu_ld_iram),
+        .idu_alu_ld_wram                   (idu_alu_ld_wram),
+        .idu_alu_st_iram                   (idu_alu_st_iram),
+        .idu_alu_st_wram                   (idu_alu_st_wram),
+        .idu_alu_st_oram                   (idu_alu_st_oram),
+        .idu_alu_st_dram                   (idu_alu_st_dram),
+        .idu_alu_conv                      (idu_alu_conv),
+        .idu_alu_act                       (idu_alu_act),
+        .idu_alu_pool                      (idu_alu_pool),
+        .idu_alu_wfi                       (idu_alu_wfi),
+        .idu_alu_dram_addr                 (idu_alu_dram_addr),
+        .idu_alu_num                       (idu_alu_num),
+        .idu_alu_len                       (idu_alu_len),
+        .idu_alu_str                       (idu_alu_str),
+        .idu_alu_start_x                   (idu_alu_start_x),
+        .idu_alu_start_y                   (idu_alu_start_y),
+        .idu_alu_ld_st_addr                (idu_alu_ld_st_addr),
+        .idu_alu_st_low                    (idu_alu_st_low),
+        .idu_alu_iram_start_addr           (idu_alu_iram_start_addr),
+        .idu_alu_wram_start_addr           (idu_alu_wram_start_addr),
+        .idu_alu_wram_row_len              (idu_alu_wram_row_len),
+        .idu_alu_iram_row_len              (idu_alu_iram_row_len),
+        .idu_alu_col_len                   (idu_alu_col_len),
+        .idu_alu_st_row                    (idu_alu_st_row),
+        .idu_alu_st_col                    (idu_alu_st_col),
+        .idu_alu_act_type                  (idu_alu_act_type),
+        .idu_alu_pool_size                 (idu_alu_pool_size),
+        .idu_alu_mxu_clr                   (idu_alu_mxu_clr),
+        //lsu input,
+        .lsu_alu_rdy                       (lsu_alu_rdy),
+        //ifu output,
+        .alu_ifu_br_vld                    (alu_ifu_br_vld),
+        .alu_ifu_br_addr                   (alu_ifu_br_addr),
+        //idu output,
+        .alu_idu_rdy                       (alu_idu_rdy),
+        .alu_idu_flush_vld                 (alu_idu_flush_vld),
+        .alu_idu_wb_addr                   (alu_idu_wb_addr),
+        .alu_idu_wb_data                   (alu_idu_wb_data),
+        .alu_idu_wb_vld                    (alu_idu_wb_vld),
+        .alu_idu_ld_vld                    (alu_idu_ld_vld),
+        //lsu output,
+        .alu_lsu_vld                       (alu_lsu_vld),
+        .alu_lsu_wb_vld                    (alu_lsu_wb_vld),
+        .alu_lsu_lb_op                     (alu_lsu_lb_op),
+        .alu_lsu_lh_op                     (alu_lsu_lh_op),
+        .alu_lsu_lw_op                     (alu_lsu_lw_op),
+        .alu_lsu_lbu_op                    (alu_lsu_lbu_op),
+        .alu_lsu_lhu_op                    (alu_lsu_lhu_op),
+        .alu_lsu_sb_op                     (alu_lsu_sb_op),
+        .alu_lsu_sh_op                     (alu_lsu_sh_op),
+        .alu_lsu_sw_op                     (alu_lsu_sw_op),
+        .alu_lsu_wb_addr                   (alu_lsu_wb_addr),
+        .alu_lsu_wb_data                   (alu_lsu_wb_data),
+        .alu_lsu_src2                      (alu_lsu_src2),
+        //mm related,
+        .alu_lsu_ld_iram                   (alu_lsu_ld_iram),
+        .alu_lsu_ld_wram                   (alu_lsu_ld_wram),
+        .alu_lsu_ld_oram                   (alu_lsu_ld_oram),
+        .alu_lsu_st_iram                   (alu_lsu_st_iram),
+        .alu_lsu_st_wram                   (alu_lsu_st_wram),
+        .alu_lsu_st_oram                   (alu_lsu_st_oram),
+        .alu_lsu_st_dram                   (alu_lsu_st_dram),
+        .alu_lsu_conv                      (alu_lsu_conv),
+        .alu_lsu_act                       (alu_lsu_act),
+        .alu_lsu_pool                      (alu_lsu_pool),
+        .alu_lsu_wfi                       (alu_lsu_wfi),
+        .alu_lsu_dram_addr                 (alu_lsu_dram_addr),
+        .alu_lsu_num                       (alu_lsu_num),
+        .alu_lsu_len                       (alu_lsu_len),
+        .alu_lsu_str                       (alu_lsu_str),
+        .alu_lsu_start_x                   (alu_lsu_start_x),
+        .alu_lsu_start_y                   (alu_lsu_start_y),
+        .alu_lsu_ld_st_addr                (alu_lsu_ld_st_addr),
+        .alu_lsu_st_low                    (alu_lsu_st_low),
+        .alu_lsu_st_row                    (alu_lsu_st_row),
+        .alu_lsu_st_col                    (alu_lsu_st_col),
+        .alu_lsu_iram_start_addr           (alu_lsu_iram_start_addr),
+        .alu_lsu_wram_start_addr           (alu_lsu_wram_start_addr),
+        .alu_lsu_wram_row_len              (alu_lsu_wram_row_len),
+        .alu_lsu_iram_row_len              (alu_lsu_iram_row_len),
+        .alu_lsu_col_len                   (alu_lsu_col_len),
+        .alu_lsu_act_type                  (alu_lsu_act_type),
+        .alu_lsu_pool_size                 (alu_lsu_pool_size),
+	    .alu_lsu_mxu_clr		           (alu_lsu_mxu_clr)
+    );
+
+    lsu u_lsu(
+        .clk                                  (clk),
+        .rst_n                                (rst_n),
+        .start_vld                      (start_vld),
+        .alu_lsu_vld                          (alu_lsu_vld),
+        .alu_lsu_wb_vld                       (alu_lsu_wb_vld),
+        .alu_lsu_lb_op                        (alu_lsu_lb_op),
+        .alu_lsu_lh_op                        (alu_lsu_lh_op),
+        .alu_lsu_lw_op                        (alu_lsu_lw_op),
+        .alu_lsu_lbu_op                       (alu_lsu_lbu_op),
+        .alu_lsu_lhu_op                       (alu_lsu_lhu_op),
+        .alu_lsu_sb_op                        (alu_lsu_sb_op),
+        .alu_lsu_sh_op                        (alu_lsu_sh_op),
+        .alu_lsu_sw_op                        (alu_lsu_sw_op),
+        .alu_lsu_wb_addr                      (alu_lsu_wb_addr),
+        .alu_lsu_wb_data                      (alu_lsu_wb_data),
+        .alu_lsu_src2                         (alu_lsu_src2),
+        .alu_lsu_ld_iram                      (alu_lsu_ld_iram),
+        .alu_lsu_ld_wram                      (alu_lsu_ld_wram),
+        .alu_lsu_ld_oram                      (alu_lsu_ld_oram),
+        .alu_lsu_st_iram                      (alu_lsu_st_iram),
+        .alu_lsu_st_wram                      (alu_lsu_st_wram),
+        .alu_lsu_st_oram                      (alu_lsu_st_oram),
+        .alu_lsu_st_dram                      (alu_lsu_st_dram),
+        .alu_lsu_conv                         (alu_lsu_conv),
+        .alu_lsu_act                          (alu_lsu_act),
+        .alu_lsu_pool                         (alu_lsu_pool),
+        .alu_lsu_wfi                          (alu_lsu_wfi),
+        .alu_lsu_dram_addr                    (alu_lsu_dram_addr),
+        .alu_lsu_num                          (alu_lsu_num),
+        .alu_lsu_len                          (alu_lsu_len),
+        .alu_lsu_str                          (alu_lsu_str),
+        .alu_lsu_start_x                      (alu_lsu_start_x),
+        .alu_lsu_start_y                      (alu_lsu_start_y),
+        .alu_lsu_ld_st_addr                   (alu_lsu_ld_st_addr),
+        .alu_lsu_st_low                       (alu_lsu_st_low),
+        .alu_lsu_st_row                       (alu_lsu_st_row),
+        .alu_lsu_st_col                       (alu_lsu_st_col),
+        .alu_lsu_iram_start_addr              (alu_lsu_iram_start_addr),
+        .alu_lsu_wram_start_addr              (alu_lsu_wram_start_addr),
+        .alu_lsu_iram_row_len                 (alu_lsu_iram_row_len),
+        .alu_lsu_wram_row_len                 (alu_lsu_wram_row_len),
+        .alu_lsu_col_len                      (alu_lsu_col_len),
+        .alu_lsu_act_type                     (alu_lsu_act_type),
+        .alu_lsu_pool_size                    (alu_lsu_pool_size),
+        .alu_lsu_mxu_clr                      (alu_lsu_mxu_clr),
+
+        .axi_lsu_awrdy                        (axi_lsu_awrdy),
+        .axi_lsu_wrdy                         (axi_lsu_wrdy),
+        .axi_lsu_bid                          (axi_lsu_bid),
+        .axi_lsu_bresp                        (axi_lsu_bresp),
+        .axi_lsu_bvld                         (axi_lsu_bvld),
+        .axi_lsu_resp_oram_addr               (axi_lsu_resp_oram_addr),
+        .axi_lsu_sram_addr                    (axi_lsu_sram_addr),
+        .axi_lsu_dram_addr                    (axi_lsu_dram_addr),
+        .axi_lsu_axi_done                     (axi_lsu_axi_done),
+        .axi_lsu_arrdy                        (axi_lsu_arrdy),
+        .axi_lsu_rid                          (axi_lsu_rid),
+        .axi_lsu_rdata                        (axi_lsu_rdata),
+        .axi_lsu_rresp                        (axi_lsu_rresp),
+        .axi_lsu_rlast                        (axi_lsu_rlast),
+        .axi_lsu_rvld                         (axi_lsu_rvld),
+        .lsu_alu_rdy                          (lsu_alu_rdy),
+        .lsu_mxu_vld                          (lsu_mxu_vld),
+        .lsu_mxu_clr                          (lsu_mxu_clr),
+        .lsu_mxu_conv_vld                     (lsu_mxu_conv_vld),
+        .lsu_mxu_iram_vld                     (lsu_mxu_iram_vld),
+        .lsu_mxu_iram_pld                     (lsu_mxu_iram_pld),
+        .lsu_mxu_wram_vld                     (lsu_mxu_wram_vld),
+        .lsu_mxu_wram_pld                     (lsu_mxu_wram_pld),
+        .lsu_mxu_pool_vld                     (lsu_mxu_pool_vld),
+        .lsu_mxu_pool_size                    (lsu_mxu_pool_size),
+        .lsu_mxu_act_vld                      (lsu_mxu_act_vld),
+        .lsu_mxu_act_type                     (lsu_mxu_act_type),
+        .lsu_mxu_wfi                          (lsu_mxu_wfi),
+        .mxu_lsu_int8_row0_data               (mxu_lsu_int8_row0_data),
+        .mxu_lsu_int16_row0_data              (mxu_lsu_int16_row0_data),
+        .mxu_lsu_int8_row1_data               (mxu_lsu_int8_row1_data),
+        .mxu_lsu_int16_row1_data              (mxu_lsu_int16_row1_data),
+        .mxu_lsu_int8_row2_data               (mxu_lsu_int8_row2_data),
+        .mxu_lsu_int16_row2_data              (mxu_lsu_int16_row2_data),
+        .mxu_lsu_int8_row3_data               (mxu_lsu_int8_row3_data),
+        .mxu_lsu_int16_row3_data              (mxu_lsu_int16_row3_data),
+        .mxu_lsu_int8_row4_data               (mxu_lsu_int8_row4_data),
+        .mxu_lsu_int16_row4_data              (mxu_lsu_int16_row4_data),
+        .mxu_lsu_int8_row5_data               (mxu_lsu_int8_row5_data),
+        .mxu_lsu_int16_row5_data              (mxu_lsu_int16_row5_data),
+        .mxu_lsu_int8_row6_data               (mxu_lsu_int8_row6_data),
+        .mxu_lsu_int16_row6_data              (mxu_lsu_int16_row6_data),
+        .mxu_lsu_int8_row7_data               (mxu_lsu_int8_row7_data),
+        .mxu_lsu_int16_row7_data              (mxu_lsu_int16_row7_data),
+        .mxu_lsu_int8_row8_data               (mxu_lsu_int8_row8_data),
+        .mxu_lsu_int16_row8_data              (mxu_lsu_int16_row8_data),
+        .mxu_lsu_int8_row9_data               (mxu_lsu_int8_row9_data),
+        .mxu_lsu_int16_row9_data              (mxu_lsu_int16_row9_data),
+        .mxu_lsu_int8_row10_data              (mxu_lsu_int8_row10_data),
+        .mxu_lsu_int16_row10_data             (mxu_lsu_int16_row10_data),
+        .mxu_lsu_int8_row11_data              (mxu_lsu_int8_row11_data),
+        .mxu_lsu_int16_row11_data             (mxu_lsu_int16_row11_data),
+        .mxu_lsu_int8_row12_data              (mxu_lsu_int8_row12_data),
+        .mxu_lsu_int16_row12_data             (mxu_lsu_int16_row12_data),
+        .mxu_lsu_int8_row13_data              (mxu_lsu_int8_row13_data),
+        .mxu_lsu_int16_row13_data             (mxu_lsu_int16_row13_data),
+        .mxu_lsu_int8_row14_data              (mxu_lsu_int8_row14_data),
+        .mxu_lsu_int16_row14_data             (mxu_lsu_int16_row14_data),
+        .mxu_lsu_int8_row15_data              (mxu_lsu_int8_row15_data),
+        .mxu_lsu_int16_row15_data             (mxu_lsu_int16_row15_data),
+        .mxu_lsu_data_rdy                     (mxu_lsu_data_rdy),
+        .mxu_lsu_rdy                          (mxu_lsu_rdy),
+        .lsu_axi_awid                         (lsu_axi_awid),
+        .lsu_axi_awaddr                       (lsu_axi_awaddr),
+        .lsu_axi_awlen                        (lsu_axi_awlen),
+        .lsu_axi_awsize                       (lsu_axi_awsize),
+        .lsu_axi_awburst                      (lsu_axi_awburst),
+        .lsu_axi_awstr                        (lsu_axi_awstr),
+        .lsu_axi_awnum                        (lsu_axi_awnum),
+        .lsu_axi_awvld                        (lsu_axi_awvld),
+        .lsu_axi_oram_addr                    (lsu_axi_oram_addr),
+        .lsu_axi_wdata                        (lsu_axi_wdata),
+        .lsu_axi_wstrb                        (lsu_axi_wstrb),
+        .lsu_axi_wlast                        (lsu_axi_wlast),
+        .lsu_axi_wvld                         (lsu_axi_wvld),
+        .lsu_axi_brdy                         (lsu_axi_brdy),
+        .lsu_axi_arid                         (lsu_axi_arid),
+        .lsu_axi_araddr                       (lsu_axi_araddr),
+        .lsu_axi_arlen                        (lsu_axi_arlen),
+        .lsu_axi_arsize                       (lsu_axi_arsize),
+        .lsu_axi_arburst                      (lsu_axi_arburst),
+        .lsu_axi_arstr                        (lsu_axi_arstr),
+        .lsu_axi_arnum                        (lsu_axi_arnum),
+	    .lsu_axi_sram_addr		              (lsu_axi_sram_addr),
+        .lsu_axi_arvld                        (lsu_axi_arvld),
+        .lsu_axi_rrdy                         (lsu_axi_rrdy),
+        .lsu_idu_wb_vld                       (lsu_idu_wb_vld),
+        .lsu_idu_ld_vld                       (lsu_idu_ld_vld),
+        .lsu_idu_wb_addr                      (lsu_idu_wb_addr),
+        .lsu_idu_wb_data                      (lsu_idu_wb_data),
+        .lsu_rf_wb_vld                        (lsu_rf_wb_vld),
+        .lsu_rf_wb_addr                       (lsu_rf_wb_addr),
+        .lsu_rf_wb_data                       (lsu_rf_wb_data)
+    );
+
+     mxu u_mxu(
+        .clk(clk),
+        .rst_n(rst_n),
+        .start_vld(start_vld),
+        .lsu_mxu_vld(lsu_mxu_vld),
+        .lsu_mxu_clr(lsu_mxu_clr),
+        .lsu_mxu_conv_vld(lsu_mxu_conv_vld),
+        .lsu_mxu_iram_vld(lsu_mxu_iram_vld),
+        .lsu_mxu_iram_pld(lsu_mxu_iram_pld),
+        .lsu_mxu_wram_vld(lsu_mxu_wram_vld),
+        .lsu_mxu_wram_pld(lsu_mxu_wram_pld),
+        .lsu_mxu_pool_vld(lsu_mxu_pool_vld),
+        .lsu_mxu_pool_size(lsu_mxu_pool_size),
+        .lsu_mxu_act_vld(lsu_mxu_act_vld),
+        .lsu_mxu_act_type(lsu_mxu_act_type),
+        .lsu_mxu_wfi(lsu_mxu_wfi),
+        .mxu_lsu_int8_row0_data(mxu_lsu_int8_row0_data),
+        .mxu_lsu_int16_row0_data(mxu_lsu_int16_row0_data),
+        .mxu_lsu_int8_row1_data(mxu_lsu_int8_row1_data),
+        .mxu_lsu_int16_row1_data(mxu_lsu_int16_row1_data),
+        .mxu_lsu_int8_row2_data(mxu_lsu_int8_row2_data),
+        .mxu_lsu_int16_row2_data(mxu_lsu_int16_row2_data),
+        .mxu_lsu_int8_row3_data(mxu_lsu_int8_row3_data),
+        .mxu_lsu_int16_row3_data(mxu_lsu_int16_row3_data),
+        .mxu_lsu_int8_row4_data(mxu_lsu_int8_row4_data),
+        .mxu_lsu_int16_row4_data(mxu_lsu_int16_row4_data),
+        .mxu_lsu_int8_row5_data(mxu_lsu_int8_row5_data),
+        .mxu_lsu_int16_row5_data(mxu_lsu_int16_row5_data),
+        .mxu_lsu_int8_row6_data(mxu_lsu_int8_row6_data),
+        .mxu_lsu_int16_row6_data(mxu_lsu_int16_row6_data),
+        .mxu_lsu_int8_row7_data(mxu_lsu_int8_row7_data),
+        .mxu_lsu_int16_row7_data(mxu_lsu_int16_row7_data),
+        .mxu_lsu_int8_row8_data(mxu_lsu_int8_row8_data),
+        .mxu_lsu_int16_row8_data(mxu_lsu_int16_row8_data),
+        .mxu_lsu_int8_row9_data(mxu_lsu_int8_row9_data),
+        .mxu_lsu_int16_row9_data(mxu_lsu_int16_row9_data),
+        .mxu_lsu_int8_row10_data(mxu_lsu_int8_row10_data),
+        .mxu_lsu_int16_row10_data(mxu_lsu_int16_row10_data),
+        .mxu_lsu_int8_row11_data(mxu_lsu_int8_row11_data),
+        .mxu_lsu_int16_row11_data(mxu_lsu_int16_row11_data),
+        .mxu_lsu_int8_row12_data(mxu_lsu_int8_row12_data),
+        .mxu_lsu_int16_row12_data(mxu_lsu_int16_row12_data),
+        .mxu_lsu_int8_row13_data(mxu_lsu_int8_row13_data),
+        .mxu_lsu_int16_row13_data(mxu_lsu_int16_row13_data),
+        .mxu_lsu_int8_row14_data(mxu_lsu_int8_row14_data),
+        .mxu_lsu_int16_row14_data(mxu_lsu_int16_row14_data),
+        .mxu_lsu_int8_row15_data(mxu_lsu_int8_row15_data),
+        .mxu_lsu_int16_row15_data(mxu_lsu_int16_row15_data),
+        .mxu_lsu_data_rdy(mxu_lsu_data_rdy),
+        .mxu_lsu_rdy(mxu_lsu_rdy),
+        .wfi(wfi)
+    );
+
+    rf u_rf(
+        .clk                                 (clk),
+        .rst_n                               (rst_n),
+        .idu_rf_src1_addr                    (idu_rf_src1_addr),
+        .idu_rf_src2_addr                    (idu_rf_src2_addr),
+        .lsu_rf_wb_vld                       (lsu_rf_wb_vld),
+        .lsu_rf_wb_addr                      (lsu_rf_wb_addr),
+        .lsu_rf_wb_data                      (lsu_rf_wb_data),
+        .rf_idu_src1_data                    (rf_idu_src1_data),
+        .rf_idu_src2_data                    (rf_idu_src2_data)
+    );
+
+    AXI_READ_INFT#(
+        .ARID_WIDTH  (`AWID_WIDTH), 
+        .ARADDR_WIDTH(`AWADDR_WIDTH), 
+        .RDATA_WIDTH (`WDATA_WIDTH)
+    )
+    u_AXI_READ_INFT(
+        .clk                                  (clk),
+        .rst_n                                (rst_n),
+        .ARID                                 (ARID),
+        .ARADDR                               (ARADDR),
+        .ARLEN                                (ARLEN),
+        .ARSIZE                               (ARSIZE),
+        .ARBURST                              (ARBURST),
+        .ARREGION                             (ARREGION),
+        .ARVALID                              (ARVALID),
+        .ARREADY                              (ARREADY),
+        .RID                                  (RID),
+        .RDATA                                (RDATA),
+        .RRESP                                (RRESP),
+        .RLAST                                (RLAST),
+        .RVALID                               (RVALID),
+        .RREADY                               (RREADY),
+        .RSRAM                                (RSRAM),
+        .RSRAM_en                             (RSRAM_en),
+        .lsu_axi_arid                         (lsu_axi_arid),
+        .lsu_axi_araddr                       (lsu_axi_araddr),
+        .lsu_axi_arlen                        (lsu_axi_arlen),
+        .lsu_axi_arsize                       (lsu_axi_arsize),
+        .lsu_axi_arburst                      (lsu_axi_arburst),
+        .lsu_axi_arstr                        (lsu_axi_arstr),
+        .lsu_axi_arnum                        (lsu_axi_arnum),
+	    .lsu_axi_sram_addr		              (lsu_axi_sram_addr),
+        .lsu_axi_arvld                        (lsu_axi_arvld),
+        .lsu_axi_rrdy                         (lsu_axi_rrdy),
+        .axi_lsu_rid                          (axi_lsu_rid),
+        .axi_lsu_rdata                        (axi_lsu_rdata),
+        .axi_lsu_rresp                        (axi_lsu_rresp),
+        .axi_lsu_rlast                        (axi_lsu_rlast),
+        .axi_lsu_rvld                         (axi_lsu_rvld),
+        .axi_lsu_sram_addr                    (axi_lsu_sram_addr),
+        .axi_lsu_dram_addr                    (axi_lsu_dram_addr),
+        .axi_lsu_axi_done                     (axi_lsu_axi_done),
+        .axi_lsu_arrdy                        (axi_lsu_arrdy)
+    );
+
+    AXI_WRITE_INFT#(
+        .AWID_WIDTH  (`AWID_WIDTH), 
+        .AWADDR_WIDTH(`AWADDR_WIDTH), 
+        .WDATA_WIDTH (`WDATA_WIDTH)
+    )
+    u_AXI_WRITE_INTF
+    (
+        .clk                                  (clk),
+        .rst_n                                (rst_n),
+        .AWID                                 (AWID),
+        .AWADDR                               (AWADDR),
+        .AWLEN                                (AWLEN),
+        .AWSIZE                               (AWSIZE),
+        .AWBURST                              (AWBURST),
+        .AWREGION                             (AWREGION),
+        .AWVALID                              (AWVALID),
+        .AWREADY                              (AWREADY),
+        .WDATA                                (WDATA),
+        .WSTRB                                (WSTRB),
+        .WLAST                                (WLAST),
+        .WVALID                               (WVALID),
+        .WREADY                               (WREADY),
+        .BID                                  (BID),
+        .BRESP                                (BRESP),
+        .BVALID                               (BVALID),
+        .BREADY                               (BREADY),
+        .lsu_axi_awid                         (lsu_axi_awid),
+        .lsu_axi_awaddr                       (lsu_axi_awaddr),
+        .lsu_axi_awlen                        (lsu_axi_awlen),
+        .lsu_axi_awsize                       (lsu_axi_awsize),
+        .lsu_axi_awburst                      (lsu_axi_awburst),
+        .lsu_axi_awstr                        (lsu_axi_awstr),
+        .lsu_axi_awvld                        (lsu_axi_awvld),
+        .lsu_axi_oram_addr                    (lsu_axi_oram_addr),
+        .lsu_axi_awnum                        (lsu_axi_awnum),
+        .lsu_axi_wdata                        (lsu_axi_wdata),
+        .lsu_axi_wstrb                        (lsu_axi_wstrb),
+        .lsu_axi_wlast                        (lsu_axi_wlast),
+        .lsu_axi_wvld                         (lsu_axi_wvld),
+        .lsu_axi_brdy                         (lsu_axi_brdy),
+        .axi_lsu_awrdy                        (axi_lsu_awrdy),
+        .axi_lsu_wrdy                         (axi_lsu_wrdy),
+        .axi_lsu_bid                          (axi_lsu_bid),
+        .axi_lsu_bresp                        (axi_lsu_bresp),
+        .axi_lsu_bvld                         (axi_lsu_bvld),
+        .axi_lsu_resp_oram_addr               (axi_lsu_resp_oram_addr)
+    );
+
+    extern_bram
+    external_mem(
+        // waddr interface
+        .s_aclk         (clk),
+        .s_aresetn      (rst_n),  
+        .s_axi_awid     (AWID),
+        .s_axi_awaddr   (AWADDR),
+        .s_axi_awlen    (AWLEN),
+        .s_axi_awsize   (AWSIZE),
+        .s_axi_awburst  (AWBURST),
+        .s_axi_awvalid  (AWVALID),
+        .s_axi_awready  (AWREADY),
+        .s_axi_arid     (ARID),
+        .s_axi_araddr   (ARADDR_qual),
+        .s_axi_arlen    (ARLEN_qual),
+        .s_axi_arsize   (ARSIZE),
+        .s_axi_arburst  (ARBURST),
+        .s_axi_arvalid  (ARVALID),
+        .s_axi_arready  (ARREADY),
+        // wdata interface
+        .s_axi_wdata    (WDATA),
+        .s_axi_wstrb    (WSTRB),
+        .s_axi_wlast    (WLAST),
+        .s_axi_wvalid   (WVALID),
+        .s_axi_wready   (WREADY),
+        // read interface
+        .s_axi_rid      (RID),
+        .s_axi_rdata    (RDATA_raw),
+        .s_axi_rresp    (RRESP),
+        .s_axi_rlast    (RLAST),
+        .s_axi_rvalid   (RVALID_raw),
+        .s_axi_rready   (RREADY),
+        // wresp interface
+        .s_axi_bid      (BID),
+        .s_axi_bresp    (BRESP),
+        .s_axi_bvalid   (BVALID),
+        .s_axi_bready   (BREADY)
+    );
+
+    genvar i;
+    generate
+        for(i = 0; i < 16; i=i+1)begin
+
+            DFFE #(.WIDTH(32))
+            ff_RSRAM (
+                .clk(clk),
+                .en(RSRAM_en[i]),
+                .d(ARADDR),
+                .q(sram_buff[i])
+            );
+        end
+    endgenerate
+    
+    wire RVALID_raw_ff;
+    wire RVALID_raw_2ff;
+    wire [63:0] RDATA_raw_ff;
+
+    DFFR #(.WIDTH(`AWADDR_WIDTH))
+    ff_ARADDR(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(ARADDR),
+        .q(ARADDR_ff)
+    );
+    DFFR #(.WIDTH(`AWADDR_WIDTH))
+    ff_ARADDR2(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(ARADDR_ff),
+        .q(ARADDR_2ff)
+    );
+
+    DFFR #(.WIDTH(3))
+    ff_ARSIZE(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(ARSIZE),
+        .q(ARSIZE_ff)
+    );
+
+    DFFR #(.WIDTH(1))
+    ff_RVALID_raw(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(RVALID_raw),
+        .q(RVALID_raw_ff)
+    );
+
+    DFFR #(.WIDTH(1))
+    ff_RVALID_raw_2(
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(RVALID_raw_ff),
+        .q(RVALID_raw_2ff)
+    );
+
+    DFFRE #(.WIDTH(64))
+    ff_RDATA_raw(
+        .clk(clk),
+        .rst_n(rst_n),
+	.en(~RLAST),
+        .d(RDATA_raw),
+        .q(RDATA_raw_ff)
+    );
+
+    wire [63:0] RDATA_0;
+    wire [63:0] RDATA_3_raw;
+
+    assign ARLEN_qual= ~(|ARSIZE) ? ARLEN : (|ARADDR[2:0]) ? ARLEN+1 : ARLEN;
+    assign ARADDR_qual= ~(|ARSIZE) ? ARADDR : ARADDR;
+
+    /*
+    assign RDATA_0 = (ARSIZE_ff == 3) ? RDATA_raw
+                 : (ARADDR_ff[2:0]==0) ? RDATA_raw[7:0] 
+                 : (ARADDR_ff[2:0]==1) ? RDATA_raw[15:8]
+                 : (ARADDR_ff[2:0]==2) ? RDATA_raw[23:16]
+                 : (ARADDR_ff[2:0]==3) ? RDATA_raw[31:24]
+                 : (ARADDR_ff[2:0]==4) ? RDATA_raw[39:32]
+                 : (ARADDR_ff[2:0]==5) ? RDATA_raw[47:40]
+                 : (ARADDR_ff[2:0]==6) ? RDATA_raw[55:48]
+                 :  RDATA_raw[63:56];
+    */
+    assign RDATA_0 = (ARSIZE_ff == 3) ? RDATA_raw
+                 : (sram_buff[RID][2:0]==0) ? RDATA_raw[7:0] 
+                 : (sram_buff[RID][2:0]==1) ? RDATA_raw[15:8]
+                 : (sram_buff[RID][2:0]==2) ? RDATA_raw[23:16]
+                 : (sram_buff[RID][2:0]==3) ? RDATA_raw[31:24]
+                 : (sram_buff[RID][2:0]==4) ? RDATA_raw[39:32]
+                 : (sram_buff[RID][2:0]==5) ? RDATA_raw[47:40]
+                 : (sram_buff[RID][2:0]==6) ? RDATA_raw[55:48]
+                 :  RDATA_raw[63:56];
+
+    // n
+    assign RDATA_3_raw = (ARADDR_2ff[2:0]==0) ? RDATA_raw_ff
+                 : (ARADDR_2ff[2:0]==1) ? {RDATA_raw[7:0],RDATA_raw_ff[63:8]}
+                 : (ARADDR_2ff[2:0]==2) ? {RDATA_raw[15:0],RDATA_raw_ff[63:16]}
+                 : (ARADDR_2ff[2:0]==3) ? {RDATA_raw[23:0],RDATA_raw_ff[63:24]}
+                 : (ARADDR_2ff[2:0]==4) ? {RDATA_raw[31:0],RDATA_raw_ff[63:32]}
+                 : (ARADDR_2ff[2:0]==5) ? {RDATA_raw[39:0],RDATA_raw_ff[63:40]}
+                 : (ARADDR_2ff[2:0]==6) ? {RDATA_raw[47:0],RDATA_raw_ff[63:48]}
+                 : {RDATA_raw[55:0],RDATA_raw_ff[63:56]};
+
+    assign RVALID = (ARSIZE_ff == 0) ? RVALID_raw : (|ARADDR_ff[2:0]) ? RVALID_raw_ff : RVALID_raw; 
+    assign RDATA = (ARSIZE_ff == 0) ? RDATA_0 : (|ARADDR_ff[2:0]) ? RDATA_3_raw : RDATA_raw;
+    
+    //softmax
+    wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] data[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0];
+    wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] sum;
+    wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] cur_max;
+    wire[15:0] max_val;
+    wire[15:0] max_val_nxt;
+    wire[3:0] max_idx;
+    wire[3:0] max_idx_nxt;
+    wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] softmax_input_quant[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0];
+    wire[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0] softmax_input_quant_en;
+    wire[3:0] softmax_count;
+    wire[3:0] softmax_count_nxt;
+    wire softmax_quant_en;
+    wire [`SOFT_MAX_INPUT_ADDR_WIDTH-1:0] softmax_exp_vld_nxt;
+    wire [`SOFT_MAX_INPUT_ADDR_WIDTH-1:0] softmax_exp_vld;
+    wire softmax_exp_en;
+    wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] softmax_exp_output[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0];
+
+    wire[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0] softmax_exp_done;
+    wire[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0] softmax_exp_err;
+    wire[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0] softmax_exp_rdy;
+    wire[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0] softmax_exp_div;
+    
+    
+    wire[3:0] softmax_out_count;
+    wire[`SOFT_MAX_INPUT_DATA_WIDTH-1:0] softmax_out_data[`SOFT_MAX_INPUT_ADDR_WIDTH-1:0];
+    
+    
+    assign softmax_count_nxt = softmax_count=='d10 ? softmax_count : softmax_count+1;
+    DFFRE #(.WIDTH(4))
+    ff_count(
+        .clk(clk),
+        .rst_n(rst_n),
+	    .en(WVALID&WREADY),
+        .d(softmax_count_nxt),
+        .q(softmax_count)
+    );
+    
+    //assign the input_quant by the wdata
+    genvar j;
+    generate
+        for(j = 0; j < `SOFT_MAX_INPUT_ADDR_WIDTH; j=j+1)begin
+            assign softmax_input_quant_en[j] = ((j == softmax_count) & (WVALID & WREADY));  
+            DFFE #(.WIDTH(`SOFT_MAX_INPUT_DATA_WIDTH))
+            ff_SOFTMAX_INPUT (
+                .clk(clk),
+                .en(softmax_input_quant_en[j]),
+                .d(WDATA),
+                .q(softmax_input_quant[j])
+            );
+            //method2
+            //test if can just dircetly use input define whicha have the most prob
+            //if(softmax_input_quant[j] > max_val)begin
+            //    assign max_val = softmax_input_quant[j];
+            //    assign max_idx = j;
+            //end
+        end
+    endgenerate
+    assign max_val_nxt = ({16{~(&WDATA[15:12])}} & WDATA[15:0]) > max_val ? WDATA[15:0] : max_val;
+    assign max_idx_nxt = ({16{~(&WDATA[15:12])}} & WDATA[15:0]) > max_val ? softmax_count : max_idx;
+    DFFRE #(.WIDTH(16))
+            ff_MAX_VAL (
+                .clk(clk),
+                .rst_n(rst_n),
+		        .en(WVALID&WREADY),
+                .d(max_val_nxt),
+                .q(max_val)
+            );
+    DFFRE #(.WIDTH(4))
+            ff_MAX_IDX (
+                .clk(clk),
+                .rst_n(rst_n),
+		         .en(WVALID&WREADY),
+                .d(max_idx_nxt),
+                .q(max_idx)
+            );
+
+    //method2
+    //use expontenial do the work
+    //if the count reach the addr width(10)
+    //=> start the softmax
+/*
+    assign softmax_exp_en = softmax_count == `SOFT_MAX_INPUT_ADDR_WIDTH;
+    assign softmax_exp_vld_nxt = {`SOFT_MAX_INPUT_ADDR_WIDTH{softmax_quant_en}} & ~(softmax_exp_done);
+
+    DFFR #(`SOFT_MAX_INPUT_ADDR_WIDTH)
+    ff_EXP_VLD (
+        .clk(clk),
+        .rst_n(rst_n),
+        .d(softmax_exp_vld_nxt),
+        .q(softmax_exp_vld)
+    );
+    //calcaulate the exp part
+
+    exp u_exp0(
+            .clk(clk),
+            .rst_n(rst_n),
+            .exp_vld(softmax_exp_vld[0]),
+            .in_num(softmax_input_quant[0]-max_val),
+            .output_num(softmax_exp_output[0]),
+            .exp_done(softmax_exp_done[0]),
+            .exp_err(softmax_exp_err[0]),
+            .exp_rdy(softmax_exp_rdy[0]),
+            .exp_divide(softmax_exp_div[0])
+    );
+    exp u_exp1(
+            .clk(clk),
+            .rst_n(rst_n),
+            .exp_vld(softmax_exp_vld[1]),
+            .in_num(softmax_input_quant[1]-max_val),
+            .output_num(softmax_exp_output[1]),
+            .exp_done(softmax_exp_done[1]),
+            .exp_err(softmax_exp_err[1]),
+            .exp_rdy(softmax_exp_rdy[1]),
+            .exp_divide(softmax_exp_div[1])
+    );
+    exp u_exp2(
+            .clk(clk),
+            .rst_n(rst_n),
+            .exp_vld(softmax_exp_vld[2]),
+            .in_num(softmax_input_quant[2]-max_val),
+            .output_num(softmax_exp_output[2]),
+            .exp_done(softmax_exp_done[2]),
+            .exp_err(softmax_exp_err[2]),
+            .exp_rdy(softmax_exp_rdy[2]),
+            .exp_divide(softmax_exp_div[2])
+    );
+    exp u_exp3(
+            .clk(clk),
+            .rst_n(rst_n),
+            .exp_vld(softmax_exp_vld[3]),
+            .in_num(softmax_input_quant[3]-max_val),
+            .output_num(softmax_exp_output[3]),
+            .exp_done(softmax_exp_done[3]),
+            .exp_err(softmax_exp_err[3]),
+            .exp_rdy(softmax_exp_rdy[3]),
+            .exp_divide(softmax_exp_div[3])
+    );
+    exp u_exp4(
+            .clk(clk),
+            .rst_n(rst_n),
+            .exp_vld(softmax_exp_vld[4]),
+            .in_num(softmax_input_quant[4]-max_val),
+            .output_num(softmax_exp_output[4]),
+            .exp_done(softmax_exp_done[4]),
+            .exp_err(softmax_exp_err[4]),
+            .exp_rdy(softmax_exp_rdy[4]),
+            .exp_divide(softmax_exp_div[4])
+    );
+    exp u_exp5(
+            .clk(clk),
+            .rst_n(rst_n),
+            .exp_vld(softmax_exp_vld[5]),
+            .in_num(softmax_input_quant[5]-max_val),
+            .output_num(softmax_exp_output[5]),
+            .exp_done(softmax_exp_done[5]),
+            .exp_err(softmax_exp_err[5]),
+            .exp_rdy(softmax_exp_rdy[5]),
+            .exp_divide(softmax_exp_div[5])
+    );
+    exp u_exp6(
+            .clk(clk),
+            .rst_n(rst_n),
+            .exp_vld(softmax_exp_vld[6]),
+            .in_num(softmax_input_quant[6]-max_val),
+            .output_num(softmax_exp_output[6]),
+            .exp_done(softmax_exp_done[6]),
+            .exp_err(softmax_exp_err[6]),
+            .exp_rdy(softmax_exp_rdy[6]),
+            .exp_divide(softmax_exp_div[6])
+    );
+    exp u_exp7(
+            .clk(clk),
+            .rst_n(rst_n),
+            .exp_vld(softmax_exp_vld[7]),
+            .in_num(softmax_input_quant[7]-max_val),
+            .output_num(softmax_exp_output[7]),
+            .exp_done(softmax_exp_done[7]),
+            .exp_err(softmax_exp_err[7]),
+            .exp_rdy(softmax_exp_rdy[7]),
+            .exp_divide(softmax_exp_div[7])
+    );
+    exp u_exp8(
+            .clk(clk),
+            .rst_n(rst_n),
+            .exp_vld(softmax_exp_vld[8]),
+            .in_num(softmax_input_quant[8]-max_val),
+            .output_num(softmax_exp_output[8]),
+            .exp_done(softmax_exp_done[8]),
+            .exp_err(softmax_exp_err[8]),
+            .exp_rdy(softmax_exp_rdy[8]),
+            .exp_divide(softmax_exp_div[8])
+    );
+    exp u_exp9(
+            .clk(clk),
+            .rst_n(rst_n),
+            .exp_vld(softmax_exp_vld[9]),
+            .in_num(softmax_input_quant[9]-max_val),
+            .output_num(softmax_exp_output[9]),
+            .exp_done(softmax_exp_done[9]),
+            .exp_err(softmax_exp_err[9]),
+            .exp_rdy(softmax_exp_rdy[9]),
+            .exp_divide(softmax_exp_div[9])
+    );
+
+   //only if all exp done cal then do next step
+   //sum = softmax_exp_output[0] 
+   //     +  softmax_exp_output[1]
+   //     +  softmax_exp_output[2]
+   //     +  softmax_exp_output[3]
+   //     +  softmax_exp_output[4]
+   //     +  softmax_exp_output[5]
+   //     +  softmax_exp_output[6]
+   //     +  softmax_exp_output[7]
+   //     +  softmax_exp_output[8]
+   //     +  softmax_exp_output[9];
+
+   //     +  softmax_exp_output[2]
+   //     +  softmax_exp_output[3]
+   //     +  softmax_exp_output[4]
+   //     +  softmax_exp_output[5]
+   //     +  softmax_exp_output[6]
+   //     +  softmax_exp_output[7]
+   //     +  softmax_exp_output[8]
+   //     +  softmax_exp_output[9];
+
+    genvar k;
+    generate
+        for(k = 0; k < `SOFT_MAX_INPUT_ADDR_WIDTH; k=k+1)begin
+            assign sum = sum + softmax_exp_output[k];
+        end
+    endgenerate
+
+    genvar h;
+    generate
+        for(h = 0; h < `SOFT_MAX_INPUT_ADDR_WIDTH; h=h+1)begin
+            assign data[h] = (&softmax_exp_done) ? softmax_exp_output[h]/sum : 'b0;
+            DFFR #(`SOFT_MAX_INPUT_ADDR_WIDTH)
+            ff_out_data (
+                .clk(clk),
+                .rst_n(rst_n),
+                .d(data[h]),
+                .q(softmax_out_data[h])
+            );
+        end
+    endgenerate
+    */
+    assign led[0] = softmax_count==4'd10 ? max_idx[0] : 'b0;
+    assign led[1] = softmax_count==4'd10 ? max_idx[1] : 'b0;
+    assign led[2] = softmax_count==4'd10 ? max_idx[2] : 'b0;
+    assign led[3] = softmax_count==4'd10 ? max_idx[3] : 'b0;
+
+
+endmodule
+
+`else
+module tpu(
+    clk,
+    rst_n,
+    start_vld,
+    start_addr,
+    // waddr interface
+    AWID,
+    AWADDR,
+    AWLEN,
+    AWSIZE,
+    AWBURST,
+    AWREGION,
+    AWVALID,
+    AWREADY,
+    ARID,
+    ARADDR,
+    ARLEN,
+    ARSIZE,
+    ARBURST,
+    ARREGION,
+    ARVALID,
+    ARREADY,
+    // wdata interface
+    WDATA,
+    WSTRB,
+    WLAST,
+    WVALID,
+    WREADY,
+    // read interface
+    RID,
+    RDATA,
+    RRESP,
+    RLAST,
+    RVALID,
+    RREADY,
+    // wresp interface
+    BID,
+    BRESP,
+    BVALID,
+    BREADY,
+    wfi
+);
+
+    //parameter AWID_WIDTH = 4;
+    //parameter AWADDR_WIDTH = 32;
+    //parameter WDATA_WIDTH = 64;
+    //parameter WSTRB_WIDTH = WDATA_WIDTH/8; // should be WDATA_WIDTH/8
+
+    input clk;
+    input rst_n;
+    input start_vld;
+    input [`IRAM_ADDR_WIDTH-1:0] start_addr;
+    //parameter
+
+    //inout bus
+    //address write channel 
+    output [`AWID_WIDTH-1:0] AWID;
+    output [`AWADDR_WIDTH-1:0] AWADDR;
+    output [7:0] AWLEN;
+    output [2:0] AWSIZE;
+    output [1:0] AWBURST;
+    output [3:0] AWREGION;
+    output  AWVALID;
+    input AWREADY;
+
+    output [`AWID_WIDTH-1:0] ARID;
+    output [`AWADDR_WIDTH-1:0] ARADDR;
+    output [7:0] ARLEN;
+    output [2:0] ARSIZE;
+    output [1:0] ARBURST;
+    output [3:0] ARREGION;
+    output  ARVALID;
+    input ARREADY;
+
+    //write data channel
+    output [`WDATA_WIDTH-1:0] WDATA;
+    output [`WSTRB_WIDTH-1:0] WSTRB;
+    output WLAST;
+    output WVALID;
+    input WREADY;
+
+    //read data channel
+    input [`AWID_WIDTH-1:0] RID;
+    input [`WDATA_WIDTH-1:0] RDATA;
+    input [1:0] RRESP;
+    input RLAST;
+    input RVALID;
+    output RREADY; 
+    //write response channel
+    input [`AWID_WIDTH-1:0] BID;
+    input [1:0] BRESP;
+    input BVALID;
+    output BREADY;
+
+    output wfi;
+
+    //ifu output
+    wire ifu_idu_vld;
+    wire [31:0] ifu_idu_ins;
+    wire [31:0] ifu_idu_pc;
+
+    //idu output
+    wire idu_ifu_rdy;
+    wire idu_ifu_wfi;
+    wire idu_alu_vld;
+    wire [31:0] idu_alu_src1;
+    wire [31:0] idu_alu_src2;
+    wire idu_alu_wb_vld;
+    wire idu_alu_add_op;
+    wire idu_alu_sub_op;
+    wire idu_alu_slt_op;
+    wire idu_alu_sltu_op;
+    wire idu_alu_xor_op;
+    wire idu_alu_or_op;
+    wire idu_alu_and_op;
+    wire idu_alu_sll_op;
+    wire idu_alu_srl_op;
+    wire idu_alu_sra_op;
+    wire idu_alu_beq_op;
+    wire idu_alu_bne_op;
+    wire idu_alu_blt_op;
+    wire idu_alu_bge_op;
+    wire idu_alu_bltu_op;
+    wire idu_alu_bgeu_op;
+    wire idu_alu_lb_op;
+    wire idu_alu_lh_op;
+    wire idu_alu_lw_op;
+    wire idu_alu_lbu_op;
+    wire idu_alu_lhu_op;
+    wire idu_alu_sb_op;
+    wire idu_alu_sh_op;
+    wire idu_alu_sw_op;
+    wire idu_alu_lui_op;
+    wire idu_alu_aui_op;
+    wire idu_alu_jal_op;
+    wire idu_alu_jalr_op;
+
+    wire [4:0] idu_alu_wb_addr;
+    wire [31:0] idu_alu_br_st_imm;
+    wire [31:0] idu_alu_pc;
+
+    wire idu_alu_ld_iram;
+    wire idu_alu_ld_wram;
+    wire idu_alu_st_iram;
+    wire idu_alu_st_wram;
+    wire idu_alu_st_oram;
+    wire idu_alu_st_dram;
+
+    wire idu_alu_conv;
+    wire idu_alu_act;
+    wire idu_alu_pool;
+    wire idu_alu_wfi;
+
+    wire [31:0] idu_alu_dram_addr;
+    wire [7:0] idu_alu_num;
+    wire [2:0] idu_alu_len;
+    wire [2:0] idu_alu_str;
+    wire [3:0] idu_alu_start_x;
+    wire [3:0] idu_alu_start_y;
+    wire [`SRAM_ADDR_SIZE-1:0] idu_alu_ld_st_addr;
+    wire idu_alu_st_low;
+    wire [11:0] idu_alu_iram_start_addr;
+    wire [11:0]idu_alu_wram_start_addr;
+    wire [3:0] idu_alu_wram_row_len;
+    wire [3:0] idu_alu_iram_row_len;
+    wire [3:0] idu_alu_col_len;
+    wire [3:0] idu_alu_st_row;
+    wire [3:0] idu_alu_st_col;
+
+    wire [1:0] idu_alu_act_type;
+    wire [1:0] idu_alu_pool_size;
+    wire idu_alu_mxu_clr;
+    
+    wire [4:0] idu_rf_src1_addr;
+    wire [4:0] idu_rf_src2_addr;
+
+    //alu output
+    wire alu_ifu_br_vld;
+    wire [11:0] alu_ifu_br_addr;
+
+    wire alu_idu_rdy;
+    wire alu_idu_flush_vld;
+    wire [4:0] alu_idu_wb_addr;
+    wire [31:0] alu_idu_wb_data;
+    wire alu_idu_wb_vld;
+    wire alu_idu_ld_vld;
+    wire alu_lsu_lb_op;
+    wire alu_lsu_lh_op;
+    wire alu_lsu_lw_op;
+    wire alu_lsu_lbu_op;
+    wire alu_lsu_lhu_op;
+    wire alu_lsu_sb_op;
+    wire alu_lsu_sh_op;
+    wire alu_lsu_sw_op;
+    
+    wire alu_lsu_vld;
+    wire alu_lsu_wb_vld;
+    wire [4:0]  alu_lsu_wb_addr;
+    wire [31:0] alu_lsu_wb_data;
+    wire [31:0] alu_lsu_src2;
+    wire [31:0] alu_lsu_ld_addr;
+
+    wire alu_lsu_ld_iram;
+    wire alu_lsu_ld_wram;
+    wire alu_lsu_ld_oram;
+    wire alu_lsu_st_iram;
+    wire alu_lsu_st_wram;
+    wire alu_lsu_st_oram;
+    wire alu_lsu_st_dram;
+    wire alu_lsu_conv;
+    wire alu_lsu_act;
+    wire alu_lsu_pool;
+    wire alu_lsu_wfi;
+
+    wire [31:0] alu_lsu_dram_addr;
+    wire [7:0]  alu_lsu_num;
+    wire [2:0]  alu_lsu_len;
+    wire [2:0]  alu_lsu_str;
+    wire [3:0]  alu_lsu_start_x;
+    wire [3:0]  alu_lsu_start_y;
+    wire [`SRAM_ADDR_SIZE-1:0] alu_lsu_ld_st_addr;
+    wire        alu_lsu_st_low;
+    wire [3:0]  alu_lsu_st_row;
+    wire [3:0]  alu_lsu_st_col;
+
+    wire [11:0] alu_lsu_iram_start_addr;
+    wire [11:0] alu_lsu_wram_start_addr;
+    wire [3:0]  alu_lsu_wram_row_len;
+    wire [3:0]  alu_lsu_iram_row_len;
+    wire [3:0]  alu_lsu_col_len;
+
+    wire [1:0]  alu_lsu_act_type;
+    wire [1:0]  alu_lsu_pool_size;
+    wire        alu_lsu_mxu_clr;
+
+    //lsu output 
+    wire lsu_alu_rdy;
+
+    wire lsu_mxu_vld;
+    wire lsu_mxu_clr;
+    wire [15:0] lsu_mxu_iram_vld;
+    wire [127:0] lsu_mxu_iram_pld;
+    wire [15:0] lsu_mxu_wram_vld;
+    wire [127:0] lsu_mxu_wram_pld;
+    wire lsu_mxu_pool_vld;
+    wire [1:0] lsu_mxu_pool_size;
+    wire lsu_mxu_act_vld;
+    wire [1:0] lsu_mxu_act_type;
+    wire lsu_mxu_wfi;
+    wire lsu_mxu_conv_vld;
+
+    wire [7:0] lsu_axi_awid;
+    wire [`AWADDR_WIDTH-1:0] lsu_axi_awaddr;
+    wire [7:0] lsu_axi_awlen;
+    wire [2:0] lsu_axi_awsize;
+    wire [1:0] lsu_axi_awburst;
+    wire [2:0] lsu_axi_awstr;
+    wire [7:0] lsu_axi_awnum;
+    wire lsu_axi_awvld;
+    wire [12:0] lsu_axi_oram_addr;
+    wire [63:0] lsu_axi_wdata;
+    wire [7:0] lsu_axi_wstrb;
+    wire lsu_axi_wlast;
+    wire lsu_axi_wvld;
+    wire lsu_axi_brdy;
+    wire [7:0] lsu_axi_arid;
+    wire [`AWADDR_WIDTH-1:0] lsu_axi_araddr;
+    wire [7:0] lsu_axi_arlen;
+    wire [2:0] lsu_axi_arsize;
+    wire [1:0] lsu_axi_arburst;
+    wire [2:0] lsu_axi_arstr;
+    wire [7:0] lsu_axi_arnum;
+    wire [11:0] lsu_axi_sram_addr;
+    wire lsu_axi_arvld;
+    wire lsu_axi_rrdy;
+
+    wire lsu_idu_wb_vld;
+    wire lsu_idu_ld_vld;
+    wire [4:0] lsu_idu_wb_addr;
+    wire [31:0] lsu_idu_wb_data;
+    wire lsu_rf_wb_vld;
+    wire [4:0] lsu_rf_wb_addr;
+    wire [31:0] lsu_rf_wb_data;
+
+    //rf output
+    wire [31:0] rf_idu_src1_data;
+    wire [31:0] rf_idu_src2_data;
+
+    wire [7:0] axi_lsu_rid;
+    wire [63:0] axi_lsu_rdata;
+    wire [1:0] axi_lsu_rresp;
+    wire axi_lsu_rlast;
+    wire axi_lsu_rvld;
+    wire axi_lsu_arrdy;
+    wire axi_lsu_awrdy;
+    wire [11:0] axi_lsu_sram_addr;
+    wire [31:0] axi_lsu_dram_addr;
+    wire axi_lsu_axi_done;
+    wire axi_lsu_wrdy;
+    wire axi_lsu_bid;
+    wire [1:0] axi_lsu_bresp;
+    wire axi_lsu_bvld;
+    wire [12:0] axi_lsu_resp_oram_addr;
+
+    //mxu outpu
+    wire [127:0] mxu_lsu_int8_row0_data;
+    wire [255:0] mxu_lsu_int16_row0_data;
+    wire [127:0] mxu_lsu_int8_row1_data;
+    wire [255:0] mxu_lsu_int16_row1_data;
+    wire [127:0] mxu_lsu_int8_row2_data;
+    wire [255:0] mxu_lsu_int16_row2_data;
+    wire [127:0] mxu_lsu_int8_row3_data;
+    wire [255:0] mxu_lsu_int16_row3_data;
+    wire [127:0] mxu_lsu_int8_row4_data;
+    wire [255:0] mxu_lsu_int16_row4_data;
+    wire [127:0] mxu_lsu_int8_row5_data;
+    wire [255:0] mxu_lsu_int16_row5_data;
+    wire [127:0] mxu_lsu_int8_row6_data;
+    wire [255:0] mxu_lsu_int16_row6_data;
+    wire [127:0] mxu_lsu_int8_row7_data;
+    wire [255:0] mxu_lsu_int16_row7_data;
+    wire [127:0] mxu_lsu_int8_row8_data;
+    wire [255:0] mxu_lsu_int16_row8_data;
+    wire [127:0] mxu_lsu_int8_row9_data;
+    wire [255:0] mxu_lsu_int16_row9_data;
+    wire [127:0] mxu_lsu_int8_row10_data;
+    wire [255:0] mxu_lsu_int16_row10_data;
+    wire [127:0] mxu_lsu_int8_row11_data;
+    wire [255:0] mxu_lsu_int16_row11_data;
+    wire [127:0] mxu_lsu_int8_row12_data;
+    wire [255:0] mxu_lsu_int16_row12_data;
+    wire [127:0] mxu_lsu_int8_row13_data;
+    wire [255:0] mxu_lsu_int16_row13_data;
+    wire [127:0] mxu_lsu_int8_row14_data;
+    wire [255:0] mxu_lsu_int16_row14_data;
+    wire [127:0] mxu_lsu_int8_row15_data;
+    wire [255:0] mxu_lsu_int16_row15_data;
+    wire mxu_lsu_data_rdy;
+    wire mxu_lsu_rdy;
+
+    ifu u_ifu(
+        .clk            (clk),
+        .rst_n          (rst_n),
+        .start_vld      (start_vld),
+        .start_addr     (start_addr),
+        .idu_ifu_rdy    (idu_ifu_rdy),
+        .idu_ifu_wfi    (idu_ifu_wfi),
+        .alu_ifu_br_vld (alu_ifu_br_vld),
+        .alu_ifu_br_addr(alu_ifu_br_addr),
+        .ifu_idu_vld    (ifu_idu_vld),
+        .ifu_idu_ins    (ifu_idu_ins),
+        .ifu_idu_pc     (ifu_idu_pc)
+
+    );
+    idu u_idu(
+        .clk                            (clk),
+        .rst_n                          (rst_n),
+        .start_vld                      (start_vld),
+        //ifu input,
+        .ifu_idu_vld                   (ifu_idu_vld),
+        .ifu_idu_ins                   (ifu_idu_ins),
+        .ifu_idu_pc                    (ifu_idu_pc),
+        //alu input,
+        .alu_idu_rdy                   (alu_idu_rdy),
+        .alu_idu_flush_vld             (alu_idu_flush_vld),
+        .alu_idu_wb_addr               (alu_idu_wb_addr),
+        .alu_idu_wb_data               (alu_idu_wb_data),
+        .alu_idu_wb_vld                (alu_idu_wb_vld),
+        .alu_idu_ld_vld                (alu_idu_ld_vld),
+        //lsu input,
+        .lsu_idu_wb_vld                (lsu_idu_wb_vld),
+        .lsu_idu_ld_vld                (lsu_idu_ld_vld),
+        .lsu_idu_wb_addr               (lsu_idu_wb_addr),
+        .lsu_idu_wb_data               (lsu_idu_wb_data),
+        .lsu_rf_wb_vld                 (lsu_rf_wb_vld),
+        .lsu_rf_wb_addr                (lsu_rf_wb_addr),
+        .lsu_rf_wb_data                (lsu_rf_wb_data),
+        //rf input ,
+        .rf_idu_src1_data              (rf_idu_src1_data),
+        .rf_idu_src2_data              (rf_idu_src2_data),
+        //ifu output,
+        .idu_ifu_rdy                   (idu_ifu_rdy),
+        .idu_ifu_wfi                   (idu_ifu_wfi),
+        //alu output,
+        .idu_alu_vld                   (idu_alu_vld),
+        .idu_alu_src1                  (idu_alu_src1),
+        .idu_alu_src2                  (idu_alu_src2),
+        //rsicv op,
+        .idu_alu_wb_vld                (idu_alu_wb_vld),
+        .idu_alu_add_op                (idu_alu_add_op),
+        .idu_alu_sub_op                (idu_alu_sub_op),
+        .idu_alu_slt_op                (idu_alu_slt_op),
+        .idu_alu_sltu_op               (idu_alu_sltu_op),
+        .idu_alu_xor_op                (idu_alu_xor_op),
+        .idu_alu_or_op                 (idu_alu_or_op),
+        .idu_alu_and_op                (idu_alu_and_op),
+        .idu_alu_sll_op                (idu_alu_sll_op),
+        .idu_alu_srl_op                (idu_alu_srl_op),
+        .idu_alu_sra_op                (idu_alu_sra_op),
+        .idu_alu_beq_op                (idu_alu_beq_op),
+        .idu_alu_bne_op                (idu_alu_bne_op),
+        .idu_alu_blt_op                (idu_alu_blt_op),
+        .idu_alu_bge_op                (idu_alu_bge_op),
+        .idu_alu_bltu_op               (idu_alu_bltu_op),
+        .idu_alu_bgeu_op               (idu_alu_bgeu_op),
+        .idu_alu_lb_op                 (idu_alu_lb_op),
+        .idu_alu_lh_op                 (idu_alu_lh_op),
+        .idu_alu_lw_op                 (idu_alu_lw_op),
+        .idu_alu_lbu_op                (idu_alu_lbu_op),
+        .idu_alu_lhu_op                (idu_alu_lhu_op),
+        .idu_alu_sb_op                 (idu_alu_sb_op),
+        .idu_alu_sh_op                 (idu_alu_sh_op),
+        .idu_alu_sw_op                 (idu_alu_sw_op),
+        .idu_alu_lui_op                (idu_alu_lui_op),
+        .idu_alu_aui_op                (idu_alu_aui_op),
+        .idu_alu_jal_op                (idu_alu_jal_op),
+        .idu_alu_jalr_op               (idu_alu_jalr_op),
+        //data pass,
+        .idu_alu_wb_addr               (idu_alu_wb_addr),
+        .idu_alu_br_st_imm             (idu_alu_br_st_imm),
+        .idu_alu_pc                    (idu_alu_pc),
+        //matrix multiplication,
+        //ld/st,
+        .idu_alu_ld_iram               (idu_alu_ld_iram),
+        .idu_alu_ld_wram               (idu_alu_ld_wram),
+        .idu_alu_st_iram               (idu_alu_st_iram),
+        .idu_alu_st_wram               (idu_alu_st_wram),
+        .idu_alu_st_oram               (idu_alu_st_oram),
+        .idu_alu_st_dram               (idu_alu_st_dram),
+        //mxu related,
+        .idu_alu_conv                  (idu_alu_conv),
+        .idu_alu_act                   (idu_alu_act),
+        .idu_alu_pool                  (idu_alu_pool),
+        .idu_alu_wfi                   (idu_alu_wfi),
+        //ld/st,
+        .idu_alu_dram_addr             (idu_alu_dram_addr),
+        .idu_alu_num                   (idu_alu_num),
+        .idu_alu_len                   (idu_alu_len),
+        .idu_alu_str                   (idu_alu_str),
+        .idu_alu_start_x               (idu_alu_start_x),
+        .idu_alu_start_y               (idu_alu_start_y),
+        .idu_alu_ld_st_addr            (idu_alu_ld_st_addr),
+        .idu_alu_st_low                (idu_alu_st_low),
+        .idu_alu_iram_start_addr       (idu_alu_iram_start_addr),
+        .idu_alu_wram_start_addr       (idu_alu_wram_start_addr),
+        .idu_alu_wram_row_len          (idu_alu_wram_row_len),
+        .idu_alu_iram_row_len          (idu_alu_iram_row_len),
+        .idu_alu_col_len               (idu_alu_col_len),
+        .idu_alu_st_row                (idu_alu_st_row),
+        .idu_alu_st_col                (idu_alu_st_col),
+        //mxu related,
+        .idu_alu_act_type              (idu_alu_act_type),
+        .idu_alu_pool_size             (idu_alu_pool_size),
+        .idu_alu_mxu_clr               (idu_alu_mxu_clr),
+        //rf output,
+        .idu_rf_src1_addr              (idu_rf_src1_addr),
+        .idu_rf_src2_addr              (idu_rf_src2_addr)
+    );
+    alu u_alu(
+        .clk                                (clk),
+        .rst_n                              (rst_n),
+        //idu input,
+        .idu_alu_vld                       (idu_alu_vld),
+        .idu_alu_src1                      (idu_alu_src1),
+        .idu_alu_src2                      (idu_alu_src2),
+        .idu_alu_wb_vld                    (idu_alu_wb_vld),
+        .idu_alu_add_op                    (idu_alu_add_op),
+        .idu_alu_sub_op                    (idu_alu_sub_op),
+        .idu_alu_slt_op                    (idu_alu_slt_op),
+        .idu_alu_sltu_op                   (idu_alu_sltu_op),
+        .idu_alu_xor_op                    (idu_alu_xor_op),
+        .idu_alu_or_op                     (idu_alu_or_op),
+        .idu_alu_and_op                    (idu_alu_and_op),
+        .idu_alu_sll_op                    (idu_alu_sll_op),
+        .idu_alu_srl_op                    (idu_alu_srl_op),
+        .idu_alu_sra_op                    (idu_alu_sra_op),
+        .idu_alu_beq_op                    (idu_alu_beq_op),
+        .idu_alu_bne_op                    (idu_alu_bne_op),
+        .idu_alu_blt_op                    (idu_alu_blt_op),
+        .idu_alu_bge_op                    (idu_alu_bge_op),
+        .idu_alu_bltu_op                   (idu_alu_bltu_op),
+        .idu_alu_bgeu_op                   (idu_alu_bgeu_op),
+        .idu_alu_lb_op                     (idu_alu_lb_op),
+        .idu_alu_lh_op                     (idu_alu_lh_op),
+        .idu_alu_lw_op                     (idu_alu_lw_op),
+        .idu_alu_lbu_op                    (idu_alu_lbu_op),
+        .idu_alu_lhu_op                    (idu_alu_lhu_op),
+        .idu_alu_sb_op                     (idu_alu_sb_op),
+        .idu_alu_sh_op                     (idu_alu_sh_op),
+        .idu_alu_sw_op                     (idu_alu_sw_op),
+        .idu_alu_lui_op                    (idu_alu_lui_op),
+        .idu_alu_aui_op                    (idu_alu_aui_op),
+        .idu_alu_jal_op                    (idu_alu_jal_op),
+        .idu_alu_jalr_op                   (idu_alu_jalr_op),
+        .idu_alu_wb_addr                   (idu_alu_wb_addr),
+        .idu_alu_br_st_imm                 (idu_alu_br_st_imm),
+        .idu_alu_pc                        (idu_alu_pc),
+        //by pass,
+        .idu_alu_ld_iram                   (idu_alu_ld_iram),
+        .idu_alu_ld_wram                   (idu_alu_ld_wram),
+        .idu_alu_st_iram                   (idu_alu_st_iram),
+        .idu_alu_st_wram                   (idu_alu_st_wram),
+        .idu_alu_st_oram                   (idu_alu_st_oram),
+        .idu_alu_st_dram                   (idu_alu_st_dram),
+        .idu_alu_conv                      (idu_alu_conv),
+        .idu_alu_act                       (idu_alu_act),
+        .idu_alu_pool                      (idu_alu_pool),
+        .idu_alu_wfi                       (idu_alu_wfi),
+        .idu_alu_dram_addr                 (idu_alu_dram_addr),
+        .idu_alu_num                       (idu_alu_num),
+        .idu_alu_len                       (idu_alu_len),
+        .idu_alu_str                       (idu_alu_str),
+        .idu_alu_start_x                   (idu_alu_start_x),
+        .idu_alu_start_y                   (idu_alu_start_y),
+        .idu_alu_ld_st_addr                (idu_alu_ld_st_addr),
+        .idu_alu_st_low                    (idu_alu_st_low),
+        .idu_alu_iram_start_addr           (idu_alu_iram_start_addr),
+        .idu_alu_wram_start_addr           (idu_alu_wram_start_addr),
+        .idu_alu_wram_row_len              (idu_alu_wram_row_len),
+        .idu_alu_iram_row_len              (idu_alu_iram_row_len),
+        .idu_alu_col_len                   (idu_alu_col_len),
+        .idu_alu_st_row                    (idu_alu_st_row),
+        .idu_alu_st_col                    (idu_alu_st_col),
+        .idu_alu_act_type                  (idu_alu_act_type),
+        .idu_alu_pool_size                 (idu_alu_pool_size),
+        .idu_alu_mxu_clr                   (idu_alu_mxu_clr),
+        //lsu input,
+        .lsu_alu_rdy                       (lsu_alu_rdy),
+        //ifu output,
+        .alu_ifu_br_vld                    (alu_ifu_br_vld),
+        .alu_ifu_br_addr                   (alu_ifu_br_addr),
+        //idu output,
+        .alu_idu_rdy                       (alu_idu_rdy),
+        .alu_idu_flush_vld                 (alu_idu_flush_vld),
+        .alu_idu_wb_addr                   (alu_idu_wb_addr),
+        .alu_idu_wb_data                   (alu_idu_wb_data),
+        .alu_idu_wb_vld                    (alu_idu_wb_vld),
+        .alu_idu_ld_vld                    (alu_idu_ld_vld),
+        //lsu output,
+        .alu_lsu_vld                       (alu_lsu_vld),
+        .alu_lsu_wb_vld                    (alu_lsu_wb_vld),
+        .alu_lsu_lb_op                     (alu_lsu_lb_op),
+        .alu_lsu_lh_op                     (alu_lsu_lh_op),
+        .alu_lsu_lw_op                     (alu_lsu_lw_op),
+        .alu_lsu_lbu_op                    (alu_lsu_lbu_op),
+        .alu_lsu_lhu_op                    (alu_lsu_lhu_op),
+        .alu_lsu_sb_op                     (alu_lsu_sb_op),
+        .alu_lsu_sh_op                     (alu_lsu_sh_op),
+        .alu_lsu_sw_op                     (alu_lsu_sw_op),
+        .alu_lsu_wb_addr                   (alu_lsu_wb_addr),
+        .alu_lsu_wb_data                   (alu_lsu_wb_data),
+        .alu_lsu_src2                      (alu_lsu_src2),
+        //mm related,
+        .alu_lsu_ld_iram                   (alu_lsu_ld_iram),
+        .alu_lsu_ld_wram                   (alu_lsu_ld_wram),
+        .alu_lsu_ld_oram                   (alu_lsu_ld_oram),
+        .alu_lsu_st_iram                   (alu_lsu_st_iram),
+        .alu_lsu_st_wram                   (alu_lsu_st_wram),
+        .alu_lsu_st_oram                   (alu_lsu_st_oram),
+        .alu_lsu_st_dram                   (alu_lsu_st_dram),
+        .alu_lsu_conv                      (alu_lsu_conv),
+        .alu_lsu_act                       (alu_lsu_act),
+        .alu_lsu_pool                      (alu_lsu_pool),
+        .alu_lsu_wfi                       (alu_lsu_wfi),
+        .alu_lsu_dram_addr                 (alu_lsu_dram_addr),
+        .alu_lsu_num                       (alu_lsu_num),
+        .alu_lsu_len                       (alu_lsu_len),
+        .alu_lsu_str                       (alu_lsu_str),
+        .alu_lsu_start_x                   (alu_lsu_start_x),
+        .alu_lsu_start_y                   (alu_lsu_start_y),
+        .alu_lsu_ld_st_addr                (alu_lsu_ld_st_addr),
+        .alu_lsu_st_low                    (alu_lsu_st_low),
+        .alu_lsu_st_row                    (alu_lsu_st_row),
+        .alu_lsu_st_col                    (alu_lsu_st_col),
+        .alu_lsu_iram_start_addr           (alu_lsu_iram_start_addr),
+        .alu_lsu_wram_start_addr           (alu_lsu_wram_start_addr),
+        .alu_lsu_wram_row_len              (alu_lsu_wram_row_len),
+        .alu_lsu_iram_row_len              (alu_lsu_iram_row_len),
+        .alu_lsu_col_len                   (alu_lsu_col_len),
+        .alu_lsu_act_type                  (alu_lsu_act_type),
+        .alu_lsu_pool_size                 (alu_lsu_pool_size),
+	    .alu_lsu_mxu_clr		           (alu_lsu_mxu_clr)
+    );
+
+    lsu u_lsu(
+        .clk                                  (clk),
+        .rst_n                                (rst_n),
+        .start_vld                            (start_vld),
+        .alu_lsu_vld                          (alu_lsu_vld),
+        .alu_lsu_wb_vld                       (alu_lsu_wb_vld),
+        .alu_lsu_lb_op                        (alu_lsu_lb_op),
+        .alu_lsu_lh_op                        (alu_lsu_lh_op),
+        .alu_lsu_lw_op                        (alu_lsu_lw_op),
+        .alu_lsu_lbu_op                       (alu_lsu_lbu_op),
+        .alu_lsu_lhu_op                       (alu_lsu_lhu_op),
+        .alu_lsu_sb_op                        (alu_lsu_sb_op),
+        .alu_lsu_sh_op                        (alu_lsu_sh_op),
+        .alu_lsu_sw_op                        (alu_lsu_sw_op),
+        .alu_lsu_wb_addr                      (alu_lsu_wb_addr),
+        .alu_lsu_wb_data                      (alu_lsu_wb_data),
+        .alu_lsu_src2                         (alu_lsu_src2),
+        .alu_lsu_ld_iram                      (alu_lsu_ld_iram),
+        .alu_lsu_ld_wram                      (alu_lsu_ld_wram),
+        .alu_lsu_ld_oram                      (alu_lsu_ld_oram),
+        .alu_lsu_st_iram                      (alu_lsu_st_iram),
+        .alu_lsu_st_wram                      (alu_lsu_st_wram),
+        .alu_lsu_st_oram                      (alu_lsu_st_oram),
+        .alu_lsu_st_dram                      (alu_lsu_st_dram),
+        .alu_lsu_conv                         (alu_lsu_conv),
+        .alu_lsu_act                          (alu_lsu_act),
+        .alu_lsu_pool                         (alu_lsu_pool),
+        .alu_lsu_wfi                          (alu_lsu_wfi),
+        .alu_lsu_dram_addr                    (alu_lsu_dram_addr),
+        .alu_lsu_num                          (alu_lsu_num),
+        .alu_lsu_len                          (alu_lsu_len),
+        .alu_lsu_str                          (alu_lsu_str),
+        .alu_lsu_start_x                      (alu_lsu_start_x),
+        .alu_lsu_start_y                      (alu_lsu_start_y),
+        .alu_lsu_ld_st_addr                   (alu_lsu_ld_st_addr),
+        .alu_lsu_st_low                       (alu_lsu_st_low),
+        .alu_lsu_st_row                       (alu_lsu_st_row),
+        .alu_lsu_st_col                       (alu_lsu_st_col),
+        .alu_lsu_iram_start_addr              (alu_lsu_iram_start_addr),
+        .alu_lsu_wram_start_addr              (alu_lsu_wram_start_addr),
+        .alu_lsu_iram_row_len                 (alu_lsu_iram_row_len),
+        .alu_lsu_wram_row_len                 (alu_lsu_wram_row_len),
+        .alu_lsu_col_len                      (alu_lsu_col_len),
+        .alu_lsu_act_type                     (alu_lsu_act_type),
+        .alu_lsu_pool_size                    (alu_lsu_pool_size),
+        .alu_lsu_mxu_clr                      (alu_lsu_mxu_clr),
+
+        .axi_lsu_awrdy                        (axi_lsu_awrdy),
+        .axi_lsu_wrdy                         (axi_lsu_wrdy),
+        .axi_lsu_bid                          (axi_lsu_bid),
+        .axi_lsu_bresp                        (axi_lsu_bresp),
+        .axi_lsu_bvld                         (axi_lsu_bvld),
+        .axi_lsu_resp_oram_addr               (axi_lsu_resp_oram_addr),
+        .axi_lsu_sram_addr                    (axi_lsu_sram_addr),
+        .axi_lsu_dram_addr                    (axi_lsu_dram_addr),
+        .axi_lsu_axi_done                     (axi_lsu_axi_done),
+        .axi_lsu_arrdy                        (axi_lsu_arrdy),
+        .axi_lsu_rid                          (axi_lsu_rid),
+        .axi_lsu_rdata                        (axi_lsu_rdata),
+        .axi_lsu_rresp                        (axi_lsu_rresp),
+        .axi_lsu_rlast                        (axi_lsu_rlast),
+        .axi_lsu_rvld                         (axi_lsu_rvld),
+        .lsu_alu_rdy                          (lsu_alu_rdy),
+        .lsu_mxu_vld                          (lsu_mxu_vld),
+        .lsu_mxu_clr                          (lsu_mxu_clr),
+        .lsu_mxu_conv_vld                     (lsu_mxu_conv_vld),
+        .lsu_mxu_iram_vld                     (lsu_mxu_iram_vld),
+        .lsu_mxu_iram_pld                     (lsu_mxu_iram_pld),
+        .lsu_mxu_wram_vld                     (lsu_mxu_wram_vld),
+        .lsu_mxu_wram_pld                     (lsu_mxu_wram_pld),
+        .lsu_mxu_pool_vld                     (lsu_mxu_pool_vld),
+        .lsu_mxu_pool_size                    (lsu_mxu_pool_size),
+        .lsu_mxu_act_vld                      (lsu_mxu_act_vld),
+        .lsu_mxu_act_type                     (lsu_mxu_act_type),
+        .lsu_mxu_wfi                          (lsu_mxu_wfi),
+        .mxu_lsu_int8_row0_data               (mxu_lsu_int8_row0_data),
+        .mxu_lsu_int16_row0_data              (mxu_lsu_int16_row0_data),
+        .mxu_lsu_int8_row1_data               (mxu_lsu_int8_row1_data),
+        .mxu_lsu_int16_row1_data              (mxu_lsu_int16_row1_data),
+        .mxu_lsu_int8_row2_data               (mxu_lsu_int8_row2_data),
+        .mxu_lsu_int16_row2_data              (mxu_lsu_int16_row2_data),
+        .mxu_lsu_int8_row3_data               (mxu_lsu_int8_row3_data),
+        .mxu_lsu_int16_row3_data              (mxu_lsu_int16_row3_data),
+        .mxu_lsu_int8_row4_data               (mxu_lsu_int8_row4_data),
+        .mxu_lsu_int16_row4_data              (mxu_lsu_int16_row4_data),
+        .mxu_lsu_int8_row5_data               (mxu_lsu_int8_row5_data),
+        .mxu_lsu_int16_row5_data              (mxu_lsu_int16_row5_data),
+        .mxu_lsu_int8_row6_data               (mxu_lsu_int8_row6_data),
+        .mxu_lsu_int16_row6_data              (mxu_lsu_int16_row6_data),
+        .mxu_lsu_int8_row7_data               (mxu_lsu_int8_row7_data),
+        .mxu_lsu_int16_row7_data              (mxu_lsu_int16_row7_data),
+        .mxu_lsu_int8_row8_data               (mxu_lsu_int8_row8_data),
+        .mxu_lsu_int16_row8_data              (mxu_lsu_int16_row8_data),
+        .mxu_lsu_int8_row9_data               (mxu_lsu_int8_row9_data),
+        .mxu_lsu_int16_row9_data              (mxu_lsu_int16_row9_data),
+        .mxu_lsu_int8_row10_data              (mxu_lsu_int8_row10_data),
+        .mxu_lsu_int16_row10_data             (mxu_lsu_int16_row10_data),
+        .mxu_lsu_int8_row11_data              (mxu_lsu_int8_row11_data),
+        .mxu_lsu_int16_row11_data             (mxu_lsu_int16_row11_data),
+        .mxu_lsu_int8_row12_data              (mxu_lsu_int8_row12_data),
+        .mxu_lsu_int16_row12_data             (mxu_lsu_int16_row12_data),
+        .mxu_lsu_int8_row13_data              (mxu_lsu_int8_row13_data),
+        .mxu_lsu_int16_row13_data             (mxu_lsu_int16_row13_data),
+        .mxu_lsu_int8_row14_data              (mxu_lsu_int8_row14_data),
+        .mxu_lsu_int16_row14_data             (mxu_lsu_int16_row14_data),
+        .mxu_lsu_int8_row15_data              (mxu_lsu_int8_row15_data),
+        .mxu_lsu_int16_row15_data             (mxu_lsu_int16_row15_data),
+        .mxu_lsu_data_rdy                     (mxu_lsu_data_rdy),
+        .mxu_lsu_rdy                          (mxu_lsu_rdy),
+        .lsu_axi_awid                         (lsu_axi_awid),
+        .lsu_axi_awaddr                       (lsu_axi_awaddr),
+        .lsu_axi_awlen                        (lsu_axi_awlen),
+        .lsu_axi_awsize                       (lsu_axi_awsize),
+        .lsu_axi_awburst                      (lsu_axi_awburst),
+        .lsu_axi_awstr                        (lsu_axi_awstr),
+        .lsu_axi_awnum                        (lsu_axi_awnum),
+        .lsu_axi_awvld                        (lsu_axi_awvld),
+        .lsu_axi_oram_addr                    (lsu_axi_oram_addr),
+        .lsu_axi_wdata                        (lsu_axi_wdata),
+        .lsu_axi_wstrb                        (lsu_axi_wstrb),
+        .lsu_axi_wlast                        (lsu_axi_wlast),
+        .lsu_axi_wvld                         (lsu_axi_wvld),
+        .lsu_axi_brdy                         (lsu_axi_brdy),
+        .lsu_axi_arid                         (lsu_axi_arid),
+        .lsu_axi_araddr                       (lsu_axi_araddr),
+        .lsu_axi_arlen                        (lsu_axi_arlen),
+        .lsu_axi_arsize                       (lsu_axi_arsize),
+        .lsu_axi_arburst                      (lsu_axi_arburst),
+        .lsu_axi_arstr                        (lsu_axi_arstr),
+        .lsu_axi_arnum                        (lsu_axi_arnum),
+	 .lsu_axi_sram_addr		      (lsu_axi_sram_addr),
+        .lsu_axi_arvld                        (lsu_axi_arvld),
+        .lsu_axi_rrdy                         (lsu_axi_rrdy),
+        .lsu_idu_wb_vld                       (lsu_idu_wb_vld),
+        .lsu_idu_ld_vld                       (lsu_idu_ld_vld),
+        .lsu_idu_wb_addr                      (lsu_idu_wb_addr),
+        .lsu_idu_wb_data                      (lsu_idu_wb_data),
+        .lsu_rf_wb_vld                        (lsu_rf_wb_vld),
+        .lsu_rf_wb_addr                       (lsu_rf_wb_addr),
+        .lsu_rf_wb_data                       (lsu_rf_wb_data)
+    );
+
+     mxu u_mxu(
+        .clk(clk),
+        .rst_n(rst_n),
+        .start_vld(start_vld),
+        .lsu_mxu_vld(lsu_mxu_vld),
+        .lsu_mxu_clr(lsu_mxu_clr),
+        .lsu_mxu_conv_vld(lsu_mxu_conv_vld),
+        .lsu_mxu_iram_vld(lsu_mxu_iram_vld),
+        .lsu_mxu_iram_pld(lsu_mxu_iram_pld),
+        .lsu_mxu_wram_vld(lsu_mxu_wram_vld),
+        .lsu_mxu_wram_pld(lsu_mxu_wram_pld),
+        .lsu_mxu_pool_vld(lsu_mxu_pool_vld),
+        .lsu_mxu_pool_size(lsu_mxu_pool_size),
+        .lsu_mxu_act_vld(lsu_mxu_act_vld),
+        .lsu_mxu_act_type(lsu_mxu_act_type),
+        .lsu_mxu_wfi(lsu_mxu_wfi),
+        .mxu_lsu_int8_row0_data(mxu_lsu_int8_row0_data),
+        .mxu_lsu_int16_row0_data(mxu_lsu_int16_row0_data),
+        .mxu_lsu_int8_row1_data(mxu_lsu_int8_row1_data),
+        .mxu_lsu_int16_row1_data(mxu_lsu_int16_row1_data),
+        .mxu_lsu_int8_row2_data(mxu_lsu_int8_row2_data),
+        .mxu_lsu_int16_row2_data(mxu_lsu_int16_row2_data),
+        .mxu_lsu_int8_row3_data(mxu_lsu_int8_row3_data),
+        .mxu_lsu_int16_row3_data(mxu_lsu_int16_row3_data),
+        .mxu_lsu_int8_row4_data(mxu_lsu_int8_row4_data),
+        .mxu_lsu_int16_row4_data(mxu_lsu_int16_row4_data),
+        .mxu_lsu_int8_row5_data(mxu_lsu_int8_row5_data),
+        .mxu_lsu_int16_row5_data(mxu_lsu_int16_row5_data),
+        .mxu_lsu_int8_row6_data(mxu_lsu_int8_row6_data),
+        .mxu_lsu_int16_row6_data(mxu_lsu_int16_row6_data),
+        .mxu_lsu_int8_row7_data(mxu_lsu_int8_row7_data),
+        .mxu_lsu_int16_row7_data(mxu_lsu_int16_row7_data),
+        .mxu_lsu_int8_row8_data(mxu_lsu_int8_row8_data),
+        .mxu_lsu_int16_row8_data(mxu_lsu_int16_row8_data),
+        .mxu_lsu_int8_row9_data(mxu_lsu_int8_row9_data),
+        .mxu_lsu_int16_row9_data(mxu_lsu_int16_row9_data),
+        .mxu_lsu_int8_row10_data(mxu_lsu_int8_row10_data),
+        .mxu_lsu_int16_row10_data(mxu_lsu_int16_row10_data),
+        .mxu_lsu_int8_row11_data(mxu_lsu_int8_row11_data),
+        .mxu_lsu_int16_row11_data(mxu_lsu_int16_row11_data),
+        .mxu_lsu_int8_row12_data(mxu_lsu_int8_row12_data),
+        .mxu_lsu_int16_row12_data(mxu_lsu_int16_row12_data),
+        .mxu_lsu_int8_row13_data(mxu_lsu_int8_row13_data),
+        .mxu_lsu_int16_row13_data(mxu_lsu_int16_row13_data),
+        .mxu_lsu_int8_row14_data(mxu_lsu_int8_row14_data),
+        .mxu_lsu_int16_row14_data(mxu_lsu_int16_row14_data),
+        .mxu_lsu_int8_row15_data(mxu_lsu_int8_row15_data),
+        .mxu_lsu_int16_row15_data(mxu_lsu_int16_row15_data),
+        .mxu_lsu_data_rdy(mxu_lsu_data_rdy),
+        .mxu_lsu_rdy(mxu_lsu_rdy),
+        .wfi(wfi)
+    );
+
+    rf u_rf(
+        .clk                                 (clk),
+        .rst_n                               (rst_n),
+        .idu_rf_src1_addr                    (idu_rf_src1_addr),
+        .idu_rf_src2_addr                    (idu_rf_src2_addr),
+        .lsu_rf_wb_vld                       (lsu_rf_wb_vld),
+        .lsu_rf_wb_addr                      (lsu_rf_wb_addr),
+        .lsu_rf_wb_data                      (lsu_rf_wb_data),
+        .rf_idu_src1_data                    (rf_idu_src1_data),
+        .rf_idu_src2_data                    (rf_idu_src2_data)
+    );
+
+    AXI_READ_INFT#(
+        .ARID_WIDTH  (`AWID_WIDTH), 
+        .ARADDR_WIDTH(`AWADDR_WIDTH), 
+        .RDATA_WIDTH (`WDATA_WIDTH)
+    )
+    u_AXI_READ_INFT(
+        .clk                                  (clk),
+        .rst_n                                (rst_n),
+        .ARID                                 (ARID),
+        .ARADDR                               (ARADDR),
+        .ARLEN                                (ARLEN),
+        .ARSIZE                               (ARSIZE),
+        .ARBURST                              (ARBURST),
+        .ARREGION                             (ARREGION),
+        .ARVALID                              (ARVALID),
+        .ARREADY                              (ARREADY),
+        .RID                                  (RID),
+        .RDATA                                (RDATA),
+        .RRESP                                (RRESP),
+        .RLAST                                (RLAST),
+        .RVALID                               (RVALID),
+        .RREADY                               (RREADY),
+        .lsu_axi_arid                         (lsu_axi_arid),
+        .lsu_axi_araddr                       (lsu_axi_araddr),
+        .lsu_axi_arlen                        (lsu_axi_arlen),
+        .lsu_axi_arsize                       (lsu_axi_arsize),
+        .lsu_axi_arburst                      (lsu_axi_arburst),
+        .lsu_axi_arstr                        (lsu_axi_arstr),
+        .lsu_axi_arnum                        (lsu_axi_arnum),
+	    .lsu_axi_sram_addr		              (lsu_axi_sram_addr),
+        .lsu_axi_arvld                        (lsu_axi_arvld),
+        .lsu_axi_rrdy                         (lsu_axi_rrdy),
+        .axi_lsu_rid                          (axi_lsu_rid),
+        .axi_lsu_rdata                        (axi_lsu_rdata),
+        .axi_lsu_rresp                        (axi_lsu_rresp),
+        .axi_lsu_rlast                        (axi_lsu_rlast),
+        .axi_lsu_rvld                         (axi_lsu_rvld),
+        .axi_lsu_sram_addr                    (axi_lsu_sram_addr),
+        .axi_lsu_dram_addr                    (axi_lsu_dram_addr),
+        .axi_lsu_axi_done                     (axi_lsu_axi_done),
+        .axi_lsu_arrdy                        (axi_lsu_arrdy)
+    );
+
+    AXI_WRITE_INFT#(
+        .AWID_WIDTH  (`AWID_WIDTH), 
+        .AWADDR_WIDTH(`AWADDR_WIDTH), 
+        .WDATA_WIDTH (`WDATA_WIDTH)
+    )
+    u_AXI_WRITE_INTF
+    (
+        .clk                                  (clk),
+        .rst_n                                (rst_n),
+        .AWID                                 (AWID),
+        .AWADDR                               (AWADDR),
+        .AWLEN                                (AWLEN),
+        .AWSIZE                               (AWSIZE),
+        .AWBURST                              (AWBURST),
+        .AWREGION                             (AWREGION),
+        .AWVALID                              (AWVALID),
+        .AWREADY                              (AWREADY),
+        .WDATA                                (WDATA),
+        .WSTRB                                (WSTRB),
+        .WLAST                                (WLAST),
+        .WVALID                               (WVALID),
+        .WREADY                               (WREADY),
+        .BID                                  (BID),
+        .BRESP                                (BRESP),
+        .BVALID                               (BVALID),
+        .BREADY                               (BREADY),
+        .lsu_axi_awid                         (lsu_axi_awid),
+        .lsu_axi_awaddr                       (lsu_axi_awaddr),
+        .lsu_axi_awlen                        (lsu_axi_awlen),
+        .lsu_axi_awsize                       (lsu_axi_awsize),
+        .lsu_axi_awburst                      (lsu_axi_awburst),
+        .lsu_axi_awstr                        (lsu_axi_awstr),
+        .lsu_axi_awvld                        (lsu_axi_awvld),
+        .lsu_axi_oram_addr                    (lsu_axi_oram_addr),
+        .lsu_axi_awnum                        (lsu_axi_awnum),
+        .lsu_axi_wdata                        (lsu_axi_wdata),
+        .lsu_axi_wstrb                        (lsu_axi_wstrb),
+        .lsu_axi_wlast                        (lsu_axi_wlast),
+        .lsu_axi_wvld                         (lsu_axi_wvld),
+        .lsu_axi_brdy                         (lsu_axi_brdy),
+        .axi_lsu_awrdy                        (axi_lsu_awrdy),
+        .axi_lsu_wrdy                         (axi_lsu_wrdy),
+        .axi_lsu_bid                          (axi_lsu_bid),
+        .axi_lsu_bresp                        (axi_lsu_bresp),
+        .axi_lsu_bvld                         (axi_lsu_bvld),
+        .axi_lsu_resp_oram_addr               (axi_lsu_resp_oram_addr)
+    );
+    
+endmodule
+`endif

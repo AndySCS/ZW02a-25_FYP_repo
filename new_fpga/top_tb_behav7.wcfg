@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="top_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="top_tb" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="1,686,960.000 ns"></ZoomStartTime>
+      <ZoomEndTime time="1,691,850.001 ns"></ZoomEndTime>
+      <Cursor1Time time="1,687,850.000 ns"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="195"></NameColumnWidth>
+      <ValueColumnWidth column_width="163"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="89" />
+   <wvobject fp_name="/top_tb/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/rst_n_in" type="logic">
+      <obj_property name="ElementShortName">rst_n_in</obj_property>
+      <obj_property name="ObjectShortName">rst_n_in</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/start_vld_in" type="logic">
+      <obj_property name="ElementShortName">start_vld_in</obj_property>
+      <obj_property name="ObjectShortName">start_vld_in</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/start_addr" type="array">
+      <obj_property name="ElementShortName">start_addr[11:0]</obj_property>
+      <obj_property name="ObjectShortName">start_addr[11:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/wfi" type="logic">
+      <obj_property name="ElementShortName">wfi</obj_property>
+      <obj_property name="ObjectShortName">wfi</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/lsu_mxu_conv_vld" type="logic">
+      <obj_property name="ElementShortName">lsu_mxu_conv_vld</obj_property>
+      <obj_property name="ObjectShortName">lsu_mxu_conv_vld</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/lsu_mxu_iram_vld" type="array">
+      <obj_property name="ElementShortName">lsu_mxu_iram_vld[15:0]</obj_property>
+      <obj_property name="ObjectShortName">lsu_mxu_iram_vld[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/lsu_mxu_iram_pld" type="array">
+      <obj_property name="ElementShortName">lsu_mxu_iram_pld[127:0]</obj_property>
+      <obj_property name="ObjectShortName">lsu_mxu_iram_pld[127:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/lsu_mxu_wram_vld" type="array">
+      <obj_property name="ElementShortName">lsu_mxu_wram_vld[15:0]</obj_property>
+      <obj_property name="ObjectShortName">lsu_mxu_wram_vld[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/lsu_mxu_wram_pld" type="array">
+      <obj_property name="ElementShortName">lsu_mxu_wram_pld[127:0]</obj_property>
+      <obj_property name="ObjectShortName">lsu_mxu_wram_pld[127:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/lsu_mm_buff_iram_alloc_vld" type="logic">
+      <obj_property name="ElementShortName">lsu_mm_buff_iram_alloc_vld</obj_property>
+      <obj_property name="ObjectShortName">lsu_mm_buff_iram_alloc_vld</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/lsu_mm_buff_iram_alloc_addr" type="array">
+      <obj_property name="ElementShortName">lsu_mm_buff_iram_alloc_addr[7:0]</obj_property>
+      <obj_property name="ObjectShortName">lsu_mm_buff_iram_alloc_addr[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/lsu_mm_buff_iram_alloc_data" type="array">
+      <obj_property name="ElementShortName">lsu_mm_buff_iram_alloc_data[127:0]</obj_property>
+      <obj_property name="ObjectShortName">lsu_mm_buff_iram_alloc_data[127:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/lsu_mm_buff_iram_mxu_vld" type="array">
+      <obj_property name="ElementShortName">lsu_mm_buff_iram_mxu_vld[15:0]</obj_property>
+      <obj_property name="ObjectShortName">lsu_mm_buff_iram_mxu_vld[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/lsu_mm_buff_iram_mxu_data" type="array">
+      <obj_property name="ElementShortName">lsu_mm_buff_iram_mxu_data[127:0]</obj_property>
+      <obj_property name="ObjectShortName">lsu_mm_buff_iram_mxu_data[127:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/lsu_mm_buff_iram_mxu_end" type="logic">
+      <obj_property name="ElementShortName">lsu_mm_buff_iram_mxu_end</obj_property>
+      <obj_property name="ObjectShortName">lsu_mm_buff_iram_mxu_end</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/lsu_mm_buff_iram_ctrl_type" type="logic">
+      <obj_property name="ElementShortName">lsu_mm_buff_iram_ctrl_type</obj_property>
+      <obj_property name="ObjectShortName">lsu_mm_buff_iram_ctrl_type</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/lsu_mm_buff_iram_ctrl_vld" type="logic">
+      <obj_property name="ElementShortName">lsu_mm_buff_iram_ctrl_vld</obj_property>
+      <obj_property name="ObjectShortName">lsu_mm_buff_iram_ctrl_vld</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/lsu_mm_buff_iram_ctrl_row_len" type="array">
+      <obj_property name="ElementShortName">lsu_mm_buff_iram_ctrl_row_len[3:0]</obj_property>
+      <obj_property name="ObjectShortName">lsu_mm_buff_iram_ctrl_row_len[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/lsu_mm_buff_iram_ctrl_col_len" type="array">
+      <obj_property name="ElementShortName">lsu_mm_buff_iram_ctrl_col_len[3:0]</obj_property>
+      <obj_property name="ObjectShortName">lsu_mm_buff_iram_ctrl_col_len[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/lsu_mm_buff_iram_ctrl_start_addr" type="array">
+      <obj_property name="ElementShortName">lsu_mm_buff_iram_ctrl_start_addr[11:0]</obj_property>
+      <obj_property name="ObjectShortName">lsu_mm_buff_iram_ctrl_start_addr[11:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/lsu_mm_buff_iram_read_vld" type="logic">
+      <obj_property name="ElementShortName">lsu_mm_buff_iram_read_vld</obj_property>
+      <obj_property name="ObjectShortName">lsu_mm_buff_iram_read_vld</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/lsu_mm_buff_iram_read_addr" type="array">
+      <obj_property name="ElementShortName">lsu_mm_buff_iram_read_addr[7:0]</obj_property>
+      <obj_property name="ObjectShortName">lsu_mm_buff_iram_read_addr[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/iram/clka" type="logic">
+      <obj_property name="ElementShortName">clka</obj_property>
+      <obj_property name="ObjectShortName">clka</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/iram/ena" type="logic">
+      <obj_property name="ElementShortName">ena</obj_property>
+      <obj_property name="ObjectShortName">ena</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/iram/wea" type="array">
+      <obj_property name="ElementShortName">wea[15:0]</obj_property>
+      <obj_property name="ObjectShortName">wea[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/iram/addra" type="array">
+      <obj_property name="ElementShortName">addra[7:0]</obj_property>
+      <obj_property name="ObjectShortName">addra[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/iram/dina" type="array">
+      <obj_property name="ElementShortName">dina[127:0]</obj_property>
+      <obj_property name="ObjectShortName">dina[127:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/iram/douta" type="array">
+      <obj_property name="ElementShortName">douta[127:0]</obj_property>
+      <obj_property name="ObjectShortName">douta[127:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/lsu_st_type1_iram_ce_ff" type="logic">
+      <obj_property name="ElementShortName">lsu_st_type1_iram_ce_ff</obj_property>
+      <obj_property name="ObjectShortName">lsu_st_type1_iram_ce_ff</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/lsu_st_type1_iram_we_ff" type="array">
+      <obj_property name="ElementShortName">lsu_st_type1_iram_we_ff[15:0]</obj_property>
+      <obj_property name="ObjectShortName">lsu_st_type1_iram_we_ff[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/lsu_ld_iram_we" type="array">
+      <obj_property name="ElementShortName">lsu_ld_iram_we[15:0]</obj_property>
+      <obj_property name="ObjectShortName">lsu_ld_iram_we[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/lsu_riscv_we" type="array">
+      <obj_property name="ElementShortName">lsu_riscv_we[15:0]</obj_property>
+      <obj_property name="ObjectShortName">lsu_riscv_we[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/alu_lsu_st_iram" type="logic">
+      <obj_property name="ElementShortName">alu_lsu_st_iram</obj_property>
+      <obj_property name="ObjectShortName">alu_lsu_st_iram</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/lsu_st_type1_din_int8_raw_lo" type="array">
+      <obj_property name="ElementShortName">lsu_st_type1_din_int8_raw_lo[127:0]</obj_property>
+      <obj_property name="ObjectShortName">lsu_st_type1_din_int8_raw_lo[127:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/lsu_st_type1_din_int8_raw_hi" type="array">
+      <obj_property name="ElementShortName">lsu_st_type1_din_int8_raw_hi[127:0]</obj_property>
+      <obj_property name="ObjectShortName">lsu_st_type1_din_int8_raw_hi[127:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/lsu_st_type1_row_sel" type="array">
+      <obj_property name="ElementShortName">lsu_st_type1_row_sel[3:0]</obj_property>
+      <obj_property name="ObjectShortName">lsu_st_type1_row_sel[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/lsu_st_type1_din_int8_raw_qual" type="array">
+      <obj_property name="ElementShortName">lsu_st_type1_din_int8_raw_qual[127:0]</obj_property>
+      <obj_property name="ObjectShortName">lsu_st_type1_din_int8_raw_qual[127:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/mxu_lsu_int8_row0_data" type="array">
+      <obj_property name="ElementShortName">mxu_lsu_int8_row0_data[127:0]</obj_property>
+      <obj_property name="ObjectShortName">mxu_lsu_int8_row0_data[127:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/mxu_lsu_int8_row1_data" type="array">
+      <obj_property name="ElementShortName">mxu_lsu_int8_row1_data[127:0]</obj_property>
+      <obj_property name="ObjectShortName">mxu_lsu_int8_row1_data[127:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/mxu_lsu_int8_row2_data" type="array">
+      <obj_property name="ElementShortName">mxu_lsu_int8_row2_data[127:0]</obj_property>
+      <obj_property name="ObjectShortName">mxu_lsu_int8_row2_data[127:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/mxu_lsu_int8_row3_data" type="array">
+      <obj_property name="ElementShortName">mxu_lsu_int8_row3_data[127:0]</obj_property>
+      <obj_property name="ObjectShortName">mxu_lsu_int8_row3_data[127:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/mxu_lsu_int8_row4_data" type="array">
+      <obj_property name="ElementShortName">mxu_lsu_int8_row4_data[127:0]</obj_property>
+      <obj_property name="ObjectShortName">mxu_lsu_int8_row4_data[127:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/mxu_lsu_int8_row5_data" type="array">
+      <obj_property name="ElementShortName">mxu_lsu_int8_row5_data[127:0]</obj_property>
+      <obj_property name="ObjectShortName">mxu_lsu_int8_row5_data[127:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/mxu_lsu_int8_row6_data" type="array">
+      <obj_property name="ElementShortName">mxu_lsu_int8_row6_data[127:0]</obj_property>
+      <obj_property name="ObjectShortName">mxu_lsu_int8_row6_data[127:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/mxu_lsu_int8_row7_data" type="array">
+      <obj_property name="ElementShortName">mxu_lsu_int8_row7_data[127:0]</obj_property>
+      <obj_property name="ObjectShortName">mxu_lsu_int8_row7_data[127:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/mxu_lsu_int8_row8_data" type="array">
+      <obj_property name="ElementShortName">mxu_lsu_int8_row8_data[127:0]</obj_property>
+      <obj_property name="ObjectShortName">mxu_lsu_int8_row8_data[127:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/mxu_lsu_int8_row9_data" type="array">
+      <obj_property name="ElementShortName">mxu_lsu_int8_row9_data[127:0]</obj_property>
+      <obj_property name="ObjectShortName">mxu_lsu_int8_row9_data[127:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/mxu_lsu_int8_row10_data" type="array">
+      <obj_property name="ElementShortName">mxu_lsu_int8_row10_data[127:0]</obj_property>
+      <obj_property name="ObjectShortName">mxu_lsu_int8_row10_data[127:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/mxu_lsu_int8_row11_data" type="array">
+      <obj_property name="ElementShortName">mxu_lsu_int8_row11_data[127:0]</obj_property>
+      <obj_property name="ObjectShortName">mxu_lsu_int8_row11_data[127:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/mxu_lsu_int8_row12_data" type="array">
+      <obj_property name="ElementShortName">mxu_lsu_int8_row12_data[127:0]</obj_property>
+      <obj_property name="ObjectShortName">mxu_lsu_int8_row12_data[127:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/mxu_lsu_int8_row13_data" type="array">
+      <obj_property name="ElementShortName">mxu_lsu_int8_row13_data[127:0]</obj_property>
+      <obj_property name="ObjectShortName">mxu_lsu_int8_row13_data[127:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/mxu_lsu_int8_row14_data" type="array">
+      <obj_property name="ElementShortName">mxu_lsu_int8_row14_data[127:0]</obj_property>
+      <obj_property name="ObjectShortName">mxu_lsu_int8_row14_data[127:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/mxu_lsu_int8_row15_data" type="array">
+      <obj_property name="ElementShortName">mxu_lsu_int8_row15_data[127:0]</obj_property>
+      <obj_property name="ObjectShortName">mxu_lsu_int8_row15_data[127:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/mxu_lsu_int8_row0_data_ff" type="array">
+      <obj_property name="ElementShortName">mxu_lsu_int8_row0_data_ff[127:0]</obj_property>
+      <obj_property name="ObjectShortName">mxu_lsu_int8_row0_data_ff[127:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/mxu_lsu_int8_row1_data_ff" type="array">
+      <obj_property name="ElementShortName">mxu_lsu_int8_row1_data_ff[127:0]</obj_property>
+      <obj_property name="ObjectShortName">mxu_lsu_int8_row1_data_ff[127:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/mxu_lsu_int8_row2_data_ff" type="array">
+      <obj_property name="ElementShortName">mxu_lsu_int8_row2_data_ff[127:0]</obj_property>
+      <obj_property name="ObjectShortName">mxu_lsu_int8_row2_data_ff[127:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/mxu_lsu_int8_row3_data_ff" type="array">
+      <obj_property name="ElementShortName">mxu_lsu_int8_row3_data_ff[127:0]</obj_property>
+      <obj_property name="ObjectShortName">mxu_lsu_int8_row3_data_ff[127:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/mxu_lsu_int8_row4_data_ff" type="array">
+      <obj_property name="ElementShortName">mxu_lsu_int8_row4_data_ff[127:0]</obj_property>
+      <obj_property name="ObjectShortName">mxu_lsu_int8_row4_data_ff[127:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/mxu_lsu_int8_row5_data_ff" type="array">
+      <obj_property name="ElementShortName">mxu_lsu_int8_row5_data_ff[127:0]</obj_property>
+      <obj_property name="ObjectShortName">mxu_lsu_int8_row5_data_ff[127:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/mxu_lsu_int8_row6_data_ff" type="array">
+      <obj_property name="ElementShortName">mxu_lsu_int8_row6_data_ff[127:0]</obj_property>
+      <obj_property name="ObjectShortName">mxu_lsu_int8_row6_data_ff[127:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/mxu_lsu_int8_row7_data_ff" type="array">
+      <obj_property name="ElementShortName">mxu_lsu_int8_row7_data_ff[127:0]</obj_property>
+      <obj_property name="ObjectShortName">mxu_lsu_int8_row7_data_ff[127:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/mxu_lsu_int8_row8_data_ff" type="array">
+      <obj_property name="ElementShortName">mxu_lsu_int8_row8_data_ff[127:0]</obj_property>
+      <obj_property name="ObjectShortName">mxu_lsu_int8_row8_data_ff[127:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/mxu_lsu_int8_row9_data_ff" type="array">
+      <obj_property name="ElementShortName">mxu_lsu_int8_row9_data_ff[127:0]</obj_property>
+      <obj_property name="ObjectShortName">mxu_lsu_int8_row9_data_ff[127:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/mxu_lsu_int8_row10_data_ff" type="array">
+      <obj_property name="ElementShortName">mxu_lsu_int8_row10_data_ff[127:0]</obj_property>
+      <obj_property name="ObjectShortName">mxu_lsu_int8_row10_data_ff[127:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/mxu_lsu_int8_row11_data_ff" type="array">
+      <obj_property name="ElementShortName">mxu_lsu_int8_row11_data_ff[127:0]</obj_property>
+      <obj_property name="ObjectShortName">mxu_lsu_int8_row11_data_ff[127:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/mxu_lsu_int8_row12_data_ff" type="array">
+      <obj_property name="ElementShortName">mxu_lsu_int8_row12_data_ff[127:0]</obj_property>
+      <obj_property name="ObjectShortName">mxu_lsu_int8_row12_data_ff[127:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/mxu_lsu_int8_row13_data_ff" type="array">
+      <obj_property name="ElementShortName">mxu_lsu_int8_row13_data_ff[127:0]</obj_property>
+      <obj_property name="ObjectShortName">mxu_lsu_int8_row13_data_ff[127:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/mxu_lsu_int8_row14_data_ff" type="array">
+      <obj_property name="ElementShortName">mxu_lsu_int8_row14_data_ff[127:0]</obj_property>
+      <obj_property name="ObjectShortName">mxu_lsu_int8_row14_data_ff[127:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/mxu_lsu_int8_row15_data_ff" type="array">
+      <obj_property name="ElementShortName">mxu_lsu_int8_row15_data_ff[127:0]</obj_property>
+      <obj_property name="ObjectShortName">mxu_lsu_int8_row15_data_ff[127:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_lsu/iram/inst/native_mem_module.blk_mem_gen_v8_4_12_inst/memory" type="array">
+      <obj_property name="ElementShortName">memory[0:255][127:0]</obj_property>
+      <obj_property name="ObjectShortName">memory[0:255][127:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_mxu/u_acc_row6_col0/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_mxu/u_acc_row6_col0/rst_n" type="logic">
+      <obj_property name="ElementShortName">rst_n</obj_property>
+      <obj_property name="ObjectShortName">rst_n</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_mxu/u_acc_row6_col0/acc_clr" type="logic">
+      <obj_property name="ElementShortName">acc_clr</obj_property>
+      <obj_property name="ObjectShortName">acc_clr</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_mxu/u_acc_row6_col0/acc_vld" type="logic">
+      <obj_property name="ElementShortName">acc_vld</obj_property>
+      <obj_property name="ObjectShortName">acc_vld</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_mxu/u_acc_row6_col0/acc_data" type="array">
+      <obj_property name="ElementShortName">acc_data[15:0]</obj_property>
+      <obj_property name="ObjectShortName">acc_data[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_mxu/u_acc_row6_col0/load_vld" type="logic">
+      <obj_property name="ElementShortName">load_vld</obj_property>
+      <obj_property name="ObjectShortName">load_vld</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_mxu/u_acc_row6_col0/load_data" type="array">
+      <obj_property name="ElementShortName">load_data[15:0]</obj_property>
+      <obj_property name="ObjectShortName">load_data[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_mxu/u_acc_row6_col0/out_data_int16" type="array">
+      <obj_property name="ElementShortName">out_data_int16[15:0]</obj_property>
+      <obj_property name="ObjectShortName">out_data_int16[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_mxu/u_acc_row6_col0/out_data_int8" type="array">
+      <obj_property name="ElementShortName">out_data_int8[7:0]</obj_property>
+      <obj_property name="ObjectShortName">out_data_int8[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_mxu/u_acc_row6_col0/out_data_int16_en" type="logic">
+      <obj_property name="ElementShortName">out_data_int16_en</obj_property>
+      <obj_property name="ObjectShortName">out_data_int16_en</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_mxu/u_acc_row6_col0/out_data_int16_nxt" type="array">
+      <obj_property name="ElementShortName">out_data_int16_nxt[15:0]</obj_property>
+      <obj_property name="ObjectShortName">out_data_int16_nxt[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_mxu/u_acc_row6_col0/acc_sum_raw" type="array">
+      <obj_property name="ElementShortName">acc_sum_raw[15:0]</obj_property>
+      <obj_property name="ObjectShortName">acc_sum_raw[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_mxu/u_acc_row6_col0/acc_sum_of" type="logic">
+      <obj_property name="ElementShortName">acc_sum_of</obj_property>
+      <obj_property name="ObjectShortName">acc_sum_of</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_mxu/u_acc_row6_col0/acc_sum_uf" type="logic">
+      <obj_property name="ElementShortName">acc_sum_uf</obj_property>
+      <obj_property name="ObjectShortName">acc_sum_uf</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_mxu/u_acc_row6_col0/acc_sum_qual" type="array">
+      <obj_property name="ElementShortName">acc_sum_qual[15:0]</obj_property>
+      <obj_property name="ObjectShortName">acc_sum_qual[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_mxu/u_acc_row6_col0/int8_direct_use_allow" type="logic">
+      <obj_property name="ElementShortName">int8_direct_use_allow</obj_property>
+      <obj_property name="ObjectShortName">int8_direct_use_allow</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_mxu/u_acc_row6_col0/int8_cast_pos_max" type="logic">
+      <obj_property name="ElementShortName">int8_cast_pos_max</obj_property>
+      <obj_property name="ObjectShortName">int8_cast_pos_max</obj_property>
+   </wvobject>
+   <wvobject fp_name="/top_tb/top_tpu/u_mxu/u_acc_row6_col0/int8_cast_neg_min" type="logic">
+      <obj_property name="ElementShortName">int8_cast_neg_min</obj_property>
+      <obj_property name="ObjectShortName">int8_cast_neg_min</obj_property>
+   </wvobject>
+</wave_config>

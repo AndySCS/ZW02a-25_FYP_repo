@@ -1,0 +1,104 @@
+#-----------------------------------------------------------
+# Vivado v2025.2 (64-bit)
+# SW Build 6299465 on Fri Nov 14 19:35:11 GMT 2025
+# IP Build 6300035 on Fri Nov 14 10:48:45 MST 2025
+# SharedData Build 6298862 on Thu Nov 13 04:50:51 MST 2025
+# Start of session at: Tue Apr 14 12:50:40 2026
+# Process ID         : 13668
+# Current directory  : C:/Users/twipaa/Downloads/new_fpga
+# Command line       : vivado.exe -gui_launcher_event rodinguilauncherevent13432 C:\Users\twipaa\Downloads\new_fpga\new_fpga.xpr
+# Log file           : C:/Users/twipaa/Downloads/new_fpga/vivado.log
+# Journal file       : C:/Users/twipaa/Downloads/new_fpga\vivado.jou
+# Running On         : CCVDIAISB0031
+# Platform           : Windows Server 2016 or Windows 10
+# Operating System   : 22631
+# Processor Detail   : Intel(R) Xeon(R) Gold 6348 CPU @ 2.60GHz
+# CPU Frequency      : 2594 MHz
+# CPU Physical cores : 4
+# CPU Logical cores  : 4
+# Host memory        : 17174 MB
+# Swap memory        : 17179 MB
+# Total Virtual      : 34354 MB
+# Available Virtual  : 27119 MB
+#-----------------------------------------------------------
+start_gui
+open_project C:/Users/twipaa/Downloads/new_fpga/new_fpga.xpr
+update_compile_order -fileset sources_1
+open_run synth_1 -name synth_1
+close_design
+reset_run synth_1
+launch_runs synth_1 -jobs 4
+wait_on_run synth_1
+launch_simulation -mode post-synthesis -type functional
+source top_tb.tcl
+current_wave_config {Untitled 1}
+add_wave {{/top_tb/top_tpu/axi_lsu_rdata}} 
+current_wave_config {Untitled 1}
+add_wave {{/top_tb/top_tpu/axi_lsu_rvld}} 
+run 6 ms
+current_wave_config {Untitled 1}
+add_wave {{/top_tb/top_tpu/led_OBUF}} 
+run 6 ms
+current_wave_config {Untitled 1}
+add_wave {{/top_tb/top_tpu/ff_MAX_VAL}} 
+current_wave_config {Untitled 1}
+add_wave {{/top_tb/top_tpu/ff_MAX_IDX}} 
+run 6 ms
+relaunch_sim
+reset_run synth_1
+launch_runs synth_1 -jobs 4
+wait_on_run synth_1
+close_design
+open_run synth_1 -name synth_1
+close_sim
+launch_simulation -mode post-synthesis -type functional
+launch_simulation
+source top_tb.tcl
+run 6 ms
+current_wave_config {Untitled 2}
+add_wave {{/top_tb/top_tpu/mxu_lsu_int8_row0_data}} {{/top_tb/top_tpu/mxu_lsu_int8_row1_data}} {{/top_tb/top_tpu/mxu_lsu_int8_row2_data}} {{/top_tb/top_tpu/mxu_lsu_int8_row3_data}} {{/top_tb/top_tpu/mxu_lsu_int8_row4_data}} {{/top_tb/top_tpu/mxu_lsu_int8_row5_data}} {{/top_tb/top_tpu/mxu_lsu_int8_row6_data}} {{/top_tb/top_tpu/mxu_lsu_int8_row7_data}} {{/top_tb/top_tpu/mxu_lsu_int8_row8_data}} {{/top_tb/top_tpu/mxu_lsu_int8_row9_data}} {{/top_tb/top_tpu/mxu_lsu_int8_row10_data}} {{/top_tb/top_tpu/mxu_lsu_int8_row11_data}} {{/top_tb/top_tpu/mxu_lsu_int8_row12_data}} {{/top_tb/top_tpu/mxu_lsu_int8_row13_data}} {{/top_tb/top_tpu/mxu_lsu_int8_row14_data}} {{/top_tb/top_tpu/mxu_lsu_int8_row15_data}} 
+relaunch_sim
+run 6 ms
+save_wave_config {C:/Users/twipaa/Downloads/new_fpga/top_tb_behav2.wcfg}
+close_sim
+launch_simulation
+source top_tb.tcl
+run 6 ms
+current_wave_config {Untitled 3}
+add_wave {{/top_tb/top_tpu/lsu_mxu_iram_vld}} {{/top_tb/top_tpu/lsu_mxu_iram_pld}} 
+current_wave_config {Untitled 3}
+add_wave {{/top_tb/top_tpu/lsu_mxu_wram_vld}} {{/top_tb/top_tpu/lsu_mxu_wram_pld}} 
+current_wave_config {Untitled 3}
+add_wave {{/top_tb/top_tpu/mxu_lsu_int8_row0_data}} {{/top_tb/top_tpu/mxu_lsu_int8_row1_data}} {{/top_tb/top_tpu/mxu_lsu_int8_row2_data}} {{/top_tb/top_tpu/mxu_lsu_int8_row3_data}} {{/top_tb/top_tpu/mxu_lsu_int8_row4_data}} {{/top_tb/top_tpu/mxu_lsu_int8_row5_data}} {{/top_tb/top_tpu/mxu_lsu_int8_row6_data}} {{/top_tb/top_tpu/mxu_lsu_int8_row7_data}} {{/top_tb/top_tpu/mxu_lsu_int8_row8_data}} {{/top_tb/top_tpu/mxu_lsu_int8_row9_data}} {{/top_tb/top_tpu/mxu_lsu_int8_row10_data}} {{/top_tb/top_tpu/mxu_lsu_int8_row11_data}} {{/top_tb/top_tpu/mxu_lsu_int8_row12_data}} {{/top_tb/top_tpu/mxu_lsu_int8_row13_data}} {{/top_tb/top_tpu/mxu_lsu_int8_row14_data}} {{/top_tb/top_tpu/mxu_lsu_int8_row15_data}} 
+relaunch_sim
+run 6 ms
+current_wave_config {Untitled 3}
+add_wave {{/top_tb/top_tpu/led}} 
+relaunch_sim
+run 6 ms
+current_wave_config {Untitled 3}
+add_wave {{/top_tb/top_tpu/lsu_mxu_conv_vld}} 
+save_wave_config {C:/Users/twipaa/Downloads/new_fpga/top_tb_behav3.wcfg}
+relaunch_sim
+run 6 ms
+relaunch_sim
+close_sim
+launch_simulation
+source top_tb.tcl
+current_wave_config {Untitled 4}
+add_wave {{/top_tb/top_tpu/lsu_mxu_iram_vld}} {{/top_tb/top_tpu/lsu_mxu_iram_pld}} 
+current_wave_config {Untitled 4}
+add_wave {{/top_tb/top_tpu/lsu_mxu_wram_vld}} {{/top_tb/top_tpu/lsu_mxu_wram_pld}} 
+current_wave_config {Untitled 4}
+add_wave {{/top_tb/top_tpu/mxu_lsu_int8_row0_data}} {{/top_tb/top_tpu/mxu_lsu_int8_row1_data}} {{/top_tb/top_tpu/mxu_lsu_int8_row2_data}} {{/top_tb/top_tpu/mxu_lsu_int8_row3_data}} {{/top_tb/top_tpu/mxu_lsu_int8_row4_data}} {{/top_tb/top_tpu/mxu_lsu_int8_row5_data}} {{/top_tb/top_tpu/mxu_lsu_int8_row6_data}} {{/top_tb/top_tpu/mxu_lsu_int8_row7_data}} {{/top_tb/top_tpu/mxu_lsu_int8_row8_data}} {{/top_tb/top_tpu/mxu_lsu_int8_row9_data}} {{/top_tb/top_tpu/mxu_lsu_int8_row10_data}} {{/top_tb/top_tpu/mxu_lsu_int8_row11_data}} {{/top_tb/top_tpu/mxu_lsu_int8_row12_data}} {{/top_tb/top_tpu/mxu_lsu_int8_row13_data}} {{/top_tb/top_tpu/mxu_lsu_int8_row14_data}} {{/top_tb/top_tpu/mxu_lsu_int8_row15_data}} 
+current_wave_config {Untitled 4}
+add_wave {{/top_tb/top_tpu/lsu_mxu_conv_vld}} 
+run 6 ms
+relaunch_sim
+run 6 ms
+save_wave_config {C:/Users/twipaa/Downloads/new_fpga/top_tb_behav4.wcfg}
+current_wave_config {top_tb_behav4.wcfg}
+add_wave {{/top_tb/top_tpu/mxu_lsu_data_rdy}} 
+relaunch_sim
+save_wave_config {C:/Users/twipaa/Downloads/new_fpga/top_tb_behav4.wcfg}
+close_sim

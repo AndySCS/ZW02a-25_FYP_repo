@@ -1,0 +1,52 @@
+#-----------------------------------------------------------
+# Vivado v2025.2 (64-bit)
+# SW Build 6299465 on Fri Nov 14 19:35:11 GMT 2025
+# IP Build 6300035 on Fri Nov 14 10:48:45 MST 2025
+# SharedData Build 6298862 on Thu Nov 13 04:50:51 MST 2025
+# Start of session at: Tue Apr 14 17:41:14 2026
+# Process ID         : 11208
+# Current directory  : C:/Users/twipaa/Downloads/new_fpga
+# Command line       : vivado.exe -gui_launcher_event rodinguilauncherevent12180 C:\Users\twipaa\Downloads\new_fpga\new_fpga.xpr
+# Log file           : C:/Users/twipaa/Downloads/new_fpga/vivado.log
+# Journal file       : C:/Users/twipaa/Downloads/new_fpga\vivado.jou
+# Running On         : CCVDIAISB0031
+# Platform           : Windows Server 2016 or Windows 10
+# Operating System   : 22631
+# Processor Detail   : Intel(R) Xeon(R) Gold 6348 CPU @ 2.60GHz
+# CPU Frequency      : 2594 MHz
+# CPU Physical cores : 4
+# CPU Logical cores  : 4
+# Host memory        : 17174 MB
+# Swap memory        : 17179 MB
+# Total Virtual      : 34354 MB
+# Available Virtual  : 26593 MB
+#-----------------------------------------------------------
+start_gui
+open_project C:/Users/twipaa/Downloads/new_fpga/new_fpga.xpr
+update_compile_order -fileset sources_1
+launch_simulation
+source top_tb.tcl
+run 6 ms
+run 6 ms
+current_wave_config {Untitled 1}
+add_wave {{/top_tb/top_tpu/WDATA}} 
+relaunch_sim
+run 6 ms
+run 7 ms
+close_sim
+launch_simulation
+source top_tb.tcl
+run 7 ms
+current_wave_config {Untitled 2}
+add_wave {{/top_tb/top_tpu/u_lsu/lsu_mm_buff_iram_read_vld}} {{/top_tb/top_tpu/u_lsu/lsu_mm_buff_iram_read_addr}} {{/top_tb/top_tpu/u_lsu/lsu_mm_buff_iram_mxu_vld}} {{/top_tb/top_tpu/u_lsu/lsu_mm_buff_iram_mxu_data}} 
+current_wave_config {Untitled 2}
+add_wave {{/top_tb/top_tpu/u_lsu/lsu_mm_buff_iram_alloc_vld}} {{/top_tb/top_tpu/u_lsu/lsu_mm_buff_iram_alloc_addr}} {{/top_tb/top_tpu/u_lsu/lsu_mm_buff_iram_alloc_data}} 
+current_wave_config {Untitled 2}
+add_wave {{/top_tb/top_tpu/u_lsu/lsu_mm_buff_iram_ctrl_vld}} {{/top_tb/top_tpu/u_lsu/lsu_mm_buff_iram_ctrl_row_len}} {{/top_tb/top_tpu/u_lsu/lsu_mm_buff_iram_ctrl_col_len}} {{/top_tb/top_tpu/u_lsu/lsu_mm_buff_iram_ctrl_start_addr}} 
+current_wave_config {Untitled 2}
+add_wave {{/top_tb/top_tpu/u_lsu/lsu_mm_buff_iram_read_vld}} {{/top_tb/top_tpu/u_lsu/lsu_mm_buff_iram_read_addr}} 
+current_wave_config {Untitled 2}
+add_wave {{/top_tb/top_tpu/u_lsu/lsu_mm_buff_iram_mxu_vld}} {{/top_tb/top_tpu/u_lsu/lsu_mm_buff_iram_mxu_data}} {{/top_tb/top_tpu/u_lsu/lsu_mm_buff_iram_mxu_end}} 
+save_wave_config {C:/Users/twipaa/Downloads/new_fpga/top_tb_behav5.wcfg}
+run 7 ms
+close_sim
