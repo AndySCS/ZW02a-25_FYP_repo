@@ -65,25 +65,20 @@ class GridDrawer:
                     )
 
     def send_uart(self):
-        """Flattens grid and sends data via Serial."""
+        """Flattens grid and sends each pixel as a single 1-byte value."""
+        # Flatten the 28x28 2D list into a single list of 784 integers
         flattened_data = [item for sublist in self.grid_data for item in sublist]
         
         try:
             # Open serial port
             ser = serial.Serial(self.port, self.baudrate, timeout=1)
             
-            # Since you asked for 'int4' (4-bit), we will pack two 4-bit pixels into 1 byte.
-            # Grid value is 0 or 1. To make it 'int4' range (0-15), we just send the 0 or 1.
-            data_to_send = []
-            for i in range(0, len(flattened_data), 2):
-                # Pack two pixels: Pixel A in high nibble, Pixel B in low nibble
-                # This treats each pixel as a 4-bit value technically
-                byte_val = (flattened_data[i] << 4) | (flattened_data[i+1] if i+1 < len(flattened_data) else 0)
-                data_to_send.append(byte_val)
+            # Convert the list of integers directly into a bytearray.
+            # This sends 784 bytes total (one for each grid cell).
+            ser.write(bytearray(flattened_data))
             
-            ser.write(bytearray(data_to_send))
             ser.close()
-            print(f"Sent {len(data_to_send)} bytes to {self.port}")
+            print(f"Sent {len(flattened_data)} bytes to {self.port}")
             
         except serial.SerialException as e:
             messagebox.showerror("UART Error", f"Could not open {self.port}\n{e}")
