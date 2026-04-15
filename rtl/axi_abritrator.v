@@ -166,4 +166,11 @@ module axi_abritrator (
     assign tpu_BRESP = BRESP;
     assign tpu_BVALID = BVALID & ~wfi;
 
+    assign ARID = wfi ? uart_ARID : tpu_ARID;
+    assign ARADDR = wfi ? uart_ARADDR : tpu_ARADDR;
+    assign ARLEN = wfi ? uart_ARLEN : tpu_ARLEN;
+    assign ARSIZE = wfi ? uart_ARSIZE : tpu_ARSIZE;
+    assign ARBURST = wfi ? uart_ARBURST : tpu_ARBURST
+    assign ARREGION = wfi ? uart_ARREGION : tpu_ARREGION;
+
 endmodule
