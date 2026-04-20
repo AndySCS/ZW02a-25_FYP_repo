@@ -1,0 +1,38 @@
+#-----------------------------------------------------------
+# Vivado v2023.1 (64-bit)
+# SW Build 3865809 on Sun May  7 15:05:29 MDT 2023
+# IP Build 3864474 on Sun May  7 20:36:21 MDT 2023
+# SharedData Build 3865790 on Sun May 07 13:33:03 MDT 2023
+# Start of session at: Thu Apr 16 12:54:09 2026
+# Process ID: 7148
+# Current directory: C:/Users/85255/Desktop/ZW02a-25_FYP_repo/FPGA_new
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent6836 C:\Users\85255\Desktop\ZW02a-25_FYP_repo\FPGA_new\FPGA_new.xpr
+# Log file: C:/Users/85255/Desktop/ZW02a-25_FYP_repo/FPGA_new/vivado.log
+# Journal file: C:/Users/85255/Desktop/ZW02a-25_FYP_repo/FPGA_new\vivado.jou
+# Running On: DESKTOP-QLK0HUL, OS: Windows, CPU Frequency: 1114 MHz, CPU Physical cores: 4, Host memory: 8382 MB
+#-----------------------------------------------------------
+start_gui
+open_project C:/Users/85255/Desktop/ZW02a-25_FYP_repo/FPGA_new/FPGA_new.xpr
+update_compile_order -fileset sources_1
+open_hw_manager
+connect_hw_server -allow_non_jtag
+open_hw_target
+set_property PROGRAM.FILE {C:/Users/85255/Desktop/ZW02a-25_FYP_repo/FPGA_new/FPGA_new.runs/impl_1/tpu.bit} [get_hw_devices xc7z020_1]
+current_hw_device [get_hw_devices xc7z020_1]
+refresh_hw_device -update_hw_probes false [lindex [get_hw_devices xc7z020_1] 0]
+set_property PROBES.FILE {} [get_hw_devices xc7z020_1]
+set_property FULL_PROBES.FILE {} [get_hw_devices xc7z020_1]
+set_property PROGRAM.FILE {C:/Users/85255/Desktop/ZW02a-25_FYP_repo/FPGA_new/FPGA_new.runs/impl_1/tpu.bit} [get_hw_devices xc7z020_1]
+program_hw_devices [get_hw_devices xc7z020_1]
+refresh_hw_device [lindex [get_hw_devices xc7z020_1] 0]
+set_property needs_refresh false [get_runs synth_1]
+set_property needs_refresh false [get_runs impl_1]
+set_property needs_refresh false [get_runs mem_wrapper_synth_1]
+set_property needs_refresh false [get_runs ram_mem_wrapper_synth_1]
+set_property needs_refresh false [get_runs extern_bram_synth_1]
+refresh_hw_device [lindex [get_hw_devices xc7z020_1] 0]
+set_property PROBES.FILE {} [get_hw_devices xc7z020_1]
+set_property FULL_PROBES.FILE {} [get_hw_devices xc7z020_1]
+set_property PROGRAM.FILE {C:/Users/85255/Desktop/ZW02a-25_FYP_repo/FPGA_new/FPGA_new.runs/impl_1/tpu.bit} [get_hw_devices xc7z020_1]
+program_hw_devices [get_hw_devices xc7z020_1]
+refresh_hw_device [lindex [get_hw_devices xc7z020_1] 0]
