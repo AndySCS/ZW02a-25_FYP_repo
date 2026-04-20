@@ -1,0 +1,14 @@
+#-----------------------------------------------------------
+# Vivado v2023.1 (64-bit)
+# SW Build 3865809 on Sun May  7 15:04:56 MDT 2023
+# IP Build 3864474 on Sun May  7 20:36:21 MDT 2023
+# SharedData Build 3865790 on Sun May 07 13:33:03 MDT 2023
+# Start of session at: Mon Apr 13 01:29:12 2026
+# Process ID: 122323
+# Current directory: /dfs/usrhome/twipaa/Documents/uart/ZW02a-25_FYP_repo/DMA_SAMPLE/DMA_SYSTEM/DMA_SYSTEM.runs/dmaSystem_auto_pc_0_synth_1
+# Command line: vivado -log dmaSystem_auto_pc_0.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source dmaSystem_auto_pc_0.tcl
+# Log file: /dfs/usrhome/twipaa/Documents/uart/ZW02a-25_FYP_repo/DMA_SAMPLE/DMA_SYSTEM/DMA_SYSTEM.runs/dmaSystem_auto_pc_0_synth_1/dmaSystem_auto_pc_0.vds
+# Journal file: /dfs/usrhome/twipaa/Documents/uart/ZW02a-25_FYP_repo/DMA_SAMPLE/DMA_SYSTEM/DMA_SYSTEM.runs/dmaSystem_auto_pc_0_synth_1/vivado.jou
+# Running On: ecelvd714.ece.local, OS: Linux, CPU Frequency: 2593.905 MHz, CPU Physical cores: 32, Host memory: 270292 MB
+#-----------------------------------------------------------
+source dmaSystem_auto_pc_0.tcl -notrace

@@ -1,0 +1,14 @@
+#include "xaxidma.h"
+#include "xparameters.h"
+
+int main(){
+	u32 a[] = {1,2,3,4,5,6,7,8};
+
+	XAxiDma_Config *myDmaConfig;
+	XAxiDma myDma;
+	myDmaConfig =  XAxiDma_LookupConfigBaseAddr(XPAR_AXI_DMA_0_BASEADDR);
+	XAxiDma_CfgInitialize(&myDma, myDmaConfig);
+
+	u32 XAxiDma_SimpleTransfer(&myDma, UINTPTR BuffAddr, u32 Length,
+		int Direction);
+}
